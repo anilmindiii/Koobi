@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parentView"
+    android:background="@color/white">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Light">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:expandedTitleTextAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+              <RelativeLayout
+                  android:id="@+id/ly_add_field"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+                  <TextView
+                      android:id="@+id/tv_location_txt"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginLeft="10dp"
+                      android:layout_marginTop="5dp"
+                      android:fontFamily="@font/nunito_regular"
+                      android:text="YOUR LOCATION"
+                      android:textColor="@color/gray"
+                      android:textSize="@dimen/evp_text_size_medium" />
+
+                  <RelativeLayout
+                      android:id="@+id/ly_change_location"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@+id/tv_location_txt"
+                      android:layout_marginTop="10dp">
+
+                      <ImageView
+                          android:layout_width="22dp"
+                          android:layout_height="22dp"
+                          android:layout_centerVertical="true"
+                          android:layout_marginLeft="6dp"
+                          android:src="@drawable/map_ico_new" />
+
+                      <TextView
+                          android:id="@+id/tv_location"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_centerVertical="true"
+                          android:layout_marginLeft="35dp"
+                          android:layout_marginRight="80dp"
+                          android:ellipsize="end"
+                          android:fontFamily="@font/nunito_bold"
+                          android:maxLines="1"
+                          android:textColor="@color/black"
+                          android:textSize="@dimen/evp_text_size_medium" />
+
+                      <TextView
+                          android:id="@+id/tv_change_location"
+                          android:layout_width="wrap_content"
+                          android:layout_height="25dp"
+                          android:layout_alignParentRight="true"
+                          android:layout_centerVertical="true"
+                          android:layout_marginRight="10dp"
+                          android:fontFamily="@font/nunito_bold"
+                          android:gravity="center"
+                          android:text="CHANGE"
+                          android:textColor="@color/text_color"
+                          android:textSize="@dimen/evp_text_size_small" />
+
+                  </RelativeLayout>
+
+
+              </RelativeLayout>
+
+              <RelativeLayout
+                  android:id="@+id/rlFilter"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/ly_add_field"
+                  android:layout_marginLeft="5dp"
+                  android:layout_marginRight="5dp"
+                  android:layout_marginTop="10dp"
+                  android:orientation="horizontal">
+
+                  <RelativeLayout
+                      android:id="@+id/searchView"
+                      android:layout_width="match_parent"
+                      android:layout_height="40dp"
+                      android:layout_gravity="center_vertical"
+                      android:layout_toLeftOf="@+id/ivFilter"
+                      android:layout_toStartOf="@+id/ivFilter"
+                      android:gravity="center_vertical"
+                      android:background="@drawable/rounded_border">
+
+                      <EditText
+                          android:id="@+id/searchview"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:layout_margin="5dp"
+                          android:background="@null"
+                          android:maxLines="1"
+                          android:paddingLeft="5dp"
+                          android:imeOptions="actionDone"
+                          android:singleLine="true"
+                          android:gravity="center_vertical"
+                          android:textColorHint="@color/gray"
+                          android:hint="@string/search"
+                          android:textSize="16sp"
+                          android:textColor="@color/text_color"
+                          android:fontFamily="@font/nunito_regular"/>
+
+                  </RelativeLayout>
+
+                  <ImageView
+                      android:id="@+id/ivFilter"
+                      android:layout_width="32dp"
+                      android:layout_height="32dp"
+                      android:layout_centerVertical="true"
+                      android:layout_gravity="center"
+                      android:layout_toLeftOf="@+id/ivFav"
+                      android:layout_toStartOf="@+id/ivFav"
+                      android:padding="4dp"
+                      android:src="@drawable/filter_ico"
+                      android:tint="@color/colorPrimaryDark" />
+
+                  <ImageView
+                      android:id="@+id/ivFav"
+                      android:layout_width="32dp"
+                      android:layout_height="32dp"
+                      android:layout_alignParentEnd="true"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_gravity="center_vertical"
+                      android:layout_marginEnd="3dp"
+                      android:layout_marginRight="3dp"
+                      android:padding="4dp"
+                      android:src="@drawable/inactive_star_co" />
+
+              </RelativeLayout>
+
+          </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.mualab.org.user.Views.refreshviews.RjRefreshLayout
+        android:id="@+id/mSwipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rlFilter"
+        android:layout_marginLeft="6dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvSearchBoard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"/>
+
+    </com.mualab.org.user.Views.refreshviews.RjRefreshLayout>
+
+    <include
+        android:id="@+id/ll_loadingBox"
+        layout="@layout/layout_inner_loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+
+</android.support.design.widget.CoordinatorLayout >

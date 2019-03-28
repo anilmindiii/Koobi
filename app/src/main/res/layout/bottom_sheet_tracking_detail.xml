@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/nunito_regular"
+            android:text="On the way"
+            android:textColor="@color/main_orange_color"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/imgSheetUpDown"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+            android:rotation="90"
+            android:tint="@color/gray"
+            app:srcCompat="@drawable/ic_right_arrow_angle"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/imgDis"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/llDis"
+            android:tint="@color/gray"
+            app:srcCompat="@drawable/ic_distance"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
+            android:id="@+id/llDis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDisTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="Distance"
+                android:textColor="@color/gray"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:fontFamily="@font/nunito_regular"
+                android:text="0 Miles"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/llStaffInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivartistProfilePic"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/gradient_circle_img"
+                android:src="@drawable/default_placeholder"
+                app:civ_border_color="@color/transparent"
+                app:civ_border_width="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/ivartistProfilePic"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvstaffName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:maxLines="1"
+                    android:text="Hemant Sharma"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <RatingBar
+                    android:id="@+id/rating"
+                    style="@style/RatingBarGray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:rating="0"
+                    android:scaleX="0.7"
+                    android:scaleY="0.7"
+                    android:stepSize="0.1"
+                    android:transformPivotX="0.1dp"
+                    android:transformPivotY="0.1dp" />
+
+                <TextView
+                    android:id="@+id/tv_date_n_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:maxLines="1"
+                    android:text="25/05/2018, 03:10 pm"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp" />
+
+                <RelativeLayout
+                    android:id="@+id/rlServices"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lyDetail"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toEndOf="@+id/ivProfile"
+                    android:layout_toRightOf="@+id/ivProfile"
+                    android:background="@drawable/rounded_border_dark"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvServices"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="3dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/nunito_bold"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:textColor="@color/black"
+                        android:textSize="11sp" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_Call"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="5dp"
+                android:background="@drawable/stroke_light_green"
+                android:gravity="center"
+                android:minWidth="80dp"
+                tools:ignore="RelativeOverlap">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:padding="1dp"
+                    android:tint="@color/main_green_color"
+                    app:srcCompat="@drawable/ic_phone_call"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Call"
+                    android:textColor="@color/main_green_color"
+                    android:textSize="14sp"
+                    android:visibility="visible"
+                    tools:ignore="SmallSp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/frameSeekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+
+        <com.mualab.org.user.activity.booking.customSeekBar.RangeSeekBar
+            android:id="@+id/rangeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="-8dp"
+            android:visibility="visible"
+            app:rsb_indicator_height="48dp"
+            app:rsb_indicator_show_mode="alwaysShow"
+            app:rsb_indicator_text_color="@android:color/transparent"
+            app:rsb_indicator_width="55dp"
+            app:rsb_mode="single"
+            app:rsb_progress_color="@color/colorPrimary"
+            app:rsb_progress_height="8dp"
+            app:rsb_thumb_drawable="@android:color/transparent" />
+
+        <com.mualab.org.user.activity.booking.customSeekBar.RangeSeekBar
+            android:id="@+id/rangeSeekBarTransparent"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="-8dp"
+            android:visibility="visible"
+            app:rsb_indicator_background_color="@color/white"
+            app:rsb_indicator_height="48dp"
+            app:rsb_indicator_show_mode="alwaysShow"
+            app:rsb_indicator_text_color="@android:color/transparent"
+            app:rsb_indicator_width="55dp"
+            app:rsb_mode="single"
+            app:rsb_progress_color="@color/colorPrimary"
+            app:rsb_progress_height="8dp"
+            app:rsb_thumb_drawable="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/imgCustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="9dp"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/complete_tracking"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/mett_user_ico"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="40dp"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/tv_artist_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:maxLines="2"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_customer_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:gravity="right"
+            android:maxLines="2"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
+

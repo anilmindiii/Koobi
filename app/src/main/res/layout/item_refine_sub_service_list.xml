@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="4dp"
+
+    >
+    <RelativeLayout
+        android:id="@+id/rlCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:layout_centerInParent="true"
+        >
+        <TextView
+            android:id="@+id/tvSubSerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="250dp"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:padding="5dp"
+            android:text="MakeUp"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            android:layout_marginStart="10dp" />
+
+
+
+            <CheckBox
+                android:id="@+id/checkbox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="10dp"
+                android:button="@drawable/checkbox_selector"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

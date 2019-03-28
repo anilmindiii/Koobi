@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:weightSum="3"
+    android:padding="2dp">
+
+    <LinearLayout
+        android:id="@+id/ly_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_border_dark">
+
+        <ImageView
+            android:id="@+id/clock"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_clock"/>
+
+        <TextView
+            android:id="@+id/tv_time_slot"
+            style="@style/TextView.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_regular"
+            android:text="03:00 PM"
+            android:maxLines="1"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/clock"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/text_color"
+            android:textSize="12sp" />
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

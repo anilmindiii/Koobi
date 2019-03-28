@@ -1,0 +1,183 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.story.fragment.StoryFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="fitXY" />
+
+        <RelativeLayout
+            android:id="@+id/lyVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/dark_transperant"
+            android:visibility="gone"
+            android:gravity="center">
+
+            <VideoView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/videoView"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:weightSum="1"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:id="@+id/iv_user_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/defoult_user_img"
+                app:siBorderColor="@color/colorPrimaryDark"
+                app:siBorderWidth="1dp" />
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextView.Bold"
+                android:layout_toRightOf="@+id/iv_user_image"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_gravity="center_vertical"
+                android:textSize="16sp"
+                android:shadowColor="#55000000"
+                android:shadowDx="6"
+                android:shadowDy="6"
+                android:shadowRadius="6"
+                tools:ignore="RtlHardcoded" />
+
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <ProgressBar
+        android:id="@+id/imageProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:max="100"
+        android:progress="0" />
+
+
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/reverse"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <!-- <View
+             android:id="@+id/center"
+             android:layout_width="0dp"
+             android:layout_height="match_parent"
+             android:layout_weight="6" />-->
+
+        <View
+            android:id="@+id/skip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <views.statusstories.StoryStatusView
+        android:id="@+id/storiesStatus"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_gravity="top"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+
+    <RelativeLayout
+        android:id="@+id/addMoreStory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        android:padding="5dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_add_to_story"
+            android:layout_centerHorizontal="true"
+            android:tint="@color/white"
+            android:id="@+id/ic_add_to_story"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Medium"
+            android:textSize="11sp"
+            android:text="@string/add_more_story"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/ic_add_to_story"
+            android:layout_marginTop="7dp"
+            android:textColor="#fff"
+            tools:ignore="SmallSp" />
+
+
+
+    </RelativeLayout>
+
+
+
+    <ImageButton
+        android:layout_width="25dp"
+        android:id="@+id/img_btn"
+        android:padding="2dp"
+        android:background="@null"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp"
+
+        android:src="@drawable/ic_close_white"
+
+        android:layout_height="25dp" />
+
+
+</FrameLayout>

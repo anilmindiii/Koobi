@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp5"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:civ_border_color="@color/gray2"
+            app:civ_border_width="0.7dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/user_placeholder"/>
+
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_toLeftOf="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semibold"
+            android:text="Edit"
+            android:layout_centerVertical="true"
+            android:textColor="@color/gray"
+            android:layout_marginLeft="45dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semibold"
+            android:text="Delete"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/gray"
+            android:layout_marginLeft="10dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semibold"
+            android:text="Voucher Code"
+            android:layout_centerVertical="true"
+            android:textColor="@color/text_color"
+            android:layout_marginLeft="55dp"
+            android:layout_marginRight="45dp"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_below="@+id/iv_profile"
+            android:layout_width="match_parent"
+            android:layout_height=".7dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/gray2"
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:id="@+id/iv_service_arrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:tint="@color/gray"
+            android:padding="5dp"
+            android:src="@drawable/ic_navigate_next_white"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/tv_call_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semibold"
+            android:text="@string/text_services"
+            android:textColor="@color/text_color"
+            android:layout_marginRight="45dp"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/tv_service_name"
+            android:layout_below="@+id/tv_call_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/gray"
+            android:layout_marginRight="30dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_below="@+id/tv_service_name"
+            android:layout_width="match_parent"
+            android:layout_height=".7dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray2"
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:id="@+id/iv_time_date_arrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:tint="@color/gray"
+            android:padding="5dp"
+            android:src="@drawable/ic_navigate_next_white"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/tv_date_n_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semibold"
+            android:text="@string/date_time"
+            android:textColor="@color/text_color"
+            android:layout_marginRight="45dp"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/tv_date_time"
+            android:layout_below="@+id/tv_date_n_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/gray"
+            android:layout_marginRight="30dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_below="@+id/tv_date_time"
+            android:layout_width="match_parent"
+            android:layout_height=".7dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray2"
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:id="@+id/iv_price_arrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:tint="@color/gray"
+            android:padding="5dp"
+            android:src="@drawable/ic_navigate_next_white"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_price_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semibold"
+            android:text="@string/text_price"
+            android:textColor="@color/text_color"
+            android:layout_marginRight="45dp"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_below="@+id/tv_price_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/gray"
+            android:layout_marginRight="30dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_below="@+id/tv_price"
+            android:layout_width="match_parent"
+            android:layout_height=".7dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray2"
+            />
+
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

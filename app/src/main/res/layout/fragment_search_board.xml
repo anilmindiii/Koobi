@@ -1,0 +1,181 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearParent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.mualab.org.user.activity.searchBoard.fragment.SearchBoardFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/ly_add_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_location_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/nunito_regular"
+            android:text="YOUR LOCATION"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/evp_text_size_medium" />
+
+        <RelativeLayout
+            android:id="@+id/ly_change_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_location_txt"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:src="@drawable/map_ico_new" />
+
+            <TextView
+                android:id="@+id/tv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="80dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_bold"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/evp_text_size_medium" />
+
+            <TextView
+                android:id="@+id/tv_change_location"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/nunito_bold"
+                android:gravity="center"
+                android:text="CHANGE"
+                android:textColor="@color/black"
+                android:textSize="@dimen/evp_text_size_small" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ly_add_field"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/ivFilter"
+            android:layout_toStartOf="@+id/ivFilter"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="18dp"
+            app:cardUseCompatPadding="true">
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/searchview"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:imeOptions="actionDone"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/nunito_regular"
+                android:lineSpacingExtra="0dp"
+                android:lineSpacingMultiplier="0"
+
+                android:minHeight="50dp"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                android:theme="@style/SearchViewTheme"
+                app:iconifiedByDefault="false"
+                app:queryBackground="@color/white"
+                app:queryHint="Search..."
+
+
+                app:searchIcon="@null" />
+
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:id="@+id/ivFilter"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/ivFav"
+            android:layout_toStartOf="@+id/ivFav"
+            android:padding="4dp"
+            android:src="@drawable/filter_ico"
+            android:tint="@color/colorPrimaryDark" />
+
+        <ImageView
+            android:id="@+id/ivFav"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="3dp"
+            android:layout_marginRight="3dp"
+            android:padding="4dp"
+            android:src="@drawable/inactive_star_co" />
+
+    </RelativeLayout>
+
+
+    <com.mualab.org.user.Views.refreshviews.RjRefreshLayout
+        android:id="@+id/mSwipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rlFilter"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="10dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvSearchBoard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="10dp"
+            android:overScrollMode="never" />
+
+    </com.mualab.org.user.Views.refreshviews.RjRefreshLayout>
+
+    <include
+        android:id="@+id/ll_loadingBox"
+        layout="@layout/layout_inner_loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

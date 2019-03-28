@@ -1,0 +1,270 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.FullScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="android:windowBackground">@drawable/gradent_splash_bg</item>-->
+        <item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>
+        <item name="android:windowTranslucentNavigation" tools:ignore="NewApi">true</item>
+
+        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition" tools:ignore="NewApi">
+            @transition/change_image_transform</item>
+        <item name="android:windowSharedElementExitTransition" tools:ignore="NewApi">
+            @transition/change_image_transform</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="AppTheme.FullScreen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <style name="StatusBarBlack" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Camera" parent="AppTheme.FullScreen">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="InOutAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_out</item>
+        <item name="android:windowExitAnimation">@anim/anim_in</item>
+    </style>
+
+
+    <style name="RatingBar" parent="android:style/Widget.Material.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/ratingbar_selector</item>
+        <!-- <item name="colorAccent">#f9a825</item>
+         <item name="android:colorControlNormal">#f9a825</item>-->
+        <item name="android:minHeight">24dip</item>
+        <item name="android:minWidth">24dip</item>
+        <item name="android:maxWidth">28dip</item>
+        <item name="android:maxHeight">28dip</item>
+    </style>
+
+    <style name="RatingBarGray" parent="android:style/Widget.Material.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/ratingbar_selector</item>
+        <!-- <item name="colorAccent">#f9a825</item>
+         <item name="android:colorControlNormal">#f9a825</item>-->
+        <item name="android:minHeight">20dip</item>
+        <item name="android:minWidth">22dip</item>
+        <item name="android:maxWidth">20dip</item>
+        <item name="android:maxHeight">26dip</item>
+    </style>
+
+    <style name="MyRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/gray</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+
+    </style>
+
+
+
+
+    <style name="FullyTranslucent" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:progressBarStyle">@style/InvisibleProgress</item>
+    </style>
+
+    <style name="InvisibleProgress">
+        <item name="android:visibility">gone</item>
+    </style>
+
+
+
+    <style name="AppTheme.DarkActionBar" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+    </style>
+
+
+    <style name="AppTheme.DarkActionBarCountry" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:windowBackground">@drawable/re_send_code_bg</item>
+    </style>
+
+    <style name="ExploreSearchViewAdvance" parent="Base.Widget.AppCompat.SearchView">
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:editTextColor">@color/text_color</item>
+        <item name="android:tint">@color/gray</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+    <style name="ExploreSearchView" parent="Base.Widget.AppCompat.SearchView">
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:editTextColor">@color/white</item>
+        <item name="android:tint">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/nunito_regular</item>
+    </style>
+
+
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/action_bar_bg</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/nunito_semibold</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@drawable/action_bar_bg</item>
+    </style>
+
+    <style name="DatePickerSpinner">
+        <item name="android:textSize">22dp</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/black</item>
+    </style>
+
+
+    <style name="Numberpicker">
+        <item name="colorControlNormal">@android:color/transparent</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/nunito_semibold</item>
+
+    </style>
+
+
+    <style name="SearchViewTheme" parent="Widget.AppCompat.Light.SearchView">
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:editTextColor">@color/black</item>
+        <item name="android:tint">@color/gray</item>
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
+
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/nunito_regular</item>
+        <item name="android:textAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+
+    <style name="SearchboardSearchView" parent="Base.Widget.AppCompat.SearchView">
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:editTextColor">@color/white</item>
+        <item name="android:tint">@color/white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+
+
+
+
+
+
+
+    <style name="calender_style" parent="Theme.SwitchDateTime">
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <!-- Theme for SwitchDateTime -->
+    <style name="Theme.SwitchDateTime" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+    </style>
+
+    <!-- Header Background -->
+    <style name="Theme.SwitchDateTime.HeaderBackground">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- Content Background -->
+    <style name="Theme.SwitchDateTime.ContentBackground">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <!-- Title -->
+    <style name="Theme.SwitchDateTime.TitleDateTimeLabelText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:text">Select Date and Time</item>
+    </style>
+
+    <!-- Date -->
+    <style name="Theme.SwitchDateTime.Date">
+        <item name="mcv_selectionColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- Icon -->
+    <style name="Theme.SwitchDateTime.IconDateTimeSwitch">
+        <item name="android:src">@drawable/ic_view_carousel_black_32dp</item>
+        <item name="tint">@color/white</item>
+    </style>
+
+    <!-- Time  -->
+    <style name="Theme.SwitchDateTime.Time">
+        <item name="timeCircleColor">#f1eded</item>
+        <item name="timeCenterColor">@color/colorPrimaryDark</item>
+
+        <item name="timeAmPmSelectBackgroundColor">@color/colorPrimaryDark</item> <!-- Alpha is apply-->
+        <item name="timeAmPmTextColor">@color/black</item>
+
+        <item name="timeSelectorColor">@color/colorPrimaryDark</item>
+
+        <item name="timeCircularNumbersColor">#6b6969</item>
+    </style>
+
+    <!-- Year Selected-->
+    <style name="Theme.SwitchDateTime.Year">
+        <item name="colorCircleIndicator">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="alert_dialog" parent="android:Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@color/float_transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
+
+    <style name="dialog_blue_button" parent="android:Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">31dp</item>
+        <item name="android:background">@drawable/blue_button_background</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">21dp</item>
+        <item name="android:paddingRight">21dp</item>
+        <item name="android:textColor">@color/button_text_color</item>
+    </style>
+
+</resources>

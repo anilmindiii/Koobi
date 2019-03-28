@@ -1,0 +1,496 @@
+<resources>
+    <string name="app_name">Koobi Customer</string>
+
+    <!--facebook-->
+    <string name="facebook_app_id">629983144084097</string>
+    <string name="fb_login_protocol_scheme">fb629983144084097</string>
+
+
+    <!--Login Text-->
+    <string name="email_or_username">Email Or Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="or">OR</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="signup_as_service_provider">Sign up as Service Provider</string>
+    <string name="forgot_password">Forgotten Username or Password?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="todo">TODO</string>
+    <string name="loading">Loading</string>
+    <string name="already_have_an_account">Already have an account ? <b>Login</b></string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="remind_my_password">Remind My Password</string>
+    <string name="enter_the_email">Enter the email</string>
+    <string name="forgot_pwd_remind_txt">We will send you a message with a link to reset your password.</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="str_cropping_video_please_wait">Cropping Video Please Wait</string>
+    <!--Network related message-->
+
+    <string name="msg_some_thing_went_wrong">Some thing went wrong, please try again later.</string>
+    <string name="error_session_expired">Alert message</string>
+    <string name="error_session_expired_msg">Your session is expired please login again</string>
+
+
+    <!-- Material Camera Stuff -->
+    <string name="mcam_defaultDuration">00:00</string>
+    <string name="mcam_permissions_needed">Permissions Needed</string>
+    <string name="mcam_video_perm_warning">Permission to access your microphone and camera is needed, the camera will now close.</string>
+    <string name="mcam_retry">RETRY</string>
+    <string name="mcam_use_video">USE VIDEO</string>
+    <string name="mcam_use_stillshot">USE STILLSHOT</string>
+    <string name="mcam_portrait">Portrait</string>
+    <string name="mcam_portrait_warning">It\'s recommended that you record in landscape. Record in portrait?</string>
+    <string name="mcam_yes">Yes</string>
+    <string name="mcam_error">Error</string>
+    <string name="mcam_video_capture_unsupported">Your device does not support video capture.</string>
+    <string name="mcam_no_audio_access">You haven\'t given access to your microphone; no audio will be recorded.</string>
+    <string name="mcam_file_size_limit_reached">You\'ve reached the maximum file size!</string>
+    <string name="mcam_image_preview_error_title">Image preview error</string>
+    <string name="mcam_image_preview_error_message">Could not decode bitmap</string>
+    <string name="there_are_no_available_slots_please_select_another_day">There are no available slots. Please select another day.</string>
+    <string name="write_a_comment_here">Write your comment</string>
+    <string name="write_a_description_here">Write your description</string>
+    <string name="unfollow_user">Unfollow <b>@%s?</b></string>
+    <string name="no_comment_yet">No Comment yet</string>
+    <string name="no_like_yet">No like yet</string>
+    <string name="no_res_found">No Record Found</string>
+    <string name="no_data_found">No Record Found</string>
+
+    <string name="read_more">show more</string>
+    <string name="read_less">show less</string>
+    <string name="tag_services">Tag Services</string>
+    <string name="tag_people">Tag People</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="write_a_caption">Write a caption</string>
+    <string name="new_post">New Post</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="explore">Explore</string>
+    <string name="add_more_story">Add More Story</string>
+    <string name="write_a_message">Write a message</string>
+
+
+    <!--Validation text-->
+    <string name="error_required_field">Please enter required field</string>
+    <string name="error_email_or_username_required">Please enter email or username</string>
+    <string name="error_username_required">Please enter username</string>
+    <string name="error_username_contain_space">username can not contain blank space</string>
+    <string name="error_username_length">Username must be at least 4 characters long.</string>
+    <string name="error_user_name_exist">That username is already being used.</string>
+
+    <string name="error_firstname_required">Please enter first name</string>
+    <string name="error_lastname_required">Please enter last name</string>
+
+    <string name="error_businessname_required">Please enter business name.</string>
+    <string name="error_businessname_length">Username must be at least 4 characters long.</string>
+
+    <string name="error_email_required">Please enter your email address.</string>
+    <string name="error_invalid_email">Please enter a valid email address.</string>
+    <string name="error_invalid_email2">This email address is invalid</string>
+
+    <string name="error_password_required">Please enter your password.</string>
+    <string name="error_address_required">Please Select Address.</string>
+    <string name="error_invalid_password_length">Passwords must be at least 8 characters long.</string>
+    <string name="error_invalid_password_special_character">Your password must have at least one special character.</string>
+    <string name="error_invalid_password_uppercase_character">Your password must have at least one uppercase character.</string>
+    <string name="error_invalid_password_digit_character">Your password must have at least one digit character.</string>
+    <string name="error_confirm_password_not_match">Password and confirm password do not match.</string>
+    <string name="error_password_vailidation">Use 8 or more characters including \nuppercase letters and numbers.</string>
+
+    <string name="error_phone_no_reuired">Please enter a phone number</string>
+    <string name="error_phone_no_length">Phone number min 4 and max 15</string>
+    <string name="error_phone_no_invalid">Please enter a valid phone number</string>
+    <string name="error_phone_no_exist">Phone number already exist</string>
+
+    <string name="error_otp_reuired">Please enter OTP</string>
+    <string name="error_otp_invalid">Please enter valid OTP</string>
+    <string name="error_otp_send">New otp has been sent to you</string>
+    <string name="error_otp_varified">You have successfully verified your phone number</string>
+
+
+    <string name="error_current_address_required">Enter your current address</string>
+    <string name="error_profile_image">Select or take profile image</string>
+    <string name="text_login_email_error">Enter your email or register number first</string>
+    <string name="ok_label">Ok</string>
+
+
+    <!--Dialog server maintenence-->
+    <string name="txt_under_maintenance">The web server koobi.co.uk is currently undergoing some maintenance</string>
+    <string name="temporary_maintenance">Temporary Maintenance</string>
+    <string name="what_happened">What happened?</string>
+    <string name="txt_description_maintenance">Server and website need regular maintenance just like a car to keep them up and running smoothly.</string>
+    <string name="text_services">Services</string>
+    <string name="text_total">Total</string>
+    <string name="text_voucher_code">Voucher Code</string>
+    <string name="not_working">not working</string>
+
+    <string name="once_upon_a_time">Once upon a time…</string>
+    <string name="story_duration">Story duration</string>
+    <string name="is_text_progress_enabled">Is text progress enabled?</string>
+    <string name="is_immersive_enabled">Is immersive enabled?</string>
+    <string name="is_cache_enabled">Is cache enabled?</string>
+
+
+    <!--Picker text-->
+    <string name="crop_image_activity_title">Crop Image</string>
+    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">Crop</string>
+    <string name="pick_image_intent_chooser_title">Select source</string>
+    <string name="result_image_desc">crop result</string>
+    <string name="pick_image_intent_text">Choose an image</string>
+    <string name="under_development">Under Development…</string>
+    <string name="search">Search</string>
+
+
+    <!-- Strings related to network connection -->
+    <string name="error_msg_network">Check your network connection</string>
+    <string name="retry">Retry</string>
+    <string name="no_conncetion">No Conncetion</string>
+    <string name="no_conncetion_msg">Please check your network connection.</string>
+
+    <!--Registration Activity-->
+    <string name="independent">Independent</string>
+    <string name="business">Business</string>
+    <string name="email_id">Email</string>
+    <string name="trimming_progress">Trimming your video</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="continue_txt">Continue</string>
+    <string name="country_activity">Choose a country</string>
+
+    <string name="welcome_to">Welcome to\n<b>Mualab</b></string>
+    <string name="verify_phone_no">Verify</string>
+    <string name="need_otp_verification">Please enter your 4 digit verification code</string>
+
+    <string name="enter_your_email_id_and_phone_no">Enter your Email Address and Mobile Number</string>
+    <string name="next">Next</string>
+
+
+    <!--OTP verification Activity-->
+    <string name="resent_code">Resend Code</string>
+
+    <string name="submit">Submit</string>
+    <string name="need_four_digite_code">You need to enter your 4 digit verification \n code to create your account.</string>
+    <string name="blank_string">\n</string>
+
+
+    <string name="_1">1</string>
+    <string name="_2">2\n<font size="10">ABC</font></string>
+    <string name="_3">3\n<font size="10">DEF</font></string>
+    <string name="_4">4\n<font size="10">GHI</font></string>
+    <string name="_5">5\n<font size="10">JKL</font></string>
+    <string name="_6">6\n<font size="10">MNO</font></string>
+    <string name="_7">7\n<font size="10">PQRS</font></string>
+    <string name="_8">8\n<font size="10">TUV</font></string>
+    <string name="_9">9\n<font size="10">WXYZ</font></string>
+
+
+    <!--Registration view3-->
+    <string name="create_profile">Create Profile</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="business_name">Business Name</string>
+    <string name="choose_username">Choose a Username</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="set_date">Set Date Of Birth</string>
+    <string name="error_dob">Select Date Of Birth</string>
+
+
+    <!--Registration view4-->
+    <string name="create_password">Create Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="done">Done</string>
+    <string name="address">Address</string>
+
+
+    <!--Add address-->
+    <string name="address_activity">Add Business Location</string>
+    <string name="business_address">Business address</string>
+    <string name="error_business_address">Input Business address</string>
+    <string name="pick_your_business_place">Pick Your Business Place</string>
+    <string name="pick_your_place">Pick Your Place</string>
+    <string name="city">City*</string>
+    <string name="town_city">Town/City*</string>
+    <string name="state">State*</string>
+    <string name="country">Country*</string>
+    <string name="postal_code">Postal Code*</string>
+    <string name="locality">Locality, area or street*</string>
+    <string name="line_of_address1">1st line of address*</string>
+    <string name="line_of_address2">2nd line of address (Optional)</string>
+    <string name="logout">Logout</string>
+    <string name="enter_post_code">Enter post code</string>
+    <string name="house_building_flat_number">House/Building/Flat number *</string>
+
+    <string name="gps_permission_alert">Need enable location and permission for search near by artist.</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="year">Year</string>
+
+
+    <!--calender-->
+    <string name="monday">Mon</string>
+    <string name="tuesday">Tue</string>
+    <string name="wednesday">Wed</string>
+    <string name="thursday">Thu</string>
+    <string name="friday">Fri</string>
+    <string name="saturday">Sat</string>
+    <string name="sunday">Sun</string>
+
+    <string name="mon">Mon</string>
+    <string name="tues">Tue</string>
+    <string name="wednes">Wed</string>
+    <string name="thurs">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="satur">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="code">code.</string>
+    <string name="profile">Profile</string>
+    <string name="otp">New OTP has been sent to you</string>
+    <string name="title_searchboard">SearchBoard</string>
+    <string name="title_explore">Explore</string>
+    <string name="title_notification">Notification</string>
+    <string name="log_out">Logout</string>
+    <string name="add_location">Add Location</string>
+    <string name="save">Save</string>
+    <string name="username_twenty">Username can\'t be longer than 20 characters.</string>
+    <string name="no_artist_found"> No Record Found</string>
+    <string name="btn_book">Book</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_distance">Distance</string>
+    <string name="text_ascending">Ascending</string>
+    <string name="text_descending">Descending</string>
+    <string name="text_live">Live</string>
+    <string name="title_location_permission">Need Location Permission</string>
+    <string name="text_ok">Ok</string>
+    <string name="text_location_permission">This application needs location permission.Allow location permission.</string>
+    <string name="text_comments">Comments</string>
+    <string name="gps_network_not_enabled">Gps network not enabled</string>
+    <string name="open_location_settings">Open setting and switch on the location</string>
+    <string name="alert_something_wenjt_wrong">Something went wrong!</string>
+    <string name="text_no_data_found">No Record found</string>
+    <string name="text_opening_time">&#160;&#160;Opening Time</string>
+    <string name="text_working_hours">Working Hours</string>
+    <string name="text_posts">Posts</string>
+    <string name="text_reviews">Reviews</string>
+    <string name="text_select_staff">Select Staff</string>
+    <string name="text_remove">Remove</string>
+    <string name="text_edit">Edit</string>
+    <string name="text_select_time">Select Time</string>
+    <string name="text_booking_info">Booking Info :</string>
+    <string name="text_confirm_booking">Confirm Booking</string>
+    <string name="text_continue_booking">Continue</string>
+    <string name="text_add_more_services">Add More</string>
+    <string name="text_today">Today</string>
+    <string name="text_re_book">Re-book</string>
+
+
+    <string name="btn_book_now">Book Now</string>
+    <string name="text_out_call">Out Call</string>
+    <string name="text_out_call_services">Out Call Services</string>
+    <string name="text_location">Location</string>
+    <string name="text_service">Service Category</string>
+    <string name="text_date_and_time">Date And Time</string>
+    <string name="appoinment_date_and_time">Appointment Date And Time</string>
+    <string name="text_date_n_time">Date and Time</string>
+    <string name="titel_refine">Filter</string>
+    <string name="business_type">Business Type</string>
+    <string name="text_something_in_your_mind">Something in your mind?</string>
+    <string name="text_price">Price</string>
+    <string name="_0">0</string>
+    <string name="_995">£995</string>
+    <string name="reviews">Reviews</string>
+    <string name="above"><![CDATA[& Above]]></string>
+    <string name="text_clear">Clear</string>
+    <string name="text_apply">Apply</string>
+    <string name="select_category">Select Category</string>
+    <string name="select_radius">Select Radius</string>
+    <string name="select_business_type">Select Business Type</string>
+    <string name="follow">Follow</string>
+    <string name="text_post">Post</string>
+    <string name="text_feeds">Feeds</string>
+    <string name="text_images">Images</string>
+    <string name="text_videos">Videos</string>
+    <string name="no_data_available">No Record Found</string>
+    <string name="text_follow">Follow</string>
+    <string name="text_cancel">Cancel</string>
+
+    <!-- Easy Video Player Stuff -->
+    <string name="evp_submit">SUBMIT</string>
+    <string name="evp_retry">RETRY</string>
+
+    <!--Profile-->
+    <string name="text_certificate">Certificate</string>
+    <string name="text_follower">Followers</string>
+    <string name="text_following">Following</string>
+    <string name="videos">Videos</string>
+    <string name="feeds">Feeds</string>
+    <string name="images">Images</string>
+    <string name="about_me">About me</string>
+    <string name="about_us">About Koobi</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="payment_history">Payments</string>
+    <string name="inbox">Inbox</string>
+    <string name="rate_this_app">Rate this app</string>
+    <string name="payment_info">Payment Info</string>
+    <string name="about_mualab">About Mualab</string>
+    <string name="past_booking">Past Booking</string>
+    <string name="future_booking">Future Booking</string>
+    <string name="a_waiting_confirmation">A waiting confirmation</string>
+    <string name="review">Review</string>
+    <string name="rebook">Rebook</string>
+    <string name="pay">Pay</string>
+    <string name="payment">Payment</string>
+    <string name="payment_checkout">Payment Checkout</string>
+    <string name="card">Card</string>
+    <string name="bank_account">Bank Account</string>
+    <string name="you_have_not_added_bank_account_n_yet_please_add">You have not added Bank account  yet, Please add.</string>
+    <string name="you_have_not_added_card_yet_nplease_add">You have not added card yet, Please add.</string>
+    <string name="routing_number">Routing Number</string>
+    <string name="add_bank_account">Add Bank Account</string>
+    <string name="please_enter_your_bank_account_details">Please enter your bank account details</string>
+    <string name="account_holder_name">Account Holder Name</string>
+    <string name="account_number">Account Number</string>
+    <string name="please_enter_your_card_details">Please enter your card details</string>
+    <string name="card_number">Card Number</string>
+    <string name="expire_date">Expiry Date</string>
+    <string name="security_code">Security Code *</string>
+    <string name="online_payment">Online payment</string>
+    <string name="cash">Cash</string>
+    <string name="payment_details">Payment Details</string>
+    <string name="booking_status">Booking Status</string>
+    <string name="transection_id">Transaction Id</string>
+    <string name="complete_booking">Complete Booking</string>
+    <string name="booking">Booking</string>
+    <string name="total">Total</string>
+    <string name="assigned_staff">Assigned Staff</string>
+    <string name="alert">Alert</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure_want_to_cancel_the_appointment">Are you sure want to cancel the appointment</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="text_cancelled">Cancelled</string>
+    <string name="text_confirmed">Confirmed</string>
+    <string name="text_completed">Completed</string>
+    <string name="text_reject">Reject</string>
+    <string name="appoinment">Appointment</string>
+    <string name="history">History</string>
+    <string name="refrell_earnings">Referral Earnings</string>
+    <string name="discount_code">Discount Code</string>
+    <string name="title_booking">My Bookings</string>
+    <string name="following">Following</string>
+    <string name="comments">Comments</string>
+    <string name="likes">Likes</string>
+    <string name="business_invitation">Business Invitation</string>
+    <string name="my_foldera">My Folders</string>
+    <string name="setting">Settings</string>
+    <string name="all">All</string>
+    <string name="photo">Photo</string>
+    <string name="video">Video</string>
+    <string name="na">NA</string>
+    <string name="gender">Gender</string>
+    <string name="edit">Edit Profile</string>
+    <string name="verify">Verify</string>
+    <string name="last_name_edit">Last name</string>
+    <string name="email_id_edit">Email id</string>
+    <string name="phone_number_edit">Phone number</string>
+
+    <!--cardPaymentFragment-->
+    <string name="please_enter_cardholder_name">Please enter cardholder name.</string>
+    <string name="please_enter_card_number">Please enter card number.</string>
+    <string name="please_select_mm_yy">Please select MM/YYYY.</string>
+    <string name="please_enter_cvv">Please enter CVV number.</string>
+
+    <string name="text_empty_data">No Record Found</string>
+    <string name="enter_your_username_or_emai">Enter your username or email and we\'ll \nSend you a link to get back into your \naccount</string>
+    <string name="no_category">No category available</string>
+    <string name="please_select_business_type">Please select business type</string>
+    <string name="pick_your_current_location">Pick Your Current Location</string>
+    <string name="rec">REC</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="search_people">Search People</string>
+    <string name="please_provide_the_following_details_to_report_this_post">Please provide the following details to report this post</string>
+    <string name="please_provide_service">Please provide the following details to report this service</string>
+    <string name="link">link</string>
+    <string name="select_reason">Select Reason</string>
+    <string name="description">Description</string>
+    <string name="add">Add</string>
+    <string name="merge">Merge</string>
+    <string name="create_new">Create New</string>
+    <string name="about_us_title">About Us</string>
+    <string name="invitation">Business Invitaion</string>
+    <string name="message">Message</string>
+    <string name="details">Details</string>
+    <string name="booking_confirm">Booking Confirmation</string>
+    <string name="date_time"><![CDATA[Date & Time]]></string>
+    <string name="my_booking">My Bookings</string>
+    <string name="booking_history">Bookings</string>
+    <string name="pending">Pending</string>
+    <string name="confirm">Confirmed</string>
+    <string name="online">Online</string>
+    <string name="pond_symbol">£</string>
+    <string name="cvv">CVV</string>
+    <string name="amount_to_be_paid">Amount to be paid</string>
+    <string name="amount">Amount</string>
+    <string name="save_card">Save Card</string>
+    <string name="set">Set</string>
+    <string name="please_enter_valid_cvv">Please enter valid cvv</string>
+    <string name="please_select_card">Please select card.</string>
+    <string name="xxx">XXXX XXXX XXXX </string>
+    <string name="add_debit_credit_card">Add credit or debit card</string>
+    <string name="give_review">Please give review</string>
+    <string name="no_saved_cards">No Saved Cards</string>
+    <string name="your_service_has_been_completed_nplease_review_how_satisfied_you_are_nwith">Your service has been completed. Please review how satisfied you are with</string>
+    <string name="card_details">Card Details</string>
+    <string name="remove_card">Remove Card</string>
+    <string name="congratulations">Congratulations</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="report_this">Report This?</string>
+    <string name="give_rating">Give Rating</string>
+
+    //chat
+    <string name="search_for_some_one">Search for someone</string>
+    <string name="tap_photo_tag_someone_drag_to_move_or_tap_to_delete">Tap photo to tag someone.\nDrag to move, or tap to delete.</string>
+    <string name="send">Send</string>
+    <string name="enter_text">Please enter text</string>
+    <string name="write_message">Write a message</string>
+    <string name="clear_chat">Clear Chat</string>
+    <string name="add_to_favourite">Add To Favourite</string>
+    <string name="mute_chat">Mute Chat</string>
+    <string name="block_user">Block User</string>
+    <string name="report_user">Report User</string>
+    <string name="delete_conversation">Delete Conversation?</string>
+    <string name="you_will_be_not_able_to_recover_this_converstion">You will be not able to recover \nthis converstion</string>
+    <string name="are_you_want_to_block">Are you want to block</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="type_group_name">Type group name</string>
+    <string name="select_people_you_want_to_add_group">Select people you want to add in this group</string>
+    <string name="create_group">Create Group</string>
+    <string name="group_description">Group Description</string>
+    <string name="mute_group">Mute Group</string>
+    <string name="clear_chat_hitory">Clear Chat History</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="add_members">Add Members</string>
+    <string name="remove_members">Remove Members</string>
+    <string name="you_can_t_send_message">You can\'t send messages to this group because you\'re no longer a participant</string>
+    <string name="messege">Messege</string>
+    <string name="join">Join</string>
+    <string name="enter_description">Enter Description</string>
+    <string name="broadcast">Broadcast</string>
+
+    <string name="dialog_default_title">Here\'s a message!</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="LOADING">Loading...</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="completed">Completed</string>
+    <string name="add_recipients">Add Recipients</string>
+    <string name="sure_leave_group">Are you sure you want to leave this group? Since you\'re the admin, before leaving now make admin of the group.</string>
+    <string name="group_chat_report_msg">Please provide the following details to report this group</string>
+
+
+</resources>

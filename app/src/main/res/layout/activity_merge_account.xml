@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activity.account_merge.MergeAccountActivity">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/white_back_ico"
+        android:tint="@color/gray"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/logo_new"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_bold"
+            android:textColor="@color/text_color"
+            android:text="Welcome to koobi"
+            android:textSize="20sp"
+            android:layout_marginTop="30dp"/>
+
+        <TextView
+            android:id="@+id/tvMessege"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:padding="5dp"
+            android:gravity="center"
+            >
+
+            <android.support.v7.widget.AppCompatButton
+                style="@style/My_Button_Small.Invert"
+                android:id="@+id/btnMerge"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="@string/merge"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:padding="2dp"
+                android:textSize="16sp"
+                />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnCreateNew"
+                style="@style/My_Button_Small.Invert"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="@string/create_new"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:padding="2dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito_bold"
+        android:textColor="@color/text_color"
+        android:text="Koobi@2018"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"/>
+
+</RelativeLayout>

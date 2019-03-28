@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
+    tools:context="com.mualab.org.user.activity.booking.BookingConfirmActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/header"
+            layout="@layout/new_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true" />
+
+
+    </RelativeLayout>
+
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="Artist Info"
+                android:textColor="@color/text_color"
+                android:textSize="17sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile_artist"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/user_placeholder"
+                    app:civ_border_color="@color/gray2"
+                    app:civ_border_width="0.7dp" />
+
+                <TextView
+                    android:id="@+id/tv_artist_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="55dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_pay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="50dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="@string/pay"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    style="@style/My_Button.Invert"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/iv_profile_artist"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray2" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="Appointment Info"
+                android:textColor="@color/text_color"
+                android:textSize="17sp" />
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/rcv_service"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+
+            </android.support.v4.widget.NestedScrollView>
+
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="@string/text_location"
+                android:textColor="@color/text_color"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:id="@+id/ly_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_placeholder_ico" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/tv_call_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="In Call"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_call_type"
+                    android:layout_marginLeft="45dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:maxLines="2"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/tv_address"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="Status"
+                android:textColor="@color/text_color"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_calendar" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/booking_status_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="@string/booking_status"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/booking_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/booking_status_txt"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="20dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:textColor="@color/primary_green"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/booking_status"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="@string/payment_info"
+                android:textColor="@color/text_color"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:id="@+id/ly_voucher_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_voucher" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_vouchar_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="Voucher Code"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_voucher_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_vouchar_code"
+                    android:layout_marginLeft="45dp"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_discounted_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_vouchar_code"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/tv_voucher_code"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:textColor="@color/primary_green"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/tv_voucher_code"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_payment_ico" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_payment_method_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="Payment Method"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_payment_method"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_payment_method_text"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="Payment Method"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/tv_payment_method"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ly_txt_Id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_payment_ico" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_tx_id_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="Transaction Id"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_txt_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_tx_id_text"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text=""
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/tv_txt_id"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ly_txt_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_dollar" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_tx_stauts_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="Payment Status"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_txt_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_tx_stauts_text"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="Pending"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/tv_txt_status"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="75dp"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_white_bg_camera_rc">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_euro" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_amount_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="Total Amount"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <RelativeLayout
+                    android:id="@+id/ly_amount_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_amount_text"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="30dp">
+
+                    <FrameLayout
+                        android:id="@+id/ly_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_amount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/nunito_regular"
+                                android:maxLines="1"
+                                android:text="£000"
+                                android:textColor="@color/text_color"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:background="@color/red"
+                            android:gravity="center" />
+
+                    </FrameLayout>
+
+
+                    <TextView
+                        android:id="@+id/tv_new_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/ly_amount"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/nunito_regular"
+                        android:maxLines="1"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".7dp"
+                    android:layout_below="@+id/ly_amount_main"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray2" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ly_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardview"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:shape="ring"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="3dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_centerInParent="true">
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            app:srcCompat="@drawable/ic_chat_ico" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_toRightOf="@+id/ly_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:shape="ring"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            android:layout_margin="3dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_centerInParent="true">
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            app:srcCompat="@drawable/ic_phone_call" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ly_map_direction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:shape="ring"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            android:layout_margin="3dp"
+            app:cardBackgroundColor="@color/gray"
+            android:layout_centerInParent="true">
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            app:srcCompat="@drawable/ic_map_svg" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ly_cancel_booking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:shape="ring"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            android:layout_margin="3dp"
+            app:cardBackgroundColor="@color/red"
+            android:layout_centerInParent="true">
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/cancel_ico" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ly_give_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:shape="ring"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            android:layout_margin="3dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_centerInParent="true">
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/ic_star_" />
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

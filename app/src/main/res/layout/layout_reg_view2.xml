@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:id="@+id/linear"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="60dp"
+            android:layout_marginTop="60dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:src="@drawable/logo"
+                tools:ignore="ContentDescription" />
+
+
+
+
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4.6">
+
+            <EditText
+                android:id="@+id/tvOtp1"
+                style="@style/TextView.Bold"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:lines="1"
+                android:maxLength="1"
+                android:textColorHint="@color/white"
+
+                android:imeOptions="actionNext"
+                android:background="@drawable/underline_white"
+                android:gravity="center"
+                android:hint="*"
+                android:textSize="18sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2" />
+
+            <EditText
+                android:id="@+id/tvOtp2"
+                style="@style/TextView.Bold"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:lines="1"
+                android:maxLength="1"
+
+
+
+                android:inputType="number"
+                android:imeOptions="actionNext"
+
+                android:background="@drawable/underline_white"
+                android:gravity="center"
+                android:hint="*"
+                android:textSize="18sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2" />
+
+            <EditText
+                android:id="@+id/tvOtp3"
+                style="@style/TextView.Bold"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:lines="1"
+                android:maxLength="1"
+
+
+                android:textColorHint="@color/white"
+
+                android:inputType="number"
+                android:imeOptions="actionNext"
+
+                android:background="@drawable/underline_white"
+                android:gravity="center"
+                android:hint="*"
+                android:textSize="18sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2" />
+
+            <EditText
+                android:id="@+id/tvOtp4"
+                style="@style/TextView.Bold"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:lines="1"
+                android:maxLength="1"
+
+
+                android:imeOptions="actionDone"
+                android:textColorHint="@color/white"
+
+                android:background="@drawable/underline_white"
+                android:gravity="center"
+                android:hint="*"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+        <TextView
+            style="@style/TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunito_regular"
+            android:textSize="16sp"
+            android:text="@string/need_otp_verification" />
+
+        <TextView
+            style="@style/TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="@string/code" />
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/tv_resend_otp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="?android:selectableItemBackground"
+            android:text="@string/resent_code"
+            android:fontFamily="@font/nunito_regular"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="@drawable/tv_selector" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_gravity="bottom"
+
+            android:gravity="bottom"
+
+            android:id="@+id/relative_btn"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/btnVerifyOtp"
+                style="@style/My_Button"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="16dp"
+                android:layout_alignParentBottom="true"
+                android:fontFamily="@font/nunito_regular"
+
+                android:gravity="center"
+                android:layout_marginRight="16dp"
+                android:textColor="@color/darkpink"
+                android:layout_marginTop="16dp"
+                android:text="@string/submit" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_below="@+id/btnVerifyOtp"
+                android:minHeight="80dp"
+                android:layout_height="wrap_content">
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+
+
+      <!--  <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnVerifyOtp"
+            style="@style/My_Button"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/darkpink"
+            android:layout_marginTop="16dp"
+            android:text="@string/submit" />-->
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+

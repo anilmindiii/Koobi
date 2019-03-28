@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:id="@+id/ly_main"
+    tools:context="com.mualab.org.user.activity.artist_profile.activity.ArtistServicesActivity">
+
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:id="@+id/lyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="65dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:background="@drawable/gradient_circle_img"
+            android:clickable="false"
+            android:src="@drawable/default_placeholder"
+            app:civ_border_color="@color/transparent"
+            app:civ_border_width="2dp" />
+
+        <LinearLayout
+            android:id="@+id/lyArtistTopView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/ivProfile"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvArtistName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_marginRight="80dp"
+                android:maxWidth="225dp"
+                android:textColor="@color/text_color"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/lyRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="-5dp"
+                android:layout_toStartOf="@+id/btnBook"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <RatingBar
+                    android:id="@+id/rating"
+                    style="@style/RatingBarGray"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="-35dp"
+                    android:fitsSystemWindows="true"
+                    android:gravity="center_vertical"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:rating="5"
+                    android:scaleX=".4"
+                    android:scaleY=".4"
+                    android:stepSize="0.1" />
+
+                <TextView
+                    android:id="@+id/tv_review_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="-35dp"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="(0)"
+                    android:textColor="@color/text_color"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lyDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lyArtistName"
+                android:layout_marginRight="4dp"
+                android:layout_toRightOf="@+id/ivProfile"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/calendar_new_ico" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:maxLines="1"
+                    android:text="Today : "
+                    android:textColor="@color/text_color"
+                    android:textSize="9sp" />
+
+                <TextView
+                    android:id="@+id/tvbizDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_regular"
+                    android:maxLines="1"
+                    android:textColor="@color/text_color"
+                    android:textSize="9sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/ly_outcall"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/chbOutcall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/circuler_checkbox_selector"
+                android:buttonTint="@color/black"
+                android:fontFamily="@font/nunito_regular"
+                android:scaleX=".7"
+                android:scaleY=".7"
+                android:clickable="false"
+                android:enabled="false"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@+id/chbOutcall"
+                android:fontFamily="@font/nunito_regular"
+                android:text="@string/text_out_call"
+                android:textColor="@color/text_color"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lyContainer"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height=".7dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray2" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="Business Type"
+                android:textColor="@color/text_color"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="Category"
+                android:textColor="@color/text_color"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:id="@+id/ly_biz_type"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <TextView
+                    android:id="@+id/tv_bizType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/nunito_regular"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxWidth="140dp"
+                    android:maxLines="1"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iv_down_arrow_bizType"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/down_arrow_ico"
+                    android:tint="@color/gray" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_category"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="end"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <TextView
+                    android:id="@+id/tv_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxWidth="140dp"
+                    android:maxLines="1"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iv_down_arrow_category"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/down_arrow_ico"
+                    android:tint="@color/gray" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height=".7dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/gray2" />
+
+        <ScrollView
+            android:id="@+id/main_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="70dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="Services"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:id="@+id/ly_incall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/rcv_incall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnToday"
+                    style="@style/My_Button_Small.Invert"
+                    android:layout_width="70dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="11dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/text_today"
+                    android:textSize="12sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnToday"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:clickable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.mualab.org.user.Views.calender.widget.widget.MyFlexibleCalendar
+                                android:id="@+id/calendar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:overScrollMode="never"
+                                app:firstDayOfWeek="sunday"
+                                app:showWeek="true"
+                                app:state="collapsed"
+                                app:textColor="@color/black" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ly_staff_main"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextView.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:fontFamily="@font/nunito_semibold"
+                                android:text="@string/text_select_staff"
+                                android:textColor="@color/text_color"
+                                android:textSize="14sp" />
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rcv_staff"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:divider="@null"
+                                android:orientation="horizontal"
+                                android:overScrollMode="never"
+                                android:scrollbars="none"
+                                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ly_time_slot_main"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextView.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/nunito_semibold"
+                                android:text="@string/text_select_time"
+                                android:textColor="@color/text_color"
+                                android:textSize="14sp" />
+
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rcv_timeSlot"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:overScrollMode="never"
+                                android:scrollbars="none"
+                                android:orientation="vertical"
+                                app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvNoSlot"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/nunito_regular"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:text="@string/there_are_no_available_slots_please_select_another_day"
+                            android:textColor="@color/text_color"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_ly_biz_type"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="165dp"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="4dp">
+
+        <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/rcv_biz_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_ly_category"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="165dp"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="4dp">
+
+        <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/rcv_category_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_msg"
+        style="@style/TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:text="@string/no_res_found"
+        android:textColor="@color/text_color"
+        android:visibility="gone" />
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:layout_alignParentBottom="true"
+    android:background="@color/white">
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnCOnfirmBooking"
+        style="@style/My_Button_Small.Invert"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/text_continue_booking"
+        android:textSize="14sp" />
+
+</RelativeLayout>
+
+
+
+</RelativeLayout>

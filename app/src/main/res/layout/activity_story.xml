@@ -1,0 +1,180 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_centerInParent="true"
+
+            android:contentDescription="@null"/>
+
+        <RelativeLayout
+            android:id="@+id/lyVideoView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_transperant"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:gravity="center">
+
+            <VideoView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/videoView"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:weightSum="1"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal">
+
+        <com.github.siyamed.shapeimageview.CircularImageView
+            android:id="@+id/iv_user_image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/default_placeholder"
+            />
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Bold"
+            android:layout_toRightOf="@+id/iv_user_image"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:shadowColor="#55000000"
+            android:shadowDx="6"
+            android:shadowDy="6"
+            android:shadowRadius="6"
+            tools:ignore="RtlHardcoded" />
+
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:id="@+id/img_btn"
+            android:padding="2dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:layout_gravity="top|right"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/ic_close_white"
+            android:layout_height="25dp" />
+
+
+    </RelativeLayout>
+
+
+    <ProgressBar
+        android:id="@+id/imageProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:max="100"
+        android:progress="0" />
+
+
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/reverse"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <!-- <View
+             android:id="@+id/center"
+             android:layout_width="0dp"
+             android:layout_height="match_parent"
+             android:layout_weight="6" />-->
+
+        <View
+            android:id="@+id/skip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <com.mualab.org.user.Views.statusstories.StoryStatusView
+        android:id="@+id/storiesStatus"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_gravity="top"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/addMoreStory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:visibility="gone"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Medium"
+            android:textSize="18sp"
+            android:text="@string/add"
+            android:fontFamily="@font/nunito_regular"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/ic_add_to_story"
+            android:textColor="#fff"
+            android:layout_marginRight="2dp"
+            tools:ignore="SmallSp" />
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:srcCompat="@drawable/ic_ads_white"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:id="@+id/ic_add_to_story"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+</FrameLayout>

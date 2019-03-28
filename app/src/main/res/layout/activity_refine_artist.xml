@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+
+    <include
+        android:id="@+id/topLayout"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lyBottom"
+        android:layout_below="@+id/topLayout"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:padding="2dp">
+
+                    <CheckBox
+                        android:id="@+id/chbOutcall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:button="@drawable/circuler_checkbox_selector"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/chbOutcall"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="@string/text_out_call"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/rlBusiness"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ivBusiness"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/business_ico" />
+
+
+                        <TextView
+                            android:id="@+id/biz_type_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="35dp"
+                            android:layout_marginStart="35dp"
+                            android:hint="@string/business_type"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textColor="@color/text_color"
+                            android:textColorHint="@color/text_color"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            app:srcCompat="@drawable/ic_right_arrow_angle"
+                            android:tint="@color/gray" />
+
+
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/tv_business"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_below="@+id/biz_type_text"
+                        android:layout_toRightOf="@+id/ivBusiness"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/gray"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:paddingRight="20dp"
+                        android:textColorHint="@color/text_color"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:id="@+id/rlService"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ivService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/category_ico" />
+
+                        <TextView
+                            android:id="@+id/tv_service_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="35dp"
+                            android:fontFamily="@font/nunito_regular"
+                            android:hint="@string/text_service"
+                            android:textColor="@color/text_color"
+                            android:textColorHint="@color/text_color"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/ivServiceDropdown"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            app:srcCompat="@drawable/ic_right_arrow_angle"
+                            android:tint="@color/gray" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_service_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginBottom="5dp"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/gray"
+                        android:visibility="gone"
+                        android:paddingRight="20dp"
+                        />
+
+                </LinearLayout>
+
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+                <LinearLayout
+                    android:id="@+id/rlRefineLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:minHeight="50dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/ivLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/map_ico" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@+id/ivLocation"
+                            android:fontFamily="@font/nunito_regular"
+                            android:hint="@string/text_location"
+                            android:textColor="@color/text_color"
+                            android:textColorHint="@color/text_color"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_refine_loc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/gray"
+                        android:visibility="gone"
+                        />
+
+                </LinearLayout>
+
+
+
+                <View
+                    android:id="@+id/viewSelectRadius"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray" />
+
+
+                <RelativeLayout
+                    android:id="@+id/rlSelectLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivSelectradius"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/map_ico" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/ivSelectradius"
+                        android:layout_toRightOf="@+id/ivSelectradius"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textSelect"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:fontFamily="@font/nunito_regular"
+                            android:text="@string/select_radius"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/textShowRadius"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textColor="@color/gray"
+                            android:text="1-17 Miles"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:visibility="gone" />
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+
+
+            <RelativeLayout
+                android:id="@+id/rlSelectradiusSeekbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtZeroradius"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/linear"
+                    android:layout_marginLeft="12dp"
+                    android:text="@string/_1"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/txtMaxMiles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/linear"
+                    android:layout_marginRight="15dp"
+                    android:text="20 miles"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <com.warkiz.widget.IndicatorStayLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <!--your layout-->
+                        <com.warkiz.widget.IndicatorSeekBar
+                            android:id="@+id/seekBarLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:isb_indicator_content_layout="@layout/custom_indicator_oval"
+                            app:isb_indicator_text_color="@color/text_color"
+                            app:isb_progress="1"
+                            app:isb_show_indicator="custom"
+                            app:isb_thumb_color="@color/colorPrimary"
+                            app:isb_thumb_size="18dp"
+                            app:isb_track_background_size="5dp"
+                            app:isb_thumb_text_color="@color/text_color"
+                            app:isb_track_progress_color="@color/colorPrimary"
+                            app:isb_track_progress_size="4dp" />
+
+                        <!--your layout-->
+                    </com.warkiz.widget.IndicatorStayLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+                <LinearLayout
+                    android:id="@+id/rlDnT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:orientation="vertical"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/ivDateTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:tint="@color/colorPrimary"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:background="@drawable/calendar_ico" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/ivDateTime"
+                            android:layout_toRightOf="@+id/ivDateTime"
+                            android:fontFamily="@font/nunito_regular"
+                            android:hint="@string/text_date_n_time"
+                            android:textColor="@color/text_color"
+                            android:textColorHint="@color/text_color"
+                            android:textSize="16sp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_refine_dnt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/gray"
+                        android:text="@string/continue_txt"
+                        android:visibility="gone"
+                        />
+
+                </LinearLayout>
+
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray" />
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/rlQualification"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ivBachelor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/certificate_ico" />
+
+
+                        <TextView
+                            android:id="@+id/qualification_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="35dp"
+                            android:layout_marginStart="35dp"
+                            android:hint="Certificate"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textColor="@color/text_color"
+                            android:textColorHint="@color/text_color"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            app:srcCompat="@drawable/ic_right_arrow_angle"
+                            android:tint="@color/gray" />
+
+
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/tv_qualiofications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_below="@+id/biz_type_text"
+                        android:layout_toRightOf="@+id/ivBusiness"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/gray"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:paddingRight="3dp"
+                        android:textColorHint="@color/text_color"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/rlPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/coin_ico" />
+
+
+                    <TextView
+                        android:id="@+id/txtPriceN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="@string/text_price"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/ivPrice"
+                        android:layout_toRightOf="@+id/ivPrice"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="1-17 Miles"
+                        android:layout_below="@+id/txtPriceN"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/ivPrice"
+                        android:layout_toRightOf="@+id/ivPrice"
+                        android:textColor="@color/gray"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+
+
+                <RelativeLayout
+                    android:id="@+id/rlPriceSeekBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txtZero"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_below="@+id/linearPrice"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:text="@string/_0"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+                        android:id="@+id/txtMax"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/linearPrice"
+                        android:layout_marginRight="12dp"
+                        android:text="@string/_995"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:id="@+id/linearPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:orientation="vertical">
+
+                        <com.warkiz.widget.IndicatorStayLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <!--your layout-->
+                            <com.warkiz.widget.IndicatorSeekBar
+                                android:id="@+id/seekBarPrice"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:isb_indicator_content_layout="@layout/custom_indicator_oval"
+                                app:isb_indicator_text_color="@color/text_color"
+                                app:isb_progress="1"
+                                app:isb_track_background_size="5dp"
+                                app:isb_show_indicator="custom"
+                                app:isb_thumb_color="@color/colorPrimary"
+                                app:isb_thumb_size="18dp"
+                                app:isb_thumb_text_color="@color/text_color"
+                                app:isb_track_progress_color="@color/colorPrimary"
+                                app:isb_track_progress_size="4dp" />
+
+                            <!--your layout-->
+                        </com.warkiz.widget.IndicatorStayLayout>
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/gray" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+
+                        android:orientation="horizontal">
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star_ico" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/nunito_regular"
+
+                            android:text="@string/reviews"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lyRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+
+                        <android.support.v7.widget.AppCompatRatingBar
+                            android:id="@+id/userRating"
+                            style="@style/RatingBarGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="26dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
+                            android:isIndicator="false"
+                            android:numStars="5"
+                            android:rating="0"
+                            android:scaleX="1"
+                            android:scaleY="1"
+                            android:stepSize="1" />
+
+                        <TextView
+                            android:id="@+id/tvRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/nunito_regular"
+                            android:maxLines="1"
+                            android:text="@string/above"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+
+                android:layout_height="40dp" />
+
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+
+        android:layout_above="@+id/gg" />
+
+    <View
+        android:id="@+id/gg"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/lyBottom"
+        android:background="@color/light_gray_shadow" />
+
+    <LinearLayout
+        android:id="@+id/lyBottom"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:fontFamily="@font/nunito_regular"
+            android:gravity="center"
+            android:text="@string/text_clear"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="0.8dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:visibility="visible" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnApply"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:fontFamily="@font/nunito_regular"
+            android:gravity="center"
+            android:text="@string/text_apply"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/loader_img_animation_blue"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:name="crop_image_menu_crop" type="drawable" />
+    <!--for nev menu-->
+    <item android:name="srn_root_layout" type="id" />
+
+</resources>

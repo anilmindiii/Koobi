@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activity.review_rating.ReviewRatingActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/new_header_layout" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvReviewRating"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:isScrollContainer="false"
+        android:overScrollMode="never"
+        android:padding="5dp"
+        android:scrollbars="none"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+
+    <TextView
+        android:id="@+id/tvNoRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_res_found"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/nunito_regular"
+        android:textColor="@color/black"
+        android:visibility="gone" />
+
+</RelativeLayout>
+

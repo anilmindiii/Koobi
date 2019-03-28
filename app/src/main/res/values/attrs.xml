@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="CustomEntryEdittext">
+        <attr name="entryCount" format="integer" />
+    </declare-styleable>
+
+
+    <declare-styleable name="CropImageView">
+        <attr name="cropGuidelines">
+            <enum name="off" value="0" />
+            <enum name="onTouch" value="1" />
+            <enum name="on" value="2" />
+        </attr>
+        <attr name="cropScaleType">
+            <enum name="fitCenter" value="0" />
+            <enum name="center" value="1" />
+            <enum name="centerCrop" value="2" />
+            <enum name="centerInside" value="3" />
+        </attr>
+        <attr name="cropShape">
+            <enum name="rectangle" value="0" />
+            <enum name="oval" value="1" />
+        </attr>
+        <attr name="cropAutoZoomEnabled" format="boolean" />
+        <attr name="cropMaxZoom" format="integer" />
+        <attr name="cropMultiTouchEnabled" format="boolean" />
+        <attr name="cropFixAspectRatio" format="boolean" />
+        <attr name="cropAspectRatioX" format="integer" />
+        <attr name="cropAspectRatioY" format="integer" />
+        <attr name="cropInitialCropWindowPaddingRatio" format="float" />
+        <attr name="cropBorderLineThickness" format="dimension" />
+        <attr name="cropBorderLineColor" format="color" />
+        <attr name="cropBorderCornerThickness" format="dimension" />
+        <attr name="cropBorderCornerOffset" format="dimension" />
+        <attr name="cropBorderCornerLength" format="dimension" />
+        <attr name="cropBorderCornerColor" format="color" />
+        <attr name="cropGuidelinesThickness" format="dimension" />
+        <attr name="cropGuidelinesColor" format="color" />
+        <attr name="cropBackgroundColor" format="color" />
+        <attr name="cropSnapRadius" format="dimension" />
+        <attr name="cropTouchRadius" format="dimension" />
+        <attr name="cropShowCropOverlay" format="boolean" />
+        <attr name="cropShowProgressBar" format="boolean" />
+        <attr name="cropMinCropWindowWidth" format="dimension" />
+        <attr name="cropMinCropWindowHeight" format="dimension" />
+        <attr name="cropMinCropResultWidthPX" format="float" />
+        <attr name="cropMinCropResultHeightPX" format="float" />
+        <attr name="cropMaxCropResultWidthPX" format="float" />
+        <attr name="cropMaxCropResultHeightPX" format="float" />
+    </declare-styleable>
+
+
+    <!--For image zoom gallery effect-->
+    <declare-styleable name="ZoomageView">
+        <attr name="zoomage_zoomable" format="boolean" />
+        <attr name="zoomage_translatable" format="boolean" />
+        <attr name="zoomage_restrictBounds" format="boolean" />
+        <attr name="zoomage_animateOnReset" format="boolean" />
+        <attr name="zoomage_autoCenter" format="boolean" />
+        <attr name="zoomage_minScale" format="float" />
+        <attr name="zoomage_maxScale" format="float" />
+        <attr name="zoomage_autoResetMode" format="enum">
+            <enum name="UNDER" value="0" />
+            <enum name="OVER" value="1" />
+            <enum name="ALWAYS" value="2" />
+            <enum name="NEVER" value="3" />
+        </attr>
+    </declare-styleable>
+
+
+    <!--For Status or my story Timer-->
+    <declare-styleable name="LinearTimerView">
+        <attr name="radius" format="dimension" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="initialColor" format="color" />
+        <attr name="progressColor" format="color" />
+        <attr name="startingPoint" format="integer" />
+        <attr name="preFillPoint" format="integer" />
+    </declare-styleable>
+
+
+
+    <declare-styleable name="SocialViewStyle">
+        <attr name="socialViewStyle" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SocialView">
+        <!-- Determine whether each feature should be turned on/off.
+             Default is all true. -->
+        <attr name="socialFlags">
+            <flag name="hashtag" value="1"/>
+            <flag name="mention" value="2"/>
+            <flag name="hyperlink" value="4"/>
+        </attr>
+        <!-- Color of each feature.
+             If particular feature is not enabled, this value will be ignored.
+             Default is color accent of current theme. -->
+        <attr name="hashtagColor" format="color"/>
+        <attr name="mentionColor" format="color"/>
+        <attr name="hyperlinkColor" format="color"/>
+    </declare-styleable>
+
+
+
+    <declare-styleable name="NumberProgressBar">
+        <attr name="progress_current" format="integer"/>
+        <attr name="progress_max" format="integer"/>
+
+        <attr name="progress_unreached_color" format="color"/>
+        <attr name="progress_reached_color" format="color"/>
+
+        <attr name="progress_reached_bar_height" format="dimension"/>
+        <attr name="progress_unreached_bar_height" format="dimension"/>
+
+        <attr name="progress_text_size" format="dimension"/>
+        <attr name="progress_text_color" format="color"/>
+
+        <attr name="progress_text_offset" format="dimension"/>
+
+        <attr name="progress_text_visibility" format="enum">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Themes">
+        <attr name="numberProgressBarStyle" format="reference"/>
+    </declare-styleable>
+
+
+    <!--My Story-->
+    <declare-styleable name="StoriesProgressView">
+        <attr name="progressCount" format="integer|reference" />
+    </declare-styleable>
+
+
+    <declare-styleable name="CropView">
+        <attr name="cropme_result_width" format="fraction" />
+        <attr name="cropme_result_height" format="fraction" />
+        <attr name="cropme_max_scale" format="integer" />
+        <attr name="cropme_with_border" format="boolean" />
+        <attr name="cropme_background_alpha" format="fraction" />
+    </declare-styleable>
+
+    <declare-styleable name="nocropper__CropperView">
+        <attr name="nocropper__grid_color" format="color"/>
+        <attr name="nocropper__grid_thickness" format="dimension"/>
+        <attr name="nocropper__grid_opacity" format="float"/>
+        <attr name="nocropper__padding_color" format="color"/>
+        <attr name="nocropper__add_padding_to_make_square" format="boolean"/>
+        <attr name="nocropper__fit_to_center" format="boolean"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="InsLoadingViewAttr">
+        <attr name="rotate_duration" format="integer" />
+        <attr name="circle_duration" format="integer" />
+        <attr name="start_color" format="color" />
+        <attr name="end_color" format="color" />
+        <attr name="status" >
+            <enum name="loading" value="0" />
+            <enum name="clicked" value="1" />
+            <enum name="unclicked" value="2" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="MyUICalendar">
+
+        <attr name="style" format="enum">
+            <enum name="light" value="0" />
+            <enum name="pink" value="1" />
+            <enum name="orange" value="2" />
+            <enum name="blue" value="3" />
+            <enum name="green" value="4" />
+        </attr>
+        <attr name="showWeek" format="boolean" />
+        <attr name="firstDayOfWeek" format="enum">
+            <enum name="sunday" value="0" />
+            <enum name="monday" value="1" />
+            <enum name="tuesday" value="2" />
+            <enum name="wednesday" value="3" />
+            <enum name="thursday" value="4" />
+            <enum name="friday" value="5" />
+            <enum name="saturday" value="6" />
+        </attr>
+        <attr name="state" format="enum">
+            <enum name="expanded" value="0" />
+            <enum name="collapsed" value="1" />
+        </attr>
+
+        <attr name="textColor" format="color" />
+        <attr name="primaryColor" format="color" />
+
+        <attr name="todayItem_textColor" format="color" />
+        <attr name="todayItem_background" format="integer" />
+        <attr name="selectedItem_textColor" format="color" />
+        <attr name="selectedItem_background" format="integer" />
+
+        <attr name="buttonLeft_drawable" format="integer" />
+        <attr name="buttonRight_drawable" format="integer" />
+
+        <attr name="defaultSelectedItem" format="string" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="ScaleImageView">
+        <attr name="src" format="reference"/>
+        <attr name="assetName" format="string"/>
+        <attr name="panEnabled" format="boolean"/>
+        <attr name="zoomEnabled" format="boolean"/>
+        <attr name="quickScaleEnabled" format="boolean"/>
+        <attr name="tileBackgroundColor" format="color"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="EasyVideoPlayer">
+
+        <attr name="evp_source" format="string" />
+
+        <attr name="evp_leftAction" format="enum">
+            <enum name="none" value="0" />
+            <enum name="restart" value="1" />
+            <enum name="retry" value="2" />
+        </attr>
+
+        <attr name="evp_rightAction" format="enum">
+            <enum name="none" value="3" />
+            <enum name="submit" value="4" />
+            <enum name="customLabel" value="5" />
+        </attr>
+
+        <attr name="evp_customLabelText" format="string" />
+        <attr name="evp_retryText" format="string" />
+        <attr name="evp_submitText" format="string" />
+        <attr name="evp_bottomText" format="string" />
+
+        <attr name="evp_restartDrawable" format="reference" />
+        <attr name="evp_playDrawable" format="reference" />
+        <attr name="evp_pauseDrawable" format="reference" />
+
+        <attr name="evp_hideControlsOnPlay" format="boolean" />
+        <attr name="evp_autoPlay" format="boolean" />
+
+        <attr name="evp_disableControls" format="boolean" />
+
+        <attr name="evp_themeColor" format="color" />
+
+        <attr name="evp_autoFullscreen" format="boolean" />
+
+        <attr name="evp_loop" format="boolean" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="AspectRatioImageView">
+        <attr format="enum" name="ari_aspect">
+            <enum name="width" value="0"/>
+            <enum name="height" value="1"/>
+            <enum name="auto" value="2"/>
+        </attr>
+        <attr format="float" name="ari_ratio"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="ReadMoreTextView">
+        <attr name="trimExpandedText" format="string" />
+        <attr name="trimCollapsedText" format="string" />
+        <attr name="trimLength" format="integer" />
+        <attr name="showTrimExpandedText" format="boolean" />
+        <attr name="colorClickableText" format="color" />
+        <attr name="trimLines" format="integer" />
+        <attr name="trimMode">
+            <enum name="trimModeLine" value="0"/>
+            <enum name="trimModeLength" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <item type="id" name="statusbarutil_fake_status_bar_view" />
+    <item type="id" name="statusbarutil_translucent_view" />
+
+    <declare-styleable name="InstaTag">
+        <attr name="canWeAddTags" format="boolean" />
+        <!--Used for restricting tag movement inside RecyclerView-->
+        <attr name="overrideDefaultColor" format="color" />
+        <!--Used for changing default color for tag backGround and carrots-->
+        <attr name="instaTextColor" format="color" />
+        <!--Used for changing InstaTag text Color-->
+        <attr name="instaBackgroundColor" format="color" />
+        <!--Used for changing background color for tag background-->
+        <attr name="carrotTopColor" format="color" />
+        <!--Used for changing top carrot color-->
+        <attr name="carrotLeftColor" format="color" />
+        <!--Used for changing left carrot color-->
+        <attr name="carrotRightColor" format="color" />
+        <!--Used for changing right carrot color-->
+        <attr name="carrotBottomColor" format="color" />
+        <!--Used for changing bottom carrot color-->
+        <attr name="showAllCarrots" format="boolean" />
+        <!--Used for showing all the carrots or show carrots based upon tags position-->
+        <attr name="tagTextBackground" format="reference" />
+        <!--Used for changing tag background-->
+        <attr name="carrotLeftBackground" format="reference" />
+        <!--Used for replacing left carrot background with custom background-->
+        <attr name="carrotRightBackground" format="reference" />
+        <!--Used for replacing right carrot background with custom background-->
+        <attr name="carrotTopBackground" format="reference" />
+        <!--Used for replacing top carrot background with custom background-->
+        <attr name="carrotBottomBackground" format="reference" />
+        <!--Used for replacing bottom carrot background with custom background-->
+        <attr name="hideAnimation" format="reference" />
+        <!--Used for animating tag while hiding-->
+        <attr name="showAnimation" format="reference" />
+        <!--Used for animating tag while showing-->
+        <attr name="likeColor" format="color" />
+        <!--Used for setting like color-->
+        <attr name="likeSize" format="dimension" />
+        <!--Used for setting like size-->
+        <attr name="likeSrc" format="reference" />
+        <!--Used for setting source for like-->
+    </declare-styleable>
+
+    <declare-styleable name="RangeSeekBar">
+        <!--RangeSeekBar common attrs-->
+
+        <!--The maximum-->
+        <attr name="rsb_max" format="float" />
+
+        <!--The minimum-->
+        <attr name="rsb_min" format="float" />
+
+        <!--RangeSeekBar mode, single is normal seekBar, range is RangeSeekBar-->
+        <attr name="rsb_mode" format="enum">
+            <enum name="single" value="1" />
+            <enum name="range" value="2" />
+        </attr>
+
+        <!--The min interval of the thumbs -->
+        <attr name="rsb_range_interval" format="float" />
+
+        <!-- 0 for the normal mode, greater than 1 to switch to scale mode-->
+        <attr name="rsb_tick_mark_number" format="integer" />
+
+        <!--Scale mode
+        Number according to the scale of the actual proportion of the distribution of the location (markTextArray must be a number)
+        Other bisects the current layout (markTextArray can be any character)
+        -->
+        <attr name="rsb_tick_mark_mode" format="enum">
+            <enum name="number" value="0" />
+            <enum name="other" value="1" />
+        </attr>
+
+        <!--The tick mark text gravity -->
+        <attr name="rsb_tick_mark_gravity" format="enum">
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+
+        <!--The tick mark text array -->
+        <attr name="rsb_tick_mark_text_array" format="reference" />
+
+        <!--The tick mark text margin bottom to progress -->
+        <attr name="rsb_tick_mark_text_margin" format="dimension" />
+
+        <attr name="rsb_tick_mark_text_size" format="dimension" />
+
+        <attr name="rsb_tick_mark_text_color" format="color" />
+
+        <!--it just work in range && number mode now-->
+        <attr name="rsb_tick_mark_in_range_text_color" format="color" />
+
+        <attr name="rsb_progress_height" format="dimension" />
+
+        <attr name="rsb_progress_radius" format="dimension" />
+
+        <!--the color of progress bar when in progress-->
+        <attr name="rsb_progress_color" format="color" />
+
+        <!--the default color of the progress bar-->
+        <attr name="rsb_progress_default_color" format="color" />
+
+        <!--the vertical RangeSeekBar draw orientation-->
+        <attr name="rsb_orientation" format="enum">
+            <enum name="left" value="-1" />
+            <enum name="right" value="1" />
+        </attr>
+
+        <!--SeekBar attrs-->
+        <attr name="rsb_indicator_show_mode" format="enum">
+            <enum name="showWhenTouch" value="0" />
+            <enum name="alwaysHide" value="1" />
+            <enum name="alwaysShowAfterTouch" value="2" />
+            <enum name="alwaysShow" value="3" />
+        </attr>
+        <attr name="rsb_indicator_height" format="dimension" />
+        <attr name="rsb_indicator_width" format="dimension" />
+        <!--indicator margin bottom to progress bar-->
+        <attr name="rsb_indicator_margin" format="dimension" />
+        <attr name="rsb_indicator_text_size" format="dimension" />
+        <attr name="rsb_indicator_text_color" format="color" />
+        <!--indicator arrow size, it just work when you not use rsb_indicator_drawable -->
+        <attr name="rsb_indicator_arrow_size" format="dimension" />
+        <!-- must use 9 path ！！！-->
+        <attr name="rsb_indicator_drawable" format="reference" />
+        <attr name="rsb_indicator_background_color" format="color" />
+        <attr name="rsb_indicator_padding_left" format="dimension" />
+        <attr name="rsb_indicator_padding_right" format="dimension" />
+        <attr name="rsb_indicator_padding_top" format="dimension" />
+        <attr name="rsb_indicator_padding_bottom" format="dimension" />
+        <attr name="rsb_indicator_radius" format="dimension" />
+        <attr name="rsb_thumb_drawable" format="reference" />
+        <!--the thumb inactivated is when you don't touch the thumb button-->
+        <attr name="rsb_thumb_inactivated_drawable" format="reference" />
+        <attr name="rsb_thumb_size" format="dimension" />
+        <attr name="rsb_thumb_scale_ratio" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="Rotate3dAnimation">
+        <attr name="rollType" format="enum">
+            <enum name="x" value="0"/>
+            <enum name="y" value="1"/>
+            <enum name="z" value="2"/>
+        </attr>
+        <attr name="fromDeg" format="float" />
+        <attr name="toDeg" format="float" />
+        <attr name="pivotX" format="fraction"/>
+        <attr name="pivotY" format="fraction" />
+    </declare-styleable>
+
+</resources>

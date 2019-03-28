@@ -1,0 +1,104 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    tools:context=".activity.myprofile.activity.activity.EditProfileActivity">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:id="@+id/searchView"
+        android:layout_below="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_gravity="center_vertical"
+        android:layout_toLeftOf="@+id/ivFilter"
+        android:layout_toStartOf="@+id/ivFilter"
+        android:gravity="center_vertical"
+        android:background="@drawable/rounded_border">
+
+        <EditText
+            android:id="@+id/ed_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@null"
+            android:maxLines="1"
+            android:paddingLeft="5dp"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:gravity="center_vertical"
+            android:textColorHint="@color/gray"
+            android:hint="@string/search_people"
+            android:textSize="16sp"
+            android:textColor="@color/text_color"
+            android:fontFamily="@font/nunito_regular"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_below="@+id/searchView"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            tools:listitem="@layout/likes_item_layout"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+
+    </LinearLayout>
+
+
+    <include layout="@layout/layout_inner_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/ll_loadingBox"
+        android:gravity="center"
+        android:layout_centerInParent="true"/>
+
+    <!--<LinearLayout
+        android:id="@+id/ll_loadingBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textSize="16sp"
+            android:text="@string/no_like_yet"
+            android:textColor="@color/black"
+            android:visibility="visible" />
+
+    </LinearLayout>-->
+
+</RelativeLayout>

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/lyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:background="@drawable/gradient_circle_img"
+            android:src="@drawable/default_placeholder"
+            app:civ_border_color="@color/transparent"
+            app:civ_border_width="2dp" />
+
+        <LinearLayout
+            android:id="@+id/lyArtistName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="-30dp"
+            android:layout_toRightOf="@+id/ivProfile"
+            android:layout_toLeftOf="@+id/ly_right_view"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvArtistName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:text="Neha,neha"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_view_more"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="bottom|right"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:textColor="@color/gray"
+                android:text="View more"
+                android:textSize="10sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lyDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lyArtistName"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/ivProfile"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_regular"
+                android:maxLines="1"
+                android:maxWidth="120dp"
+                android:padding="2dp"
+                android:textColor="@color/grey"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlServices"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/lyDetail"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/ivProfile"
+            android:gravity="center"
+            android:layout_marginTop="6dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/rounded_border_dark"
+            android:layout_toEndOf="@+id/ivProfile">
+
+            <TextView
+                android:id="@+id/tvServices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_bold"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/newText"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/lyDetail"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/rlServices"
+            android:layout_marginTop="6dp"
+            android:visibility="gone"
+            android:background="@drawable/rounded_border_dark"
+            android:layout_toEndOf="@+id/rlServices"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp">
+
+            <TextView
+                android:id="@+id/tvServicesnew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_bold"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                />
+
+
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/ly_right_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="right"
+                android:maxLines="1"
+                android:maxWidth="225dp"
+                android:padding="2dp"
+                android:maxLength="10"
+                android:layout_marginRight="2dp"
+                android:textColor="@color/text_color"
+                android:textSize="12sp" />
+
+            <android.support.v7.widget.AppCompatRatingBar
+                android:id="@+id/artist_total_Rating"
+                style="@style/RatingBarGray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:isIndicator="false"
+                android:layout_marginRight="-10dp"
+                android:numStars="5"
+                android:rating="0"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/tv_give_view_review"
+                style="@style/My_Button_Small.Invert"
+                android:layout_width="80dp"
+                android:layout_height="24dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:text="Give Review"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ly_review_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.v7.widget.AppCompatRatingBar
+            android:id="@+id/artistRatingbar"
+            style="@style/RatingBarGray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginTop="7dp"
+            android:isIndicator="false"
+            android:gravity="center"
+            android:numStars="5"
+            android:rating="0"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:stepSize="1" />
+
+        <EditText
+            android:id="@+id/ed_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="70dp"
+            android:gravity="left"
+            android:padding="5dp"
+            android:hint="Comments..."
+            android:background="@null"
+            android:maxLength="150"
+            android:textColorHint="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/dark_gray"
+            android:fontFamily="@font/nunito_regular"
+            android:textSize="@dimen/evp_text_size_medium"/>
+
+        <TextView
+            android:id="@+id/btn_submit"
+            style="@style/My_Button_Small.Invert"
+            android:layout_width="80dp"
+            android:layout_height="24dp"
+            android:backgroundTint="@color/darkpink"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="@string/submit"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="visible"
+        android:layout_below="@+id/lyContainer"
+        android:layout_marginTop="10dp"
+        android:background="@color/gray2"
+        />
+
+</LinearLayout>

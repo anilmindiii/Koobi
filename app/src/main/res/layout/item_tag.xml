@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    tools:context="com.mualab.org.user.activity.artist_profile.activity.ArtistServicesActivity">
+
+
+
+<TextView
+    android:id="@+id/textViewName"
+    style="?android:attr/dropDownItemStyle"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:ellipsize="marquee"
+    android:textSize="14sp"
+    android:textColor="@color/black"
+    android:fontFamily="@font/nunito_regular"
+    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+    android:singleLine="true" />
+
+    <View
+        android:layout_below="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/gray2"/>
+
+
+</RelativeLayout>

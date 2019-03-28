@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_marginTop="3dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/default_placeholder"
+            android:background="@drawable/gradient_circle_single_color"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/transparent" />
+
+        <LinearLayout
+            android:id="@+id/ly_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp"
+            android:paddingBottom="5dp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/ivProfilePic">
+
+            <TextView
+                android:id="@+id/tvMsg"
+                style="@style/TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_regular"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textColor="@color/text_color"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:gravity="end|center_vertical"
+            android:maxLines="1"
+            android:text="12/12/19"
+            android:textColor="@color/gray"
+            android:textSize="11sp" />
+
+
+        <View
+            android:layout_below="@+id/ly_details"
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:layout_gravity="bottom"
+            android:layout_toEndOf="@id/ivProfilePic"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/gray2" />
+
+    </RelativeLayout>
+
+</LinearLayout>

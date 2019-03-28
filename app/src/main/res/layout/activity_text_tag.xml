@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mualab.org.user.activity.feeds.activity.TextTagActivity">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical">
+
+
+       <RelativeLayout
+           android:id="@+id/header"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:background="@color/white">
+
+           <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/colorPrimary"
+               android:layout_alignParentTop="true"
+               />
+
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="?actionBarSize"
+               android:layout_alignParentTop="true"
+               android:layout_centerInParent="true"
+               android:background="@color/white"
+               app:layout_collapseMode="pin">
+
+               <ImageView
+                   android:id="@+id/iv_back_press"
+                   android:layout_width="48dp"
+                   android:layout_height="48dp"
+                   android:padding="10dp"
+                   android:layout_alignParentLeft="true"
+                   android:layout_centerInParent="true"
+                   android:background="?attr/selectableItemBackgroundBorderless"
+                   android:src="@drawable/white_back_ico"
+                   android:tint="@color/gray" />
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   style="@style/TextView.Bold"
+                   android:layout_centerInParent="true"
+                   android:layout_margin="5dp"
+                   android:textColor="@color/black"
+                   android:text="Tag People"
+                   android:textSize="18sp" />
+
+               <View
+                   android:layout_width="match_parent"
+                   android:layout_height="0.8dp"
+                   android:layout_alignParentBottom="true"
+                   android:background="@color/light_gray_shadow"/>
+
+
+               <TextView
+                   android:id="@+id/tv_done"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   style="@style/TextView"
+                   android:layout_centerInParent="true"
+                   android:layout_alignParentRight="true"
+                   android:layout_margin="15dp"
+                   android:textColor="@color/gray"
+                   android:text="Done"
+                   android:textSize="16sp" />
+
+           </RelativeLayout>
+
+       </RelativeLayout>
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:id="@+id/llSearchPeople"
+           android:orientation="vertical"
+           android:background="@color/white"
+           android:gravity="center_horizontal">
+
+           <RelativeLayout
+               android:id="@+id/searchView"
+               android:layout_below="@+id/header"
+               android:layout_width="match_parent"
+               android:layout_height="40dp"
+               android:layout_margin="8dp"
+               android:layout_gravity="center_vertical"
+               android:layout_toLeftOf="@+id/ivFilter"
+               android:layout_toStartOf="@+id/ivFilter"
+               android:gravity="center_vertical"
+               android:background="@drawable/rounded_border">
+
+               <EditText
+                   android:id="@+id/ed_search"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:layout_margin="5dp"
+                   android:background="@null"
+                   android:maxLines="1"
+                   android:paddingLeft="5dp"
+                   android:imeOptions="actionDone"
+                   android:singleLine="true"
+                   android:gravity="center_vertical"
+                   android:textColorHint="@color/gray"
+                   android:hint="@string/search_people"
+                   android:textSize="16sp"
+                   android:textColor="@color/text_color"
+                   android:fontFamily="@font/nunito_regular"/>
+
+           </RelativeLayout>
+
+           <android.support.v7.widget.RecyclerView
+               android:id="@+id/rcv_horizontal"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:divider="@null"
+               android:paddingLeft="10dp"
+               android:paddingRight="10dp"
+               android:orientation="horizontal"
+               android:background="@color/white"
+               app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+           <View
+               android:id="@+id/view_div"
+               android:layout_width="match_parent"
+               android:layout_height="0.7dp"
+               android:layout_marginTop="8dp"
+               android:background="@color/gray2"
+               android:paddingBottom="10dp"
+               android:visibility="gone"/>
+
+
+           <android.support.v7.widget.RecyclerView
+               android:id="@+id/rv_some_one_to_be_tagged"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@color/white" />
+
+       </LinearLayout>
+
+   </LinearLayout>
+
+
+
+
+    <include layout="@layout/layout_inner_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"/>
+
+
+</RelativeLayout>

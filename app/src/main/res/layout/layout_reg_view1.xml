@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="60dp"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/tvHeader"
+                style="@style/TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="5dp"
+                android:layout_marginTop="35dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="@string/enter_your_email_id_and_phone_no"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:padding="6dp">
+
+
+            <EditText
+                android:id="@+id/ed_email"
+                style="@style/My_Edittext_New"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="@string/email_id"
+                android:background="@null"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="3dp"
+                android:background="@color/white"
+                android:layout_marginStart="3dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvCountryCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    style="@style/TextView"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="+ 91" />
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/white" />
+
+                <EditText
+                    android:id="@+id/edPhoneNumber"
+                    style="@style/My_Edittext"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="match_parent"
+                    android:hint="@string/phone_number"
+                    android:inputType="number"
+                    android:maxLength="16"
+                    android:maxLines="1"
+                    android:background="@null"/>
+
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="3dp"
+                android:background="@color/white"
+                android:layout_marginStart="3dp" />
+
+
+            <!--<android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/tvStyle"
+                android:textColorHint="@color/white"
+                app:errorTextAppearance="@style/txtinputError_appearance">
+
+                <EditText
+                    android:id="@+id/ed_email"
+                    style="@style/My_Edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email_id"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/ly_phone"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/tvStyle"
+                    android:paddingLeft="60dp"
+                    android:textColorHint="@color/white"
+                    app:errorTextAppearance="@style/txtinputError_appearance">
+
+                    <EditText
+                        android:id="@+id/edPhoneNumber"
+                        style="@style/My_Edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/phone_number"
+                        android:inputType="number"
+                        android:maxLength="16"
+                        android:maxLines="1"
+                        android:background="@null"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/llView"
+                    android:layout_width="52dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14.5dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/tvCountryCode"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        style="@style/TextView"
+                        android:layout_gravity="top|center_horizontal"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:text="+ 91" />
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@color/white" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_below="@+id/llView"
+                    android:layout_marginTop="6dp"
+                    android:background="@color/white" />
+
+            </RelativeLayout>-->
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:id="@+id/relative_btn"
+
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/btnContinue1"
+                    style="@style/My_Button"
+                    android:layout_width="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center"
+                    android:fontFamily="@font/nunito_regular"
+
+                    android:layout_height="40dp"
+                    android:textColor="@color/darkpink"
+                    android:text="@string/next" />
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_below="@+id/btnContinue1"
+
+                    android:layout_height="40dp">
+
+                </RelativeLayout>
+
+
+
+            </RelativeLayout>
+
+
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/alreadyHaveAnAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        style="@style/TextView"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:text="@string/already_have_an_account"
+        android:layout_margin="16dp"
+        android:textColor="@drawable/tv_selector"
+        android:padding="5dp"/>
+
+</RelativeLayout>

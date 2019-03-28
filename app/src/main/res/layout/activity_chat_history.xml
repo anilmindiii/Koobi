@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:focusableInTouchMode="true"
+    tools:context=".chat.ChatHistoryActivity">
+
+    <include
+        android:id="@+id/chat_header"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:id="@+id/rlFilter"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal"
+        android:padding="2dp">
+
+        <RelativeLayout
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/ivFavChat"
+            android:layout_toStartOf="@+id/ivFavChat"
+            android:gravity="center_vertical"
+            android:background="@drawable/rounded_border">
+
+            <EditText
+                android:id="@+id/searchview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@null"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:gravity="center_vertical"
+                android:textColorHint="@color/gray"
+                android:hint="@string/search"
+                android:textSize="16sp"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/nunito_regular"/>
+
+        </RelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/ivFavChat"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_toLeftOf="@+id/ivChatFilter"
+            android:padding="4dp"
+            android:src="@drawable/inactive_star_co" />
+
+        <ImageView
+            android:id="@+id/ivChatFilter"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:padding="4dp"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/filter_ico" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/rlFilter"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="5dp"
+        android:animateLayoutChanges="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvChatHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+    </ScrollView>
+
+
+    <TextView
+        android:id="@+id/tv_no_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/nunito_regular"
+        android:text="@string/no_data_found"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:indeterminate="true"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/loader_img_animation_blue"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

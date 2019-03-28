@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_gravity="center_horizontal">
+
+    <RelativeLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_user_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/defoult_user_img"
+            android:background="@drawable/gradient_circle_img"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/transparent"/>
+
+        <TextView
+            android:id="@+id/tv_live"
+            android:layout_width="20dp"
+            android:layout_height="10dp"
+            style="@style/TextView"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="14dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/bg_selected"
+            android:gravity="center"
+            android:text="@string/text_live"
+            android:textSize="8sp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_add_icon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/add_ico"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextView"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAllCaps="false"
+        android:maxWidth="65dp"
+        android:textColor="@color/text_color"
+        android:textSize="10sp" />
+
+</LinearLayout>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:gravity="center_vertical"
+        android:padding="5dp">
+
+
+       <!-- <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profileImage"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:layout_gravity="center"
+            android:background="@drawable/gradient_circle_img"
+            android:src="@drawadefault_placeholder_img"
+            app:civ_border_color="@color/transparent"
+            app:civ_border_width="1dp"
+            />-->
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_profileImage"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/default_placeholder"
+                android:background="@drawable/gradient_circle_img"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/transparent" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            style="@style/TextView"
+            android:fontFamily="@font/nunito_regular"
+            android:maxLines="1"
+            android:textSize="16sp"
+            android:text="@string/app_name"
+            android:textColor="@color/black" />
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight=".45">
+
+
+
+            <android.support.v7.widget.AppCompatButton
+                style="@style/My_Button_Small.Invert"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_follow"
+                android:text="@string/follow"
+                android:gravity="center"
+                android:padding="2dp"
+                android:fontFamily="@font/nunito_regular"
+                android:visibility="visible"
+                android:textSize="12sp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleSmall"
+                android:forceHasOverlappingRendering="true"
+                android:layout_centerInParent="true"
+                android:visibility="visible"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray2"/>
+
+</LinearLayout>

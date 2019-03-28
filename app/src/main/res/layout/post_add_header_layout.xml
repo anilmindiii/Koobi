@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ly_user_post"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:id="@+id/SliderDots"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
+
+
+    <com.hendraanggrian.widget.SocialAutoCompleteTextView
+        android:id="@+id/edCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:background="@null"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:fontFamily="@font/nunito_regular"
+        android:hint="@string/text_something_in_your_mind"
+        android:padding="5dp"
+        android:maxLines="5"
+        android:lines="3"
+        android:textSize="14sp"
+        android:textColor="@color/text_color"
+        android:textColorHint="@color/text_color"
+        android:transitionName="text"
+        tools:ignore="UnusedAttribute"
+        android:visibility="gone"/>
+
+</LinearLayout>

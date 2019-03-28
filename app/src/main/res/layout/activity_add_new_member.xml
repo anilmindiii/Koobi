@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:focusableInTouchMode="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".chat.AddMemberActivity">
+
+    <include
+        android:id="@+id/add_member_header"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_member_header"
+        android:layout_above="@+id/rlBtn"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/ivFilter"
+            android:layout_toStartOf="@+id/ivFilter"
+            android:gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_border">
+
+            <EditText
+                android:id="@+id/searchview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@null"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:gravity="center_vertical"
+                android:textColorHint="@color/gray"
+                android:hint="@string/search"
+                android:textSize="16sp"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/nunito_regular"/>
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvSelectedMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            >
+        </android.support.v7.widget.RecyclerView>
+
+        <View
+            android:id="@+id/vSaperater"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:background="@color/light_gray_shadow"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvMembers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/btnAddMem"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:fontFamily="@font/nunito_semibold"
+            android:background="@drawable/rounded_primary_bg"
+            android:text="@string/add_members" />
+
+        <TextView
+            android:id="@+id/btnRemoveMem"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:fontFamily="@font/nunito_semibold"
+            android:background="@drawable/rounded_primary_bg"
+            android:text="@string/remove_members" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_no_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/nunito_regular"
+        android:text="@string/no_data_found"
+        android:textColor="@color/text_color"
+        android:visibility="gone"
+        android:textSize="14sp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:indeterminate="true"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/loader_img_animation_blue"
+        android:visibility="visible" />
+</RelativeLayout>

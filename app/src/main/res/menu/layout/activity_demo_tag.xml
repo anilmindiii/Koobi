@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/header_tag_photo"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+            android:id="@+id/get_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:tint="@color/black"
+            android:layout_centerVertical="true"
+            android:src="@drawable/white_back_ico" />
+
+        <TextView
+            android:id="@+id/tag_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/tag_people"
+            android:fontFamily="@font/roboto_medium"
+            android:layout_centerInParent="true"
+            android:textColor="@color/text_color"
+            android:textSize="20sp" />
+
+        <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:src="@drawable/right_icon" />
+
+        <TextView
+            android:id="@+id/tvDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/done"
+            android:textColor="@color/text_color"
+            android:fontFamily="@font/roboto_medium"
+            android:layout_marginRight="6dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:textSize="18sp"/>
+
+    </RelativeLayout>
+
+
+    <!-- <LinearLayout
+         android:id="@+id/header_search_someone"
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:orientation="horizontal"
+         android:visibility="visible">
+
+         <EditText
+             android:id="@+id/search_for_a_person"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:background="@android:color/transparent"
+             android:gravity="start|center_vertical"
+             android:hint="@string/search_for_some_one"
+             android:inputType="text"
+             android:padding="10dp"
+             android:fontFamily="@font/roboto_regular"
+             android:textColor="@color/text_color"
+             android:textSize="18sp" />
+
+         <TextView
+             android:id="@+id/cancel"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="3"
+             android:background="@null"
+             android:gravity="center"
+             android:text="@string/cancel_label"
+             android:textColor="@android:color/black"
+             android:textSize="18sp" />
+
+     </LinearLayout>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/screen_bg_color">
+
+        <com.mualab.org.user.activity.people_tag.instatag.InstaTag
+            android:id="@+id/insta_tag"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            app:canWeAddTags="true"
+            app:carrotBottomColor="@color/dark_grey"
+            app:carrotLeftColor="@color/dark_grey"
+            app:carrotRightColor="@color/dark_grey"
+            app:carrotTopColor="@color/dark_grey"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/header_search_someone"
+            app:instaTextColor="@android:color/white" />
+
+        <LinearLayout
+            android:background="@drawable/gray_boder_white_bg"
+            android:id="@+id/header_search_someone"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/searchview"
+                android:theme="@style/ExploreSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:iconifiedByDefault="false"
+                android:lineSpacingExtra="0dp"
+                android:lineSpacingMultiplier="0"
+                app:queryHint="Search for a person"/>
+
+        </LinearLayout>
+
+        <!--   <TextView
+               android:id="@+id/tap_photo_to_tag_someone"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_below="@id/insta_tag"
+               android:layout_gravity="bottom"
+               android:background="#DFDFE1"
+               android:gravity="center"
+               android:visibility="gone"
+               android:text="@string/tap_photo_tag_someone_drag_to_move_or_tap_to_delete"
+               android:textColor="@android:color/black"
+               android:textSize="18sp"
+               android:textStyle="normal" />-->
+
+        <include layout="@layout/layout_inner_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_some_one_to_be_tagged"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginTop="65dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

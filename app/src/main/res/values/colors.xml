@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#32D3C9</color>
+    <color name="colorPrimaryDark">#32D3C9</color>
+    <color name="colorPrimaryDark_old">#32D3C9</color>
+    <color name="colorAccent">#18aca7</color>
+    <color name="lightcolorPrimary">#A3F7F2</color>
+    <color name="white">#FFF</color>
+    <color name="text_color">#333</color>
+    <color name="gray2">#E0E0E0</color>
+    <color name="colorPrimaryTransprent4">#80ffffff</color>
+    <color name="darkpink">#f83272</color>
+    <color name="custom_alert_bg_color">#B34c3549</color>
+    <color name="black">#000</color>
+    <color name="dark_transperant">#66000000</color>
+    <color name="gray">#999999</color>
+    <color name="main_green_color">#00BB27</color>
+    <color name="green_color">#00BB27</color>
+    <color name="light_gray_shadow">#D3D3D3</color>
+    <color name="primary_blue">#3f8efc</color>
+    <color name="primary_green">#00bb27</color>
+    <color name="picker_button_background_innactive">#BDBDBD</color>
+    <color name="transparent">#1A000000</color>
+    <color name="grey">#828282</color>
+    <color name="grey1">#f5f5f5</color>
+    <color name="dark_grey">#434343</color>
+    <color name="gray3">#ececec</color>
+    <color name="gray4">#e9ebf0</color>
+    <item name="blue" type="color">#FF33B5E5</item>
+    <item name="very_light" type="color">#f2f2f2</item>
+
+    <color name="light_blue">#ff0d8cd1</color>
+    <color name="yellow">#ffff00</color>
+    <color name="dark_yellow">#fdc301</color>
+    <color name="btn_active">#C65E97</color>
+    <color name="bg_chat">#ECECEC</color>
+    <color name="colorPrimaryTransprent1">#30860309</color>
+    <color name="fullTransprent">#00000000</color>
+    <item name="red" type="color">#FFFF4444</item>
+
+    <color name="btn_default_light_normal">#00000000</color>
+    <color name="btn_default_light_pressed">#40ffffff</color>
+    <color name="btn_send_normal">#02c754</color>
+    <color name="btn_send_pressed">#006633</color>
+    <color name="btn_default_shadow">#99000000</color>
+    <color name="btn_context_menu_normal">#ffffff</color>
+    <color name="btn_context_menu_pressed">#40000000</color>
+    <color name="btn_context_menu_text_red">#ffff0000</color>
+    <color name="text_like_counter">#2b5a83</color>
+    <color name="screen_bg_color">#f2f2f2</color>
+    <color name="bg_edit_color">#e5e5e5</color>
+
+    <color name="rsbColorThumbBorder">#FFD7D7D7</color>
+    <color name="rsbColorSeekBarDefault">#c3c3c3</color>
+
+    <color name="day_disabled_background_color">#F1F5F8</color>
+    <color name="day_disabled_text_color">#DEDEDE</color>
+    <color name="selected_day_background">#03A7E9</color>
+    <color name="current_day_of_month">#03A7E9</color>
+    <color name="dark_gray">#FF595959</color>
+
+    <color name="mcam_color_light">#FAFAFA</color>
+    <color name="mcam_color_dark">#424242</color>
+
+    <color name="ss_colorPrimary">#9E9E9E</color>
+    <color name="ss_colorPrimaryDark">#616161</color>
+    <color name="ss_colorAccent">#95ff00</color>
+
+    <color name="ss_progress_startColor">#fff83272</color>
+    <color name="ss_progress_endColor">#fff83272</color>
+    <color name="ss_progress_centerColor">#fff83272</color>
+
+    <color name="ss_secondaryProgress_startColor">#80f83272</color>
+    <color name="ss_secondaryProgress_endColor">#a0f83272</color>
+    <color name="ss_secondaryProgress_centerColor">#80f83272</color>
+
+    <color name="ss_background_startColor">#ff9d9e9d</color>
+    <color name="ss_background_endColor">#ff747674</color>
+    <color name="ss_background_centerColor">#ff5a5d5a</color>
+
+
+    <color name="float_transparent">#00000000</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="gray_btn_bg_color">#D0D0D0</color>
+    <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+    <color name="blue_btn_bg_color">#1bd3c9</color>
+    <color name="blue_btn_bg_pressed_color">#1bd3c9</color>
+    <color name="red_btn_bg_color">#DD6B55</color>
+    <color name="red_btn_bg_pressed_color">#CD5B55</color>
+    <color name="error_stroke_color">#F27474</color>
+    <color name="success_stroke_color">#1bd3c9</color>
+    <color name="trans_success_stroke_color">#b9e7e3</color>
+    <color name="warning_stroke_color">#F8BB86</color>
+    <color name="material_blue_grey_80">#ff37474f</color>
+    <color name="material_blue_grey_90">#ff263238</color>
+    <color name="material_blue_grey_95">#ff21272b</color>
+    <color name="material_deep_teal_20">#b9e7e3</color>
+
+
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:padding="5dp"
+        android:textColor="@color/dark_gray"
+        android:text="@string/description"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="@dimen/evp_text_size_medium" />
+
+    <View
+        android:layout_below="@+id/tv_report"
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:layout_marginTop="3dp"
+        android:background="@color/gray2"/>
+
+
+
+</RelativeLayout>

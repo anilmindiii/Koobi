@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/default_placeholder"
+            app:civ_border_color="@color/transparent"
+            />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/ivProfilePic"
+            android:layout_toStartOf="@id/tvDate"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:text="Hemant Sharma"
+            android:textColor="@color/text_color"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:gravity="end|center_vertical"
+            android:maxLines="2"
+            android:maxWidth="80dp"
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RatingBar
+        android:id="@+id/rating"
+        style="@style/RatingBarGray"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="0"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:stepSize="0.1"
+        android:transformPivotX="0.1dp"
+        android:transformPivotY="0.1dp" />
+
+    <TextView
+        android:id="@+id/tvMsg"
+        style="@style/TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/nunito_regular"
+        android:text="@string/your_service_has_been_completed_nplease_review_how_satisfied_you_are_nwith"
+        android:textColor="@color/text_color"
+        android:textSize="13sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/gray" />
+
+</LinearLayout>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.mualab.org.user.activity.artist_profile.activity.ArtistServiceDetailsActivity">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp50"
+        android:scrollbars="">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?actionBarSize"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Service Description"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/text_color"/>
+
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:textColor="@color/gray"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height=".7dp"
+                android:layout_margin="16dp"
+                android:background="@color/gray3"/>
+
+            <LinearLayout
+                android:id="@+id/main_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/id_tv_staff_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Staff"
+                    android:fontFamily="@font/nunito_regular"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="16dp"
+                    android:textColor="@color/text_color"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/ly_incall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/callType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="In Call"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/text_color"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="70dp">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+    <TextView
+        android:id="@+id/btn_book"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_book_now"
+        android:gravity="center"
+        android:fontFamily="@font/nunito_regular"
+        android:layout_margin="16dp"
+        android:textSize="14sp"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/colorPrimary"
+        android:background="@drawable/bg_button"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

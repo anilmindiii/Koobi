@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl_parent"
+    android:fitsSystemWindows="true"
+
+    android:orientation="vertical"
+    android:background="@drawable/profile_pic_bg"
+    tools:context=".activity.authentication.ChooseCountryActivity">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:src="@drawable/white_back_ico"
+            android:id="@+id/img_back"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/img_back"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_search_transparent"
+            android:orientation="horizontal"
+            android:layout_toEndOf="@+id/img_back"
+            android:layout_marginEnd="10dp">
+
+
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/searchview"
+                android:theme="@style/SearchboardSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:iconifiedByDefault="false"
+                android:lineSpacingExtra="0dp"
+                android:focusableInTouchMode="true"
+                android:focusable="false"
+                android:lineSpacingMultiplier="0"
+                android:background="@null"
+                app:queryBackground="@android:color/transparent"
+
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                app:queryHint="Search"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
+
+</LinearLayout>

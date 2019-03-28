@@ -1,0 +1,113 @@
+{
+  "project_info": {
+    "project_number": "186224022769",
+    "firebase_url": "https://koobi-89a2d.firebaseio.com",
+    "project_id": "koobi-89a2d",
+    "storage_bucket": "koobi-89a2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186224022769:android:5c99d0b993ca8fc1",
+        "android_client_info": {
+          "package_name": "com.mualab.org.biz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186224022769-qbonno7lk260r71aqftm3sojaemuh1vh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mualab.org.biz",
+            "certificate_hash": "299209342621957be5eaad3a98ca4c5ed9769281"
+          }
+        },
+        {
+          "client_id": "186224022769-h3bldvmjcs1fq9u5qrj7mag6uk0n24rl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLidKJVpM1QLv9mbTyTuqJiOAqGGbqMKA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186224022769-h3bldvmjcs1fq9u5qrj7mag6uk0n24rl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "186224022769-mj6885heuruakmkep2gaipsu9pkvo1c9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ios.GlaminCustomer"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186224022769:android:fef7d01ce1724687",
+        "android_client_info": {
+          "package_name": "com.mualab.org.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186224022769-7cumhmrdqmhr5s1gkfledr1etfdddk46.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mualab.org.user",
+            "certificate_hash": "299209342621957be5eaad3a98ca4c5ed9769281"
+          }
+        },
+        {
+          "client_id": "186224022769-h3bldvmjcs1fq9u5qrj7mag6uk0n24rl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLidKJVpM1QLv9mbTyTuqJiOAqGGbqMKA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186224022769-h3bldvmjcs1fq9u5qrj7mag6uk0n24rl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "186224022769-mj6885heuruakmkep2gaipsu9pkvo1c9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ios.GlaminCustomer"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
