@@ -6,129 +6,186 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        android:id="@+id/header_tag_photo"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:cardBackgroundColor="@color/white"
-        android:id="@+id/header_tag_photo">
+        app:cardBackgroundColor="@color/white">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+            <com.mualab.org.user.activity.tag_module.instatag.TagImageView
                 android:id="@+id/get_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:padding="5dp"
-                android:tint="@color/text_color"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:tint="@color/gray"
+                android:layout_marginLeft="5dp"
                 android:src="@drawable/white_back_ico" />
 
             <TextView
-                android:id="@+id/tag_photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-
-                android:text="@string/tag_people"
-                android:fontFamily="@font/nunito_regular"
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_bold"
+                android:gravity="center"
+                android:maxWidth="250dp"
+                android:maxLines="1"
                 android:textColor="@color/text_color"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
-            <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+            <TextView
+                android:id="@+id/tag_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_bold"
+                android:gravity="center"
+                android:maxWidth="250dp"
+                android:text="@string/tag_people"
+                android:maxLines="1"
+                android:textColor="@color/text_color"
+                android:textSize="18sp" />
+
+            <com.mualab.org.user.activity.tag_module.instatag.TagImageView
                 android:id="@+id/done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:padding="5dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:visibility="gone"
-                android:src="@drawable/right_icon" />
+                android:src="@drawable/right_icon"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvDone"
+                style="@style/TextView.Bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:background="?selectableItemBackground"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="center"
+                android:padding="5dp"
+                android:singleLine="true"
                 android:text="@string/done"
                 android:textColor="@color/gray"
-                android:fontFamily="@font/nunito_regular"
-                android:layout_marginRight="5dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:padding="5dp"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
+
 
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
     <LinearLayout
+        android:id="@+id/llSearchPeople"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/llSearchPeople"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:gravity="center_horizontal">
+        android:visibility="gone">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:cardBackgroundColor="@color/white">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.mualab.org.user.activity.tag_module.instatag.TagImageView
+                    android:id="@+id/imgBack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:tint="@color/gray"
+                    android:src="@drawable/white_back_ico" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nunito_bold"
+                    android:gravity="center"
+                    android:maxWidth="250dp"
+                    android:maxLines="1"
+                    android:text="@string/tag_people"
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp" />
+
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
 
         <LinearLayout
             android:id="@+id/header_search_someone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal"
             android:weightSum="1">
 
-
-
-            <android.support.v7.widget.CardView
+            <RelativeLayout
                 android:id="@+id/searchView"
+                android:layout_below="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                app:contentPaddingLeft="8dp"
-                app:contentPaddingRight="5dp"
-                app:cardCornerRadius="21dp"
-                android:elevation="1dp"
-                app:cardElevation="2dp"
-                android:layout_weight="1"
-                app:cardUseCompatPadding="true"
-                app:cardBackgroundColor="@color/white">
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@+id/ivFilter"
+                android:layout_toStartOf="@+id/ivFilter"
+                android:gravity="center_vertical"
+                android:background="@drawable/rounded_border">
 
-
-                <android.support.v7.widget.SearchView
+                <EditText
                     android:id="@+id/searchview"
-                    android:theme="@style/ExploreSearchViewAdvance"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="0dp"
-                    app:iconifiedByDefault="false"
-                    app:searchIcon="@null"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
                     android:background="@null"
-                    android:lineSpacingMultiplier="0"
-                    app:queryHint="Search for a person"/>
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:gravity="center_vertical"
+                    android:textColorHint="@color/gray"
+                    android:hint="@string/search_people"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_color"
+                    android:fontFamily="@font/nunito_regular"/>
 
-            </android.support.v7.widget.CardView>
+            </RelativeLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tvCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:padding="5dp"
-                android:fontFamily="@font/nunito_bold"
-                android:textColor="@color/colorAccent"
                 android:layout_gravity="center_vertical"
-                android:text="Cancel"/>
+                android:layout_weight="1"
+                android:fontFamily="@font/nunito_bold"
+                android:padding="5dp"
+                android:text="Cancel"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -137,19 +194,19 @@
             android:id="@+id/rv_some_one_to_be_tagged"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:layout_marginTop="10dp"
+            android:background="@color/white"
             android:visibility="gone" />
 
     </LinearLayout>
 
+    <!--320dp, 250dp-->
     <RelativeLayout
+        android:id="@+id/rlViewPager"
         android:layout_width="wrap_content"
-        android:layout_height="320dp"
-        android:id="@+id/rlViewPager">
+        android:layout_height="275dp">
 
         <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -158,33 +215,51 @@
             android:id="@+id/ll_Dot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal" />
 
-        <include layout="@layout/layout_inner_loader"
+        <include
+            layout="@layout/layout_inner_loader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
             android:layout_centerInParent="true"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical" />
 
     </RelativeLayout>
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rycTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
-        android:overScrollMode="never"
-        android:visibility="visible"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="4dp"
-        android:scrollbars="none" />
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_regular"
+            android:padding="5dp"
+            android:text="@string/tap_the_photo_to_tag_people"
+            android:textColor="@color/text_color"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 
 </LinearLayout>

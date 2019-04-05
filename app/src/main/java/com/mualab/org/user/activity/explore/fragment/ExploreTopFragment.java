@@ -237,12 +237,12 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
                                         searchTag.desc = searchTag.postCount+" public post";
                                         break;
 
-                                    case "serviceTag":
+                                  /*  case "serviceTag":
                                         searchTag.type = 3;
                                         searchTag.title = searchTag.uniTxt;
                                         //NumberFormat.getNumberInstance(Locale.US).format(searchTag.postCount);
                                         searchTag.desc = searchTag.postCount+" public post";
-                                        break;
+                                        break;*/
 
                                     case "place":
                                         searchTag.type = 4;

@@ -30,8 +30,8 @@ import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.adapter.FeedAdapter;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
-import com.mualab.org.user.activity.people_tag.instatag.InstaTag;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
+import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.listener.FeedsListner;
@@ -237,8 +237,8 @@ public class FeedDetailFragment extends Fragment {
 
         ArrayList<TagToBeTagged>tags =  feeds.taggedImgMap.get(index);
         if (tags!=null && tags.size()!=0){
-            postImage.addTagViewFromTagsToBeTagged(tags,false);
-            postImage.hideTags();
+            postImage.addTagViewFromTagsToBeTagged("people",tags,false);
+            postImage.hideTags("people");
         }
 
         //   Picasso.with(mContext).load(feeds.feed.get(index)).priority(Picasso.Priority.HIGH).noPlaceholder().into(postImage);
@@ -255,11 +255,11 @@ public class FeedDetailFragment extends Fragment {
             public void onLongPress() {
                 if (!isShow) {
                     isShow = true;
-                    postImage.showTags();
+                    postImage.showTags("people");
                 }
                 else {
                     isShow = false;
-                    postImage.hideTags();
+                    postImage.hideTags("people");
                 }
 
             }
@@ -269,8 +269,9 @@ public class FeedDetailFragment extends Fragment {
     }
 
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
+
         @Override
-        public void singleTapConfirmedAndRootIsInTouch(int x, int y) {
+        public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
 
         }
 

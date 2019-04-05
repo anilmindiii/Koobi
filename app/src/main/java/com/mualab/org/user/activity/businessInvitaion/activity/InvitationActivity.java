@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.artist_profile.model.Services;
 import com.mualab.org.user.activity.businessInvitaion.adapter.InvitationAdapter;
 import com.mualab.org.user.activity.businessInvitaion.model.BusinessDayForStaff;
 import com.mualab.org.user.activity.businessInvitaion.model.ComapnySelectedServices;
@@ -175,6 +176,8 @@ public class InvitationActivity extends AppCompatActivity {
                                 item._id = object.getString("_id");
                                 item.artistId = object.getString("artistId");
                                 item.businessId = object.getString("businessId");
+                                item.salaries = object.getString("salaries");
+                                item.message = object.getString("message");
                                 item.holiday = object.getString("holiday");
                                 item.job = object.getString("job");
                                 item.mediaAccess = object.getString("mediaAccess");
@@ -201,6 +204,8 @@ public class InvitationActivity extends AppCompatActivity {
                                         item2.endTime = object2.getString("endTime");
                                         item2.startTime = object2.getString("startTime");
                                         item.staffHoursList.add(item2);
+
+
                                     }
                                 }
 

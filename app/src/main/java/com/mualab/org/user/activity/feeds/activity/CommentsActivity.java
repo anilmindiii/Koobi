@@ -95,7 +95,7 @@ public class CommentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
-    //    setStatusbarColor();
+        //    setStatusbarColor();
         Intent intent = getIntent();
         feeds = new ArrayList<>();
         if (intent != null) {
@@ -326,7 +326,7 @@ public class CommentsActivity extends AppCompatActivity {
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }*/
-                           // comment.comment = myString;
+                            // comment.comment = myString;
                             commentList.add(0,comment);
                         }
                         tv_no_comments.setVisibility(View.GONE);
@@ -334,7 +334,7 @@ public class CommentsActivity extends AppCompatActivity {
                         recyclerView.scrollToPosition(commentList.size()-1);
                         commentAdapter.notifyDataSetChanged();
                         //  recyclerView.scrollToPosition(0);
-                       // recyclerView.scrollToPosition(commentList.size() - 1);
+                        // recyclerView.scrollToPosition(commentList.size() - 1);
                     } else {
 
                         if (commentList.size() == 0) {

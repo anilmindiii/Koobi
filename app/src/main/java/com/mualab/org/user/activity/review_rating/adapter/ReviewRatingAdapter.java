@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
 import com.mualab.org.user.activity.review_rating.model.ReviewRating;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -43,8 +44,7 @@ public class ReviewRatingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ReviewRating.DataBean mainBean = list.get(position);
         holder.rating.setRating(mainBean.getRating());
         holder.tvMsg.setText(mainBean.getReview());
-       /* holder.tvDate.setText(CalenderUtils.formatDate(mainBean.getCrd(),
-                Constants.SERVER_TIMESTAMP_FORMAT, Constants.TIMESTAMP_FORMAT));*/
+        holder.tvDate.setText(Helper.formateDateFromstring("yyyy-MM-dd", "dd/MM/yyyy", mainBean.getCrd()));
 
         try {
             ReviewRating.DataBean.UserDetailBean userDetail = mainBean.getUserDetail().get(0);

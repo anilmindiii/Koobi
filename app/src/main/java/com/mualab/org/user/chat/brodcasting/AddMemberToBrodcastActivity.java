@@ -3,6 +3,7 @@ package com.mualab.org.user.chat.brodcasting;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -65,7 +66,7 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
     private ProgressBar progress_bar;
     private DatabaseReference mFirebaseUserDbRef, chatHitoryRef, myGroupRef,
             chatRefWebnotif, groupMsgDeleteRef;
-    private DatabaseReference mFirebaseBrodcastRef,BrodcastRef;
+    private DatabaseReference mFirebaseBrodcastRef, BrodcastRef;
     private EditText searchview;
     private RecyclerView rvSelectedMember;
     private Groups groups;
@@ -74,6 +75,7 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
     private List<String> fbTokenListForMobile, fbTokenListForWeb;
     private LinkedList<String> lastGroupName;
     private boolean shouldRun;
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,14 +101,11 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
         getGroupNodeInfo();
         init();
         TextView tvChatTitle = findViewById(R.id.tvHeaderTitle);
-        if(broadcastId == null){
+        if (broadcastId == null) {
             tvChatTitle.setText("New Broadcast");
-        }else {
+        } else {
             tvChatTitle.setText("Add New Recipients");
         }
-
-
-
     }
 
     private void init() {
@@ -233,49 +232,49 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
                 if (dataSnapshot.getValue() != null) {
                     final FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
                     assert user != null;
-                  try {
-                      if (user.uId != Mualab.currentUser.id) {
+                    try {
+                        if (user.uId != Mualab.currentUser.id) {
 
-                          if (broadcastId == null) {
-                              getDataInMap(dataSnapshot.getKey(), user);
-                          } else {
-                              mFirebaseBrodcastRef.child("member").child(String.valueOf(user.uId)).
-                                      addListenerForSingleValueEvent(new ValueEventListener() {
-                                          @Override
-                                          public void onDataChange(DataSnapshot dataSnapshot) {
-                                              String key = dataSnapshot.getKey();
-                                              if (dataSnapshot.getValue() == null || !dataSnapshot.exists()) {
-                                                  try {
-                                                      getDataInMap(dataSnapshot.getKey(), user);
+                            if (broadcastId == null) {
+                                getDataInMap(dataSnapshot.getKey(), user);
+                            } else {
+                                mFirebaseBrodcastRef.child("member").child(String.valueOf(user.uId)).
+                                        addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                String key = dataSnapshot.getKey();
+                                                if (dataSnapshot.getValue() == null || !dataSnapshot.exists()) {
+                                                    try {
+                                                        getDataInMap(dataSnapshot.getKey(), user);
 
-                                                  } catch (Exception e) {
-                                                      e.printStackTrace();
-                                                  }
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
 
-                                              } else {
-                                                  if (groupMembers.size() == 0)
-                                                      tv_no_chat.setVisibility(View.VISIBLE);
-                                                  else
-                                                      tv_no_chat.setVisibility(View.GONE);
+                                                } else {
+                                                    if (groupMembers.size() == 0)
+                                                        tv_no_chat.setVisibility(View.VISIBLE);
+                                                    else
+                                                        tv_no_chat.setVisibility(View.GONE);
 
-                                                  progress_bar.setVisibility(View.GONE);
-                                              }
+                                                    progress_bar.setVisibility(View.GONE);
+                                                }
 
-                                          }
+                                            }
 
-                                          @Override
-                                          public void onCancelled(DatabaseError databaseError) {
-                                              progress_bar.setVisibility(View.GONE);
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                progress_bar.setVisibility(View.GONE);
 
-                                          }
-                                      });
-                          }
+                                            }
+                                        });
+                            }
 
 
-                      }
-                  }catch (Exception e){
+                        }
+                    } catch (Exception e) {
 
-                  }
+                    }
                 }
             }
 
@@ -290,31 +289,32 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
                         } else {
                             FirebaseDatabase.getInstance().getReference().child("broadcast")
                                     .child(broadcastId).child("member").child(String.valueOf(user.uId)).
-                                addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        String key = dataSnapshot.getKey();
-                                        if (dataSnapshot.getValue() == null || !dataSnapshot.exists()) {
-                                            try {
-                                                getDataInMap(dataSnapshot.getKey(), user);
+                                    addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String key = dataSnapshot.getKey();
+                                            if (dataSnapshot.getValue() == null || !dataSnapshot.exists()) {
+                                                try {
+                                                    getDataInMap(dataSnapshot.getKey(), user);
 
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
                                             }
+                                            progress_bar.setVisibility(View.GONE);
 
                                         }
-                                        progress_bar.setVisibility(View.GONE);
 
-                                    }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            progress_bar.setVisibility(View.GONE);
+                                        }
+                                    });
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        progress_bar.setVisibility(View.GONE);
-                                    }
-                                });
-
+                        }
                     }
-                }}
+                }
             }
 
             @Override
@@ -355,7 +355,10 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
     private void getDataInMap(String key, FirebaseUser user) {
         if (user != null) {
             user.isChecked = false;
-            map.put(key, user);
+            if (user.userName != null)
+                if (!user.userName.equals(""))
+                    map.put(key, user);
+
             groupMembers.clear();
             Collection<FirebaseUser> values = map.values();
             groupMembers.addAll(values);
@@ -384,16 +387,16 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
                         public void onNetworkChange(Dialog dialog, boolean isConnected) {
                             if (isConnected) {
                                 dialog.dismiss();
-                                if(broadcastId !=null){
+                                if (broadcastId != null) {
                                     addAdditionalMembers();
-                                }else addMembers();
+                                } else addMembers();
                             }
                         }
                     }).show();
                 } else {
-                    if(broadcastId !=null){
+                    if (broadcastId != null) {
                         addAdditionalMembers();
-                    }else addMembers();
+                    } else addMembers();
                 }
                 break;
         }
@@ -440,6 +443,11 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
         }*/
 
         if (selectedMemberList.size() != 0) {
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 8000) {
+                return;
+            }
+            mLastClickTime = SystemClock.elapsedRealtime();
+
             for (int i = 0; i < selectedMemberList.size(); i++) {
                 final GroupMember groupMemberVal = selectedMemberList.get(i);
 
@@ -459,7 +467,7 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
                         Progress.hide(AddMemberToBrodcastActivity.this);
                         finish();
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
 
@@ -467,43 +475,47 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
             }, 100);
 
 
-           // sendPushNotificationToReceiver();
+            // sendPushNotificationToReceiver();
         } else {
             MyToast.getInstance(AddMemberToBrodcastActivity.this).showDasuAlert("Please select a group member");
         }
     }
 
     private void addMembers() {
-        if (selectedMemberList.size()!=0){
-            if(selectedMemberList.size() == 1){
+        if (selectedMemberList.size() != 0) {
+            if (selectedMemberList.size() == 1) {
                 MyToast.getInstance(AddMemberToBrodcastActivity.this).showDasuAlert("Please select atleast 2 member");
                 return;
             }
 
             progress_bar.setVisibility(View.VISIBLE);
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 8000) {
+                return;
+            }
+            mLastClickTime = SystemClock.elapsedRealtime();
 
-            if (lastGroupName.size()!=0) {
+            if (lastGroupName.size() != 0) {
                 int groupId = -1;
                 int gId = -1;
-                for(int i=0;i<lastGroupName.size();i++){
+                for (int i = 0; i < lastGroupName.size(); i++) {
                     String[] namesList = lastGroupName.get(i).split("_");
                     int local = Integer.parseInt(namesList[1]);
 
-                    if(groupId > local){
-                        gId =  groupId;
+                    if (groupId > local) {
+                        gId = groupId;
                     }
                     groupId = Integer.parseInt(namesList[1]);
 
                 }
 
 
-                if(gId== -1)
-                    gId =  groupId;
+                if (gId == -1)
+                    gId = groupId;
                 //String lGroupName = lastGroupName.getLast();
                 //String[] namesList = lGroupName.split("_");
                 //int groupId = Integer.parseInt(namesList[1]);
                 broadcastId = "broadcast_" + (gId + 1);
-            }else {
+            } else {
                 broadcastId = "broadcast_1";
             }
 
@@ -519,12 +531,12 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
             selectedMemberList.add(groupMember);
 
             Groups group = new Groups();
-            Map<String,Object> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
             for (GroupMember groupMemberVal : selectedMemberList) {
 
                 try {
                     // JSONObject jsonObject = new JSONObject();
-                    Map<String,Object> jsonObject = new HashMap<>();
+                    Map<String, Object> jsonObject = new HashMap<>();
                     jsonObject.put("createdDate", groupMemberVal.createdDate);
                     jsonObject.put("firebaseToken", groupMemberVal.firebaseToken);
                     jsonObject.put("memberId", groupMemberVal.memberId);
@@ -533,7 +545,7 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
                     jsonObject.put("type", groupMemberVal.type);
                     jsonObject.put("userName", groupMemberVal.userName);
 
-                    params.put(String.valueOf(groupMemberVal.memberId),jsonObject);
+                    params.put(String.valueOf(groupMemberVal.memberId), jsonObject);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -544,7 +556,8 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
             group.member.putAll(params);
             group.adminId = Integer.parseInt(myUid);
             group.groupImg = "http://koobi.co.uk:3000/front/img/loader.png";
-            group.groupName = ((selectedMemberList.size()-1) + " Recipients");;
+            group.groupName = ((selectedMemberList.size() - 1) + " Recipients");
+            ;
 
             BrodcastRef.child(broadcastId).setValue(group);
 
@@ -561,7 +574,7 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
             chatHistory.senderId = myUid;
             chatHistory.type = "broadcast";
             chatHistory.unreadMessage = 0;
-            chatHistory.userName = ((selectedMemberList.size()-1) + " Recipients");
+            chatHistory.userName = ((selectedMemberList.size() - 1) + " Recipients");
             chatHistory.timestamp = ServerValue.TIMESTAMP;
 
             chatHitoryRef.child(myUid).child(broadcastId).setValue(chatHistory);
@@ -574,9 +587,9 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
                 }
             }, 300);
 
-           // mFirebaseGroupRef.child(myGroupId).setValue(group);
+            // mFirebaseGroupRef.child(myGroupId).setValue(group);
             //updateChatHistory();
-        }else {
+        } else {
             MyToast.getInstance(AddMemberToBrodcastActivity.this).showDasuAlert("Please select group member");
         }
 

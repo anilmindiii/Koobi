@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="5dp"
             android:padding="1dp"
             android:layout_toLeftOf="@+id/llCount"
             android:orientation="vertical">
@@ -96,7 +96,7 @@
                 android:id="@+id/tvUname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="neha"
+                android:text="ANIL"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:gravity="left"

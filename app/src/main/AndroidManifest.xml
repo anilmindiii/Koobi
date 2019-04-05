@@ -225,10 +225,6 @@
             android:theme="@style/AppTheme.Camera" />
         <activity android:name=".activity.feeds.activity.PreviewImageActivity" />
         <activity
-            android:name=".activity.people_tag.activity.PeopleTagActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/StatusBarBlack" />
-        <activity
             android:name=".activity.video_trim.VideoTrimmerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack" />
@@ -292,7 +288,8 @@
         <activity
             android:name=".activity.booking.BookingConfirmActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/StatusBarBlack" />
+            android:theme="@style/StatusBarBlack"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".activity.booking.VoucherCodesActivity"
             android:screenOrientation="portrait"
@@ -420,6 +417,26 @@
             android:name=".chat.ReportChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.businessInvitaion.activity.CompanyServicesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.businessInvitaion.activity.ServiceDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.tag_module.activity.PeopleTagActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.tag_module.activity.ServiceTagActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity android:name=".chat.CreateNewChatActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+
     </application>
 
 </manifest>

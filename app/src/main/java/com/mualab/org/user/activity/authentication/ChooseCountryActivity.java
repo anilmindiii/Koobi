@@ -75,7 +75,8 @@ public class ChooseCountryActivity extends AppCompatActivity {
             }
         });
         if (activity.equals("EditProfile")){
-            rl_parent.setBackground(getDrawable(R.drawable.background_splash));
+           // rl_parent.setBackground(getDrawable(R.drawable.background_splash));
+            rl_parent.setBackground(getDrawable(R.drawable.re_send_code_bg));
         }else
             rl_parent.setBackground(getDrawable(R.drawable.re_send_code_bg));
 

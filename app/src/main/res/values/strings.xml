@@ -324,7 +324,7 @@
     <string name="evp_retry">RETRY</string>
 
     <!--Profile-->
-    <string name="text_certificate">Certificate</string>
+    <string name="text_certificate">Qualifications</string>
     <string name="text_follower">Followers</string>
     <string name="text_following">Following</string>
     <string name="videos">Videos</string>
@@ -346,7 +346,6 @@
     <string name="pay">Pay</string>
     <string name="payment">Payment</string>
     <string name="payment_checkout">Payment Checkout</string>
-    <string name="card">Card</string>
     <string name="bank_account">Bank Account</string>
     <string name="you_have_not_added_bank_account_n_yet_please_add">You have not added Bank account  yet, Please add.</string>
     <string name="you_have_not_added_card_yet_nplease_add">You have not added card yet, Please add.</string>
@@ -491,6 +490,9 @@
     <string name="add_recipients">Add Recipients</string>
     <string name="sure_leave_group">Are you sure you want to leave this group? Since you\'re the admin, before leaving now make admin of the group.</string>
     <string name="group_chat_report_msg">Please provide the following details to report this group</string>
+    <string name="tap_the_photo_to_tag_people">Tap the photo to tag people</string>
+    <string name="tap_the_photo_to_tag_service">Tap the photo to tag people</string>
+    <string name="card">Card</string>
 
 
 </resources>

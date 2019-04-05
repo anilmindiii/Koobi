@@ -80,7 +80,6 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final int IMAGE_TYPE = 1;
     private final int VIDEO_TYPE = 2;
     private final int VIEW_TYPE_LOADING = 3;
-
     private Context mContext;
     public List<Feeds> feedItems;
     private Listener listener;
@@ -89,6 +88,10 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void showHideLoading(boolean b) {
         loading = b;
+    }
+
+    public void showLoading(boolean status) {
+        showLoader = status;
     }
 
 
@@ -162,10 +165,21 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         }
 */
-        switch (feed.feedType) {
+        if (position == feedItems.size() - 1) {
+            switch (feed.feedType) {
+                case "text":
+                    return showLoader ? VIEW_TYPE_LOADING : TEXT_TYPE;
+                case "image":
+                    return showLoader ? VIEW_TYPE_LOADING : IMAGE_TYPE;
+                case "video":
+                    return showLoader ? VIEW_TYPE_LOADING : VIDEO_TYPE;
+                default:
+                    return VIEW_TYPE_LOADING;
+            }
+        }
 
+        switch (feed.feedType) {
             case "text":
-                if (!isGrideView)
                 return TEXT_TYPE;
             case "image":
                 return IMAGE_TYPE;

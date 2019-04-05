@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
@@ -86,14 +87,15 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private TextView tv_no_chat;
     private ImageView ivGroupPic;
     private ChildEventListener childEventListener;
-    private List<FirebaseUser>userList;
-    private Map<String,FirebaseUser> map;
+    private List<FirebaseUser> userList;
+    private Map<String, FirebaseUser> map;
     private ProgressBar progress_bar;
     private UsersListAdapter userListAdapter;
-    private String sProfileImgUrl = "",myGroupId,sGroupName="",sGroupDes,myUid;
-    private HashMap<String,GroupMember>tempSelectedList;
-    private DatabaseReference mFirebaseUserDbRef,mFirebaseGroupRef,myGroupRef,chatHitoryRef;
-    private LinkedList<String>lastGroupName;
+    private String sProfileImgUrl = "", myGroupId, sGroupName = "", sGroupDes, myUid;
+    private HashMap<String, GroupMember> tempSelectedList;
+    private DatabaseReference mFirebaseUserDbRef, mFirebaseGroupRef, myGroupRef, chatHitoryRef;
+    private LinkedList<String> lastGroupName;
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +113,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         tempSelectedList = new HashMap<>();
         lastGroupName = new LinkedList<>();
         map = new HashMap<>();
-        userListAdapter = new UsersListAdapter(this,userList);
+        userListAdapter = new UsersListAdapter(this, userList);
         myUid = String.valueOf(Mualab.currentUser.id);
         RecyclerView rycUserList = findViewById(R.id.rycUserList);
 
@@ -158,13 +160,13 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         llGroupInfo.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                KeyboardUtil.hideKeyboard(v,CreateGroupActivity.this);
+                KeyboardUtil.hideKeyboard(v, CreateGroupActivity.this);
                 return false;
             }
         });
     }
 
-    private void getUserList(){
+    private void getUserList() {
         childEventListener = mFirebaseUserDbRef.addChildEventListener(new ChildEventListener() {
 
             @Override
@@ -172,7 +174,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                 if (dataSnapshot.getValue() != null) {
                     FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
                     assert user != null;
-                    if (user.uId!=Mualab.currentUser.id) {
+                    if (user.uId != Mualab.currentUser.id) {
                         getDataInMap(dataSnapshot.getKey(), user);
                     }
                 }
@@ -182,7 +184,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue() != null) {
                     FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
-                    if (user.uId!=Mualab.currentUser.id) {
+                    if (user.uId != Mualab.currentUser.id) {
                         getDataInMap(dataSnapshot.getKey(), user);
                     }
                 }
@@ -208,17 +210,20 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private void getDataInMap(String key, FirebaseUser user) {
         if (user != null) {
             user.isChecked = false;
-            map.put(key, user);
+            if (user.userName != null)
+                if (!user.userName.equals(""))
+                    map.put(key, user);
+
             userList.clear();
             Collection<FirebaseUser> values = map.values();
             userList.addAll(values);
             userListAdapter.notifyDataSetChanged();
         }
 
-        if (userList.size()==0) {
+        if (userList.size() == 0) {
             progress_bar.setVisibility(View.GONE);
             tv_no_chat.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             progress_bar.setVisibility(View.GONE);
             tv_no_chat.setVisibility(View.GONE);
         }
@@ -283,13 +288,13 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                     new NoConnectionDialog(CreateGroupActivity.this, new NoConnectionDialog.Listner() {
                         @Override
                         public void onNetworkChange(Dialog dialog, boolean isConnected) {
-                            if(isConnected){
+                            if (isConnected) {
                                 dialog.dismiss();
                                 createGroup();
                             }
                         }
                     }).show();
-                }else {
+                } else {
                     createGroup();
                 }
                 break;
@@ -297,38 +302,42 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void createGroup(){
-        if (!sGroupName.isEmpty()){
-            if (!sGroupDes.isEmpty()){
+    private void createGroup() {
+        if (!sGroupName.isEmpty()) {
+            if (!sGroupDes.isEmpty()) {
 
                 if (sProfileImgUrl.equals(""))
                     sProfileImgUrl = "http://koobi.co.uk:3000/uploads/default_group.png";
 
-                if (tempSelectedList.size()!=0){
+                if (tempSelectedList.size() != 0) {
                     progress_bar.setVisibility(View.VISIBLE);
 
+                    if (SystemClock.elapsedRealtime() - mLastClickTime < 8000) {
+                        return;
+                    }
+                    mLastClickTime = SystemClock.elapsedRealtime();
 
 
-                    if (lastGroupName.size()!=0) {
+                    if (lastGroupName.size() != 0) {
                         int groupId = -1;
                         int gId = -1;
-                        for(int i=0;i<lastGroupName.size();i++){
+                        for (int i = 0; i < lastGroupName.size(); i++) {
                             String[] namesList = lastGroupName.get(i).split("_");
                             int local = Integer.parseInt(namesList[1]);
-                            if(groupId > local){
-                                gId =  groupId;
+                            if (groupId > local) {
+                                gId = groupId;
                             }
                             groupId = Integer.parseInt(namesList[1]);
 
                         }
 
-                        if(gId == -1)
-                            gId =  groupId;
+                        if (gId == -1)
+                            gId = groupId;
                         //String lGroupName = lastGroupName.getLast();
                         //String[] namesList = lGroupName.split("_");
                         //int groupId = Integer.parseInt(namesList[1]);
                         myGroupId = "group_" + (gId + 1);
-                    }else {
+                    } else {
                         myGroupId = "group_1";
                     }
 
@@ -341,15 +350,15 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                     groupMember.type = "admin";
                     groupMember.userName = Mualab.currentUser.userName;
 
-                    tempSelectedList.put(myUid,groupMember);
+                    tempSelectedList.put(myUid, groupMember);
 
                     Groups group = new Groups();
-                    Map<String,Object> params = new HashMap<>();
-                    for (Map.Entry<String,GroupMember> entry : tempSelectedList.entrySet()) {
+                    Map<String, Object> params = new HashMap<>();
+                    for (Map.Entry<String, GroupMember> entry : tempSelectedList.entrySet()) {
                         GroupMember groupMemberVal = tempSelectedList.get(entry.getKey());
                         try {
                             // JSONObject jsonObject = new JSONObject();
-                            Map<String,Object> jsonObject = new HashMap<>();
+                            Map<String, Object> jsonObject = new HashMap<>();
                             jsonObject.put("createdDate", groupMemberVal.createdDate);
                             jsonObject.put("firebaseToken", groupMemberVal.firebaseToken);
                             jsonObject.put("memberId", groupMemberVal.memberId);
@@ -358,7 +367,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                             jsonObject.put("type", groupMemberVal.type);
                             jsonObject.put("userName", groupMemberVal.userName);
 
-                            params.put(String.valueOf(groupMemberVal.memberId),jsonObject);
+                            params.put(String.valueOf(groupMemberVal.memberId), jsonObject);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -377,20 +386,20 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
                     mFirebaseGroupRef.child(myGroupId).setValue(group);
                     updateChatHistory();
-                }else {
+                } else {
                     MyToast.getInstance(CreateGroupActivity.this).showDasuAlert("Please select group member");
                 }
 
-            }else {
+            } else {
                 MyToast.getInstance(CreateGroupActivity.this).showDasuAlert("Please enter group description");
             }
-        }else {
+        } else {
             MyToast.getInstance(CreateGroupActivity.this).showDasuAlert("Please enter group name");
         }
     }
 
-    private void updateChatHistory(){
-        for (Map.Entry<String,GroupMember> entry : tempSelectedList.entrySet()) {
+    private void updateChatHistory() {
+        for (Map.Entry<String, GroupMember> entry : tempSelectedList.entrySet()) {
             GroupMember groupMemberVal = tempSelectedList.get(entry.getKey());
             try {
                 // MyGroup myGroup = new MyGroup();
@@ -484,7 +493,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                             DisplayMetrics displayMetrics = new DisplayMetrics();
                             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                             int width = displayMetrics.widthPixels;
-                            int height = (int) (width*0.74);
+                            int height = (int) (width * 0.74);
                             CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.RECTANGLE).
                                     setAspectRatio(width, height).start(CreateGroupActivity.this);
                         } else {
@@ -502,13 +511,13 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                     if (result != null) {
                         Uri imgUri = result.getUri();
 
-                        String  mystring =compressImage(imgUri.toString());
+                        String mystring = compressImage(imgUri.toString());
                         ivGroupPic.setImageURI(Uri.parse(mystring));
 
                         uploadImage(imgUri);
                     }
 
-                } catch (Exception  | OutOfMemoryError e) {
+                } catch (Exception | OutOfMemoryError e) {
                     e.printStackTrace();
                 }
             }
@@ -718,7 +727,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onBackPressed() {
-        KeyboardUtil.hideKeyboard(etGroupDescr,CreateGroupActivity.this);
+        KeyboardUtil.hideKeyboard(etGroupDescr, CreateGroupActivity.this);
         super.onBackPressed();
         finish();
     }
@@ -742,9 +751,8 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         groupMember.userName = user.userName;
 
         if (user.isChecked) {
-            tempSelectedList.put(String.valueOf(user.uId),groupMember);
-        }
-        else {
+            tempSelectedList.put(String.valueOf(user.uId), groupMember);
+        } else {
             tempSelectedList.remove(String.valueOf(user.uId));
         }
     }

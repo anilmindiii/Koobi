@@ -7,10 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.model.Services;
+import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.utils.Helper;
 import java.util.ArrayList;
 
@@ -85,7 +87,11 @@ public class IncallOutCallAdapter extends RecyclerView.Adapter<IncallOutCallAdap
 
         if (inCallList.get(position).isSelected) {
             holder.service_name.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-        } else holder.service_name.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+            holder.iv_tick.setVisibility(View.VISIBLE);
+        } else {
+            holder.service_name.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+            holder.iv_tick.setVisibility(View.GONE);
+        }
 
         holder.service_name.setText(inCallList.get(position).title + "");
 
@@ -120,6 +126,7 @@ public class IncallOutCallAdapter extends RecyclerView.Adapter<IncallOutCallAdap
         TextView tv_inoutcall_service;
         RelativeLayout service_view, ly_booking_view;
         TextView service_name, service_price, duration;
+        ImageView iv_tick;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -130,6 +137,7 @@ public class IncallOutCallAdapter extends RecyclerView.Adapter<IncallOutCallAdap
             service_name = itemView.findViewById(R.id.service_name);
             service_price = itemView.findViewById(R.id.service_price);
             duration = itemView.findViewById(R.id.duration);
+            iv_tick = itemView.findViewById(R.id.iv_tick);
             itemView.setOnClickListener(this);
         }
 

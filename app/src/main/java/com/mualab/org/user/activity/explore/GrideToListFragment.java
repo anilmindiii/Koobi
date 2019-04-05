@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,9 +57,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
     private List<Feeds> feedItems;
     int index;
     private ImageView ivUserProfile,btnBack;
-
-
-
+    public CardView rlHeader1;
 
 
     public static GrideToListFragment newInstance(List<Feeds> feedItems,int index) {
@@ -86,9 +85,11 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
 
         ivUserProfile = getActivity().findViewById(R.id.ivUserProfile);
         btnBack = getActivity().findViewById(R.id.btnBack);
+        rlHeader1 = getActivity().findViewById(R.id.topLayout1);
 
         ivUserProfile.setVisibility(View.GONE);
         btnBack.setVisibility(View.VISIBLE);
+        rlHeader1.setVisibility(View.VISIBLE);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +106,10 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
     public void onDestroy() {
         ivUserProfile.setVisibility(View.VISIBLE);
         btnBack.setVisibility(View.GONE);
+       // rlHeader1.setVisibility(View.GONE);
         super.onDestroy();
     }
+
 
     private void initView(View view){
         rvFeed = view.findViewById(R.id.rvFeed);
@@ -162,6 +165,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onDetach() {
+        rlHeader1.setVisibility(View.GONE);
         super.onDetach();
     }
 

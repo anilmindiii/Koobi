@@ -90,6 +90,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private boolean isOpenCategory;
     private RelativeLayout ly_outcall, ly_main;
     private CheckBox chbOutcall;
+    private ImageView checkbox_img;
     private boolean isOutCallSelected;
     private int childPos = 0;
     private String checkPositon = "", callType = "";
@@ -187,6 +188,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         cv_ly_category = findViewById(R.id.cv_ly_category);
         cv_ly_biz_type = findViewById(R.id.cv_ly_biz_type);
         tv_review_count = findViewById(R.id.tv_review_count);
+        checkbox_img = findViewById(R.id.checkbox_img);
 
         busineshoursList = new ArrayList<>();
 
@@ -232,7 +234,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         ly_biz_type.setOnClickListener(this);
         ly_category.setOnClickListener(this);
         main_scroll_view.setOnClickListener(this);
-        ly_outcall.setOnClickListener(this);
+       // ly_outcall.setOnClickListener(this); // here is comments for new changes
         btnCOnfirmBooking.setOnClickListener(this);
         lyArtistTopView.setOnClickListener(this);
         ly_main.setOnClickListener(this);
@@ -247,7 +249,10 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         timeSlotAdapter = new TimeSlotAdapter(this, timeSlotList, new TimeSlotAdapter.getSelectTime() {
             @Override
             public void getSelectedTimeSlot(TimeSlotInfo slotInfo) {
-                startTime = slotInfo.timeSlots;
+                if(slotInfo != null){
+                    startTime = slotInfo.timeSlots;
+                }else startTime = "";
+
             }
         });
 
@@ -261,6 +266,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         if (callType.equals("Out Call")) {
             isOutCallSelected = true;
             chbOutcall.setChecked(true);
+            checkbox_img.setImageResource(R.drawable.active_check_box_ico);
         }
 
         viewCalendar = findViewById(R.id.calendar);
@@ -671,6 +677,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 if (isOutCallSelected) {
                     chbOutcall.setChecked(true);
                     ly_outcall.setEnabled(false);
+                    checkbox_img.setImageResource(R.drawable.active_check_box_ico);
                 } else {
                     ly_outcall.setVisibility(View.GONE);
                 }

@@ -85,7 +85,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
                     lastPos = pos;
                     selectTimeListner.getSelectedTimeSlot(timeSlotList.get(pos));
                     notifyDataSetChanged();
-                    selectTimeListner.getSelectedTimeSlot(timeSlotList.get(position));
                 }else if (lastPos==pos){
                     for (int i = 0; i < timeSlotList.size(); i++) {
                         isSelectedFirst = false;
@@ -95,9 +94,18 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
                     isSelectedFirst = false;
                     timeSlotList.get(pos).isSelectSlot = false;
                     lastPos = -1;
+                    selectTimeListner.getSelectedTimeSlot(null);
+                    notifyDataSetChanged();
+                }else {
+                    for (int i = 0; i < timeSlotList.size(); i++) {
+                        isSelectedFirst = false;
+                        timeSlotList.get(i).isSelectSlot = false;
+                    }
+                    isSelectedFirst = true;
+                    timeSlotList.get(pos).isSelectSlot = true;
+                    lastPos = pos;
                     selectTimeListner.getSelectedTimeSlot(timeSlotList.get(pos));
                     notifyDataSetChanged();
-                    selectTimeListner.getSelectedTimeSlot(timeSlotList.get(position));
                 }
 
 

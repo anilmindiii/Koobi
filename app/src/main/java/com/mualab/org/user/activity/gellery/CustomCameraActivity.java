@@ -463,6 +463,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
             cameraView.setSessionType(SessionType.VIDEO);
             btnTakePhoto.setText(R.string.rec);
             btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video);
+
             btnCameraMode.setImageResource(R.drawable.ic_photo_camera_white);
             updateState(STATE_TAKE_VIDEO);
             //btnTakePhoto.setOnTouchListener(onTouchListener);
@@ -472,6 +473,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
             currentState = STATE_TAKE_PHOTO;
             btnTakePhoto.setText("");
             updateState(currentState);
+            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture);
             //btnTakePhoto.setOnTouchListener(null);
             btnTakePhoto.setOnClickListener(this);
             cameraView.setSessionType(SessionType.PICTURE);

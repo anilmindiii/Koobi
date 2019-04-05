@@ -30,8 +30,8 @@ import com.mualab.org.user.Views.refreshviews.RjRefreshLayout;
 import com.mualab.org.user.activity.explore.adapter.ExploreGridViewAdapter;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
-import com.mualab.org.user.activity.people_tag.models.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.dialogs.MyToast;
@@ -328,8 +328,8 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
                                     HashMap<String,TagDetail> tagDetails = new HashMap<>();
 
                                     String unique_tag_id = object.getString("unique_tag_id");
-                                    double x_axis = Double.parseDouble(object.getString("x_axis"));
-                                    double y_axis = Double.parseDouble(object.getString("y_axis"));
+                                    float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                    float y_axis = Float.parseFloat(object.getString("y_axis"));
 
                                     JSONObject tagOjb = object.getJSONObject("tagDetails");
                                     TagDetail tag;
@@ -344,13 +344,55 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
                                     tagged.setUnique_tag_id(unique_tag_id);
                                     tagged.setX_co_ord(x_axis);
                                     tagged.setY_co_ord(y_axis);
-                                    tagged.setTagDetails(tagDetails);
+                                    tagged.setTagDetails(tag);
 
                                     feed.peopleTagList.add(tagged);
                                 }
                                 feed.taggedImgMap.put(j,feed.peopleTagList);
                             }
                         }
+
+                        if (jsonObject.has("serviceTag")) {
+                            JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                            if (serviceTagArray.length() != 0) {
+
+                                for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                    feed.serviceTagList = new ArrayList<>();
+                                    JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                    for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                        JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                        String unique_tag_id = object.getString("unique_tag_id");
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                        JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                        TagDetail tag;
+                                        if (tagOjb.has("tabType")) {
+                                            tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                        } else {
+                                            JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                            tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                        }
+//tagDetails.put(tag.title, tag);
+                                        TagToBeTagged tagged = new TagToBeTagged();
+                                        tagged.setUnique_tag_id(unique_tag_id);
+                                        tagged.setX_co_ord(x_axis);
+                                        tagged.setY_co_ord(y_axis);
+// tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
+
+                                        feed.serviceTagList.add(tagged);
+                                    }
+                                    feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                }
+                            }
+                        }
+
 
                         feeds.add(feed);
 

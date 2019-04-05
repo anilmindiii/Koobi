@@ -20,8 +20,6 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.TagTextHorizontalAdapter;
 import com.mualab.org.user.activity.feeds.adapter.TextTagAdapter;
-import com.mualab.org.user.activity.people_tag.activity.PeopleTagActivity;
-import com.mualab.org.user.activity.people_tag.adapters.PeopleAdapter;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;

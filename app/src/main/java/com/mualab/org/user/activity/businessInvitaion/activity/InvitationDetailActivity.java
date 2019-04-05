@@ -10,12 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.artist_profile.model.Services;
+import com.mualab.org.user.activity.booking.BookingActivity;
+import com.mualab.org.user.activity.booking.WorkingHourActivity;
 import com.mualab.org.user.activity.businessInvitaion.adapter.BusinessTypeAdapter;
 import com.mualab.org.user.activity.businessInvitaion.model.CompanyDetail;
 import com.mualab.org.user.application.Mualab;
@@ -23,6 +27,7 @@ import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
+import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.utils.ConnectionDetector;
@@ -32,11 +37,16 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InvitationDetailActivity extends AppCompatActivity implements View.OnClickListener {
     private CompanyDetail companyDetail;
+    private RelativeLayout ly_service;
+    private RelativeLayout ly_working_houre;
+    private TextView tv_salary;
+    private ArrayList<Services.ArtistDetailBean.BusineshoursBean> busineshoursList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +62,20 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
 
         companyDetail = (CompanyDetail) getIntent().getSerializableExtra("companyDetail");
 
+        busineshoursList = new ArrayList<>();
+
+        for(int i =0;i<companyDetail.staffHoursList.size();i++){
+            Services.ArtistDetailBean.BusineshoursBean busineshoursBean =
+                    new Services.ArtistDetailBean.BusineshoursBean();
+            busineshoursBean.day = Integer.parseInt(String.valueOf(companyDetail.staffHoursList.get(i).day));
+            busineshoursBean.endTime = companyDetail.staffHoursList.get(i).endTime;
+            busineshoursBean.startTime = companyDetail.staffHoursList.get(i).startTime;
+
+            busineshoursList.add(busineshoursBean);
+        }
+
+
+
         //   invitationAdapter = new InvitationAdapter(InvitationDetailActivity.this, invitationList);
         ImageView ivHeaderBack = findViewById(R.id.btnBack);
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
@@ -65,7 +89,12 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
         AppCompatButton btnAccept = findViewById(R.id.btnAccept);
         ImageView ivProfile = findViewById(R.id.ivProfile);
 
+        ly_service = findViewById(R.id.ly_service);
+        ly_working_houre = findViewById(R.id.ly_working_houre);
+        tv_salary = findViewById(R.id.tv_salary);
+
         RecyclerView rvBizType = findViewById(R.id.rvBizType);
+        rvBizType.setVisibility(View.VISIBLE);
         LinearLayoutManager layoutManager = new LinearLayoutManager(InvitationDetailActivity.this,
                 LinearLayoutManager.HORIZONTAL, false);
         rvBizType.setLayoutManager(layoutManager);
@@ -77,14 +106,20 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
 
             tvBusinessName.setText(companyDetail.userName);
             tvAddress.setText(companyDetail.address);
+            tv_salary.setText("£"+companyDetail.salaries);
 
             String textToHighlight = "<b>" + ""+companyDetail.businessName + "</b> ";
 
             // Construct the formatted text
             String replacedWith = "<font color='black'>" + textToHighlight + "</font>";
 
-            // Update the TextView text
-            tvMessage.setText(Html.fromHtml(s1+" "+replacedWith+" "+s2));
+            if(!companyDetail.message.equals("")){
+                tvMessage.setText(companyDetail.message);
+            }else {
+                // Update the TextView text
+                tvMessage.setText(Html.fromHtml(s1+" "+replacedWith+" "+s2));
+            }
+
 
             if (!companyDetail.profileImage.equals("")){
                 Picasso.with(InvitationDetailActivity.this).load(companyDetail.profileImage).placeholder(R.drawable.default_placeholder).
@@ -96,6 +131,8 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
         ivHeaderBack.setOnClickListener(this);
         btnReject.setOnClickListener(this);
         btnAccept.setOnClickListener(this);
+        ly_service.setOnClickListener(this);
+        ly_working_houre.setOnClickListener(this);
 
     }
 
@@ -112,6 +149,19 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
 
             case R.id.btnBack:
                 finish();
+                break;
+
+            case R.id.ly_service:
+                Intent intent = new Intent(this,CompanyServicesActivity.class);
+                intent.putExtra("staffId",companyDetail._id+"");
+                intent.putExtra("businessId",companyDetail.businessId+"");
+                startActivity(intent);
+                break;
+
+            case R.id.ly_working_houre:
+                intent = new Intent(this, WorkingHourActivity.class);
+                intent.putExtra("busineshoursList", busineshoursList);
+                startActivity(intent);
                 break;
         }
     }

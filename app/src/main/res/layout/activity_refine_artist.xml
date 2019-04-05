@@ -159,7 +159,6 @@
                     android:layout_marginTop="5dp"
                     android:background="@color/gray" />
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -224,8 +223,6 @@
 
                 </LinearLayout>
 
-
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -282,8 +279,6 @@
 
                 </LinearLayout>
 
-
-
                 <View
                     android:id="@+id/viewSelectRadius"
                     android:layout_width="match_parent"
@@ -294,7 +289,6 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="10dp"
                     android:background="@color/gray" />
-
 
                 <RelativeLayout
                     android:id="@+id/rlSelectLocation"
@@ -536,7 +530,7 @@
                             android:layout_marginRight="20dp"
                             android:layout_marginLeft="35dp"
                             android:layout_marginStart="35dp"
-                            android:hint="Certificate"
+                            android:hint="Qualifications"
                             android:layout_centerVertical="true"
                             android:fontFamily="@font/nunito_regular"
                             android:textColor="@color/text_color"
@@ -763,38 +757,40 @@
                         android:layout_marginTop="12dp"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:weightSum="1">
+                        android:weightSum="2">
 
 
                         <android.support.v7.widget.AppCompatRatingBar
                             android:id="@+id/userRating"
                             style="@style/RatingBarGray"
                             android:layout_width="wrap_content"
-                            android:layout_height="26dp"
-                            android:layout_marginLeft="2dp"
-                            android:layout_marginStart="2dp"
-                            android:layout_marginTop="2dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
                             android:gravity="center"
                             android:isIndicator="false"
                             android:numStars="5"
                             android:rating="0"
-                            android:scaleX="1"
-                            android:scaleY="1"
-                            android:stepSize="1" />
+                            android:scaleX="1.2"
+                            android:scaleY="1.2"
+                            android:stepSize="1"
+                            android:layout_weight="1"/>
 
                         <TextView
                             android:id="@+id/tvRating"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginStart="15dp"
                             android:ellipsize="end"
                             android:fontFamily="@font/nunito_regular"
                             android:maxLines="1"
                             android:text="@string/above"
                             android:textColor="@color/text_color"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:layout_weight="1"/>
 
                     </LinearLayout>
 

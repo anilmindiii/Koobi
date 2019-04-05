@@ -59,7 +59,9 @@ import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.booking.BookingDetailsActivity;
 import com.mualab.org.user.activity.booking.customSeekBar.Utils;
+import com.mualab.org.user.activity.businessInvitaion.activity.InvitationActivity;
 import com.mualab.org.user.activity.explore.ExploreFragment;
+import com.mualab.org.user.activity.explore.ExploreFragmentNew;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.fragment.FeedsFragment;
 import com.mualab.org.user.activity.gellery.GalleryActivity;
@@ -401,6 +403,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 booking5.putExtra("notification_list", "list");
                 booking5.putExtra("key", "main");
                 booking5.putExtra("artistProfile", urlImageString);
+                booking5.putExtra("shouldPopupOpen", true);
                 startActivity(booking5);
                 break;
 
@@ -431,6 +434,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 Intent intent_taged = new Intent(MainActivity.this, FeedSingleActivity.class);
                 intent_taged.putExtra("feedId", notifyId);
                 startActivityForResult(intent_taged, Constant.FEED_FRAGMENT);
+                break;
+
+            case "17":
+                Intent intent = new Intent(MainActivity.this, InvitationActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -641,6 +649,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.ibtnSearch:
                 if (clickedId != 4) {
                     setInactiveTab();
+
                     clickedId = 4;
                     SearchBoardFragment.isFavClick = false;
                     tvHeaderTitle.setText(R.string.title_explore);
@@ -652,6 +661,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     session.saveFilter(null);
                     locationData = null;
                     item = null;
+                    rlHeader1.setVisibility(View.VISIBLE);
                     replaceFragment(ExploreFragment.newInstance(), false);
 
                 }

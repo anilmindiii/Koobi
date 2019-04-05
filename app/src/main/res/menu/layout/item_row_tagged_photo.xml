@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.mualab.org.user.activity.people_tag.instatag.InstaTag
+    <com.mualab.org.user.activity.tag_module.instatag.InstaTag
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/insta_tag_tagged_photo"
         android:layout_width="match_parent"

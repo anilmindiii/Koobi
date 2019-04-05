@@ -62,6 +62,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
     private boolean isOutCallType;
     private RelativeLayout ly_txt_Id,ly_txt_status;
     private TextView tv_txt_id ,tv_txt_status;
+    private boolean shouldPopupOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +106,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
 
         if (getIntent().getIntExtra("bookingId", 0) != 0) {
             bookingId = getIntent().getIntExtra("bookingId", 0);
-
+            shouldPopupOpen = getIntent().getBooleanExtra("shouldPopupOpen",false);
         }
 
         historyInfo = new BookingListInfo();
@@ -336,7 +337,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
                 tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_orange_color));
                 tv_txt_id.setText("NA");
             }else {
-                tv_txt_status.setText("Complete");
+                tv_txt_status.setText("Completed");
                 tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
                 tv_txt_id.setText(historyInfo.data.transjectionId);
             }
@@ -351,7 +352,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
                     tv_pay.setEnabled(true);
                 }else {
                     tv_pay.setText("Paid");
-                    tv_txt_status.setText("Complete");
+                    tv_txt_status.setText("Completed");
                     tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
                     tv_txt_id.setText(historyInfo.data.transjectionId);
                     tv_pay.setEnabled(false);
@@ -373,7 +374,8 @@ public class BookingDetailsActivity extends AppCompatActivity {
         }else{
             ly_txt_Id.setVisibility(View.VISIBLE);
             ly_txt_status.setVisibility(View.VISIBLE);
-            tv_payment_method.setText(R.string.online);}
+            tv_payment_method.setText(getString(R.string.card));
+        }
 
 
 
@@ -406,6 +408,11 @@ public class BookingDetailsActivity extends AppCompatActivity {
             paymentTimer(historyInfo);
         }
 
+
+        if(shouldPopupOpen){
+            askForReviewRating();
+            shouldPopupOpen = false;
+        }
 
     }
 
@@ -627,9 +634,17 @@ public class BookingDetailsActivity extends AppCompatActivity {
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent1) {
+        public void onReceive(Context context, Intent intent) {
             if(bookingId != 0){
-                getDetailsBookService(bookingId);
+              String  notificationType =  intent.getStringExtra("notificationType");
+              String  notifyId =  intent.getStringExtra("notifyId");//userId
+              String  title =  intent.getStringExtra("title");
+
+              if(notificationType.equals("5")){// open Popupcase
+                  shouldPopupOpen = true;
+              }
+              getDetailsBookService(bookingId);
+
             }
         }
     };

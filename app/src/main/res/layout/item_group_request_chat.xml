@@ -89,6 +89,7 @@
             android:layout_marginLeft="8dp"
             android:padding="1dp"
             android:layout_toLeftOf="@+id/llCount"
+            android:layout_marginTop="5dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -99,7 +100,7 @@
                     android:id="@+id/tvUname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="neha"
+                    android:text="Aneha"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:gravity="left"
@@ -130,7 +131,6 @@
                 android:id="@+id/tvMsg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="message"
                 android:maxLines="1"
                 android:layout_marginRight="3dp"
                 android:ellipsize="end"

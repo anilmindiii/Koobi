@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,6 +66,7 @@ public class AddMemberActivity extends AppCompatActivity implements View.OnClick
     private TextView tv_no_chat;
     private View vSaperater;
     private List<String> fbTokenListForMobile, fbTokenListForWeb;
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,7 +323,9 @@ public class AddMemberActivity extends AppCompatActivity implements View.OnClick
     private void getDataInMap(String key, FirebaseUser user) {
         if (user != null) {
             user.isChecked = false;
-            map.put(key, user);
+            if (user.userName != null)
+                if (!user.userName.equals(""))
+                    map.put(key, user);
             groupMembers.clear();
             Collection<FirebaseUser> values = map.values();
             groupMembers.addAll(values);
@@ -365,6 +369,10 @@ public class AddMemberActivity extends AppCompatActivity implements View.OnClick
 
     private void addMembers() {
         if (selectedMemberList.size() != 0) {
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 8000) {
+                return;
+            }
+            mLastClickTime = SystemClock.elapsedRealtime();
             for (int i = 0; i < selectedMemberList.size(); i++) {
                 final GroupMember groupMemberVal = selectedMemberList.get(i);
 

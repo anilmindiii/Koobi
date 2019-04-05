@@ -53,6 +53,7 @@ public class BaseActivity extends AppCompatActivity implements BaseListner, Base
     }
 
 
+
     public void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {

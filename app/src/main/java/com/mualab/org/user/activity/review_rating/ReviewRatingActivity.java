@@ -35,11 +35,17 @@ import java.util.Map;
 
 public class ReviewRatingActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private String userId = "";
+    private String userType = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_rating);
+
+        userId = getIntent().getStringExtra("id");
+        userType = getIntent().getStringExtra("userType");
+
         initView();
     }
 
@@ -78,7 +84,7 @@ public class ReviewRatingActivity extends AppCompatActivity implements View.OnCl
         //params.put("userId", String.valueOf(Mualab.currentUser.id));
 
 
-        HttpTask task = new HttpTask(new HttpTask.Builder(ReviewRatingActivity.this, "getRatingReview?userType=artist&userId="+String.valueOf(Mualab.currentUser.id)+"", new HttpResponceListner.Listener() {
+        HttpTask task = new HttpTask(new HttpTask.Builder(ReviewRatingActivity.this, "getRatingReview?userType="+userType+"&userId="+userId+"", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
                 Progress.hide(ReviewRatingActivity.this);

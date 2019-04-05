@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+        <com.mualab.org.user.activity.tag_module.instatag.TagImageView
             android:id="@+id/ivPhoto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

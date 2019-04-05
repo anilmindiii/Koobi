@@ -39,7 +39,7 @@
     </RelativeLayout>
 
 
-        <com.mualab.org.user.activity.people_tag.instatag.InstaTag
+        <com.mualab.org.user.activity.tag_module.instatag.InstaTag
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

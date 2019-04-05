@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,8 +32,8 @@ import com.mualab.org.user.activity.base.BaseFragment;
 import com.mualab.org.user.activity.explore.adapter.ExploreGridViewAdapter;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.LiveUserAdapter;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
-import com.mualab.org.user.activity.people_tag.models.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
@@ -52,7 +51,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -241,7 +239,7 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
 
             case R.id.ed_search:
                 startActivity(new Intent(mContext, ExplorSearchActivity.class));
-                //baseListner.addFragment(ExploreSearchFragment.newInstance(), true);
+                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
         }
     }
@@ -461,8 +459,8 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
                                     HashMap<String,TagDetail> tagDetails = new HashMap<>();
 
                                     String unique_tag_id = object.getString("unique_tag_id");
-                                    double x_axis = Double.parseDouble(object.getString("x_axis"));
-                                    double y_axis = Double.parseDouble(object.getString("y_axis"));
+                                    float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                    float y_axis = Float.parseFloat(object.getString("y_axis"));
 
                                     JSONObject tagOjb = object.getJSONObject("tagDetails");
                                     TagDetail tag;
@@ -477,13 +475,55 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
                                     tagged.setUnique_tag_id(unique_tag_id);
                                     tagged.setX_co_ord(x_axis);
                                     tagged.setY_co_ord(y_axis);
-                                    tagged.setTagDetails(tagDetails);
+                                    tagged.setTagDetails(tag);
 
                                     feed.peopleTagList.add(tagged);
                                 }
                                 feed.taggedImgMap.put(j,feed.peopleTagList);
                             }
                         }
+
+                        if (jsonObject.has("serviceTag")) {
+                            JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                            if (serviceTagArray.length() != 0) {
+
+                                for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                    feed.serviceTagList = new ArrayList<>();
+                                    JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                    for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                        JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                        String unique_tag_id = object.getString("unique_tag_id");
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                        JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                        TagDetail tag;
+                                        if (tagOjb.has("tabType")) {
+                                            tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                        } else {
+                                            JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                            tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                        }
+//tagDetails.put(tag.title, tag);
+                                        TagToBeTagged tagged = new TagToBeTagged();
+                                        tagged.setUnique_tag_id(unique_tag_id);
+                                        tagged.setX_co_ord(x_axis);
+                                        tagged.setY_co_ord(y_axis);
+// tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
+
+                                        feed.serviceTagList.add(tagged);
+                                    }
+                                    feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                }
+                            }
+                        }
+
 
                         feeds.add(feed);
 

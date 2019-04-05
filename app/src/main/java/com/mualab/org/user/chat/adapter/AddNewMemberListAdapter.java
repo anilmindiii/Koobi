@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mualab.org.user.R;
 
 import com.mualab.org.user.chat.listner.OnUserClickListener;
@@ -28,6 +29,20 @@ public class AddNewMemberListAdapter extends RecyclerView.Adapter<RecyclerView.V
     private Context mContext;
     private List<FirebaseUser> firebaseUsers;
     private OnUserClickListener onUserClickListener = null;
+
+    // this is for create new chat module
+    private boolean isFromCreateNewChat = false;
+    private getUserData getUserData;
+
+    public AddNewMemberListAdapter(Context mContext,
+                                   List<FirebaseUser> firebaseUsers,
+                                   boolean isFromCreateNewChat,
+                                   getUserData getUserData) {
+        this.mContext = mContext;
+        this.firebaseUsers = firebaseUsers;
+        this.isFromCreateNewChat = isFromCreateNewChat;
+        this.getUserData = getUserData;
+    }
 
     // Constructor of the class
     public AddNewMemberListAdapter(Context mContext, List<FirebaseUser> firebaseUsers) {
@@ -62,11 +77,15 @@ public class AddNewMemberListAdapter extends RecyclerView.Adapter<RecyclerView.V
         final FirebaseUser firebaseUser = firebaseUsers.get(position);
 
         if (firebaseUser.profilePic!=null && !firebaseUser.profilePic.equals("")){
-            Picasso.with(mContext).load(firebaseUser.profilePic).
+            Glide.with(mContext).load(firebaseUser.profilePic).
                     placeholder(R.drawable.default_placeholder).into(holder.ivProfilePic);
         }
 
         holder.tvUserName.setText(firebaseUser.userName);
+
+        if(isFromCreateNewChat){
+            holder.chat_checkbox.setVisibility(View.GONE);
+        }else  holder.chat_checkbox.setVisibility(View.VISIBLE);
 
         if (firebaseUser.isChecked){
             holder.chat_checkbox.setImageResource(R.drawable.active_check_ico);
@@ -101,25 +120,32 @@ public class AddNewMemberListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             if (SystemClock.elapsedRealtime() - mLastClickTime < 400){
                 return;
-            }
-            mLastClickTime = SystemClock.elapsedRealtime();
+            } mLastClickTime = SystemClock.elapsedRealtime();
 
-            switch (view.getId()){
-                case R.id.rlItemMain:
-                    FirebaseUser firebaseUser = firebaseUsers.get(getAdapterPosition());
-                    if (onUserClickListener != null) {
-                        if (!firebaseUser.isChecked){
-                            firebaseUser.isChecked = true;
-                        }else {
-                            firebaseUser.isChecked = false;
+
+            if(isFromCreateNewChat){
+                getUserData.getUser(firebaseUsers.get(getAdapterPosition()));
+            }else {
+                switch (view.getId()){
+                    case R.id.rlItemMain:
+                        FirebaseUser firebaseUser = firebaseUsers.get(getAdapterPosition());
+                        if (onUserClickListener != null) {
+                            if (!firebaseUser.isChecked){
+                                firebaseUser.isChecked = true;
+                            }else {
+                                firebaseUser.isChecked = false;
+                            }
+                            notifyItemChanged(getAdapterPosition());
+                            onUserClickListener.onUserClicked(firebaseUser, getAdapterPosition());
                         }
-                        notifyItemChanged(getAdapterPosition());
-                        onUserClickListener.onUserClicked(firebaseUser, getAdapterPosition());
-                    }
-                    break;
+                        break;
+                }
             }
-
         }
+    }
+
+    public interface getUserData{
+        void getUser(FirebaseUser firebaseUser);
     }
 
     public void filterList(List<FirebaseUser> filterdNames) {

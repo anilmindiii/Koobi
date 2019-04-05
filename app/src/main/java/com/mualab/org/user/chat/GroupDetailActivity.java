@@ -444,10 +444,12 @@ public class GroupDetailActivity extends AppCompatActivity implements View.OnCli
 
                                     Picasso.with(GroupDetailActivity.this)
                                             .load(groups.groupImg)
+                                            .placeholder(R.drawable.user_img_ico_group)
                                             .into(profile_image);
                                     matchImageUrl = "";
                                 }
-
+                            }else {
+                                profile_image.setImageResource(R.drawable.user_img_ico_group);
                             }
                             // GroupMember member = (GroupMember) groups.member.get(myUid);
                             // isMute = member.mute;

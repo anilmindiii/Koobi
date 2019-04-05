@@ -38,7 +38,6 @@
             app:civ_border_width="2dp" />
 
         <LinearLayout
-            android:id="@+id/lyArtistTopView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
@@ -101,7 +100,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/lyDetail"
+                android:id="@+id/lyArtistTopView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lyArtistName"
@@ -148,6 +147,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:clickable="false"
             android:gravity="center_vertical">
 
             <CheckBox
@@ -163,7 +163,21 @@
                 android:scaleY=".7"
                 android:clickable="false"
                 android:enabled="false"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:id="@+id/checkbox_img"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:tint="@color/black"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/inactive_check_box_ico"/>
+
+
+
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -175,7 +189,10 @@
                 android:text="@string/text_out_call"
                 android:textColor="@color/text_color"
                 android:textSize="14sp" />
+
+
         </RelativeLayout>
+
 
     </RelativeLayout>
 

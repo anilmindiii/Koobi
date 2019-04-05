@@ -218,6 +218,8 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 chatHistories.addAll(newList);
                 shorting();
 
+
+
             }
             //  }
         }
@@ -240,7 +242,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                                     messageOutput.userName = String.valueOf(objectMap.get("groupName"));
 
 
-                                    if(broadcast.equals("broadcast")){
+                                    if (broadcast.equals("broadcast")) {
                                         messageOutput.type = "3";
                                         try {
                                             Groups groups = dataSnapshot.getValue(Groups.class);
@@ -260,7 +262,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                                             (new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                                     // Groups group = dataSnapshot.getValue(Groups.class);
+                                                    // Groups group = dataSnapshot.getValue(Groups.class);
                                                     // Map<String,GroupMember> hashMap = (Map<String, GroupMember>) group.member.get(myId);
                                                     if (dataSnapshot.exists()) {
                                                         GroupMember groupMember = dataSnapshot.getValue(GroupMember.class);
@@ -786,9 +788,9 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 //adding the element to filtered list
 
                 if (isFavFilter) {
-                    if(!text.equals("")){
+                    if (!text.equals("")) {
 
-                    }else {
+                    } else {
 
                     }
 
@@ -969,9 +971,9 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
 
         for (ChatHistory history : chatHistories) {
             //if the existing elements contains the search input
-            if (history.type.equals("group")) {
+            if (history.type.equals("group") || history.type.equals("1")) {
                 if (type.equals("My Groups")) {
-                    if (history.memberType.equals("admin")) {
+                    if (history.memberType.equals("admin") || history.senderId.equals(myId)) {
                         tempArrayList.add(history);
                     }
                 } else {
@@ -1020,6 +1022,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 popupWindow.setElevation(5);
             }
             final ArrayList<String> arrayList = new ArrayList<>();
+            arrayList.add("Create New Chat");
             arrayList.add("Create New Broadcast");
             arrayList.add("Create New Group");
             arrayList.add("Join New Group");
@@ -1135,8 +1138,12 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
 
     private void AddOptionMenuClicks(String option) {
         switch (option) {
+            case "Create New Chat":
+                Intent intent = new Intent(ChatHistoryActivity.this, CreateNewChatActivity.class);
+                startActivity(intent);
+                break;
             case "Create New Broadcast":
-                Intent intent = new Intent(ChatHistoryActivity.this, AddMemberToBrodcastActivity.class);
+                intent = new Intent(ChatHistoryActivity.this, AddMemberToBrodcastActivity.class);
                 startActivity(intent);
                 break;
             case "Create New Group":

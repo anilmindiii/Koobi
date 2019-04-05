@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +58,7 @@ public class RemoveMemberActivity extends AppCompatActivity implements View.OnCl
     private DatabaseReference mFirebaseGroupRef,chatHitoryRef,groupMsgDeleteRef,myGroupRef;
     private RecyclerView rvSelectedMember;
     private Groups groups;
+    private long mLastClickTime = 0;
 //    private List<String>fbTokenListForMobile,fbTokenListForWeb;
 
     @Override
@@ -320,6 +322,11 @@ public class RemoveMemberActivity extends AppCompatActivity implements View.OnCl
 
     private void removeMembers(){
         if (selectedMemberList.size()!=0){
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 8000){
+                return;
+            }
+            mLastClickTime = SystemClock.elapsedRealtime();
+
             for (int i=0;i<selectedMemberList.size();i++){
                 GroupMember groupMemberVal = selectedMemberList.get(i);
 

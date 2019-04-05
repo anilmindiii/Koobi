@@ -408,15 +408,15 @@ public class AddAddressActivity extends AppCompatActivity {
                 country = address.getCountryName();
                 postalCode = address.getPostalCode();
                 country = address.getCountryName();
-                //stAddress1 = address.getAddressLine(0);
+                stAddress1 = address.getAddressLine(0);
                 stAddress2 = address.getAddressLine(1);
 
                 if(placeName.equals("null")){
                     placeName = "";
                 }
 
-                //ed_locality.setText(TextUtils.isEmpty( placeName+" "+stAddress1) ? "" :  placeName+" "+stAddress1);
-                ed_locality.setText(TextUtils.isEmpty(stAddress1) ? "" :  stAddress2);
+                ed_locality.setText(TextUtils.isEmpty( placeName+" "+stAddress1) ? "" :  placeName+" "+stAddress1);
+                //ed_locality.setText(TextUtils.isEmpty(stAddress1) ? "" :  stAddress2);
                 // ed_pinCode.setText(postalCode);
 
             }

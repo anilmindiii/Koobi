@@ -69,7 +69,7 @@ public class ExplorSearchActivity extends AppCompatActivity  {
         views.add(new MyViews("Top", ExploreTopFragment.newInstance("top")));
         views.add(new MyViews("People",ExploreTopFragment.newInstance("people")));
         views.add(new MyViews("Hashtag",ExploreTopFragment.newInstance("hasTag")));
-        views.add(new MyViews("Service Tag",ExploreTopFragment.newInstance("serviceTag")));
+        //views.add(new MyViews("Service Tag",ExploreTopFragment.newInstance("serviceTag")));
         views.add(new MyViews("Location",ExploreTopFragment.newInstance("place")));
 
         KeyboardUtil.hideKeyboard(searchview, this);
@@ -101,6 +101,12 @@ public class ExplorSearchActivity extends AppCompatActivity  {
 
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override
@@ -147,6 +153,7 @@ public class ExplorSearchActivity extends AppCompatActivity  {
     protected void onDestroy() {
         super.onDestroy();
         Mualab.getInstance().cancelAllPendingRequests();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
 

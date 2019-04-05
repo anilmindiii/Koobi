@@ -14,17 +14,20 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
+import com.mualab.org.user.activity.businessInvitaion.activity.ServiceDetailActivity;
+import com.mualab.org.user.activity.businessInvitaion.model.Services;
 import com.mualab.org.user.activity.feeds.listener.OnImageSwipeListener;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
-import com.mualab.org.user.activity.people_tag.instatag.InstaTag;
-import com.mualab.org.user.activity.people_tag.instatag.TagDetail;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
+import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.model.SearchBoard.ArtistsSearchBoard;
@@ -46,28 +49,82 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
     private LayoutInflater mLayoutInflater;
     private Context context;
     private List<String> ImagesList;
-    private HashMap<Integer,ArrayList<TagToBeTagged>> taggedImgMap;
+    private HashMap<Integer, ArrayList<TagToBeTagged>> taggedImgMap;
+    private HashMap<Integer, ArrayList<TagToBeTagged>> serviceTaggedImgMap;
     private Listner listner;
-    private Feeds feeds;
+    //private Feeds feeds;
     private ViewGroup container;
-    private boolean isShow,isFromFeed;
+    private boolean isShow, isFromFeed;
+    private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
 
-    public ViewPagerAdapter(Context context, Feeds feeds, boolean isFromFeed, Listner listner) {
-        this.context = context;
-        this.feeds = feeds;
-        this.isFromFeed = isFromFeed;
-        this.ImagesList = feeds.feed;
-        this.taggedImgMap = feeds.taggedImgMap;
-        this.listner = listner;
-        this.isShow = false;
-        this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //  tapListener = new MyOnDoubleTapListener(context);
-        int widthPixels = ScreenUtils.getScreenWidth(context);
-        widthPixels = widthPixels >=1080?1080: widthPixels;
-        /*DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;*/
+        InstaTag mInstaTag = null;
+
+        @Override
+        public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
+/* if (listner != null)
+listner.onSingleTap();*/
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (listner != null)
+                listner.onDoubleTap();
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+// View view = container.getRootView();
+            ViewPager viewPager = (ViewPager) container;
+            View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
+
+            if (view != null) {
+                mInstaTag = view.findViewById(R.id.post_image);
+            }
+            if (mInstaTag != null) {
+                showHideTag(mInstaTag, viewPager.getCurrentItem());
+            }
+        }
+
+        @Override
+        public void onSinglePress(MotionEvent e) {
+            if (listner != null)
+                listner.onSingleTap();
+        }
+    };
+
+    private void showHideTag(InstaTag mInstaTag, int pos) {
+//people tag
+        if (taggedImgMap.containsKey(pos)) {
+            ArrayList<TagToBeTagged> tags = taggedImgMap.get(pos);
+            if (!mInstaTag.isTagsShow("people")) {
+                mInstaTag.addTagViewFromTagsToBeTagged("people", tags, false);
+                mInstaTag.showTags("people");
+                isShow = true;
+            } else {
+                mInstaTag.hideTags("people");
+                isShow = false;
+            }
+        }
+
+//service tag
+        if (serviceTaggedImgMap.containsKey(pos)) {
+            ArrayList<TagToBeTagged> tags = serviceTaggedImgMap.get(pos);
+            if (!mInstaTag.isTagsShow("service")) {
+                mInstaTag.addTagViewFromTagsToBeTagged("service", tags, false);
+                mInstaTag.showTags("service");
+                isShow = true;
+            } else {
+                mInstaTag.hideTags("service");
+                isShow = false;
+            }
+
+        }
     }
 
     @Override
@@ -80,132 +137,186 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
         return view == object;
     }
 
+    public ViewPagerAdapter(Context context, Feeds feeds, boolean isFromFeed, Listner listner) {
+        this.context = context;
+// this.feeds = feeds;
+        this.isFromFeed = isFromFeed;
+        this.ImagesList = feeds.feed;
+        this.taggedImgMap = feeds.taggedImgMap;
+        this.serviceTaggedImgMap = feeds.serviceTaggedImgMap;
+        this.listner = listner;
+        this.isShow = false;
+        this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+// tapListener = new MyOnDoubleTapListener(context);
+
+/*int widthPixels = ScreenUtils.getScreenWidth(context);
+widthPixels = widthPixels >= 1080 ? 1080 : widthPixels;*/
+
+/*DisplayMetrics displayMetrics = new DisplayMetrics();
+getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+int height = displayMetrics.heightPixels;
+int width = displayMetrics.widthPixels;*/
+    }
+
     @NonNull
     @Override
     public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_layout, container, false);
-        // ImageView postImages = itemView.findViewById(R.id.post_image);
         final InstaTag postImages = itemView.findViewById(R.id.post_image);
-        ImageView ivShowTag = itemView.findViewById(R.id.ivShowTag);
+        RelativeLayout rlShowTag = itemView.findViewById(R.id.lyShowTag);
 
+/* postImages.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+postImages.setRootWidth(postImages.getMeasuredWidth());
+postImages.setRootHeight(postImages.getMeasuredHeight());*/
 
+        postImages.setImageToBeTaggedEvent(taggedImageEvent);
         this.container = container;
 
-        //itemView.setOnTouchListener(tapListener);
-        //  postImages.setTouchListnerDisable();
+//itemView.setOnTouchListener(tapListener);
+// postImages.setTouchListnerDisable();
 
         this.isShow = false;
 
-        postImages.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        postImages.setRootWidth(postImages.getMeasuredWidth());
-        postImages.setRootHeight(postImages.getMeasuredHeight());
+/*Picasso.with(context)
+.load(ImagesList.get(position)).resize(widthPixels,
+320).centerInside().placeholder(R.drawable.ic_gallery_placeholder)
+.into(postImages.getTagImageView());*/
 
+/*Picasso.with(context)
+.load(ImagesList.get(position))
+// .fit()
+.resize(widthPixels,widthPixels)
+.centerCrop()
+.onlyScaleDown() //
+.placeholder(R.drawable.ic_gallery_placeholder)
+.into(postImages.getTagImageView());*/
 
-      /*  Picasso.with(context)
-                .load(ImagesList.get(position)).resize(widthPixels,
-                320).centerInside().placeholder(R.drawable.gallery_placeholder)
-                .into(postImages.getTagImageView());*/
-
-        Glide.with(context).load(ImagesList.get(position)).fitCenter().
+/*Glide.with(context).load(ImagesList.get(position)).centerCrop().
+placeholder(R.drawable.ic_gallery_placeholder).into(postImages.getTagImageView());*/
+        postImages.getTagImageView().setScaleType(ImageView.ScaleType.CENTER_CROP);
+        Glide.with(context).load(ImagesList.get(position)).
                 placeholder(R.drawable.gallery_placeholder).into(postImages.getTagImageView());
 
-        if (taggedImgMap.containsKey(position)){
-            ArrayList<TagToBeTagged>tags = taggedImgMap.get(position);
-            postImages.addTagViewFromTagsToBeTagged(tags,false);
-            postImages.hideTags();
-        }
+        ArrayList<TagToBeTagged> tempPeople = taggedImgMap.get(position);
+        ArrayList<TagToBeTagged> tempService = serviceTaggedImgMap.get(position);
 
-        /*if (postImages.getListOfTagsToBeTagged().size()!=0){
-            ivShowTag.setVisibility(View.VISIBLE);
-        }else
-            ivShowTag.setVisibility(View.GONE);
+        if ((tempPeople != null && tempPeople.size() != 0) || (tempService != null &&serviceTaggedImgMap.size() != 0)) {
+            rlShowTag.setVisibility(View.VISIBLE);
+        } else
+            rlShowTag.setVisibility(View.GONE);
 
-        ivShowTag.setOnClickListener(new View.OnClickListener() {
+        rlShowTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isShow) {
-                    postImages.hideTags();
-                    isShow = false;
-                }
-                else {
-                    postImages.showTags();
-                    isShow = true;
-                }
+/*if (isShow) {
+postImages.hideTags();
+isShow = false;
+}
+else {
+postImages.showTags();
+isShow = true;
+}*/
+                showHideTag(postImages, position);
             }
-        });*/
+        });
 
-        postImages.setImageToBeTaggedEvent(taggedImageEvent);
-
-        OnChangeImage   onChangeImage = new OnChangeImage() {
-            @Override
-            public void OnSwipe(int position) {
-                isShow = false;
-            }
-        };
 
         postImages.setListener(new InstaTag.Listener() {
 
             @Override
-            public void onTagCliked(final com.mualab.org.user.activity.people_tag.models.TagDetail tagDetail) {
-                if (isFromFeed){
-                    if(tagDetail!=null){
-                        apiForgetUserIdFromUserName(tagDetail.title);
-                        /*if (tagDetail.userType!=null && !tagDetail.userType.equals("")){
-                            if (tagDetail.tagId!=null && !tagDetail.tagId.equals("")){
-                                if (tagDetail.userType.equals("user")){
+            public void onTagCliked(final TagDetail tagDetail) {
+// if (isFromFeed) {
+                if (tagDetail.tabType.equalsIgnoreCase("people")) {
+                    if (tagDetail.userType != null && !tagDetail.userType.isEmpty()) {
+                        if (tagDetail.tagId != null && !tagDetail.tagId.isEmpty()) {
+                            if (!tagDetail.tagId.equals(String.valueOf(Mualab.currentUser.id))) {
+                                if (tagDetail.userType.equals("user")) {
                                     Intent intent = new Intent(context, UserProfileActivity.class);
-                                    intent.putExtra("userId",tagDetail.tagId);
+                                    intent.putExtra("userId", tagDetail.tagId);
                                     context.startActivity(intent);
-                                }else {
-                                    ArtistsSearchBoard item = new ArtistsSearchBoard();
-                                    item._id = tagDetail.tagId;
-                                    Intent intent2 = new Intent(context, ArtistProfileActivity.class);
-                                    intent2.putExtra("item",item);
-                                    context.startActivity(intent2);
+                                } else {
+                                    Intent intent = new Intent(context, ArtistProfileActivity.class);
+                                    intent.putExtra("artistId", tagDetail.tagId);
+                                    context.startActivity(intent);
                                 }
                             }
-                        }*/
+                        } else apiForgetUserIdFromUserName(tagDetail.title);
+                    } else apiForgetUserIdFromUserName(tagDetail.title);
+                } else { //service tag
+                    if (tagDetail.businessTypeName != null) {
+                        Services services = new Services();
+                        services.serviceName = tagDetail.title;
+                        services.outCallPrice = tagDetail.outcallPrice.isEmpty() ? 0 : Double.parseDouble(tagDetail.outcallPrice);
+                        services.inCallPrice = tagDetail.incallPrice.isEmpty() ? 0 : Double.parseDouble(tagDetail.incallPrice);
+                        services.description = tagDetail.description;
+                        services.completionTime = tagDetail.completionTime;
+                        services.bizTypeName = tagDetail.businessTypeName;
+                        services.subserviceName = tagDetail.categoryName;
+                        if (services.inCallPrice != 0.0 && services.outCallPrice != 0)
+                            services.bookingType = "Both";
+                        else if (services.inCallPrice != 0.0)
+                            services.bookingType = "Incall";
+                        else if (services.outCallPrice != 0.0)
+                            services.bookingType = "Outcall";
+
+                        services.bookingType = tagDetail.title;
+
+                        Intent intent = new Intent(context, ServiceDetailActivity.class);
+                        intent.putExtra("serviceItem", services);
+                        context.startActivity(intent);
                     }
                 }
+
+//}
             }
 
             @Override
-            public void onTagRemoved(com.mualab.org.user.activity.people_tag.models.TagDetail tagDetail) {
-               /* if (taggedImgMap.size()!=0){
-                    // taggedImgMap.remove(position);
-                    for(Map.Entry map  :  taggedImgMap.entrySet() ) {
-                        int key = (int) map.getKey();
-                        if (key == position){
-                            ArrayList<TagToBeTagged>tags = (ArrayList<TagToBeTagged>) map.getValue();
+            public void onTagRemoved(TagDetail tagDetail) {
+/* if (taggedImgMap.size()!=0){
+// taggedImgMap.remove(position);
+for(Map.Entry map : taggedImgMap.entrySet() ) {
+int key = (int) map.getKey();
+if (key == position){
+ArrayList<TagToBeTagged>tags = (ArrayList<TagToBeTagged>) map.getValue();
 
-                            if(tagDetail!=null){
-                                for (TagToBeTagged tagToBeTagged : tags){
-                                    if (tagToBeTagged.getUnique_tag_id().
-                                            equals(tagDetail.title)){
-                                        tags.remove(tagToBeTagged);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }*/
+if(tagDetail!=null){
+for (TagToBeTagged tagToBeTagged : tags){
+if (tagToBeTagged.getUnique_tag_id().
+equals(tagDetail.title)){
+tags.remove(tagToBeTagged);
+}
+}
+}
+}
+}
+}*/
             }
         });
 
-        //  }
+// }
         itemView.setTag("myview" + position);
         container.addView(itemView);
         return itemView;
     }
 
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((View) object);
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return super.getPageTitle(position);
+    }
+
     private void apiForgetUserIdFromUserName(final CharSequence userName) {
-        String user_name="";
+        String user_name;
 
         final Map<String, String> params = new HashMap<>();
-        if(userName.toString().startsWith("@")){
-            user_name = userName.toString().replace("@","");
-            params.put("userName", user_name+"");
-        }else params.put("userName", userName+"");
+        if (userName.toString().startsWith("@")) {
+            user_name = userName.toString().replace("@", "");
+            params.put("userName", user_name + "");
+        } else params.put("userName", userName + "");
         new HttpTask(new HttpTask.Builder(context, "profileByUserName", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
@@ -224,19 +335,15 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
                             Intent intent = new Intent(context, UserProfileActivity.class);
                             intent.putExtra("userId", String.valueOf(userId));
                             context.startActivity(intent);
-                        }else if (userType.equals("artist") && userId== Mualab.currentUser.id){
-                            Intent intent = new Intent(context, UserProfileActivity.class);
-                            intent.putExtra("userId", String.valueOf(userId));
+                        } else if (userType.equals("artist") && userId == Mualab.currentUser.id) {
+                            Intent intent = new Intent(context, ArtistProfileActivity.class);
+                            intent.putExtra("artistId", String.valueOf(userId));
                             context.startActivity(intent);
-                        }
-                        else {
+                        } else {
                             Intent intent = new Intent(context, ArtistProfileActivity.class);
                             intent.putExtra("artistId", String.valueOf(userId));
                             context.startActivity(intent);
                         }
-
-
-
                     } else {
                         MyToast.getInstance(context).showDasuAlert(message);
                     }
@@ -248,22 +355,13 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
             @Override
             public void ErrorListener(VolleyError error) {
             }
-        }).setBody(params,HttpTask.ContentType.APPLICATION_JSON)
+        }).setAuthToken(Mualab.currentUser.authToken)
+                .setBody(params, HttpTask.ContentType.APPLICATION_JSON)
                 .setMethod(Request.Method.POST)
                 .setProgress(true))
-                .execute("FeedAdapter");
+                .execute("ArtistFeedAdapter");
 
 
-    }
-
-    @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View) object);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return super.getPageTitle(position);
     }
 
     @Override
@@ -273,66 +371,13 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
 
     public interface Listner {
         void onSingleTap();
+
         void onDoubleTap();
     }
 
     public interface LongPressListner {
         void onLongPress();
     }
-
-    public interface OnChangeImage {
-        void OnSwipe(int position);
-    }
-
-    private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
-
-        @Override
-        public void singleTapConfirmedAndRootIsInTouch(int x, int y) {
-          /*  if (listner != null)
-                listner.onSingleTap();*/
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (listner != null)
-                listner.onDoubleTap();
-            return true;
-        }
-
-        @Override
-        public boolean onDoubleTapEvent(MotionEvent e) {
-            return true;
-        }
-
-        InstaTag mInstaTag = null ;
-        @Override
-        public void onLongPress(MotionEvent e) {
-            //  View view =  container.getRootView();
-            ViewPager viewPager = (ViewPager) container;
-            View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
-
-            if(view!=null){
-                mInstaTag = view.findViewById(R.id.post_image);
-            }
-            if(mInstaTag!=null){
-                if (!mInstaTag.isTagsShow()) {
-                    mInstaTag.showTags();
-                    isShow = true;
-                }
-                else {
-                    mInstaTag.hideTags();
-                    isShow = false;
-                }
-
-            }
-        }
-
-        @Override
-        public void onSinglePress(MotionEvent e) {
-            if (listner != null)
-                listner.onSingleTap();
-        }
-    };
 
     private class MyOnDoubleTapListener extends OnDoubleTapListener {
         private MyOnDoubleTapListener(Context c) {
@@ -350,11 +395,5 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
             if (listner != null)
                 listner.onDoubleTap();
         }
-    }
-
-    public Point getDisplaySize(DisplayMetrics displayMetrics) {
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
-        return new Point(width, height);
     }
 }

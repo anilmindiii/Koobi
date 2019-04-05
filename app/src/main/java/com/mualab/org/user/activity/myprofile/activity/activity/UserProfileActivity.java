@@ -65,10 +65,10 @@ import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.myprofile.activity.adapter.NavigationMenuAdapter;
 import com.mualab.org.user.activity.myprofile.activity.model.NavigationItem;
-import com.mualab.org.user.activity.people_tag.instatag.InstaTag;
-import com.mualab.org.user.activity.people_tag.models.TagDetail;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
 import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
+import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatActivity;
 import com.mualab.org.user.data.feeds.Feeds;
@@ -80,6 +80,7 @@ import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.listener.RecyclerViewScrollListener;
+import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
 import com.mualab.org.user.menu.MenuAdapter;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.Helper;
@@ -110,7 +111,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private LinearLayout ll_progress, llRating;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
-    private RecyclerViewScrollListener endlesScrollListener;
+    private RecyclerViewScrollListenerProfile endlesScrollListener;
     private int CURRENT_FEED_STATE = 0, lastFeedTypeId;
     private String feedType = "", userId;
     private ArtistFeedAdapter feedAdapter;
@@ -130,7 +131,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private boolean isGrideView;
     private EditText ed_search;
     private ImageView iv_search_icon;
-
+    private int page = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,18 +271,16 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         feedAdapter = new ArtistFeedAdapter(UserProfileActivity.this, feeds, this);
 
-        endlesScrollListener = new RecyclerViewScrollListener(lm) {
+
+
+        endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore() {
                 if (feedAdapter != null) {
-                    feedAdapter.showHideLoading(true);
-                    apiForGetAllFeeds(page, 200, false, "");
+                    setAdapterLoading(true);
+                    ++page;
+                    apiForGetAllFeeds(page, 20, false, "");
                 }
-            }
-
-            @Override
-            public void onScroll(RecyclerView view, int dx, int dy) {
-
             }
         };
 
@@ -376,10 +375,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         iv_gride_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                page = 0;
                 feeds.clear();
                 isGrideView = true;
+                rvFeed.setLayoutManager(new GridLayoutManager(UserProfileActivity.this, 3));
+                feedAdapter.isGrideView(true);
                 endlesScrollListener.resetState();
-                apiForGetAllFeeds(0, 200, false, "");
+
+                apiForGetAllFeeds(page,20, true, ""); //last limit 200
                 iv_gride_view.setImageResource(R.drawable.active_grid_icon);
                 iv_list_view.setImageResource(R.drawable.inactive_list);
             }
@@ -388,11 +391,18 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         iv_list_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                feeds.clear();
-                endlesScrollListener.resetState();
-                apiForGetAllFeeds(0, 200, false, "");
-                isGrideView = false;
+                iv_gride_view.setImageResource(R.drawable.inactive_grid_icon);
+                iv_list_view.setImageResource(R.drawable.active_list);
 
+
+                page = 0;
+                feeds.clear();
+                isGrideView = false;
+                rvFeed.setLayoutManager(new LinearLayoutManager(UserProfileActivity.this));
+                feedAdapter.isGrideView(false);
+                endlesScrollListener.resetState();
+
+                apiForGetAllFeeds(page, 20, true, "");//last limit 200
                 iv_gride_view.setImageResource(R.drawable.inactive_grid_icon);
                 iv_list_view.setImageResource(R.drawable.active_list);
 
@@ -401,6 +411,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
 
         apiForGetProfile();
+    }
+
+    private void setAdapterLoading(boolean isLoad) {
+        if (feedAdapter != null) {
+            feedAdapter.showLoading(isLoad);
+            feedAdapter.notifyDataSetChanged();
+        }
     }
 
     private void apiForGetProfile() {
@@ -541,12 +558,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 tvFeeds.setTextColor(getResources().getColor(R.color.colorPrimary));
 
                 if (lastFeedTypeId != R.id.ly_feeds) {
+                    page = 0;
                     feeds.clear();
                     endlesScrollListener.resetState();
                     feedType = "";
                     CURRENT_FEED_STATE = Constant.FEED_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 200, true, "");
+                    apiForGetAllFeeds(0, 20, true, "");
                 }
                 break;
 
@@ -554,12 +572,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 tvImages.setTextColor(getResources().getColor(R.color.colorPrimary));
                 // addRemoveHeader(false);
                 if (lastFeedTypeId != R.id.ly_images) {
+                    page = 0;
                     feeds.clear();
                     endlesScrollListener.resetState();
                     feedType = "image";
                     CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 200, true, "");
+                    apiForGetAllFeeds(0, 20, true, "");
                 }
 
                 break;
@@ -568,12 +587,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 tvVideos.setTextColor(getResources().getColor(R.color.colorPrimary));
                 // addRemoveHeader(false);
                 if (lastFeedTypeId != R.id.ly_videos) {
+                    page = 0;
                     feeds.clear();
                     endlesScrollListener.resetState();
                     feedType = "video";
                     CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 200, true, "");
+                    apiForGetAllFeeds(0, 20, true, "");
                 }
                 break;
 
@@ -584,8 +604,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, final String searchText) {
-        ll_progress.setVisibility(View.VISIBLE);
         tv_no_data_msg.setVisibility(View.GONE);
+        if (ll_progress != null)
+            ll_progress.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
 
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(UserProfileActivity.this, new NoConnectionDialog.Listner() {
@@ -598,6 +619,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                 }
             }).show();
+
+            if (ll_progress != null) ll_progress.setVisibility(View.GONE);
+            setAdapterLoading(false);
         }
 
         Map<String, String> params = new HashMap<>();
@@ -616,6 +640,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(String response, String apiName) {
                 ll_progress.setVisibility(View.GONE);
+                setAdapterLoading(false);
                 feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
@@ -641,6 +666,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void ErrorListener(VolleyError error) {
+                setAdapterLoading(false);
                 ll_progress.setVisibility(View.GONE);
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
@@ -730,8 +756,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                         HashMap<String, TagDetail> tagDetails = new HashMap<>();
 
                                         String unique_tag_id = object.getString("unique_tag_id");
-                                        double x_axis = Double.parseDouble(object.getString("x_axis"));
-                                        double y_axis = Double.parseDouble(object.getString("y_axis"));
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
 
                                         JSONObject tagOjb = object.getJSONObject("tagDetails");
                                         TagDetail tag;
@@ -746,13 +772,55 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                         tagged.setUnique_tag_id(unique_tag_id);
                                         tagged.setX_co_ord(x_axis);
                                         tagged.setY_co_ord(y_axis);
-                                        tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
 
                                         feed.peopleTagList.add(tagged);
                                     }
                                     feed.taggedImgMap.put(j, feed.peopleTagList);
                                 }
                             }
+
+                            if (jsonObject.has("serviceTag")) {
+                                JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                                if (serviceTagArray.length() != 0) {
+
+                                    for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                        feed.serviceTagList = new ArrayList<>();
+                                        JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                        for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                            JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                            String unique_tag_id = object.getString("unique_tag_id");
+                                            float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                            float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                            JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                            TagDetail tag;
+                                            if (tagOjb.has("tabType")) {
+                                                tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                            } else {
+                                                JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                                tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                            }
+//tagDetails.put(tag.title, tag);
+                                            TagToBeTagged tagged = new TagToBeTagged();
+                                            tagged.setUnique_tag_id(unique_tag_id);
+                                            tagged.setX_co_ord(x_axis);
+                                            tagged.setY_co_ord(y_axis);
+// tagged.setTagDetails(tagDetails);
+                                            tagged.setTagDetails(tag);
+
+                                            feed.serviceTagList.add(tagged);
+                                        }
+                                        feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                    }
+                                }
+                            }
+
 
                             if (isGrideView) {
                                 if (!feed.feedType.equals("text")) {
@@ -776,7 +844,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     tv_no_data_msg.setVisibility(View.VISIBLE);
                 }
 
-                if (isGrideView) {
+               /* if (isGrideView) {
                     rvFeed.setLayoutManager(new GridLayoutManager(UserProfileActivity.this, 3));
                     feedAdapter.isGrideView(true);
                     endlesScrollListener.resetState();
@@ -784,7 +852,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     rvFeed.setLayoutManager(new LinearLayoutManager(UserProfileActivity.this));
                     feedAdapter.isGrideView(false);
                     endlesScrollListener.resetState();
-                }
+                }*/
 
 
                 feedAdapter.notifyDataSetChanged();
@@ -885,8 +953,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10) {
+            page = 0;
             apiForGetProfile();
-            //apiForGetAllFeeds(0, 10, true);
+            apiForGetAllFeeds(page, 20, true, "");
         } else if (data != null) {
             if (requestCode == Constant.ACTIVITY_COMMENT) {
                 if (CURRENT_FEED_STATE == Constant.FEED_STATE) {
@@ -1005,6 +1074,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.llRating:
                 Intent intent = new Intent(this, ReviewRatingActivity.class);
+                intent.putExtra("id",userId);
+                intent.putExtra("userType","user");
                 startActivity(intent);
                 break;
 
@@ -1104,29 +1175,32 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     int prevSize = feeds.size();
                     switch (data) {
                         case "All":
+                            page = 0;
                             tvFilter.setText(R.string.all);
                             feeds.clear();
                             endlesScrollListener.resetState();
                             feedType = "";
                             CURRENT_FEED_STATE = Constant.FEED_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 200, true, "");
+                            apiForGetAllFeeds(0, 20, true, "");
 
                             popupWindow.dismiss();
                             break;
 
                         case "Photo":
+                            page = 0;
                             tvFilter.setText(R.string.photo);
                             feeds.clear();
                             endlesScrollListener.resetState();
                             feedType = "image";
                             CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 200, true, "");
+                            apiForGetAllFeeds(0, 20, true, "");
                             popupWindow.dismiss();
                             break;
 
                         case "Video":
+                            page = 0;
                             tvFilter.setText(R.string.video);
                             popupWindow.dismiss();
                             feeds.clear();
@@ -1134,7 +1208,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                             feedType = "video";
                             CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 200, true, "");
+                            apiForGetAllFeeds(0, 20, true, "");
                             break;
 
                     }
@@ -1308,8 +1382,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         ArrayList<TagToBeTagged> tags = feeds.taggedImgMap.get(index);
         if (tags != null && tags.size() != 0) {
-            postImage.addTagViewFromTagsToBeTagged(tags, false);
-            postImage.hideTags();
+            postImage.addTagViewFromTagsToBeTagged("",tags, false);
+            postImage.hideTags("");
         }
 
         //   Picasso.with(mContext).load(feeds.feed.get(index)).priority(Picasso.Priority.HIGH).noPlaceholder().into(postImage);
@@ -1326,10 +1400,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onLongPress() {
                 if (!isShow) {
                     isShow = true;
-                    postImage.showTags();
+                    postImage.showTags("");
                 } else {
                     isShow = false;
-                    postImage.hideTags();
+                    postImage.hideTags("");
                 }
 
             }
@@ -1422,8 +1496,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
+
         @Override
-        public void singleTapConfirmedAndRootIsInTouch(int x, int y) {
+        public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
+
         }
 
         @Override

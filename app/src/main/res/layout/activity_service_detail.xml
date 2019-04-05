@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/white">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_alignParentTop="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnDone"
+        android:layout_below="@+id/headerLayout"
+        android:layout_marginBottom="5dp"
+        android:scrollbars="none"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/business_type"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvBusinessTypeName"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:maxLength="30"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint="Makeup"
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Category"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvCategoryName"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:maxLength="30"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint="makeup"
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llServiceName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Service Name"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvServiceName"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:maxLength="30"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint="Hair brown color"
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBookingType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Booking Type"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvBookingType"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:maxLength="30"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint=""
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llInCallPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/headerLayout"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Incall Price"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvInCallPrice"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:imeOptions="actionDone"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:maxLength="30"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint="£ 60"
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llOutCallPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/llInCallPrice"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Outcall Price"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvOutCallPrice"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:ems="18"
+                    android:maxLength="30"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint="£ 60"
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llServiceDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/headerLayout"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Service Description"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvServiceDesc"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:padding="5dp"
+                    android:imeOptions="actionDone"
+                    android:hint="Enter Description"
+                    android:textColor="@color/grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gray2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    style="@style/TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Time For Completion"
+                    android:textColor="@color/text_color" />
+
+                <TextView
+                    android:id="@+id/tvCompileTime"
+                    android:fontFamily="@font/nunito_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxWidth="240dp"
+                    android:textSize="16sp"
+                    android:background="@null"
+                    android:layout_marginLeft="6dp"
+                    android:ems="18"
+                    android:maxLength="30"
+                    android:paddingBottom="30dp"
+                    android:maxLines="2"
+                    android:padding="5dp"
+                    android:hint="HH:MM"
+                    android:textColor="@color/grey" />
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        style="@style/My_Button.Invert"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="@dimen/margin_left26"
+        android:layout_marginRight="@dimen/margin_right26"
+        android:text="@string/done"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        />
+
+</RelativeLayout>

@@ -1,7 +1,7 @@
 package com.mualab.org.user.data.feeds;
 
 import com.google.gson.annotations.SerializedName;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +23,9 @@ public class Feeds  implements Serializable{
     public List<Feed> feedData = new ArrayList<>();
     public List<String> feedThumb = new ArrayList<>();
     public ArrayList<TagToBeTagged> peopleTagList = new ArrayList<>();
+    public ArrayList<TagToBeTagged> serviceTagList = new ArrayList<>();
     public HashMap<Integer,ArrayList<TagToBeTagged>> taggedImgMap = new HashMap<>();
+    public HashMap<Integer,ArrayList<TagToBeTagged>> serviceTaggedImgMap = new HashMap<>();
 
     public String caption;
     @SerializedName("location")

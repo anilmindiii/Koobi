@@ -93,7 +93,7 @@
 
     </LinearLayout>
 
-    <com.mualab.org.user.activity.people_tag.instatag.TagImageView
+    <com.mualab.org.user.activity.tag_module.instatag.TagImageView
         android:id="@+id/remove_tag_image_view"
         android:layout_width="16dp"
         android:layout_height="16dp"

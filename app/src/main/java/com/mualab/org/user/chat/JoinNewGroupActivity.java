@@ -41,6 +41,7 @@ public class JoinNewGroupActivity extends AppCompatActivity {
     private String myGroupIds = "";
     private ArrayList<Groups> arrayList;
     private EditText searchview;
+    private TextView tv_no_chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class JoinNewGroupActivity extends AppCompatActivity {
             }
         });
 
+        tv_no_chat = findViewById(R.id.tv_no_chat);
         searchview = findViewById(R.id.searchview);
         recycler_view = findViewById(R.id.recycler_view);
         arrayList = new ArrayList<>();
@@ -97,13 +99,9 @@ public class JoinNewGroupActivity extends AppCompatActivity {
         myGroupRequestRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot.getValue() != null) {
                     myGroupRequestIds = dataSnapshot.getValue() + "," + myGroupRequestIds;
-
                 }
-
-
             }
 
             @Override
@@ -111,6 +109,8 @@ public class JoinNewGroupActivity extends AppCompatActivity {
 
             }
         });
+
+
 
         myGroupRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -142,6 +142,7 @@ public class JoinNewGroupActivity extends AppCompatActivity {
     }
 
     private void getGroupData() {
+
         groupDataBaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -167,13 +168,21 @@ public class JoinNewGroupActivity extends AppCompatActivity {
                     Groups groups = dataSnapshot.getValue(Groups.class);
                     if (groups != null) {
                         String key = dataSnapshot.getKey();
-                        if (!myGroupIds.contains(key) && !myGroupRequestIds.contains(key)) {
+
+
+                        if (!myGroupIds.contains(key) && !myGroupRequestIds.contains(key))
+                        {
                             groupsMap.put(key, groups);
 
                             Collection<Groups> demoValues = groupsMap.values();
                             arrayList.clear();
                             arrayList.addAll(demoValues);
                             adapter.notifyDataSetChanged();
+
+                            if(arrayList.size() == 0){
+                                tv_no_chat.setVisibility(View.VISIBLE);
+                            } else tv_no_chat.setVisibility(View.GONE);
+
                         }
                     }
 

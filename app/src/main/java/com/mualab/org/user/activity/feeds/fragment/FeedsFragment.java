@@ -73,11 +73,11 @@ import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerFeedAdapter;
 import com.mualab.org.user.activity.feeds.enums.PermissionType;
 import com.mualab.org.user.activity.gellery.GalleryActivity;
-import com.mualab.org.user.activity.people_tag.instatag.InstaTag;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
-import com.mualab.org.user.activity.people_tag.models.TagDetail;
 import com.mualab.org.user.activity.story.StoriesActivity;
 import com.mualab.org.user.activity.story.camera.util.ImageUtil;
+import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
@@ -674,8 +674,8 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                                         HashMap<String, TagDetail> tagDetails = new HashMap<>();
 
                                         String unique_tag_id = object.getString("unique_tag_id");
-                                        double x_axis = Double.parseDouble(object.getString("x_axis"));
-                                        double y_axis = Double.parseDouble(object.getString("y_axis"));
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
 
                                         JSONObject tagOjb = object.getJSONObject("tagDetails");
                                         TagDetail tag;
@@ -698,7 +698,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                                         tagged.setUnique_tag_id(unique_tag_id);
                                         tagged.setX_co_ord(x_axis);
                                         tagged.setY_co_ord(y_axis);
-                                        tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
 
                                         feed.peopleTagList.add(tagged);
                                     }
@@ -706,6 +706,48 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                                 }
                             }
                         }
+
+                        if (jsonObject.has("serviceTag")) {
+                            JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                            if (serviceTagArray.length() != 0) {
+
+                                for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                    feed.serviceTagList = new ArrayList<>();
+                                    JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                    for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                        JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                        String unique_tag_id = object.getString("unique_tag_id");
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                        JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                        TagDetail tag;
+                                        if (tagOjb.has("tabType")) {
+                                            tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                        } else {
+                                            JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                            tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                        }
+//tagDetails.put(tag.title, tag);
+                                        TagToBeTagged tagged = new TagToBeTagged();
+                                        tagged.setUnique_tag_id(unique_tag_id);
+                                        tagged.setX_co_ord(x_axis);
+                                        tagged.setY_co_ord(y_axis);
+// tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
+
+                                        feed.serviceTagList.add(tagged);
+                                    }
+                                    feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                }
+                            }
+                        }
+
 
                         feeds.add(feed);
 
@@ -1215,8 +1257,8 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
         ArrayList<TagToBeTagged> tags = feeds.taggedImgMap.get(index);
         if (tags != null && tags.size() != 0) {
-            postImage.addTagViewFromTagsToBeTagged(tags, false);
-            postImage.hideTags();
+            postImage.addTagViewFromTagsToBeTagged("people",tags, false);
+            postImage.hideTags("people");
         }
 
         //   Picasso.with(mContext).load(feeds.feed.get(index)).priority(Picasso.Priority.HIGH).noPlaceholder().into(postImage);
@@ -1233,10 +1275,10 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
             public void onLongPress() {
                 if (!isShow) {
                     isShow = true;
-                    postImage.showTags();
+                    postImage.showTags("people");
                 } else {
                     isShow = false;
-                    postImage.hideTags();
+                    postImage.hideTags("people");
                 }
 
             }
@@ -1246,8 +1288,9 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     }
 
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
+
         @Override
-        public void singleTapConfirmedAndRootIsInTouch(int x, int y) {
+        public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
 
         }
 

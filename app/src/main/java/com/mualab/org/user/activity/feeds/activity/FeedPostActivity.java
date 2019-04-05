@@ -60,9 +60,9 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.UserSuggessionAdapter;
 import com.mualab.org.user.activity.main.MainActivity;
-import com.mualab.org.user.activity.people_tag.activity.PeopleTagActivity;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
-import com.mualab.org.user.activity.people_tag.models.TagDetail;
+import com.mualab.org.user.activity.tag_module.activity.PeopleTagActivity;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.model.MediaUri;
 import com.mualab.org.user.data.model.booking.Address;
@@ -500,11 +500,13 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                     ArrayList<String> tagIdsArrayList = new ArrayList<>();
                     for (int i = 0; i < listOfValues.size(); i++) {
                         for (TagToBeTagged tag : listOfValues.get(i)) {
-                            HashMap<String, TagDetail> tagDetails = tag.getTagDetails();
-                            for (Map.Entry map : tagDetails.entrySet()) {
+                            //HashMap<String, TagDetail> tagDetails = tag.getTagDetails();
+                            TagDetail tagDetail = tag.getTagDetails();
+                           /* for (Map.Entry map : tagDetails.entrySet()) {
                                 TagDetail tagDetail = tagDetails.get(map.getKey());
                                 tagIdsArrayList.add(tagDetail.tagId);
-                            }
+                            }*/
+                            tagIdsArrayList.add(tagDetail.tagId);
                         }
                     }
                     tagIdsArray = gson.toJson(tagIdsArrayList);
@@ -531,11 +533,12 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                     ArrayList<String> tagIdsArrayList = new ArrayList<>();
                     for (int i = 0; i < listOfValues.size(); i++) {
                         for (TagToBeTagged tag : listOfValues.get(i)) {
-                            HashMap<String, TagDetail> tagDetails = tag.getTagDetails();
-                            for (Map.Entry map : tagDetails.entrySet()) {
+                            TagDetail tagDetails = tag.getTagDetails();
+                           /* for (Map.Entry map : tagDetails.entrySet()) {
                                 TagDetail tagDetail = tagDetails.get(map.getKey());
-                                tagIdsArrayList.add(tagDetail.tagId);
-                            }
+
+                            }*/
+                            tagIdsArrayList.add(tagDetails.tagId);
                         }
                     }
                     tagIdsArray = gson.toJson(tagIdsArrayList);

@@ -1,20 +1,36 @@
 package com.mualab.org.user.activity.explore.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
+import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
+import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.data.remote.HttpResponceListner;
+import com.mualab.org.user.data.remote.HttpTask;
+import com.mualab.org.user.dialogs.MyToast;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -101,6 +117,13 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Picasso.with(mContext).load(searchTag.imageUrl).placeholder(R.drawable.default_placeholder).fit().into(h.ivProfile);
                 }else Picasso.with(mContext).load(R.drawable.default_placeholder).into(h.ivProfile);
 
+                h.ivProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        apiForgetUserIdFromUserName(searchTag.title);
+                    }
+                });
+
                 break;
 
             case 2:
@@ -136,5 +159,59 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 listener.onItemClick(searchTag, pos);
             }
         }
+    }
+
+    private void apiForgetUserIdFromUserName(String userName) {
+        final Map<String, String> params = new HashMap<>();
+        if(userName.toString().contains("@")){
+            userName = userName.toString().replace("@","");
+        }
+        params.put("userName", userName+"");
+        new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                Log.d("hfjas", response);
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+
+                        JSONObject userDetail = js.getJSONObject("userDetail");
+                        String userType = userDetail.getString("userType");
+                        int userId = userDetail.getInt("_id");
+
+                        if (userType.equals("user")) {
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        }else if (userType.equals("artist") && userId== Mualab.currentUser.id){
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        }
+                        else {
+                            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
+                            intent.putExtra("artistId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        }
+
+                    } else {
+                        MyToast.getInstance(mContext).showDasuAlert(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+            }
+        }).setBody(params,HttpTask.ContentType.APPLICATION_JSON)
+                .setMethod(Request.Method.POST)
+                .setProgress(true))
+                .execute("FeedAdapter");
+
+
     }
 }

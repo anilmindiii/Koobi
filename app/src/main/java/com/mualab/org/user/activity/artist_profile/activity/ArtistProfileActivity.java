@@ -11,12 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -34,8 +32,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,16 +53,15 @@ import com.mualab.org.user.activity.artist_profile.adapter.ArtistFeedAdapter;
 import com.mualab.org.user.activity.artist_profile.fragments.ProfileComboFragment1;
 import com.mualab.org.user.activity.artist_profile.fragments.ProfileComboFragment2;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
-import com.mualab.org.user.activity.authentication.LoginActivity;
 import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
-import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
-import com.mualab.org.user.activity.people_tag.instatag.InstaTag;
-import com.mualab.org.user.activity.people_tag.instatag.TagToBeTagged;
-import com.mualab.org.user.activity.people_tag.models.TagDetail;
+import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
+import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
+import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
+import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatActivity;
 import com.mualab.org.user.data.feeds.Feeds;
@@ -78,11 +73,10 @@ import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
-import com.mualab.org.user.listener.RecyclerViewScrollListener;
+import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
 import com.mualab.org.user.menu.MenuAdapter;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.Helper;
-import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.WrapContentLinearLayoutManager;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
@@ -105,10 +99,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     private User user;
     private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg ;
     private ImageView  ivActive, ivFav;
-    private LinearLayout lowerLayout1, lowerLayout2, ll_progress;
+    private LinearLayout lowerLayout1, lowerLayout2, ll_progress,llRating;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
-    private RecyclerViewScrollListener endlesScrollListener;
+    private RecyclerViewScrollListenerProfile endlesScrollListener;
     private int CURRENT_FEED_STATE = 0, lastFeedTypeId;
     private String feedType = "";
     private ArtistFeedAdapter feedAdapter;
@@ -131,6 +125,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     private boolean isGrideView;
     private CollapsingToolbarLayout ly_main;
     private RelativeLayout ly_main_layout;
+    private int page = 0;
 
 
     @Override
@@ -162,7 +157,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         AppCompatButton btnBook = findViewById(R.id.btnBook);
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView ivChat2 = findViewById(R.id.ivChat2);
-        ivChat2.setVisibility(View.VISIBLE);
+        ivChat2.setVisibility(View.GONE);
         ivFav = findViewById(R.id.ivFav);
         ivFilter = findViewById(R.id.ivFilter);
         ivFav.setVisibility(View.VISIBLE);
@@ -185,6 +180,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         tv_msg = findViewById(R.id.tv_msg);
         tv_no_data_msg = findViewById(R.id.tv_no_data_msg);
         ll_progress = findViewById(R.id.ll_progress);
+        llRating = findViewById(R.id.llRating);
 
         WrapContentLinearLayoutManager lm = new WrapContentLinearLayoutManager(ArtistProfileActivity.this, LinearLayoutManager.VERTICAL, false);
         rvFeed.setItemAnimator(null);
@@ -192,18 +188,16 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         rvFeed.setHasFixedSize(true);
 
         feedAdapter = new ArtistFeedAdapter(ArtistProfileActivity.this, feeds, this);
-        endlesScrollListener = new RecyclerViewScrollListener(lm) {
+
+
+        endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore() {
                 if (feedAdapter != null) {
-                    feedAdapter.showHideLoading(true);
-                    apiForGetAllFeeds(page, 10, false, "");
+                    setAdapterLoading(true);
+                    ++page;
+                    apiForGetAllFeeds(page, 20, false, "");
                 }
-            }
-
-            @Override
-            public void onScroll(RecyclerView view, int dx, int dy) {
-
             }
         };
 
@@ -218,7 +212,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             public void onRefresh() {
                 endlesScrollListener.resetState();
                 isPulltoRefrash = true;
-                apiForGetAllFeeds(0, 10, false, "");
+                apiForGetAllFeeds(0, 20, false, "");
             }
 
             @Override
@@ -257,8 +251,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void afterTextChanged(Editable s) {
+                page = 0;
                 feeds.clear();
-                apiForGetAllFeeds(0, 10, false, s.toString().trim());
+                endlesScrollListener.resetState();
+                apiForGetAllFeeds(0, 20, false, s.toString().trim());
             }
         });
 
@@ -277,11 +273,14 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         iv_gride_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                page = 0;
+                feeds.clear();
                 isGrideView = true;
+                rvFeed.setLayoutManager(new GridLayoutManager(ArtistProfileActivity.this, 3));
+                feedAdapter.isGrideView(true);
                 endlesScrollListener.resetState();
-                apiForGetAllFeeds(0, 200, false, "");
 
-
+                apiForGetAllFeeds(page,20, true, ""); //last limit 200
                 iv_gride_view.setImageResource(R.drawable.active_grid_icon);
                 iv_list_view.setImageResource(R.drawable.inactive_list);
             }
@@ -290,12 +289,18 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         iv_list_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                endlesScrollListener.resetState();
-                apiForGetAllFeeds(0, 200, false, "");
+                iv_gride_view.setImageResource(R.drawable.inactive_grid_icon);
+                iv_list_view.setImageResource(R.drawable.active_list);
 
 
+                page = 0;
+                feeds.clear();
                 isGrideView = false;
+                rvFeed.setLayoutManager(new LinearLayoutManager(ArtistProfileActivity.this));
+                feedAdapter.isGrideView(false);
+                endlesScrollListener.resetState();
 
+                apiForGetAllFeeds(page, 20, true, "");//last limit 200
                 iv_gride_view.setImageResource(R.drawable.inactive_grid_icon);
                 iv_list_view.setImageResource(R.drawable.active_list);
 
@@ -319,11 +324,18 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         ivFav.setOnClickListener(this);
         ly_main.setOnClickListener(this);
         ly_main_layout.setOnClickListener(this);
+        llRating.setOnClickListener(this);
 
         apiForGetProfile();
 
     }
 
+    private void setAdapterLoading(boolean isLoad) {
+        if (feedAdapter != null) {
+            feedAdapter.showLoading(isLoad);
+            feedAdapter.notifyDataSetChanged();
+        }
+    }
 
     private void initProfilePager() {
         final LinearLayout ll_Dot = findViewById(R.id.ll_Dot);
@@ -608,6 +620,14 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
 
+            case R.id.llRating:
+                intent = new Intent(this, ReviewRatingActivity.class);
+                intent.putExtra("id",artistId);
+                intent.putExtra("userType","artist");
+                startActivity(intent);
+                break;
+
+
             case R.id.ly_main_layout:
             case R.id.ly_main:
                 if (ed_search.getText().toString().trim().equals("")){
@@ -644,6 +664,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                     int prevSize = feeds.size();
                     switch (data) {
                         case "All":
+                            page = 0;
                             tvFilter.setText(R.string.all);
 
 
@@ -652,23 +673,25 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                             feedType = "";
                             CURRENT_FEED_STATE = Constant.FEED_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 200, true, "");
+                            apiForGetAllFeeds(0, 20, true, "");
 
                             popupWindow.dismiss();
                             break;
 
                         case "Photo":
+                            page = 0;
                             tvFilter.setText(R.string.photo);
                             feeds.clear();
                             endlesScrollListener.resetState();
                             feedType = "image";
                             CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 200, true, "");
+                            apiForGetAllFeeds(0, 20, true, "");
                             popupWindow.dismiss();
                             break;
 
                         case "Video":
+                            page = 0;
                             tvFilter.setText(R.string.video);
                             popupWindow.dismiss();
                             feeds.clear();
@@ -676,7 +699,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                             feedType = "video";
                             CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 200, true, "");
+                            apiForGetAllFeeds(0, 20, true, "");
                             break;
 
                     }
@@ -762,11 +785,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 tvFeeds.setTextColor(getResources().getColor(R.color.colorPrimary));
 
                 if (lastFeedTypeId != R.id.ly_feeds) {
+                    page = 0;
                     feeds.clear();
                     feedType = "";
                     CURRENT_FEED_STATE = Constant.FEED_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 10, true, "");
+                    apiForGetAllFeeds(0, 20, true, "");
                 }
                 break;
 
@@ -774,11 +798,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 tvImages.setTextColor(getResources().getColor(R.color.colorPrimary));
                 // addRemoveHeader(false);
                 if (lastFeedTypeId != R.id.ly_images) {
+                    page = 0;
                     feeds.clear();
                     feedType = "image";
                     CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 10, true, "");
+                    apiForGetAllFeeds(0, 20, true, "");
                 }
 
                 break;
@@ -787,11 +812,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 tvVideos.setTextColor(getResources().getColor(R.color.colorPrimary));
                 // addRemoveHeader(false);
                 if (lastFeedTypeId != R.id.ly_videos) {
+                    page = 0;
                     feeds.clear();
                     feedType = "video";
                     CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 10, true, "");
+                    apiForGetAllFeeds(0, 20, true, "");
                 }
                 break;
         }
@@ -800,7 +826,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     }
 
     private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, final String searchText) {
-        ll_progress.setVisibility(View.VISIBLE);
+
+        if (ll_progress != null)
+            ll_progress.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
+
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(ArtistProfileActivity.this, new NoConnectionDialog.Listner() {
                 @Override
@@ -812,6 +841,9 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
                 }
             }).show();
+
+            if (ll_progress != null) ll_progress.setVisibility(View.GONE);
+            setAdapterLoading(false);
         }
 
         Map<String, String> params = new HashMap<>();
@@ -830,6 +862,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onResponse(String response, String apiName) {
                 ll_progress.setVisibility(View.GONE);
+                setAdapterLoading(false);
                 feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
@@ -853,6 +886,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             @Override
             public void ErrorListener(VolleyError error) {
                 ll_progress.setVisibility(View.GONE);
+                setAdapterLoading(false);
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
                     mRefreshLayout.stopRefresh(false, 500);
@@ -942,8 +976,8 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                                         HashMap<String, TagDetail> tagDetails = new HashMap<>();
 
                                         String unique_tag_id = object.getString("unique_tag_id");
-                                        double x_axis = Double.parseDouble(object.getString("x_axis"));
-                                        double y_axis = Double.parseDouble(object.getString("y_axis"));
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
 
                                         JSONObject tagOjb = object.getJSONObject("tagDetails");
                                         TagDetail tag;
@@ -958,13 +992,55 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                                         tagged.setUnique_tag_id(unique_tag_id);
                                         tagged.setX_co_ord(x_axis);
                                         tagged.setY_co_ord(y_axis);
-                                        tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
 
                                         feed.peopleTagList.add(tagged);
                                     }
                                     feed.taggedImgMap.put(j, feed.peopleTagList);
                                 }
                             }
+
+                            if (jsonObject.has("serviceTag")) {
+                                JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                                if (serviceTagArray.length() != 0) {
+
+                                    for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                        feed.serviceTagList = new ArrayList<>();
+                                        JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                        for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                            JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                            String unique_tag_id = object.getString("unique_tag_id");
+                                            float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                            float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                            JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                            TagDetail tag;
+                                            if (tagOjb.has("tabType")) {
+                                                tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                            } else {
+                                                JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                                tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                            }
+//tagDetails.put(tag.title, tag);
+                                            TagToBeTagged tagged = new TagToBeTagged();
+                                            tagged.setUnique_tag_id(unique_tag_id);
+                                            tagged.setX_co_ord(x_axis);
+                                            tagged.setY_co_ord(y_axis);
+// tagged.setTagDetails(tagDetails);
+                                            tagged.setTagDetails(tag);
+
+                                            feed.serviceTagList.add(tagged);
+                                        }
+                                        feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                    }
+                                }
+                            }
+
 
                             if (isGrideView) {
                                 if (!feed.feedType.equals("text")) {
@@ -984,7 +1060,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                     tv_no_data_msg.setVisibility(View.VISIBLE);
                 }
 
-                if (isGrideView) {
+            /*    if (isGrideView) {
                     rvFeed.setLayoutManager(new GridLayoutManager(ArtistProfileActivity.this, 3));
                     feedAdapter.isGrideView(true);
                     endlesScrollListener.resetState();
@@ -992,7 +1068,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                     rvFeed.setLayoutManager(new LinearLayoutManager(ArtistProfileActivity.this));
                     feedAdapter.isGrideView(false);
                     endlesScrollListener.resetState();
-                }
+                }*/
 
 
                 feedAdapter.notifyDataSetChanged();
@@ -1306,8 +1382,9 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10) {
+            page = 0;
             apiForGetProfile();
-            //apiForGetAllFeeds(0, 10, true);
+            apiForGetAllFeeds(page, 20, true, "");
         } else if (data != null) {
             if (requestCode == Constant.ACTIVITY_COMMENT) {
                 if (CURRENT_FEED_STATE == Constant.FEED_STATE) {
@@ -1404,8 +1481,8 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
         ArrayList<TagToBeTagged> tags = feeds.taggedImgMap.get(index);
         if (tags != null && tags.size() != 0) {
-            postImage.addTagViewFromTagsToBeTagged(tags, false);
-            postImage.hideTags();
+            postImage.addTagViewFromTagsToBeTagged("",tags, false);
+            postImage.hideTags("");
         }
 
         //   Picasso.with(mContext).load(feeds.feed.get(index)).priority(Picasso.Priority.HIGH).noPlaceholder().into(postImage);
@@ -1422,10 +1499,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             public void onLongPress() {
                 if (!isShow) {
                     isShow = true;
-                    postImage.showTags();
+                    postImage.showTags("");
                 } else {
                     isShow = false;
-                    postImage.hideTags();
+                    postImage.hideTags("");
                 }
 
             }
@@ -1435,8 +1512,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     }
 
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
+
         @Override
-        public void singleTapConfirmedAndRootIsInTouch(int x, int y) {
+        public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
+
         }
 
         @Override

@@ -1208,8 +1208,8 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
         dialog.setContentView(R.layout.dialog_show_service);
         TextView tvHeader = dialog.findViewById(R.id.tvHeader);
         android.support.v7.widget.SearchView searchview = dialog.findViewById(R.id.searchview);
-        searchview.setQueryHint("Search certificate");
-        tvHeader.setText("Select Certificate");
+        searchview.setQueryHint("Search Qualifications");
+        tvHeader.setText("Select Qualifications ");
         final RecyclerView recyclerView = dialog.findViewById(R.id.recyclerview);
         ImageView img_cancel = dialog.findViewById(R.id.img_cancel);
         Button btn_done = dialog.findViewById(R.id.btn_done);

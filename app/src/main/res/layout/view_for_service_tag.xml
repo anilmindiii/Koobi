@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flTag"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/carrot_left"
+            android:layout_width="22dp"
+            android:layout_height="20dp"
+            android:background="@drawable/tag_shape_carrot_left"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/carrot_top"
+                android:layout_width="@dimen/dp22"
+                android:layout_height="@dimen/dp20"
+                android:layout_gravity="center"
+                android:layout_marginBottom="-2.5dp"
+                android:background="@drawable/service_tag_shape_carrot_top"
+                android:gravity="center"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/tag_text_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/service_tag_white_rectangle"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="7dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="3dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="90dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tag_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/nunito_regular"
+                        android:layout_gravity="start"
+                        android:gravity="start"
+                        android:maxWidth="90dp"
+                        android:maxLines="1"
+                        android:text="Service For "
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/nunito_regular"
+                        android:gravity="center"
+                        android:maxWidth="90dp"
+                        android:maxLines="1"
+                        android:textColor="@color/dark_gray"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/gray2" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:rotation="180"
+                    android:tint="@color/gray"
+                    android:src="@drawable/white_back_ico"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/carrot_bottom"
+                android:layout_width="@dimen/dp22"
+                android:layout_height="@dimen/dp20"
+                android:layout_marginTop="-2.5dp"
+                android:layout_gravity="center"
+                android:background="@drawable/service_tag_shape_carrot_bottom"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/carrot_right"
+            android:layout_width="@dimen/dp22"
+            android:layout_height="@dimen/dp20"
+            android:background="@drawable/tag_shape_carrot_right"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+    <com.mualab.org.user.activity.tag_module.instatag.TagImageView
+        android:id="@+id/remove_tag_image_view"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/dp12"
+        android:layout_marginRight="@dimen/dp12"
+        android:layout_marginBottom="@dimen/dp12"
+        android:background="@drawable/cancel_ico"
+        android:padding="2dp"
+        android:tint="@color/white"
+        android:visibility="gone" />
+</FrameLayout>

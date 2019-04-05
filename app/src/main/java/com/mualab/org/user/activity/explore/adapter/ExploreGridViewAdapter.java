@@ -153,7 +153,7 @@ public class ExploreGridViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         @Override
         public void onClick(View v) {
             int pos = getAdapterPosition();
-            Feeds feed = feedItems.get(pos);
+           // Feeds feed = feedItems.get(pos);
             listener.onFeedClick(feedItems, pos);
 
 

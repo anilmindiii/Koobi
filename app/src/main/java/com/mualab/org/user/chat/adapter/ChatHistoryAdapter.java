@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int VIEW_TYPE_SINGLE  = 1;
     private int VIEW_TYPE_GROUP = 2;
     private int VIEW_TYPE_BROADCAST = 3;
+    private int lastPosition = -1;
 
     private Context context;
     private List<ChatHistory> chatHistories;
@@ -57,6 +60,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.context = context;
         this.chatHistories = chatHistories;
     }
+
 
     @NonNull
     @Override
@@ -90,6 +94,21 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         }else {
             ((GroupChatViewHolder)holder).otherBindData(chatHistory,position,tempPos);
+        }
+
+
+
+    }
+
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
         }
     }
 
@@ -213,7 +232,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }catch (Exception e){
                 e.printStackTrace();
             }
-
+            setAnimation(itemView, position);
         }
 
         @Override
@@ -344,6 +363,8 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }catch (Exception e){
                 e.printStackTrace();
             }
+
+            setAnimation(itemView, position);
         }
 
         @Override
@@ -477,6 +498,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }catch (Exception e){
                 e.printStackTrace();
             }
+            setAnimation(itemView, position);
         }
 
         @Override

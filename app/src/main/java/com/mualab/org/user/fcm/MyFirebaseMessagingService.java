@@ -21,6 +21,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -161,6 +162,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("title", title);
         intent.putExtra("userName", userName);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        Intent intentBroadcast = new Intent("com.mualab.org.user");
+        intentBroadcast.putExtra("notificationType", notificationType);
+        intentBroadcast.putExtra("notifyId", notifyId);
+        intentBroadcast.putExtra("title", title);
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.sendBroadcast(intentBroadcast);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 

@@ -427,14 +427,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                         }
                         callEditProfileApi(user1);
                         btnContinue1.setEnabled(false);
-
-
                     }
-
-
                 }
-
-
                 break;
 
             case R.id.imgVerifyStatus:
@@ -610,7 +604,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         Calendar calendar_new = new GregorianCalendar(yearShow, monthShow, dayShow);
         String dob = simpleDateFormat.format(calendar_new.getTime());
         dob = Helper.formateDateFromstring("dd/MM/yyyy", "yyyy-MM-dd", dob);//2019-02-01
-
 
         params.put("dob", dob);
         params.put("address", edituser.address);
