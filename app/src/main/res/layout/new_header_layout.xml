@@ -28,7 +28,7 @@
                 android:id="@+id/btnBack"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="3dp"
                 android:src="@drawable/white_back_ico"
                 android:tint="@color/gray" />
 

@@ -104,7 +104,7 @@
                 android:background="@drawable/gradient_circle_img"
                 android:src="@drawable/default_placeholder"
                 app:civ_border_color="@color/transparent"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="6dp"
                 />
 
             <LinearLayout

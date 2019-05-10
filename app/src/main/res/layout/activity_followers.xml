@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <include
@@ -18,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginLeft="13dp"
         android:layout_gravity="center_vertical"
         android:layout_toLeftOf="@+id/ivFilter"
         android:layout_toStartOf="@+id/ivFilter"
@@ -50,8 +51,8 @@
         android:orientation="vertical"
         android:layout_below="@+id/searchView"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
         android:layout_height="match_parent">
 
 
@@ -69,6 +70,8 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                tool:listitem="@layout/item_followers_layout"
                 android:scrollbars="none" />
 
         </com.mualab.org.user.Views.refreshviews.RjRefreshLayout>

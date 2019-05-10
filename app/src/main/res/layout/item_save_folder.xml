@@ -8,7 +8,6 @@
     app:clickToClose="true">
 
     <LinearLayout
-
         android:tag="side1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -56,7 +55,7 @@
                 android:layout_marginRight="10dp"
                 android:padding="3dp"
                 android:tint="@color/gray_hard"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="12dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/folder_ico" />
 

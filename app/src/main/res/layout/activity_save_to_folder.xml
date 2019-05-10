@@ -23,6 +23,8 @@
             android:layout_marginTop="?actionBarSize"
             android:nestedScrollingEnabled="false"
             android:paddingBottom="110dp"
+            tools:listitem="@layout/item_save_folder"
+
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
         <LinearLayout

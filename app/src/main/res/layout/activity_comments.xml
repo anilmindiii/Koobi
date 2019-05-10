@@ -29,14 +29,13 @@
            android:layout_centerInParent="true"
            app:layout_collapseMode="pin">
 
+
            <ImageView
                android:id="@+id/iv_back_press"
-               android:layout_width="48dp"
-               android:layout_height="48dp"
-               android:padding="10dp"
-               android:layout_alignParentLeft="true"
-               android:layout_centerInParent="true"
-               android:background="?attr/selectableItemBackgroundBorderless"
+               android:layout_width="30dp"
+               android:layout_height="30dp"
+               android:layout_marginLeft="5dp"
+               android:layout_centerVertical="true"
                android:src="@drawable/white_back_ico"
                android:tint="@color/gray" />
 
@@ -198,8 +197,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
                 android:layout_gravity="center_vertical"
                 android:layout_toLeftOf="@+id/ivFilter"
                 android:layout_toStartOf="@+id/ivFilter"
