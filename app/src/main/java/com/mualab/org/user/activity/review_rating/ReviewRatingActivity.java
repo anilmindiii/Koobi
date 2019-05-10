@@ -133,7 +133,7 @@ public class ReviewRatingActivity extends AppCompatActivity implements View.OnCl
         RecyclerView rvReviewRating = findViewById(R.id.rvReviewRating);
 
         tvNoRecord.setVisibility(reviewRating.getData().isEmpty() ? View.VISIBLE : View.GONE);
-        ReviewRatingAdapter adapter = new ReviewRatingAdapter(reviewRating.getData());
+        ReviewRatingAdapter adapter = new ReviewRatingAdapter(ReviewRatingActivity.this,reviewRating.getData());
         rvReviewRating.setAdapter(adapter);
     }
 

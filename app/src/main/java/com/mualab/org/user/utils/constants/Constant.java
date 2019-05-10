@@ -38,6 +38,7 @@ public class Constant {
     public static final int SELECT_FILE = 1;
     public final static int REQUEST_CHECK_SETTINGS_GPS = 96;
     public static final int REQUEST_PHONE_CALL = 265;
+    public static final int REQUEST_CHECK_ISLASTINVITAION = 655;
     public static String croppedVideoURI;
 
     public static final String CLIENT_ID = "235f0bad46fb41a5af0c1309b99481e6";

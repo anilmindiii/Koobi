@@ -74,7 +74,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="13dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginTop="1.2dp"
+                        android:layout_marginTop="1.5dp"
                        android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:background="@drawable/bg_reciver">
@@ -124,7 +124,7 @@
                         android:layout_width="180dp"
                         android:layout_height="180dp"
                         android:scaleType="center"
-                        android:layout_margin="5dp"
+                        android:layout_margin="3dp"
                         android:visibility="gone"
                         app:siRadius="5dp"
                         app:siBorderColor="@color/gray4"

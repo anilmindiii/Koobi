@@ -37,11 +37,12 @@ public class JoinNewGroupActivity extends AppCompatActivity {
     DatabaseReference groupDataBaseRef, myGroupRef, myGroupRequestRef;
     Map<String, Groups> groupsMap;
     private String myId;
-    private String myGroupRequestIds = "";
     private String myGroupIds = "";
     private ArrayList<Groups> arrayList;
     private EditText searchview;
     private TextView tv_no_chat;
+
+    private Map<String,String> myGroupRequestMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class JoinNewGroupActivity extends AppCompatActivity {
         recycler_view = findViewById(R.id.recycler_view);
         arrayList = new ArrayList<>();
         groupsMap = new HashMap<>();
-
+        myGroupRequestMap = new HashMap<>();
 
         adapter = new JoinNewGroupAdapter(this, arrayList);
         recycler_view.setAdapter(adapter);
@@ -96,12 +97,31 @@ public class JoinNewGroupActivity extends AppCompatActivity {
     }
 
     private void getMyGroupAndRequesData() {
-        myGroupRequestRef.addValueEventListener(new ValueEventListener() {
+        myGroupRequestRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.getValue() != null) {
-                    myGroupRequestIds = dataSnapshot.getValue() + "," + myGroupRequestIds;
+                    String  myGroupRequestIds = dataSnapshot.getValue().toString();
+                    myGroupRequestMap.put(myGroupRequestIds,myGroupRequestIds);
                 }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.getValue() != null) {
+                    String  myGroupRequestIds = dataSnapshot.getValue().toString();
+                    myGroupRequestMap.put(myGroupRequestIds,myGroupRequestIds);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
@@ -169,8 +189,22 @@ public class JoinNewGroupActivity extends AppCompatActivity {
                     if (groups != null) {
                         String key = dataSnapshot.getKey();
 
+                        if(myGroupRequestMap.containsKey(key)){
+                            groupsMap.put(key, groups);
+                            groups.isPending = true;
 
-                        if (!myGroupIds.contains(key) && !myGroupRequestIds.contains(key))
+                            Collection<Groups> demoValues = groupsMap.values();
+                            arrayList.clear();
+                            arrayList.addAll(demoValues);
+                            adapter.notifyDataSetChanged();
+
+                            if(arrayList.size() == 0){
+                                tv_no_chat.setVisibility(View.VISIBLE);
+                            } else tv_no_chat.setVisibility(View.GONE);
+                        }
+
+
+                        if (!myGroupIds.contains(key))
                         {
                             groupsMap.put(key, groups);
 

@@ -2,6 +2,7 @@ package com.mualab.org.user.activity.artist_profile.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -19,6 +20,7 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.adapter.CustomStringAdapter;
 import com.mualab.org.user.activity.artist_profile.adapter.IncallOutCallAdapter;
 import com.mualab.org.user.activity.artist_profile.model.Services;
+import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
@@ -56,6 +58,9 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
     private int serviceId, subServiceId;
     private RelativeLayout ly_main;
 
+    private BottomSheetDialog mBizTypeDialog;
+    private BottomSheetDialog mCatTypeDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +80,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
 
         ly_biz_type = findViewById(R.id.ly_biz_type);
         ly_category = findViewById(R.id.ly_category);
-        rcv_biz_type = findViewById(R.id.rcv_biz_type);
-        rcv_category_type = findViewById(R.id.rcv_category_type);
+       // rcv_biz_type = findViewById(R.id.rcv_biz_type);
+       // rcv_category_type = findViewById(R.id.rcv_category_type);
         rcv_incall = findViewById(R.id.rcv_incall);
         rcv_outcall = findViewById(R.id.rcv_outcall);
         tv_bizType = findViewById(R.id.tv_bizType);
@@ -120,6 +125,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
 
         inCallList = new ArrayList<>();
         outCallList = new ArrayList<>();
+        setBizTypeDialog(false);
+        setCatTypeDialog(false);
 
         apiForGetAllServices();
     }
@@ -133,26 +140,26 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                         return;
                     }
 
-                if (cv_ly_biz_type.getVisibility() == View.VISIBLE) {
+               /* if (cv_ly_biz_type.getVisibility() == View.VISIBLE) {
                     cv_ly_biz_type.setVisibility(View.GONE);
                 } else {
                     cv_ly_biz_type.setVisibility(View.VISIBLE);
                 }
 
-                cv_ly_category.setVisibility(View.GONE);
-
+                cv_ly_category.setVisibility(View.GONE);*/
+                setBizTypeDialog(true);
 
                 break;
 
             case R.id.ly_category:
                 if (isOpenCategory) {
-                    if (cv_ly_category.getVisibility() == View.VISIBLE) {
+                    /*if (cv_ly_category.getVisibility() == View.VISIBLE) {
                         cv_ly_category.setVisibility(View.GONE);
                     } else {
                         cv_ly_category.setVisibility(View.VISIBLE);
                     }
-
-                    cv_ly_biz_type.setVisibility(View.GONE);
+                    cv_ly_biz_type.setVisibility(View.GONE);*/
+                    setCatTypeDialog(true);
                 }
 
 
@@ -209,6 +216,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                         adapterBizType = new CustomStringAdapter("bizType", services, null, ArtistServicesActivity.this, new CustomStringAdapter.onClickItem() {
                             @Override
                             public void onclick(final Services.ArtistServicesBean artistServicesBean, int adapterPosition) {
+                                if(mBizTypeDialog != null) mBizTypeDialog.dismiss();
+
                                 mainServiceName = artistServicesBean.serviceName;
                                 serviceId = artistServicesBean.serviceId;
 
@@ -285,6 +294,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                                 adapterCategory = new CustomStringAdapter("categoryType", null, artistServicesBean.subServies, ArtistServicesActivity.this, null, new CustomStringAdapter.onClickItemCategory() {
                                     @Override
                                     public void onclick(Services.ArtistServicesBean.SubServiesBean bean, int position) {
+                                        if(mCatTypeDialog != null) mCatTypeDialog.dismiss();
+
                                         subServiceName = bean.subServiceName;
                                         subServiceId = bean.subServiceId;
 
@@ -376,6 +387,35 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                 .setProgress(true)
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
         task.execute(this.getClass().getName());
+    }
+
+
+    private void setBizTypeDialog(boolean isShow) {
+        if (mBizTypeDialog == null) {
+            mBizTypeDialog = new BottomSheetDialog(ArtistServicesActivity.this, R.style.CustomBottomSheetDialogTheme);
+            View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
+            TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
+            tvTitle.setText(getString(R.string.business_types));
+            rcv_biz_type = sheetView.findViewById(R.id.recyclerView);
+            mBizTypeDialog.setContentView(sheetView);
+        }
+
+        if (isShow)
+            mBizTypeDialog.show();
+    }
+
+    private void setCatTypeDialog(boolean isShow) {
+        if (mCatTypeDialog == null) {
+            mCatTypeDialog = new BottomSheetDialog(ArtistServicesActivity.this, R.style.CustomBottomSheetDialogTheme);
+            View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
+            TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
+            tvTitle.setText(getString(R.string.category_types));
+            rcv_category_type = sheetView.findViewById(R.id.recyclerView);
+            mCatTypeDialog.setContentView(sheetView);
+        }
+
+        if (isShow)
+            mCatTypeDialog.show();
     }
 
 

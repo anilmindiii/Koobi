@@ -12,6 +12,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.chat.listner.DateTimeScrollListner;
@@ -112,7 +117,26 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                 iv_for_sender.setVisibility(View.VISIBLE);
                 tv_sender_msg.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
-                Picasso.with(context)
+
+                if(chat.message.contains(".gif")){
+                    GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_for_sender);
+                    Glide.with(context)
+                            .load(chat.message)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    progress_bar.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(imageViewTarget);
+                }else {
+                    Picasso.with(context)
                         .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_for_sender, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -128,8 +152,8 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                         iv_for_sender.setEnabled(false);
                     }
                 });
+                }
 
-                //  Glide.with(context).load(chat.message).fitCenter().placeholder(R.drawable.gallery_placeholder).into(iv_for_sender);
             }else {
                 iv_for_sender.setVisibility(View.GONE);
                 tv_sender_msg.setVisibility(View.VISIBLE);
@@ -222,22 +246,43 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                 tv_other_msg.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
 
-                Picasso.with(context)
-                        .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_other_img, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        iv_other_img.setEnabled(true);
-                        progress_bar.setVisibility(View.GONE);
-                    }
-                    @Override
-                    public void onError() {
-                        iv_other_img.setEnabled(false);
-                        Picasso.with(context).load(chat.message)
-                                .placeholder(R.drawable.gallery_placeholder)
-                                .error(R.drawable.gallery_placeholder).into(iv_other_img);
-                        progress_bar.setVisibility(View.GONE);
-                    }
-                });
+                if(chat.message.contains(".gif")){
+                    GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_other_img);
+                    Glide.with(context)
+                            .load(chat.message)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    progress_bar.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(imageViewTarget);
+                }else{
+                    Picasso.with(context)
+                            .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_other_img, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            iv_other_img.setEnabled(true);
+                            progress_bar.setVisibility(View.GONE);
+                        }
+                        @Override
+                        public void onError() {
+                            iv_other_img.setEnabled(false);
+                            Picasso.with(context).load(chat.message)
+                                    .placeholder(R.drawable.gallery_placeholder)
+                                    .error(R.drawable.gallery_placeholder).into(iv_other_img);
+                            progress_bar.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
+
 
                 //  Glide.with(context).load(chat.message).fitCenter().placeholder(R.drawable.gallery_placeholder).into(iv_other_img);
 

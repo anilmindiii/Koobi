@@ -76,6 +76,8 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
     private ViewPager viewPager;
     private ViewPagerAdapterForTag viewPagerAdapter;
     private CardView mHeaderSomeOneToBeTagged;
+    private EditText searchview;
+
     final InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
         @Override
         public void singleTapConfirmedAndRootIsInTouch(final float x, final float y) {
@@ -166,7 +168,7 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
         mHeaderSomeOneToBeTagged = findViewById(R.id.header_tag_photo);
         mHeaderSearchSomeOne = findViewById(R.id.header_search_someone);
         llSearchPeople = findViewById(R.id.llSearchPeople);
-        EditText searchview = findViewById(R.id.searchview);
+        searchview = findViewById(R.id.searchview);
 
         RecyclerView rycTags = findViewById(R.id.rycTags);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
@@ -358,6 +360,7 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
                 mRecyclerViewSomeOneToBeTagged.setVisibility(View.GONE);
                 mHeaderSearchSomeOne.setVisibility(View.GONE);
                 llSearchPeople.setVisibility(View.GONE);
+                searchview.setText("");
                 mHeaderSomeOneToBeTagged.setVisibility(View.VISIBLE);
                 break;
         }
@@ -412,6 +415,11 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
                     }
                     tv_msg.setVisibility(View.GONE);
                     if (list.size() == 0) {
+
+                        if(llSearchPeople.getVisibility() == View.VISIBLE){
+                            tv_msg.setVisibility(View.VISIBLE);
+                        }else ll_loadingBox.setVisibility(View.GONE);
+
                         tv_msg.setText(getString(R.string.no_data_available));
                     } else {
                         ll_loadingBox.setVisibility(View.GONE);
@@ -581,6 +589,7 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
                                 mRecyclerViewSomeOneToBeTagged.setVisibility(View.GONE);
                                 mHeaderSearchSomeOne.setVisibility(View.GONE);
                                 llSearchPeople.setVisibility(View.GONE);
+                                searchview.setText("");
                                 mHeaderSomeOneToBeTagged.setVisibility(View.VISIBLE);
 
                                 ArrayList<TagToBeTagged> tagsToBeTagged = new

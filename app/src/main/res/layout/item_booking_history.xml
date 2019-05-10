@@ -185,12 +185,45 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:isIndicator="false"
-                android:layout_marginRight="-10dp"
+                android:layout_marginRight="-13dp"
                 android:numStars="5"
                 android:rating="0"
                 android:scaleX="0.6"
                 android:scaleY="0.6"
-                android:stepSize="1" />
+                android:stepSize="1"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:id="@+id/ly_edit_review"
+                android:layout_width="80dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:layout_marginRight="5dp">
+
+                <TextView
+                    android:id="@+id/tv_view_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:textColor="@color/gray"
+                    android:gravity="center"
+                    android:layout_marginRight="2dp"
+                    android:layout_alignParentRight="true"
+                    android:text="Edit Review"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_below="@+id/tv_view_review"
+                    android:layout_width="56.5dp"
+                    android:layout_height="0.7dp"
+                    android:layout_marginTop="-6dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:background="@color/gray"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_give_view_review"
@@ -202,7 +235,8 @@
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="Give Review"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                />
 
         </LinearLayout>
 

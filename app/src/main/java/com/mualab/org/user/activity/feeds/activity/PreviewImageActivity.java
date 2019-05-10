@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.mualab.org.user.R;
 import com.squareup.picasso.Picasso;
@@ -165,7 +166,8 @@ public class PreviewImageActivity extends AppCompatActivity {
                         }
                     });*/
 
-            if (!TextUtils.isEmpty(url))
+            if (!TextUtils.isEmpty(url)){
+                GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(photoView);
                 Glide.with(context)
                         .load(url)
                         .listener(new RequestListener<String, GlideDrawable>() {
@@ -185,9 +187,10 @@ public class PreviewImageActivity extends AppCompatActivity {
                                 return false;
                             }
                         })
-                        .into(photoView);
+                        .into(imageViewTarget);
 
-            container.addView(itemView);
+                container.addView(itemView);
+            }
             return itemView;
         }
 

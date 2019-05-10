@@ -42,4 +42,6 @@ public class UserProfileData implements Serializable {
             profileImage,email,gender,dob,address,address2,countryCode,contactNo,userType,followersCount,
             followingCount,serviceCount,certificateCount,postCount,reviewCount,ratingCount,radius,
             bio,serviceType,isCertificateVerify,followerStatus,favoriteStatus;
+
+    public int isInvitation;
 }

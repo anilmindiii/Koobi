@@ -337,7 +337,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="70dp"
+                android:paddingBottom="50dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -390,7 +390,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
-                    android:clickable="true">
+                    android:clickable="true"
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -466,7 +467,7 @@
                             <android.support.v7.widget.RecyclerView
                                 android:id="@+id/rcv_timeSlot"
                                 android:layout_width="match_parent"
-                                android:layout_height="120dp"
+                                android:layout_height="140dp"
                                 android:overScrollMode="never"
                                 android:scrollbars="none"
                                 android:orientation="vertical"
@@ -480,10 +481,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginRight="5dp"
+                            android:layout_marginRight="10dp"
                             android:layout_marginTop="20dp"
                             android:fontFamily="@font/nunito_regular"
                             android:gravity="center"
+                            android:layout_gravity="center"
                             android:padding="2dp"
                             android:text="@string/there_are_no_available_slots_please_select_another_day"
                             android:textColor="@color/text_color"
@@ -564,7 +566,7 @@
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="55dp"
     android:layout_alignParentBottom="true"
     android:background="@color/white">
 
@@ -573,7 +575,7 @@
         style="@style/My_Button_Small.Invert"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:text="@string/text_continue_booking"

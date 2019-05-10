@@ -19,6 +19,7 @@ public class ArtistsSearchBoard implements Serializable {
     public  boolean isOutCallSelected = false;
     public  boolean isFav;
     public  ArrayList<ArtistServices>service;
+    public  ArrayList<SubCate>subcate;
     public  ArrayList<Services>allService = new ArrayList<>();
     public ArrayList<BookingStaff>staffList = new ArrayList<>();
 
@@ -36,6 +37,10 @@ public class ArtistsSearchBoard implements Serializable {
     }
 
     public double latitude,longitude;
+
+    public class SubCate implements Serializable{
+        public String subServiceName;
+    }
 
 
  /*   @Override

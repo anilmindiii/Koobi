@@ -120,7 +120,22 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 h.ivProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        apiForgetUserIdFromUserName(searchTag.title);
+
+                        if (searchTag.userType.equals("user")) {
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(searchTag.id));
+                            mContext.startActivity(intent);
+                        }else if (searchTag.userType.equals("artist") && searchTag.id== Mualab.currentUser.id){
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(searchTag.id));
+                            mContext.startActivity(intent);
+                        }
+                        else {
+                            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
+                            intent.putExtra("artistId", String.valueOf(searchTag.id));
+                            mContext.startActivity(intent);
+                        }
+
                     }
                 });
 

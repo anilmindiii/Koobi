@@ -46,7 +46,6 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-
         <activity
             android:name=".activity.main.MainActivity"
             android:screenOrientation="portrait"
@@ -54,9 +53,9 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
             <intent-filter>
                 <action android:name="ChatActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -68,6 +67,7 @@
                     android:pathPrefix="/feedDetail"
                     android:scheme="http" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".activity.authentication.LoginActivity"
@@ -85,7 +85,6 @@
         <activity
             android:name=".activity.authentication.Registration2Activity"
             android:screenOrientation="portrait">
-
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -289,7 +288,7 @@
             android:name=".activity.booking.BookingConfirmActivity"
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".activity.booking.VoucherCodesActivity"
             android:screenOrientation="portrait"
@@ -433,9 +432,28 @@
             android:name=".activity.tag_module.activity.ServiceTagActivity"
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack" />
-        <activity android:name=".chat.CreateNewChatActivity"
+        <activity
+            android:name=".chat.CreateNewChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.authentication.WebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.feeds.activity.SaveToFolderActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.feeds.activity.FolderFeedsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack"/>
+
+        <activity
+            android:name=".activity.businessInvitaion.activity.OperationHoursActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack"/>
+
 
     </application>
 

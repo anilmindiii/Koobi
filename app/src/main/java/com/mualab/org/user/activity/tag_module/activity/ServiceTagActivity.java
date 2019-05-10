@@ -549,7 +549,8 @@ public class ServiceTagActivity extends BaseActivity implements View.OnClickList
                 final TagDetail tag = new TagDetail("service", String.valueOf(serviceTagBean._id),
                         serviceTagBean.title, "artist", serviceTagBean.inCallPrice, serviceTagBean.description, serviceTagBean.businessType.get(0).title,
                         String.valueOf(serviceTagBean.businessType.get(0)._id), String.valueOf(serviceTagBean.category.get(0)._id), String.valueOf(serviceTagBean.artistId),
-                        serviceTagBean.completionTime, serviceTagBean.outCallPrice, serviceTagBean.category.get(0).title);
+                        serviceTagBean.completionTime, serviceTagBean.outCallPrice,
+                        serviceTagBean.category.get(0).title,"not getting here staff id");
 
 
                       /*  if (taggedArrayList!=null && taggedArrayList.size()!=0){

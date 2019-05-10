@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public class TagDetail implements Serializable {
     public String tabType, tagId, title, userType;  //people tag
-    public String incallPrice = "", description, businessTypeName, businessTypeId, categoryId, artistId, completionTime, outcallPrice, categoryName;
+    public String incallPrice = "", description, businessTypeName,
+            businessTypeId, categoryId, artistId, completionTime, outcallPrice, categoryName,staffId;
 
 
     public TagDetail() {
@@ -20,7 +21,7 @@ public class TagDetail implements Serializable {
 
     public TagDetail(String tabType, String tagId, String title, String userType, String incallPrice,
                      String description, String businessTypeName, String businessTypeId, String categoryId, String artistId,
-                     String completionTime, String outcallPrice, String categoryName) {
+                     String completionTime, String outcallPrice, String categoryName,String staffId) {
         this.tabType = tabType;
         this.tagId = tagId; //use _id as tagId
         this.title = title;
@@ -34,6 +35,7 @@ public class TagDetail implements Serializable {
         this.completionTime = completionTime;
         this.outcallPrice = outcallPrice;
         this.categoryName = categoryName;
+        this.staffId = staffId;
     }
 
 /*    private TagDetail(Parcel in) {

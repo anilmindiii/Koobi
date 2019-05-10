@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -67,6 +68,7 @@ public class VideoGalleryFragment extends Fragment implements View.OnClickListen
     private ProgressBar progrss;
     private RecyclerView recyclerView;
     private TextView tvNoDataFound;
+    private long mLastClickTime = 0;
 
     public VideoGalleryFragment() {
         // Required empty public constructor
@@ -166,7 +168,11 @@ public class VideoGalleryFragment extends Fragment implements View.OnClickListen
                 break;
 
             case R.id.tvNext:
-               // MyToast.getInstance(context).showDasuAlert(getResources().getString(R.string.under_development));
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 500) {
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
+
                 if (mediaUri!=null){
                     videoView.stopPlayback();
                     Intent  intent = new Intent(context, VideoTrimmerActivity.class);

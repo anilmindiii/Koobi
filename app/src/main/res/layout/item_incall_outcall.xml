@@ -25,8 +25,8 @@
             android:id="@+id/tv_inoutcall_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
             android:fontFamily="@font/nunito_regular"
             android:gravity="center_vertical"
             android:text="text" />
@@ -41,9 +41,9 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentRight="true"
-            app:srcCompat="@drawable/ic_right_arrow_angle"
             android:layout_centerVertical="true"
-            android:tint="@color/gray" />
+            android:tint="@color/gray"
+            app:srcCompat="@drawable/ic_right_arrow_angle" />
 
     </RelativeLayout>
 
@@ -51,14 +51,13 @@
     <RelativeLayout
         android:id="@+id/ly_booking_view"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        >
+        android:layout_height="56dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@color/white"
             android:layout_centerInParent="true"
+            android:background="@color/white"
             android:gravity="center|left"
             android:visibility="visible">
 
@@ -66,12 +65,12 @@
                 android:id="@+id/service_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:fontFamily="@font/nunito_regular"
                 android:gravity="center_vertical"
+                android:text="Color Hair Black"
                 android:textColor="@color/black"
-                android:textSize="14dp"
-                android:layout_centerVertical="true"
-                android:text="Color Hair Black" />
+                android:textSize="14dp" />
 
             <TextView
                 android:id="@+id/duration"
@@ -80,50 +79,50 @@
                 android:layout_below="@+id/service_name"
                 android:fontFamily="@font/nunito_regular"
                 android:gravity="center_vertical"
+                android:text="Color Hair Black"
                 android:textColor="@color/gray"
-                android:textSize="10dp"
-                android:text="Color Hair Black" />
+                android:textSize="10dp" />
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.7dp"
-            android:background="@color/gray2"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray2" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:layout_alignParentRight="true">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/service_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:fontFamily="@font/nunito_regular"
                 android:gravity="center_vertical"
-                android:layout_centerVertical="true"
+                android:text="£15"
                 android:textColor="@color/text_color"
-                android:layout_alignParentRight="true"
-                android:textSize="12dp"
-                android:text="£15" />
+                android:textSize="12dp" />
 
             <ImageView
                 android:id="@+id/iv_tick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tint="@color/colorPrimary"
-                android:layout_toRightOf="@+id/service_price"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_margin="5dp"
-                android:visibility="gone"
-                android:src="@drawable/com_facebook_button_like_icon_selected"/>
+                android:layout_toRightOf="@+id/service_price"
+                android:src="@drawable/ic_check_white_18dp"
+                android:tint="@color/colorPrimary"
+                android:visibility="gone" />
 
 
         </LinearLayout>

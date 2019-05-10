@@ -22,7 +22,7 @@
             android:pivotY="95%"
             android:toDegrees="45">
             <shape android:shape="rectangle">
-                <solid android:color="@color/dark_transperant" />
+                <solid android:color="@color/dark_transperant2" />
             </shape>
         </rotate>
     </item>

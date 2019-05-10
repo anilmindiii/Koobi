@@ -1,14 +1,11 @@
 package com.mualab.org.user.activity.main;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -25,17 +22,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.VolleyError;
-
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,6 +41,9 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -58,22 +53,20 @@ import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivit
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.booking.BookingDetailsActivity;
-import com.mualab.org.user.activity.booking.customSeekBar.Utils;
 import com.mualab.org.user.activity.businessInvitaion.activity.InvitationActivity;
-import com.mualab.org.user.activity.explore.ExploreFragment;
 import com.mualab.org.user.activity.explore.ExploreFragmentNew;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.fragment.FeedsFragment;
 import com.mualab.org.user.activity.gellery.GalleryActivity;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.activity.notification.fragment.NotificationFragment;
-import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
 import com.mualab.org.user.activity.searchBoard.fragment.SearchBoardFragment;
 import com.mualab.org.user.activity.story.StoriesActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatActivity;
 import com.mualab.org.user.chat.ChatHistoryActivity;
 import com.mualab.org.user.chat.GroupChatActivity;
+import com.mualab.org.user.chat.model.ChatHistory;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.SearchBoard.RefineSearchBoard;
@@ -90,26 +83,18 @@ import com.mualab.org.user.utils.LocationDetector;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.network.NetworkChangeReceiver;
 import com.squareup.picasso.Picasso;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.mualab.org.user.application.Mualab.mInstance;
 import static com.mualab.org.user.data.local.prefs.Session.isLogout;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    private static final int REQUEST_ADD_NEW_STORY = 8719;
     public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat;
     public TextView tvHeaderTitle;
     public RelativeLayout rootLayout;
@@ -131,6 +116,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     Session session;
     RefineSearchBoard locationData;
     private ArrayList<LiveUserInfo> liveUserList;
+    private int unReadCount = 0;
+    private TextView tv_batch_count;
+    private HashMap<String,Integer> batchCountMap;
+
 
     public void setBgColor(int color) {
         if (rlHeader1 != null)
@@ -148,6 +137,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         user = session.getUser();
         profileData = new UserProfileData();
         liveUserList = new ArrayList<>();
+        batchCountMap = new HashMap<>();
+        tv_batch_count = findViewById(R.id.tv_batch_count);
         if (getIntent().getStringExtra("FeedPostActivity") != null) {
             isFromFeedPost = getIntent().getStringExtra("FeedPostActivity");
         }
@@ -292,6 +283,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         checkPermission();
+        getHistoryList();
     }
 
     private void notificationRedirections(String notifyId, String userName, String urlImageString, String userType, String notifincationType) {
@@ -395,6 +387,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(booking4);
                 break;
 
+            case "6":
+                Intent booking6 = new Intent(MainActivity.this, BookingDetailsActivity.class);
+                if (!notifyId.equals(""))
+                    booking6.putExtra("bookingId", Integer.parseInt(notifyId));
+                booking6.putExtra("artistName", userName);
+                booking6.putExtra("notification_list", "list");
+                booking6.putExtra("key", "main");
+                booking6.putExtra("artistProfile", urlImageString);
+                booking6.putExtra("shouldPopupOpen", false);
+                startActivity(booking6);
+                break;
             case "5":
                 Intent booking5 = new Intent(MainActivity.this, BookingDetailsActivity.class);
                 if (!notifyId.equals(""))
@@ -407,12 +410,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(booking5);
                 break;
 
-            case "6":
+           /* case "6":
                 // here we go for review list
                 Intent booking6 = new Intent(MainActivity.this, ReviewRatingActivity.class);
                 startActivity(booking6);
-                break;
-
+                break;*/
+            case "14":
             case "12":
                 ibtnFeed.callOnClick();
                 replaceFragment(FeedsFragment.newInstance(1), false);
@@ -423,7 +426,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 } else {
                     Intent intent_user_profile = new Intent(MainActivity.this, ArtistProfileActivity.class);
-                    intent_user_profile.putExtra("feedId", notifyId);
+                    intent_user_profile.putExtra("artistId", notifyId);
                     startActivityForResult(intent_user_profile, Constant.FEED_FRAGMENT);
                 }
                 break;
@@ -464,6 +467,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ibtnNotification = findViewById(R.id.ibtnNotification);
         ibtnChat = findViewById(R.id.ivChat);
         ibtnChat.setVisibility(View.VISIBLE);
+
+        TextView tv_batch_count = findViewById(R.id.tv_batch_count);
 
         ivAppIcon = findViewById(R.id.ivAppIcon);
         ivHeaderBack = findViewById(R.id.btnBack);
@@ -595,10 +600,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ibtnLeaderBoard.setImageResource(R.drawable.active_leaderbord_ico);
                     ivHeaderBack.setVisibility(View.GONE);
                     ivHeaderUser.setVisibility(View.VISIBLE);
-                    tvHeaderTitle.setVisibility(View.VISIBLE);
+
                     ibtnChat.setVisibility(View.GONE);
-                    ivAppIcon.setVisibility(View.GONE);
+                    ivAppIcon.setVisibility(View.VISIBLE);
+                    tvHeaderTitle.setVisibility(View.GONE);
+
                     replaceFragment(SearchBoardFragment.newInstance(item, locationData), false);
+                    rlHeader1.setVisibility(View.VISIBLE);
                 }
                 break;
 
@@ -617,7 +625,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     session.saveFilter(null);
                     locationData = null;
                     item = null;
+
                     replaceFragment(FeedsFragment.newInstance(1), false);
+                    rlHeader1.setVisibility(View.VISIBLE);
                     //replaceFragment(NotificationFragment.newInstance("", ""), false);
 
                 }
@@ -661,8 +671,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     session.saveFilter(null);
                     locationData = null;
                     item = null;
-                    rlHeader1.setVisibility(View.VISIBLE);
-                    replaceFragment(ExploreFragment.newInstance(), false);
+                    rlHeader1.setVisibility(View.GONE);
+                    replaceFragment(ExploreFragmentNew.newInstance(), false);
 
                 }
                 break;
@@ -682,10 +692,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     session.saveFilter(null);
                     locationData = null;
                     item = null;
+                    rlHeader1.setVisibility(View.VISIBLE);
                     // replaceFragment(new NotificationFragment(), false);
 
                     replaceFragment(NotificationFragment.newInstance("", ""), false);
-
+                    rlHeader1.setVisibility(View.VISIBLE);
                 }
                 break;
         }
@@ -716,7 +727,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                                 Mualab.currentLocationForBooking.lat = latitude;
                                 Mualab.currentLocationForBooking.lng = longitude;
-
 
                             }
                         }
@@ -1078,6 +1088,85 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
     };
+
+    /*............get batchCount from chat history..............................................*/
+
+    private void getHistoryList() {
+        unReadCount = 0;
+        DatabaseReference databaseReference;
+
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference = mFirebaseDatabaseReference.child("chat_history").
+                child(String.valueOf(Mualab.currentUser.id));
+
+        databaseReference.orderByKey().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String key = dataSnapshot.getKey();
+                try {
+                    ChatHistory messageOutput = dataSnapshot.getValue(ChatHistory.class);
+
+                    if (messageOutput != null) {
+                        getChatDataInMap(key, messageOutput);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                try {
+                    final String key = dataSnapshot.getKey();
+                    ChatHistory messageOutput = dataSnapshot.getValue(ChatHistory.class);
+
+                    if (messageOutput != null) {
+                        getChatDataInMap(key, messageOutput);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) { }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+    private void getChatDataInMap(final String key, final ChatHistory messageOutput) {
+        if (messageOutput != null) {
+
+            messageOutput.isTyping = false;
+            batchCountMap.put(key,messageOutput.unreadMessage);
+
+            unReadCount = 0;
+            Iterator myVeryOwnIterator = batchCountMap.keySet().iterator();
+            while(myVeryOwnIterator.hasNext()) {
+                String keyMap =(String)myVeryOwnIterator.next();
+                int value = batchCountMap.get(keyMap);
+
+                unReadCount =  value + unReadCount;
+                tv_batch_count.setText(unReadCount+"");
+
+                if(unReadCount == 0){
+                    tv_batch_count.setVisibility(View.GONE);
+                }else  tv_batch_count.setVisibility(View.VISIBLE);
+            }
+        }else tv_batch_count.setVisibility(View.GONE);
+
+    }
+
+
 
 
 }

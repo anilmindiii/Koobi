@@ -18,6 +18,7 @@ public class Address implements Serializable{
     public String latitude;
     public String longitude;
     public String houseNumber;
+    public String locality;
 
     @Override
     public String toString() {

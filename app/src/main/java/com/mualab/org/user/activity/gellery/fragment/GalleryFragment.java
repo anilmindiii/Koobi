@@ -12,6 +12,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,6 +81,7 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
     private List<Media> albumList;
     private ProgressBar ll_progress;
     private boolean isFullImage ;
+    private long mLastClickTime = 0;
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -193,7 +195,7 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
                             lastSelectedUri = last.getValue();
                         }
                     } else if (size > 9) {
-                        MySnackBar.showSnackbar(context, rootLayout, "You can select max 10 items");
+                        MySnackBar.showSnackbar(context, rootLayout, "You cannot select more than 10 items at once");
                     }
 
                 } else {
@@ -297,6 +299,8 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
                     //rotateImage.setVisibility(View.GONE);
                 } else {
                     snap_button.setVisibility(View.VISIBLE);
+                    snap_button.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_rounded_background));
+
                     // rotateImage.setVisibility(View.VISIBLE);
                     ivMultiSelection.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_rounded_background));
                 }
@@ -313,8 +317,12 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.tvNext:
-                if (!isSupportMultipal) {
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 500) {
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
 
+                if (!isSupportMultipal) {
                     if(isFullImage){
                         Intent intent = new Intent(context, FeedPostActivity.class);
                         if (mSelected != null && mSelected.size() > 0) {
@@ -506,10 +514,13 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
             isFullImage  =false;
             showImage.cropToCenter();
             isSnappedToCenter = false;
+            snap_button.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_rounded_background));
+
         } else {
             isFullImage  =true;
             showImage.fitToCenter();
             isSnappedToCenter = true;
+            snap_button.setBackground(ContextCompat.getDrawable(context, R.drawable.circle_selected_bg));
 
         }
 

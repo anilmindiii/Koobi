@@ -258,6 +258,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
         findViewById(R.id.btnCameraMode).setOnClickListener(this);
         findViewById(R.id.add_to_story).setOnClickListener(this);
         findViewById(R.id.gallery_icon).setOnClickListener(this);
+        findViewById(R.id.tvCancel).setOnClickListener(this);
         isCameraSession = true;
     }
 
@@ -426,6 +427,10 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.gallery_icon:
 
+                break;
+
+                case R.id.tvCancel:
+                    onBackPressed();
                 break;
         }
     }

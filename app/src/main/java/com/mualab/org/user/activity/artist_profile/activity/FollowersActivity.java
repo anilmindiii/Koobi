@@ -240,7 +240,10 @@ public class FollowersActivity extends AppCompatActivity {
                                 Gson gson = new Gson();
                                 JSONObject object = jsonArray.getJSONObject(i);
                                 Followers item = gson.fromJson(String.valueOf(object), Followers.class);
-                                followers.add(item);
+
+                                if(item.followerId.equals(String.valueOf(Mualab.currentUser.id))){
+                                    followers.add(0,item);
+                                }else followers.add(item);
                             }
                         }
 

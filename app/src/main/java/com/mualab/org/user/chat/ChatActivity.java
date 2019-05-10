@@ -5,10 +5,12 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -18,7 +20,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,10 +70,15 @@ import com.google.firebase.storage.UploadTask;
 import com.mualab.org.user.R;
 
 
+import com.mualab.org.user.activity.dialogs.BottomSheetPopup;
+import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
+import com.mualab.org.user.activity.dialogs.model.Item;
+import com.mualab.org.user.activity.story.StoriesActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.Util.TimeAgo;
 import com.mualab.org.user.chat.adapter.ChattingAdapter;
 import com.mualab.org.user.chat.adapter.MenuAdapter;
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.listner.DateTimeScrollListner;
 import com.mualab.org.user.chat.model.BlockUser;
 import com.mualab.org.user.chat.model.Chat;
@@ -131,6 +143,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private ChildEventListener childEventListener;
     private Uri ImageQuickUri;
     String holdKeyForImage = "",matchImageUrl = "";
+    private boolean isGIF;
 
 
     @Override
@@ -164,11 +177,52 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         init();
 
+        CustomeClick.getmInctance().setListner(new CustomeClick.ExploreSearchListener() {
+            @Override
+            public void onTextChange(InputContentInfoCompat inputContentInfo, int flags, Bundle opts) {
+                isGIF = true;
+                ImageQuickUri = inputContentInfo.getLinkUri();
+                if(ImageQuickUri != null){
+                    sendQuickImage(ImageQuickUri, queryName(getContentResolver(),ImageQuickUri));
+                }
+
+            }
+
+        });
+
+       /* BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(this);
+        final View bottomSheetLayout = getLayoutInflater().inflate(R.layout.fragment_explore, null);
+        BottomSheetDialog finalMBottomSheetDialog = mBottomSheetDialog;
+        (bottomSheetLayout.findViewById(R.id.tvImages)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finalMBottomSheetDialog.dismiss();
+            }
+        });
+        (bottomSheetLayout.findViewById(R.id.tvImages)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Ok button clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBottomSheetDialog = new BottomSheetDialog(this);
+        mBottomSheetDialog.setContentView(bottomSheetLayout);
+
+        mBottomSheetDialog.setCancelable(false);
+
+        BottomSheetBehavior mBehavior = BottomSheetBehavior.from((View) bottomSheetLayout.getParent());
+        mBehavior.setPeekHeight(160);*/
+
+
+
+       // mBottomSheetDialog.show();
+
     }
 
     private void initKeyboard() {
 
-        RelativeLayout mainLayout = findViewById(R.id.rlMain); // You must use your parent layout
+        CoordinatorLayout mainLayout = findViewById(R.id.rlMain); // You must use your parent layout
         InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
         softKeyboard = new SoftKeyboard(mainLayout, im);
         softKeyboard.setSoftKeyboardCallback(this);
@@ -254,6 +308,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         tv_no_chat = findViewById(R.id.tv_no_chat);
         tvOnlineStatus = findViewById(R.id.tvOnlineStatus);
         progress_bar = findViewById(R.id.progress_bar);
+
 
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView iv_capture_image = findViewById(R.id.iv_capture_image);
@@ -384,6 +439,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         llDots.setOnClickListener(this);
         //tvClearChat.setOnClickListener(this);
         btnBack.setOnClickListener(this);
+
+
     }
 
     private void getOtherUserDetail() {
@@ -722,9 +779,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.llDots:
                 KeyboardUtil.hideKeyboard(et_for_sendTxt, ChatActivity.this);
-                //rlOptionMenu.setVisibility(View.VISIBLE);
 
-                int[] location = new int[2];
+
+              /*  int[] location = new int[2];
 
                 // Get the x, y location and store it in the location[] array
                 // location[0] = x, location[1] = y.
@@ -735,10 +792,86 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 Point p = new Point();
                 display.getSize(p);
                 p.x = location[0];
-                p.y = location[1];
+                p.y = location[1];*/
+
                 arrayList.clear();
 
-                popupWindow(p);
+                if (isMyFavourite == 0)
+                    arrayList.add("Add To Favourite");
+                else
+                    arrayList.add("Unfavourite");
+
+                arrayList.add("Clear Chat");
+
+                if (isMute == 0)
+                    arrayList.add("Mute Chat");
+                else
+                    arrayList.add("Unmute Chat");
+
+                arrayList.add("Block User");
+
+                if (blockedById.equals(myUid)) {
+                    arrayList.set(3, "Unblock User");
+                } else if (blockedById.equalsIgnoreCase("Both")) {
+                    arrayList.set(3, "Unblock User");
+                } else {
+                    arrayList.set(3, "Block User");
+                }
+
+
+                NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
+                    String data = arrayList.get(pos);
+                    switch (data) {
+                        case "Add To Favourite":
+                        case "Unfavourite":
+
+                            if (isMyFavourite == 0) {
+                                myChatHistoryRef.child("favourite").setValue(1);
+                                isMyFavourite = 1;
+                            } else {
+                                myChatHistoryRef.child("favourite").setValue(0);
+                                isMyFavourite = 0;
+                            }
+
+                            break;
+                        case "Mute Chat":
+                        case "Unmute Chat":
+                            if (isMute == 0) {
+                                isMute = 1;
+                                chatRefMuteUser.child(myUid).child(otherUserId).child("mute").
+                                        setValue(1);
+                            } else {
+                                isMute = 0;
+                                chatRefMuteUser.child(myUid).child(otherUserId).removeValue();
+                            }
+
+                            break;
+                        case "Clear Chat":
+                            showAlertDeleteChat();
+                            break;
+
+                        case "Unblock User":
+                        case "Block User":
+                            if (blockedById == null || blockedById.equals("")) {
+                                showAlertBlock();
+                            } else if (blockedById.equals(myUid)) {
+                                blockUsersRef.child(blockUserNode).setValue(null);
+                            } else if (blockedById.equals(otherUserId)) {
+                                showAlertBlock();
+                            } else if (blockedById.equalsIgnoreCase("Both")) {
+                                BlockUser blockUser = new BlockUser();
+                                blockUser.blockedBy = otherUserId;
+                                blockUsersRef.child(blockUserNode).setValue(blockUser);
+                            }
+
+                            break;
+                    }
+
+
+                }).show(getSupportFragmentManager());
+
+
+
 
                 break;
 
@@ -888,7 +1021,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             chatHistory2.timestamp = ServerValue.TIMESTAMP;
                             chatHistory2.unreadMessage = unreadMsgCount;
 
-                            writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2);
+                            writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,"");
                         }
                         //  tv_no_chat.setVisibility(View.GONE);
 
@@ -901,7 +1034,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void writeToDBProfiles(final Chat chatModel1, final Chat chatModel2,
-                                   final ChatHistory chatHistory1, final ChatHistory chatHistory2) {
+                                   final ChatHistory chatHistory1, final ChatHistory chatHistory2,final String fileName) {
 
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(ChatActivity.this, new NoConnectionDialog.Listner() {
@@ -925,8 +1058,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         //  FirebaseDatabase.getInstance().getReference().child("history").child(uID).child(session.getUser().id).setValue(chatModel2);
                         et_for_sendTxt.setText("");
 
-                        if (ImageQuickUri != null)
-                            uploadImage(ImageQuickUri);
+                        if (ImageQuickUri != null){
+                            if(isGIF){
+                                ImageQuickUri = null;
+                                isGIF = false;
+                            }else uploadImage(ImageQuickUri,fileName);
+                        }
+
 
                         isTyping = false;
                         handler.removeCallbacks(runnable);
@@ -955,7 +1093,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             et_for_sendTxt.setText("");
 
             if (ImageQuickUri != null)
-                uploadImage(ImageQuickUri);
+                uploadImage(ImageQuickUri,fileName);
 
             isTyping = false;
             handler.removeCallbacks(runnable);
@@ -1168,7 +1306,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+          //      ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -1317,14 +1455,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void uploadImage(Uri imageUri) {
+    private void uploadImage(Uri imageUri, String fileType) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         if (imageUri != null) {
 
             StorageReference storageReference = storage.getReference();
+            if(fileType.equals("")){
+                fileType = ".jpg";
+            }else if(fileType.contains("gif")){
+                fileType = ".gif";
+            }else {
+                fileType = ".jpg";
+            }
 
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images/" + ServerValue.TIMESTAMP + fileType);
             ref.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -1369,7 +1514,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void sendQuickImage(Uri uri) {
+    private void sendQuickImage(Uri uri,String fileName) {
         Uri fireBaseUri = uri;
         assert fireBaseUri != null;
 
@@ -1418,7 +1563,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         chatHistory2.timestamp = ServerValue.TIMESTAMP;
         chatHistory2.unreadMessage = unreadMsgCount;
 
-        writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2);
+        writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,fileName);
 
     }
 
@@ -1463,7 +1608,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         imageUri = getImageUri(ChatActivity.this, bitmap);
                     }
                     ImageQuickUri = imageUri;
-                    sendQuickImage(imageUri);
+                    sendQuickImage(imageUri, queryName(getContentResolver(),imageUri));
 
                     // CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.RECTANGLE).setAspectRatio(400, 400).start(this);
                 } else {
@@ -1491,6 +1636,22 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             }*/
         }
+    }
+    private String queryName(ContentResolver resolver, Uri uri) {
+        if(uri.toString().contains("http")){
+            if(uri.toString().contains("gif")){
+                return ".gif";
+            }else  return ".jpg";
+        }
+
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
@@ -1574,6 +1735,40 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+    }
+
+    @Override
+    public void onLongPress(int position) {
+        ArrayList<Item> items;
+        Item item  = new Item();
+        item.id = "1";
+        item.name = "Delete";
+        item.icon = R.drawable.ic_delete;
+
+        items = new ArrayList<>();
+        items.add(item);
+
+        chatList.get(position).isLongSelected = true;
+        chattingAdapter.notifyDataSetChanged();
+
+        BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
+            @Override
+            public void onClickItem(int pos) {
+                //askDelete();
+                MyToast.getInstance(ChatActivity.this).showDasuAlert(getString(R.string.under_development));
+            }
+
+            @Override
+            public void onDialogDismiss() {
+                chatList.get(position).isLongSelected = false;
+                chattingAdapter.notifyDataSetChanged();
+            }
+        }).show(getSupportFragmentManager());
+    }
+
+    @Override
+    public void onPress(int position) {
 
     }
 }

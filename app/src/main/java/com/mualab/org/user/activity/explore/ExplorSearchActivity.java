@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.explore.fragment.ExploreTopFragment;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.listener.SearchViewListner;
 import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.ScreenUtils;
@@ -84,7 +85,7 @@ public class ExplorSearchActivity extends AppCompatActivity  {
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                CustomeClick.getmInctance().onTextChange(null,0,null);
             }
 
             @Override
@@ -97,10 +98,6 @@ public class ExplorSearchActivity extends AppCompatActivity  {
 
             }
         });
-
-
-
-
     }
 
     @Override

@@ -62,7 +62,7 @@ public class SelectedMemberListAdapter extends RecyclerView.Adapter<RecyclerView
         final GroupMember firebaseUser = groupMemberList.get(position);
 
         if (firebaseUser.profilePic!=null && !firebaseUser.profilePic.equals("")){
-            Picasso.with(mContext).load(firebaseUser.profilePic).
+            Picasso.with(mContext).load(firebaseUser.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivMemberPic);
         }
 

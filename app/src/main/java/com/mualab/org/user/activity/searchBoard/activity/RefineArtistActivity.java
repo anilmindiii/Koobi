@@ -31,16 +31,23 @@ import android.widget.TimePicker;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.explore.adapter.ExploreServiceAdapter;
+import com.mualab.org.user.activity.explore.adapter.ServiceCategoryFilterAdapter;
+import com.mualab.org.user.activity.explore.model.ExploreCategoryInfo;
 import com.mualab.org.user.activity.main.MainActivity;
 import com.mualab.org.user.activity.searchBoard.adapter.RefineServiceExpandListAdapter;
 import com.mualab.org.user.activity.searchBoard.adapter.ServiceAdapter;
@@ -87,8 +94,8 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
     private ImageView ivDistance;
     private TextView tv_refine_dnt, tv_refine_loc;
     private RefineServiceExpandListAdapter expandableListAdapter;
-    private ArrayList<RefineServices> services, tempSerevice;
-    private String mainServId = "", sortType = "", sortSearch = "", serviceType = "", lat = "", lng = "", day = "", date_time = "", format, time = "", subServiceId = "", location = "";
+    //private ArrayList<RefineServices> services, tempSerevice;
+    private String mainServId = "", sortType = "", sortSearch = "", serviceType = "", lat = "", lng = "", day = "", date_time = "", format, time = "",  location = "";
     private int mHour, mMinute, dayId = 100;
     private Float rating;
     private RefineSearchBoard refineSearchBoard;
@@ -101,20 +108,24 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
     private RelativeLayout rlQualification;
     private int seekBarrange;
     private boolean isAlreadySelectedLocation = false;
-    private IndicatorSeekBar seekBarPrice;
-    private int SeekBarPriceValue;
+    private int SeekBarPriceValue,SeekBarMinPriceValue;
     private RelativeLayout rlPriceSeekBar;
-    private TextView tv_service_category, tv_qualiofications;
+    private TextView tv_service_category, tv_qualiofications,txtstartPrice,txtendPrice;
     private ArrayList<RefineSubServices> arrayList = new ArrayList<>();
-    ArrayList<RefineSubServices> tempSubList;
-    ArrayList<RefineSubServices> finalSubList;
-    ArrayList<RefineServices> certificatesList;
-    TextView tv_business;
-    String serviceName = "";
-    String qulifyName = "";
-    Handler seekBarHandler;
-    RatingBar userRating;
+    private ArrayList<RefineSubServices> tempSubList;
+    private ArrayList<RefineSubServices> finalSubList;
+    private ArrayList<RefineServices> certificatesList;
+   // private TextView tv_business;
+    private String serviceName = "";
+    private String qulifyName = "";
+    private Handler seekBarHandler;
+    private RatingBar userRating;
     private Date setOldDate;
+    private CrystalRangeSeekbar rangeSeekbar;
+    private String categoryIds = "",CategoryName = "";
+
+    private ExploreServiceAdapter exploreServiceAdapter;
+    private ArrayList<ExploreCategoryInfo.DataBean> dataBeans;
 
     public RefineArtistActivity() {
     }
@@ -131,30 +142,56 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
 
         Calendar c = new GregorianCalendar();
         setOldDate = c.getTime();//Tue Feb 19 13:51:12 GMT+05:30 2019
-
+        dataBeans = new ArrayList<>();
         tempSubList = new ArrayList<>();
         finalSubList = new ArrayList<>();
         certificatesList = new ArrayList<>();
-        tv_business = findViewById(R.id.tv_business);
         tv_service_category = findViewById(R.id.tv_service_category);
         tv_price = findViewById(R.id.tv_price);
         tv_qualiofications = findViewById(R.id.tv_qualiofications);
         userRating = findViewById(R.id.userRating);
+
+        rangeSeekbar = findViewById(R.id.rangeSeekbar);
+        txtstartPrice = findViewById(R.id.txtstartPrice);
+        txtendPrice = findViewById(R.id.txtendPrice);
         initView();
         setViewId();
+        GetAllServiceCategory(true);
+
+
+        // set listener
+        rangeSeekbar.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
+            @Override
+            public void valueChanged(Number minValue, Number maxValue) {
+                txtstartPrice.setText("£"+String.valueOf(minValue));
+                txtendPrice.setText("£"+String.valueOf(maxValue));
+                SeekBarPriceValue = Integer.parseInt(String.valueOf(maxValue));
+                SeekBarMinPriceValue = Integer.parseInt(String.valueOf(minValue));
+            }
+        });
+
+// set final value listener
+        rangeSeekbar.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
+            @Override
+            public void finalValue(Number minValue, Number maxValue) {
+                Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
+            }
+        });
+
+
 
     }
 
     private void initView() {
-        tempSerevice = new ArrayList<>();
+        //tempSerevice = new ArrayList<>();
         session = Mualab.getInstance().getSessionManager();
         if (refineSearchBoard != null) {
-            services = refineSearchBoard.refineServices;
-            tempSerevice.addAll(refineSearchBoard.tempSerevice);
-            expandableListAdapter = new RefineServiceExpandListAdapter(RefineArtistActivity.this, services);
+           // services = refineSearchBoard.refineServices;
+            //tempSerevice.addAll(refineSearchBoard.tempSerevice);
+           // expandableListAdapter = new RefineServiceExpandListAdapter(RefineArtistActivity.this, services);
         } else {
-            services = new ArrayList<>();
-            expandableListAdapter = new RefineServiceExpandListAdapter(RefineArtistActivity.this, services);
+           // services = new ArrayList<>();
+            //expandableListAdapter = new RefineServiceExpandListAdapter(RefineArtistActivity.this, services);
         }
     }
 
@@ -170,20 +207,18 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
         LinearLayout rlRefineLocation1 = findViewById(R.id.rlRefineLocation);
         RelativeLayout rlPrice1 = findViewById(R.id.rlPrice);
         rlPriceSeekBar = findViewById(R.id.rlPriceSeekBar);
-        seekBarPrice = findViewById(R.id.seekBarPrice);
         seekBarLocation = findViewById(R.id.seekBarLocation);
         tvShowDistance = findViewById(R.id.textShowRadius);
         rlSelectLocation = findViewById(R.id.rlSelectLocation);
         ImageView ivHeaderBack = findViewById(R.id.btnBack);
         ivHeaderBack.setOnClickListener(this);
         //   tvShowDistance = findViewById(R.id.tvShowDistance);
-        RelativeLayout rlBusiness = findViewById(R.id.rlBusiness);
+       // RelativeLayout rlBusiness = findViewById(R.id.rlBusiness);
 
         rlSelectradiusSeekbar = findViewById(R.id.rlSelectradiusSeekbar);
         rlQualification = findViewById(R.id.rlQualification);
 
 
-        rlBusiness.setOnClickListener(this);
         rlPrice1.setOnClickListener(this);
         rlRefineLocation1.setOnClickListener(this);
         rlSelectLocation.setOnClickListener(this);
@@ -237,23 +272,6 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
         });
 
 
-        seekBarPrice.setOnSeekChangeListener(new OnSeekChangeListener() {
-            @Override
-            public void onSeeking(SeekParams seekParams) {
-                SeekBarPriceValue = seekParams.progress;
-            }
-
-            @Override
-            public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
-
-            }
-        });
-
         seekBarHandler = new Handler();
         seekBarHandler.post(new Runnable() {
             @Override
@@ -264,11 +282,13 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                     seekBarLocation.setProgress(5);
                 }
 
-                if (seekBarPrice != null) {
-                    seekBarPrice.setMin(0);
-                    seekBarPrice.setMax(995);
-                    seekBarPrice.setProgress(0);
-                }
+                rangeSeekbar.setMinValue(1f).apply();
+                rangeSeekbar.setMaxValue(995f).apply();
+
+                //rangeSeekbar.setMinStartValue(0f);
+                rangeSeekbar.setMaxStartValue(0f).apply();
+
+
             }
         });
 
@@ -308,7 +328,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
             lng = refineSearchBoard.longitude;
 
             qulifyName = refineSearchBoard.certificate;
-            subServiceId = refineSearchBoard.subservice;
+            categoryIds = refineSearchBoard.subservice;
             mainServId = refineSearchBoard.service;
             serviceType = refineSearchBoard.serviceType;
             sortSearch = refineSearchBoard.sortSearch;
@@ -323,12 +343,16 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     tv_qualiofications.setVisibility(View.VISIBLE);
                 }
-                tv_qualiofications.setText(qulifyName);
+                String qulifyNamewithComma = qulifyName.replaceAll("[,.!?;:]", "$0 ").replaceAll("\\s+", " ");
+                tv_qualiofications.setText(qulifyNamewithComma);
             }
 
 
             if (refineSearchBoard.priceFilter != null)
                 SeekBarPriceValue = Integer.parseInt(refineSearchBoard.priceFilter);
+
+            if (refineSearchBoard.priceMinFilter != null)
+                SeekBarMinPriceValue = Integer.parseInt(refineSearchBoard.priceMinFilter);
 
             if (refineSearchBoard.LocationFilter != null)
                 seekBarrange = Integer.parseInt(refineSearchBoard.LocationFilter);
@@ -346,9 +370,14 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
             seekBarHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (refineSearchBoard.priceFilter != null) {
-                        seekBarPrice.setProgress(Float.parseFloat(refineSearchBoard.priceFilter));
+
+                    if (refineSearchBoard.priceMinFilter != null) {
+                        rangeSeekbar.setMinStartValue(Float.parseFloat(refineSearchBoard.priceMinFilter));
                     }
+                    if (refineSearchBoard.priceFilter != null) {
+                        rangeSeekbar.setMaxStartValue(Float.parseFloat(refineSearchBoard.priceFilter)).apply();
+                    }
+
                 }
             });
 
@@ -380,7 +409,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
             if (refineSearchBoard.priceFilter != null) {
                 rlPriceSeekBar.setVisibility(View.GONE);
                 tv_price.setVisibility(View.VISIBLE);
-                tv_price.setText("0-£" + refineSearchBoard.priceFilter);
+                tv_price.setText("£"+refineSearchBoard.priceMinFilter +"-  £"+refineSearchBoard.priceFilter);
             }
 
 
@@ -405,9 +434,9 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 }
 
 
-            apiForGetAllServices();
+           // apiForGetAllServices();
         } else {
-            apiForGetAllServices();
+            //apiForGetAllServices();
         }
 
         apiForGetAllCertificates();
@@ -524,16 +553,18 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 break;
 
             case R.id.rlService:
+                serviceCategoryDialog();
 
-                if (tempSubList.size() != 0) {
+                /*if (tempSubList.size() != 0) {
                     serviceDialog();
+
                 } else {
                     if (!serviceName.equals("")) {
                         MyToast.getInstance(this).showDasuAlert(getString(R.string.no_category));
                     } else
                         MyToast.getInstance(this).showDasuAlert(getString(R.string.please_select_business_type));
                 }
-
+*/
                 break;
 
             case R.id.rlSelectLocation:
@@ -562,7 +593,11 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void run() {
                         if (refineSearchBoard != null) {
-                            seekBarPrice.setProgress(Float.parseFloat(refineSearchBoard.priceFilter));
+                            rangeSeekbar.setMinStartValue(Float.parseFloat(refineSearchBoard.priceMinFilter));
+                        }
+
+                        if (refineSearchBoard != null) {
+                            rangeSeekbar.setMaxStartValue(Float.parseFloat(refineSearchBoard.priceFilter)).apply();
                         }
                     }
                 });
@@ -582,9 +617,6 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.btnApply:
                 filterApply();
-                break;
-            case R.id.rlBusiness:
-                showBusinnessDialog();
                 break;
 
             case R.id.rlQualification:
@@ -633,6 +665,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
     }
 
 
+/*
     private void onGroupClickListener(ExpandableListView expandableListView, View view, int groupPosition, long l) {
         RefineServices servicesItem = services.get(groupPosition);
 
@@ -648,6 +681,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
 
         }
     }
+*/
 
     private void filterApply() {
         Progress.show(RefineArtistActivity.this);
@@ -657,7 +691,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
         } else {
             refineSearchBoard = new RefineSearchBoard();
 
-            mainServId = "";
+           /* mainServId = "";
             subServiceId = "";
 
             for (RefineServices services : services) {
@@ -678,20 +712,21 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
 
             if (subServiceId.endsWith(",")) {
                 subServiceId = subServiceId.substring(0, subServiceId.length() - 1);
-            }
+            }*/
 
 
             refineSearchBoard.certificate = qulifyName;
             refineSearchBoard.latitude = lat;
             refineSearchBoard.longitude = lng;
-            refineSearchBoard.service = mainServId;
-            refineSearchBoard.subservice = subServiceId;
+            refineSearchBoard.service = "";// business type
+            refineSearchBoard.subservice = categoryIds; // service category
             refineSearchBoard.serviceType = serviceType;
             refineSearchBoard.sortSearch = sortSearch;
             refineSearchBoard.sortType = sortType;
             refineSearchBoard.time = time;
             refineSearchBoard.date = date_time;
             refineSearchBoard.priceFilter = String.valueOf(SeekBarPriceValue);
+            refineSearchBoard.priceMinFilter = String.valueOf(SeekBarMinPriceValue);
             refineSearchBoard.LocationFilter = String.valueOf(seekBarrange);
             refineSearchBoard.location = location;
             refineSearchBoard.isFavClick = SearchBoardFragment.isFavClick;
@@ -700,8 +735,8 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
             if (setOldDate != null)
                 refineSearchBoard.oldDate = setOldDate;
 
-            refineSearchBoard.refineServices.addAll(services);
-            refineSearchBoard.tempSerevice.addAll(tempSerevice);
+          //  refineSearchBoard.refineServices.addAll(services);
+           // refineSearchBoard.tempSerevice.addAll(tempSerevice);
             session.saveFilter(refineSearchBoard);
         }
 
@@ -739,7 +774,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void apiForGetAllServices() {
+   /* private void apiForGetAllServices() {
         Session session = Mualab.getInstance().getSessionManager();
         User user = session.getUser();
 
@@ -877,7 +912,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void ErrorListener(VolleyError error) {
-               /* try{
+               *//* try{
                     Helper helper = new Helper();
                     if (helper.error_Messages(error).contains("Session")){
                         Mualab.getInstance().getSessionManager().logout();
@@ -886,7 +921,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-*/
+*//*
 
             }
         })
@@ -895,7 +930,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
 
         task.execute(this.getClass().getName());
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -957,7 +992,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    public void showBusinnessDialog() {
+    /*public void showBusinnessDialog() {
         if(services.size()==0){
             apiForGetAllServices();
         }
@@ -1083,122 +1118,14 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
         dialog.show();
 
 
-    }
-
-    public void serviceDialog() {
-        final Dialog dialog = new Dialog(RefineArtistActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        dialog.setContentView(R.layout.dialog_show_service);
-        TextView tvHeader = dialog.findViewById(R.id.tvHeader);
-        android.support.v7.widget.SearchView searchview = dialog.findViewById(R.id.searchview);
-        searchview.setQueryHint("Search Category");
-        tvHeader.setText(getResources().getString(R.string.select_category));
-        final RecyclerView recyclerView = dialog.findViewById(R.id.recyclerview);
-        ImageView img_cancel = dialog.findViewById(R.id.img_cancel);
-        Button btn_done = dialog.findViewById(R.id.btn_done);
-        final TextView tv_msg = dialog.findViewById(R.id.tv_msg);
-        img_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+    }*/
 
 
-       /* for (int i = 0; i < tempSubList.size(); i++) {
-            tempSubList.get(i).isSubItemChecked = false;
-        }*/
-
-        for (int i = 0; i < finalSubList.size(); i++) {
-            for (int j = 0; j < tempSubList.size(); j++) {
-                if (finalSubList.get(i).id.equals(tempSubList.get(j).id)) {
-                    tempSubList.get(j).isSubItemChecked = true;
-                    /*if (tempSubList.get(j).isSubItemCheckedFinal) {
-                        tempSubList.get(j).isSubItemChecked = true;
-                    } else {
-                        tempSubList.get(j).isSubItemChecked = false;
-                    }*/
-                }
-            }
-        }
-
-        final ArrayList<RefineSubServices> searchList = new ArrayList<>();
-        searchview.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchList.clear();
-                for (RefineSubServices services : tempSubList) {
-                    if (services.title.toLowerCase().trim().contains(newText.toLowerCase().trim())) {
-                        searchList.add(services);
-                    }
-                }
-                recyclerView.setAdapter(new RefineSubServiceAdapter(searchList, RefineArtistActivity.this));
-                if (searchList.size() == 0) {
-                    tv_msg.setVisibility(View.VISIBLE);
-                } else {
-                    tv_msg.setVisibility(View.GONE);
-                }
-                return false;
-            }
-        });
-
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(RefineArtistActivity.this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new RefineSubServiceAdapter(tempSubList, RefineArtistActivity.this));
-
-        btn_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalSubList.clear();
-                String subserviceName = "";
-                RefineSubServices services = null;
-                for (int i = 0; i < tempSubList.size(); i++) {
-                    services = new RefineSubServices();
-
-                    if (tempSubList.get(i).isSubItemChecked) {
-                        services.id = tempSubList.get(i).id;
-                        //services.isSubItemChecked = true;
-                        tempSubList.get(i).isSubItemCheckedFinal = true;
-                        finalSubList.add(services);
-                        subserviceName = tempSubList.get(i).title + ", " + subserviceName;
-                    } else {
-                        tempSubList.get(i).isSubItemCheckedFinal = false;
-                    }
-                }
-
-                if (subserviceName.endsWith(", ")) {
-                    subserviceName = subserviceName.substring(0, subserviceName.length() - 2);
-                }
-                if (subserviceName.equals("")) {
-                    tv_service_category.setVisibility(View.GONE);
-                } else tv_service_category.setVisibility(View.VISIBLE);
-                tv_service_category.setText(subserviceName);
-
-                dialog.dismiss();
-
-
-            }
-        });
-
-        Window window = dialog.getWindow();
-        assert window != null;
-        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.show();
-
-
-    }
 
     public void showCertificatesDialog() {
         if(certificatesList.size() == 0){
-            apiForGetAllCertificates();
+            MyToast.getInstance(RefineArtistActivity.this).showDasuAlert("No qualifications added");
+            return;
         }
 
 
@@ -1294,10 +1221,10 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                     }
                 }
 
-                if (tempSubList.size() == 0) {
+               /* if (tempSubList.size() == 0) {
                     finalSubList.clear();
                     tv_service_category.setText("");
-                }
+                }*/
 
                 if (qulifyName.endsWith(",")) {
                     qulifyName = qulifyName.substring(0, qulifyName.length() - 1);
@@ -1308,7 +1235,9 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     tv_qualiofications.setVisibility(View.VISIBLE);
                 }
-                tv_qualiofications.setText(qulifyName);
+
+               String qulifyNamewithComma = qulifyName.replaceAll("[,.!?;:]", "$0 ").replaceAll("\\s+", " ");
+                tv_qualiofications.setText(qulifyNamewithComma);
 
                 dialog.dismiss();
 
@@ -1357,7 +1286,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                     String status = js.getString("status");
                     String message = js.getString("message");
 
-                    if (status.equalsIgnoreCase("success")) {
+                    if (status.equalsIgnoreCase("sucess") || status.equalsIgnoreCase("success")) {
 
                         JSONArray array = js.getJSONArray("data");
                         for (int i = 0; i < array.length(); i++) {
@@ -1371,7 +1300,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                         }
 
                     } else {
-                        MyToast.getInstance(RefineArtistActivity.this).showSmallCustomToast("No Artist available!");
+                        MyToast.getInstance(RefineArtistActivity.this).showDasuAlert(message);
                     }
                     //  showToast(message);
                 } catch (Exception e) {
@@ -1391,6 +1320,297 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
 
         task.execute(this.getClass().getName());
+    }
+
+    public void serviceDialog() {
+        final Dialog dialog = new Dialog(RefineArtistActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_show_service);
+        TextView tvHeader = dialog.findViewById(R.id.tvHeader);
+        android.support.v7.widget.SearchView searchview = dialog.findViewById(R.id.searchview);
+        searchview.setQueryHint("Search Category");
+        tvHeader.setText(getResources().getString(R.string.select_category));
+        final RecyclerView recyclerView = dialog.findViewById(R.id.recyclerview);
+        ImageView img_cancel = dialog.findViewById(R.id.img_cancel);
+        Button btn_done = dialog.findViewById(R.id.btn_done);
+        final TextView tv_msg = dialog.findViewById(R.id.tv_msg);
+        img_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        for (int i = 0; i < finalSubList.size(); i++) {
+            for (int j = 0; j < tempSubList.size(); j++) {
+                if (finalSubList.get(i).id.equals(tempSubList.get(j).id)) {
+                    tempSubList.get(j).isSubItemChecked = true;
+                    /*if (tempSubList.get(j).isSubItemCheckedFinal) {
+                        tempSubList.get(j).isSubItemChecked = true;
+                    } else {
+                        tempSubList.get(j).isSubItemChecked = false;
+                    }*/
+                }
+            }
+        }
+
+        final ArrayList<RefineSubServices> searchList = new ArrayList<>();
+        searchview.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList.clear();
+                for (RefineSubServices services : tempSubList) {
+                    if (services.title.toLowerCase().trim().contains(newText.toLowerCase().trim())) {
+                        searchList.add(services);
+                    }
+                }
+                recyclerView.setAdapter(new RefineSubServiceAdapter(searchList, RefineArtistActivity.this));
+                if (searchList.size() == 0) {
+                    tv_msg.setVisibility(View.VISIBLE);
+                } else {
+                    tv_msg.setVisibility(View.GONE);
+                }
+                return false;
+            }
+        });
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(RefineArtistActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(new RefineSubServiceAdapter(tempSubList, RefineArtistActivity.this));
+
+        btn_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finalSubList.clear();
+                String subserviceName = "";
+                RefineSubServices services = null;
+                for (int i = 0; i < tempSubList.size(); i++) {
+                    services = new RefineSubServices();
+
+                    if (tempSubList.get(i).isSubItemChecked) {
+                        services.id = tempSubList.get(i).id;
+                        //services.isSubItemChecked = true;
+                        tempSubList.get(i).isSubItemCheckedFinal = true;
+                        finalSubList.add(services);
+                        subserviceName = tempSubList.get(i).title + ", " + subserviceName;
+                    } else {
+                        tempSubList.get(i).isSubItemCheckedFinal = false;
+                    }
+                }
+
+                if (subserviceName.endsWith(", ")) {
+                    subserviceName = subserviceName.substring(0, subserviceName.length() - 2);
+                }
+                if (subserviceName.equals("")) {
+                    tv_service_category.setVisibility(View.GONE);
+                } else tv_service_category.setVisibility(View.VISIBLE);
+                tv_service_category.setText(subserviceName);
+
+                dialog.dismiss();
+
+
+            }
+        });
+
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+
+    }
+
+    //new dialog for only service
+    public void serviceCategoryDialog() {
+        final Dialog dialog = new Dialog(RefineArtistActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_show_service);
+        TextView tvHeader = dialog.findViewById(R.id.tvHeader);
+        android.support.v7.widget.SearchView searchview = dialog.findViewById(R.id.searchview);
+        searchview.setQueryHint(getString(R.string.select_service_category));
+        tvHeader.setText(getString(R.string.select_service_category));
+        final RecyclerView recyclerView = dialog.findViewById(R.id.recyclerview);
+        ImageView img_cancel = dialog.findViewById(R.id.img_cancel);
+        Button btn_done = dialog.findViewById(R.id.btn_done);
+        final TextView tv_msg = dialog.findViewById(R.id.tv_msg);
+        img_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        for (ExploreCategoryInfo.DataBean services : dataBeans) {
+            services.isCheckedCategoryLocal = services.isCheckedCategory;
+        }
+
+        final ArrayList<ExploreCategoryInfo.DataBean> searchList = new ArrayList<>();
+        searchview.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList.clear();
+                for (ExploreCategoryInfo.DataBean services : dataBeans) {
+                    if (services.title.toLowerCase().trim().contains(newText.toLowerCase().trim())) {
+                        searchList.add(services);
+                    }
+                }
+                ServiceCategoryFilterAdapter  categoryFilterAdapter = new ServiceCategoryFilterAdapter(searchList,
+                        RefineArtistActivity.this, 0);
+                recyclerView.setAdapter(categoryFilterAdapter);
+                if (searchList.size() == 0) {
+                    tv_msg.setVisibility(View.VISIBLE);
+                } else {
+                    tv_msg.setVisibility(View.GONE);
+                }
+                return false;
+            }
+        });
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(RefineArtistActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        ServiceCategoryFilterAdapter categoryFilterAdapter = new ServiceCategoryFilterAdapter(dataBeans,
+                RefineArtistActivity.this, 0);
+        recyclerView.setAdapter(categoryFilterAdapter);
+
+        dialog.setOnDismissListener(dialog1 -> {
+            for (ExploreCategoryInfo.DataBean services : dataBeans) {
+                services.isCheckedCategoryLocal = false;
+            }
+        });
+
+        btn_done.setOnClickListener(v -> {
+            categoryIds = "";
+            CategoryName = "";
+            for (ExploreCategoryInfo.DataBean services : dataBeans) {
+                services.isCheckedCategory = services.isCheckedCategoryLocal;
+                if (services.isCheckedCategory) {
+                    CategoryName = services.title + ", " + CategoryName;
+                    categoryIds = services._id + "," + categoryIds;
+
+                } else {
+                    for (ExploreCategoryInfo.DataBean.ArtistservicesBean bean : services.artistservices) {
+                        bean.isCheckedservices = false;
+                        bean.isCheckedservicesLocal = false;
+                    }
+                }
+            }
+
+            if (categoryIds.endsWith(",")) {
+                categoryIds = categoryIds.substring(0, categoryIds.length() - 1);
+            }
+
+            if (CategoryName.endsWith(", ")) {
+                CategoryName = CategoryName.substring(0, CategoryName.length() - 2);
+            }
+
+            if (CategoryName.equals("")) {
+                tv_service_category.setVisibility(View.GONE);
+            } else tv_service_category.setVisibility(View.VISIBLE);
+
+            tv_service_category.setText(CategoryName + "");
+            dialog.dismiss();
+
+
+        });
+
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+    }
+
+    private void GetAllServiceCategory(final boolean isEnableProgress) {
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(RefineArtistActivity.this, new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        GetAllServiceCategory(isEnableProgress);
+                    }
+
+                }
+            }).show();
+        }
+
+        new HttpTask(new HttpTask.Builder(RefineArtistActivity.this, "allExploreCategory", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                dataBeans.clear();
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+                        Gson gson = new Gson();
+                        ExploreCategoryInfo categoryInfo = gson.fromJson(response, ExploreCategoryInfo.class);
+
+                        dataBeans.addAll(categoryInfo.data);
+                        if(!categoryIds.equals("")){
+                            List<String> list = new ArrayList<String>(Arrays.asList(categoryIds.split(",")));
+
+                            for(int i=0;i<list.size();i++){
+                                for(int j=0;j<dataBeans.size();j++){
+                                    if(list.get(i).equals(String.valueOf(dataBeans.get(j)._id))){
+                                        dataBeans.get(j).isCheckedCategoryLocal = true;
+                                        dataBeans.get(j).isCheckedCategory = true;
+                                        CategoryName = dataBeans.get(j).title + ", " + CategoryName;
+                                    }
+                                }
+                            }
+
+                            if (CategoryName.endsWith(", ")) {
+                                CategoryName = CategoryName.substring(0, CategoryName.length() - 2);
+                            }
+
+                            if (CategoryName.equals("")) {
+                                tv_service_category.setVisibility(View.GONE);
+                            } else tv_service_category.setVisibility(View.VISIBLE);
+
+                            tv_service_category.setText(CategoryName + "");
+                        }
+
+
+                        exploreServiceAdapter.notifyDataSetChanged();
+
+                    } else {
+                        // goto 3rd screen for register
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+
+
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+
+            }
+        })
+                .setAuthToken(Mualab.currentUser.authToken)
+                .setMethod(Request.Method.GET)
+                .setProgress(false))
+                .execute("ExploreCategory");
+        //progress_bar.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
     }
 
 }

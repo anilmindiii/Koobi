@@ -10,7 +10,7 @@
         />
 
     // Reduce the corner radius value
-    <corners android:radius="40dp" />
+    <corners android:radius="35dp" />
 
 
 

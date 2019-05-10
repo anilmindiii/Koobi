@@ -72,7 +72,7 @@ public class SpinnerDatePickerDialogBuilder {
         return this;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+   // @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public DatePickerDialog build() {
         if (context == null) throw new IllegalArgumentException("Context must not be null");
         if (maxDate.getTime().getTime() <= minDate.getTime().getTime()) throw new IllegalArgumentException("Max date is not after Min date");

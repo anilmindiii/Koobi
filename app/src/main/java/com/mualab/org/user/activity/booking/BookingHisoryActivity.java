@@ -29,6 +29,7 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.booking.adapter.BookingHistoryAdapter;
 import com.mualab.org.user.activity.booking.adapter.ScheduledAdapter;
 import com.mualab.org.user.activity.booking.model.BookingHistoryInfo;
+import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.local.prefs.Session;
@@ -56,7 +57,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
 
     private RecyclerView recycler_view;
     ArrayList<BookingHistoryInfo.DataBean> dataBean;
-    ScheduledAdapter adapter;
+    private ScheduledAdapter adapter;
     private BookingHistoryAdapter historyAdapter;
     private TextView tv_bookingHistory, tv_booking_scheduled, tv_msg;
     private View iv_bookingHistory, iv_booking_scheduled;
@@ -109,6 +110,9 @@ public class BookingHisoryActivity extends AppCompatActivity {
         adapter = new ScheduledAdapter(this, dataBean, "");
         recycler_view.setAdapter(adapter);
 
+        arrayList.add("All");
+        arrayList.add("In Call");
+        arrayList.add("Out Call");
 
         iv_search_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,34 +210,11 @@ public class BookingHisoryActivity extends AppCompatActivity {
             }
         });
 
-      /*  tv_all_type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = tv_all_type.getText().toString();
-                setFilter(text);
-            }
-        });
-
-        tv_in_type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = tv_in_type.getText().toString();
-                setFilter(text);
-            }
-        });
-
-        tv_out_type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = tv_out_type.getText().toString();
-                setFilter(text);
-            }
-        });*/
 
         ll_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int[] location = new int[2];
+                /*int[] location = new int[2];
                 // Get the x, y location and store it in the location[] array
                 // location[0] = x, location[1] = y.
                 ivFilter.getLocationOnScreen(location);
@@ -249,12 +230,59 @@ public class BookingHisoryActivity extends AppCompatActivity {
                 } else {
                     isMenuOpen = false;
                     popupWindow.dismiss();
-                }
+                }*/
+
+                NameDisplayDialog.newInstance(getString(R.string.booking_type), arrayList, pos -> {
+                    String data = arrayList.get(pos);
+                    final ArrayList<BookingHistoryInfo.DataBean> tempList = new ArrayList<>();
+
+                    switch (data) {
+                        case "All":
+                            tvFilter.setText(R.string.all);
+                            call_status = "";
+                            tempList.addAll(dataBean);
+                            break;
+
+                        case "In Call":
+                            tvFilter.setText("In Call");
+                            call_status = "In Call";
+                            for (BookingHistoryInfo.DataBean bean : dataBean) {
+                                if (bean.bookingType == 1) {
+                                    tempList.add(bean);
+                                }
+                            }
+                            break;
+
+                        case "Out Call":
+                            tvFilter.setText("Out Call");
+                            call_status = "Out Call";
+                            for (BookingHistoryInfo.DataBean bean : dataBean) {
+                                if (bean.bookingType == 2) {
+                                    tempList.add(bean);
+                                }
+                            }
+                            break;
+                    }
+
+                    if (tabSelected.equals("tv_booking_scheduled")) {
+                        adapter = new ScheduledAdapter(BookingHisoryActivity.this, tempList, call_status);
+                        recycler_view.setAdapter(adapter);
+                    } else if (tabSelected.equals("tv_bookingHistory")) {
+                        historyAdapter = new BookingHistoryAdapter(BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
+                            @Override
+                            public void call(int artistId, int bookingId, String comments, float rating,String type) {
+                                bookingReviewRating(artistId, bookingId, comments, rating, type);
+                            }
+                        });
+                        recycler_view.setAdapter(historyAdapter);
+                    }}).show(getSupportFragmentManager());
 
             }
         });
 
         bookingHistory(type, "");
+
+
 
     }
 
@@ -444,7 +472,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
         HttpTask task = new HttpTask(new HttpTask.Builder(BookingHisoryActivity.this, "userBookingHistory", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null)ll_progress.setVisibility(View.GONE);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -510,14 +538,14 @@ public class BookingHisoryActivity extends AppCompatActivity {
                     }
 
                 } catch (Exception e) {
-                    ll_progress.setVisibility(View.GONE);
+                    if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void ErrorListener(VolleyError error) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null)ll_progress.setVisibility(View.GONE);
                 try {
                     Helper helper = new Helper();
                     if (helper.error_Messages(error).contains("Session")) {
@@ -573,6 +601,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
 
                     dataBean.clear();
                     if (status.equals("success")) {
+                        MyToast.getInstance(BookingHisoryActivity.this).showDasuAlert("Review Submitted Successfully");
                         bookingHistory(type, "");
                     } else {
                         MyToast.getInstance(BookingHisoryActivity.this).showDasuAlert(message);

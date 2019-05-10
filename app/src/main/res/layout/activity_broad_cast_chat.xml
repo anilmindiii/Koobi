@@ -176,7 +176,7 @@
                 android:src="@drawable/comment_camera"
                 android:tint="@color/colorPrimary" />
 
-            <EditText
+            <com.mualab.org.user.chat.model.MyEditText
                 android:id="@+id/et_for_sendTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

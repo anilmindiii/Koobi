@@ -3,6 +3,7 @@ package com.mualab.org.user.activity.feeds.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.inputmethodservice.Keyboard;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.authentication.ForgotPasswordActivity;
 import com.mualab.org.user.activity.authentication.LoginActivity;
 import com.mualab.org.user.activity.authentication.Registration2Activity;
+import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.booking.BookingDetailsActivity;
 import com.mualab.org.user.activity.booking.adapter.BookingHistoryDetailsAdapter;
 import com.mualab.org.user.activity.booking.model.BookingListInfo;
@@ -34,6 +36,7 @@ import com.mualab.org.user.activity.feeds.adapter.ReportAdapter;
 import com.mualab.org.user.activity.feeds.model.ReportInfo;
 import com.mualab.org.user.activity.feeds.model.SubmitReportInfo;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.chat.model.Report;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
 import com.mualab.org.user.data.remote.API;
@@ -79,6 +82,7 @@ public class ReportActivity extends AppCompatActivity {
     private boolean shouldApiRun,isforbooking;
     private TextView tv_header_title;
     private  String artistServiceName = "";
+    private BottomSheetDialog mCatTypeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,7 @@ public class ReportActivity extends AppCompatActivity {
         tv_reason = findViewById(R.id.tv_reason);
         ed_description = findViewById(R.id.ed_description);
         rev_reason = findViewById(R.id.rev_reason);
-        cv_reason = findViewById(R.id.cv_reason);
+        //cv_reason = findViewById(R.id.cv_reason);
         ly_reason = findViewById(R.id.ly_reason);
         iv_back = findViewById(R.id.iv_back);
         btn_submit = findViewById(R.id.btn_submit);
@@ -159,23 +163,26 @@ public class ReportActivity extends AppCompatActivity {
                         btn_reSubmit.setVisibility(View.VISIBLE);
                         btn_submit.setVisibility(View.GONE);
                         btn_submit_booking.setVisibility(View.GONE);
+                        ly_reason.setEnabled(true);
                     }else {
                         btn_reSubmit.setVisibility(View.GONE);
-                    }
+                        ly_reason.setEnabled(false);
+                }
                 }
 
             }
         }
 
 
-
+        setReportReasonDialog(false);
 
         dataBeans = new ArrayList<>();
         adapter = new ReportAdapter(dataBeans, ReportActivity.this, new ReportAdapter.getClick() {
             @Override
             public void OnClikcItem(ReportInfo.DataBean bean) {
                 dataBean = bean;
-                cv_reason.setVisibility(View.GONE);
+                mCatTypeDialog.dismiss();
+              //  cv_reason.setVisibility(View.GONE);
                 tv_reason.setText(bean.title);
             }
         });
@@ -231,11 +238,11 @@ public class ReportActivity extends AppCompatActivity {
 
                 KeyboardUtil.hideKeyboard(ly_reason, ReportActivity.this);
 
-                if (cv_reason.getVisibility() == View.VISIBLE) {
+               /* if (cv_reason.getVisibility() == View.VISIBLE) {
                     cv_reason.setVisibility(View.GONE);
-                } else cv_reason.setVisibility(View.VISIBLE);
+                } else cv_reason.setVisibility(View.VISIBLE);*/
 
-
+                setReportReasonDialog(true);
             }
         });
         iv_back.setOnClickListener(new View.OnClickListener() {
@@ -399,5 +406,19 @@ public class ReportActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(cal.getTime());
+    }
+
+    private void setReportReasonDialog(boolean isShow) {
+        if (mCatTypeDialog == null) {
+            mCatTypeDialog = new BottomSheetDialog(ReportActivity.this, R.style.CustomBottomSheetDialogTheme);
+            View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
+            TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
+            tvTitle.setText(getString(R.string.select_reason));
+            rev_reason = sheetView.findViewById(R.id.recyclerView);
+            mCatTypeDialog.setContentView(sheetView);
+        }
+
+        if (isShow)
+            mCatTypeDialog.show();
     }
 }

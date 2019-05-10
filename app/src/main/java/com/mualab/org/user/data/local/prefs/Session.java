@@ -3,6 +3,7 @@ package com.mualab.org.user.data.local.prefs;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Base64;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -155,11 +156,7 @@ public class Session {
             isLogout = true;
             editor.clear();
             editor.apply();
-            try {
-                FirebaseInstanceId.getInstance().deleteInstanceId();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            fireBaseLogout();
             Intent showLogin = new Intent(_context, LoginActivity.class);
             showLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             showLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -167,6 +164,27 @@ public class Session {
         }
 
 
+    }
+
+    private static void fireBaseLogout(){
+        new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try
+                {
+                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                // Call your Activity where you want to land after log out
+            }
+        }.execute();
     }
 
     public boolean isLoggedIn() {

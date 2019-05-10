@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:id="@+id/ly_main_layout"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <include
         android:id="@+id/header"
         layout="@layout/new_header_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_gravity="top" />
 
     <android.support.design.widget.CoordinatorLayout
 
@@ -42,41 +40,40 @@
                     android:id="@+id/ll_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:background="@color/grey1"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="50dp"
-                    app:layout_collapseMode="parallax"
-                    android:orientation="vertical">
+                    android:animateLayoutChanges="true"
+                    android:background="@color/grey1"
+                    android:orientation="vertical"
+                    app:layout_collapseMode="parallax">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        >
+                        android:layout_marginTop="10dp">
 
                         <TextView
                             android:id="@+id/tv_ProfileName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:layout_centerHorizontal="true"
                             android:layout_gravity="center_horizontal"
-                            android:textColor="@color/black"
-                            android:text="NA"
                             android:fontFamily="@font/nunito_regular"
+                            android:gravity="center"
+                            android:text="NA"
+                            android:textColor="@color/black"
                             android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/tv_username"
-                            android:layout_below="@+id/tv_ProfileName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_ProfileName"
+                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center_horizontal"
+                            android:fontFamily="@font/nunito_regular"
                             android:gravity="center"
                             android:text="NA"
-                            android:layout_centerHorizontal="true"
-                            android:fontFamily="@font/nunito_regular"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -84,58 +81,57 @@
                             android:id="@+id/ivFav"
                             android:layout_width="45dp"
                             android:layout_height="45dp"
-                            android:padding="12dp"
-                            android:visibility="gone"
-                            android:src="@drawable/inactive_star_co"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:layout_alignParentEnd="true" />
+                            android:padding="12dp"
+                            android:layout_marginRight="7.5dp"
+                            android:src="@drawable/inactive_star_co"
+                            android:visibility="gone" />
 
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="6dp">
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center_vertical">
 
                         <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/btnFollow"
                             style="@style/My_Button_Small.Invert"
                             android:layout_width="85dp"
                             android:layout_height="30dp"
-                            android:id="@+id/btnFollow"
-                            android:text="@string/follow"
-                            android:gravity="center"
-                            android:padding="2dp"
-                            android:textSize="12sp"
-                            android:layout_marginLeft="10dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
-                            />
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:text="@string/follow"
+                            android:textSize="12sp" />
 
                         <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/btnBook"
                             style="@style/My_Button_Small.Invert"
                             android:layout_width="85dp"
                             android:layout_height="30dp"
-                            android:id="@+id/btnBook"
-                            android:text="@string/btn_book_now"
-                            android:gravity="center"
-                            android:padding="2dp"
-                            android:textSize="12sp"
-                            android:layout_marginRight="10dp"
+                            android:backgroundTint="@color/darkpink"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            />
+                            android:layout_marginRight="10dp"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:text="@string/btn_book_now"
+                            android:textSize="12sp" />
 
                         <RelativeLayout
                             android:id="@+id/lyProfilePic"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_centerInParent="true"
-                            >
+                            android:layout_centerInParent="true">
 
                             <RelativeLayout
                                 android:layout_width="wrap_content"
@@ -156,10 +152,10 @@
                                 android:id="@+id/ivActive"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:layout_alignParentBottom="true"
                                 android:layout_alignParentRight="true"
-                                android:layout_marginBottom="5dp"
+                                android:layout_alignParentBottom="true"
                                 android:layout_marginRight="2dp"
+                                android:layout_marginBottom="5dp"
                                 android:clickable="false"
                                 android:src="@drawable/ico_varified"
                                 android:visibility="gone" />
@@ -175,7 +171,6 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
-                        android:layout_marginTop="2dp"
                         android:padding="2dp">
 
                         <LinearLayout
@@ -184,12 +179,13 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="-20dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <RatingBar
+                            <android.support.v7.widget.AppCompatRatingBar
                                 android:id="@+id/rating"
-                                style="@style/RatingBarGray"
+                                style="@style/RatingBarGraycustom"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="1dp"
@@ -197,22 +193,20 @@
                                 android:isIndicator="true"
                                 android:numStars="5"
                                 android:rating="0"
-                                android:scaleX="0.8"
-                                android:scaleY="0.8"
-                                android:stepSize="0.1"
-                                android:transformPivotX="0.1dp"
-                                android:transformPivotY="0.1dp" />
+                                android:scaleX=".4"
+                                android:scaleY=".4"
+                                android:stepSize="1" />
 
                             <TextView
                                 android:id="@+id/tvRatingCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="-20dp"
+                                android:layout_marginLeft="-60dp"
                                 android:layout_marginTop="1dp"
+                                android:fontFamily="@font/nunito_regular"
                                 android:gravity="center"
                                 android:text="NA"
-                                android:fontFamily="@font/nunito_regular"
                                 android:textColor="@color/text_color"
                                 android:textSize="13sp" />
 
@@ -225,14 +219,12 @@
                             android:layout_below="@+id/llRating"
                             android:layout_centerHorizontal="true"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="15dp"
+                            android:fontFamily="@font/nunito_regular"
                             android:gravity="center"
                             android:text="NA"
-                            android:fontFamily="@font/nunito_regular"
                             android:textColor="@color/text_color"
-                            android:textSize="13sp"
-                            />
-
+                            android:textSize="13sp" />
 
 
                     </RelativeLayout>
@@ -243,8 +235,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginRight="10dp">
 
                     </android.support.v4.view.ViewPager>
 
@@ -253,8 +244,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -278,20 +269,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="bottom"
-                    app:contentInsetLeft="0dp"
-                    app:contentInsetStart="0dp"
-                    app:contentInsetRight="0dp"
-                    app:contentInsetEnd="0dp"
                     android:background="@color/white"
+                    app:contentInsetEnd="0dp"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetRight="0dp"
+                    app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin">
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginRight="20dp"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginBottom="10dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -309,8 +300,8 @@
                                 android:id="@+id/iv_list_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
                                 android:layout_marginStart="10dp"
+                                android:layout_marginLeft="10dp"
                                 android:src="@drawable/active_list" />
 
 
@@ -318,10 +309,10 @@
                                 android:id="@+id/iv_search_icon"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:tint="@color/gray"
-                                android:padding="4dp"
-                                android:layout_marginLeft="5dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="5dp"
+                                android:padding="4dp"
+                                android:tint="@color/gray"
                                 app:srcCompat="@drawable/search_ico" />
 
 
@@ -351,8 +342,8 @@
                                     android:layout_marginRight="4dp"
                                     android:fontFamily="@font/nunito_regular"
                                     android:text="All"
-                                    android:textSize="16dp"
-                                    android:textColor="@color/black" />
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
 
                                 <RelativeLayout
                                     android:id="@+id/rl_filter"
@@ -379,12 +370,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:weightSum="3"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"
                         android:layout_centerInParent="true"
-                        android:baselineAligned="false">
+                        android:layout_gravity="center_vertical"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:weightSum="3">
 
                         <LinearLayout
                             android:id="@+id/ly_feeds"
@@ -396,9 +387,9 @@
 
                             <TextView
                                 android:id="@+id/tv_feed"
+                                style="@style/TextView.Header2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                style="@style/TextView.Header2"
                                 android:padding="2dp"
                                 android:text="@string/text_feeds"
                                 android:textColor="@color/text_color" />
@@ -418,11 +409,11 @@
                                 android:id="@+id/tv_image"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunito_regular"
                                 android:padding="2dp"
                                 android:text="@string/text_images"
-                                android:fontFamily="@font/nunito_regular"
                                 android:textColor="@color/text_color"
-                                android:textSize="16sp"/>
+                                android:textSize="16sp" />
 
                         </LinearLayout>
 
@@ -438,11 +429,11 @@
                                 android:id="@+id/tv_videos"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunito_regular"
                                 android:padding="2dp"
                                 android:text="@string/text_videos"
-                                android:fontFamily="@font/nunito_regular"
                                 android:textColor="@color/text_color"
-                                android:textSize="16sp"/>
+                                android:textSize="16sp" />
 
                         </LinearLayout>
 
@@ -460,31 +451,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <EditText
                 android:id="@+id/ed_search"
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
-                android:paddingLeft="10dp"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:background="@drawable/rounded_border"
-                android:hint="@string/search"
-                android:textSize="16sp"
-                android:imeOptions="actionDone"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_border"
                 android:focusable="true"
-                android:textColorHint="@color/gray"
                 android:focusableInTouchMode="true"
-                android:textColor="@color/text_color"
                 android:fontFamily="@font/nunito_regular"
-                android:visibility="gone"/>
+                android:hint="@string/search"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:paddingLeft="10dp"
+                android:singleLine="true"
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/gray"
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <com.mualab.org.user.Views.refreshviews.RjRefreshLayout
                 android:id="@+id/mSwipeRefreshLayout"
@@ -509,15 +500,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:progressTintMode="multiply"
                 android:indeterminateDrawable="@drawable/loader_img_animation_blue"
+                android:progressTintMode="multiply"
                 tools:ignore="UnusedAttribute" />
 
             <TextView
@@ -526,10 +517,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/loading"
-                android:visibility="gone"
                 android:fontFamily="@font/nunito_regular"
-                android:textColor="@color/colorPrimary" />
+                android:text="@string/loading"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -540,11 +531,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|center"
             android:layout_marginTop="80dp"
-            android:visibility="gone"
             android:fontFamily="@font/nunito_regular"
             android:text="@string/no_data_available"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:textColor="@color/text_color" />
+            android:textColor="@color/text_color"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </android.support.design.widget.CoordinatorLayout>
 

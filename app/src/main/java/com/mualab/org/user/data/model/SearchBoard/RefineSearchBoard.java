@@ -11,7 +11,7 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class RefineSearchBoard implements Serializable{
     public String latitude, longitude,page,limit,service,serviceType,
-            day,time,subservice,date,location,sortSearch,sortType,priceFilter,
+            day,time,subservice,date,location,sortSearch,sortType,priceFilter,priceMinFilter,
             LocationFilter,PriceFilter,rating,certificate;
     public Date oldDate;
     public ArrayList<RefineServices> refineServices = new ArrayList<>();

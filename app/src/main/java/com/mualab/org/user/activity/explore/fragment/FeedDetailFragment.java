@@ -198,7 +198,7 @@ public class FeedDetailFragment extends Fragment {
 */
                     int pos = data.getIntExtra("feedPosition", 0);
                     Feeds feed = (Feeds) data.getSerializableExtra("feed");
-                    list.get(pos).commentCount = data.getIntExtra("commentCount", 0);
+                    list.get(pos).commentCount = feed.commentCount;
                     adapter.notifyItemChanged(pos);
 
                     //   }

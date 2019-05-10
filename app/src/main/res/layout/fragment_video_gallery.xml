@@ -32,7 +32,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:singleLine="true"
-                android:textColor="@color/gray"
+                android:textColor="@color/red_color"
                 android:fontFamily="@font/nunito_regular"
                 android:textSize="16sp"
                 />
@@ -61,7 +61,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="?selectableItemBackground"
-                android:textColor="@color/gray"
+                android:textColor="@color/colorPrimary"
                 android:fontFamily="@font/nunito_regular"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"

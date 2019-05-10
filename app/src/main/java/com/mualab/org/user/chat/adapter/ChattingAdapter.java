@@ -3,15 +3,22 @@ package com.mualab.org.user.chat.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
@@ -88,20 +95,24 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tv_sender_msg,tv_send_time;
+        TextView tv_sender_msg,tv_send_time,tv_transparent;
         ImageView iv_for_sender,iv_msg_status;
         ProgressBar progress_bar;
+        FrameLayout my_view_main;
 
         MyViewHolder(View itemView) {
             super(itemView);
             tv_sender_msg = itemView.findViewById(R.id.tv_sender_msg);
             iv_msg_status = itemView.findViewById(R.id.iv_msg_status);
             iv_for_sender = itemView.findViewById(R.id.iv_for_sender);
-            iv_for_sender.setEnabled(false);
             tv_send_time = itemView.findViewById(R.id.tv_send_time);
             progress_bar = itemView.findViewById(R.id.progress_bar);
+            tv_transparent = itemView.findViewById(R.id.tv_transparent);
+            my_view_main = itemView.findViewById(R.id.my_view_main);
 
             iv_for_sender.setOnClickListener(this);
+
+            itemView.setOnClickListener(v -> listener.onPress(getAdapterPosition()));
 
         }
 
@@ -111,22 +122,40 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 iv_for_sender.setVisibility(View.VISIBLE);
                 tv_sender_msg.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
-                Picasso.with(context)
-                        .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_for_sender, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        progress_bar.setVisibility(View.GONE);
-                        iv_for_sender.setEnabled(true);
-                    }
-                    @Override
-                    public void onError() {
-                        Picasso.with(context).load(chat.message)
-                                .placeholder(R.drawable.gallery_placeholder)
-                                .error(R.drawable.gallery_placeholder).into(iv_for_sender);
-                        progress_bar.setVisibility(View.GONE);
-                        iv_for_sender.setEnabled(false);
-                    }
-                });
+                if(chat.message.contains(".gif")){
+                    GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_for_sender);
+                    Glide.with(context)
+                            .load(chat.message)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    progress_bar.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(imageViewTarget);
+                }else {
+                    Picasso.with(context)
+                            .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_for_sender, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            progress_bar.setVisibility(View.GONE);
+
+                        }
+                        @Override
+                        public void onError() {
+                            Picasso.with(context).load(chat.message)
+                                    .placeholder(R.drawable.gallery_placeholder)
+                                    .error(R.drawable.gallery_placeholder).into(iv_for_sender);
+                            progress_bar.setVisibility(View.GONE);
+                        }
+                    });
+                }
 
                 //  Glide.with(context).load(chat.message).fitCenter().placeholder(R.drawable.gallery_placeholder).into(iv_for_sender);
             }else {
@@ -135,6 +164,10 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 tv_sender_msg.setText(chat.message);
                 progress_bar.setVisibility(View.GONE);
             }
+
+            if(chat.isLongSelected){
+                tv_transparent.setVisibility(View.VISIBLE);
+            }else tv_transparent.setVisibility(View.GONE);;
 
             SimpleDateFormat sd = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             try {
@@ -160,6 +193,19 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (listener!=null)
                 listener.onScrollChange(position,chat.timestamp);
 
+            iv_for_sender.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onLongPress(getAdapterPosition());
+                    return false;
+                }
+            });
+
+            itemView.setOnLongClickListener(v -> {
+                listener.onLongPress(getAdapterPosition());
+                return false;
+            });
+
         }
 
         @Override
@@ -176,6 +222,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         context.startActivity(intent);
                     }
                     break;
+
             }
         }
     }
@@ -191,7 +238,6 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tvSenderName = itemView.findViewById(R.id.tvSenderName);
             tv_other_msg_time = itemView.findViewById(R.id.tv_other_msg_time);
             iv_other_img = itemView.findViewById(R.id.iv_other_img);
-            iv_other_img.setEnabled(false);
             iv_othr_msg_status = itemView.findViewById(R.id.iv_othr_msg_status);
             tv_my_date_label = itemView.findViewById(R.id.tv_my_date_label);
             progress_bar = itemView.findViewById(R.id.progress_bar);
@@ -208,24 +254,39 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 tv_other_msg.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
 
+                if(chat.message.contains(".gif")){
+                    GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_other_img);
+                    Glide.with(context)
+                            .load(chat.message)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    progress_bar.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(imageViewTarget);
+                }else{
                 Picasso.with(context)
                         .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_other_img, new Callback() {
                     @Override
                     public void onSuccess() {
-                        iv_other_img.setEnabled(true);
                         progress_bar.setVisibility(View.GONE);
                     }
                     @Override
                     public void onError() {
-                        iv_other_img.setEnabled(false);
                         Picasso.with(context).load(chat.message)
                                 .placeholder(R.drawable.gallery_placeholder)
                                 .error(R.drawable.gallery_placeholder).into(iv_other_img);
                         progress_bar.setVisibility(View.GONE);
                     }
                 });
-
-                //  Glide.with(context).load(chat.message).fitCenter().placeholder(R.drawable.gallery_placeholder).into(iv_other_img);
+                }
 
             }else {
                 tv_other_msg.setVisibility(View.VISIBLE);
@@ -258,6 +319,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (listener!=null)
                 listener.onScrollChange(position,chat.timestamp);
 
+
         }
 
         @Override
@@ -272,8 +334,6 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         intent.putExtra("imageArray", tempList);
                         intent.putExtra("startIndex", 0);
                         context.startActivity(intent);
-
-
                     }
                     break;
             }

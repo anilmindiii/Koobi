@@ -77,7 +77,7 @@ public class AddNewMemberListAdapter extends RecyclerView.Adapter<RecyclerView.V
         final FirebaseUser firebaseUser = firebaseUsers.get(position);
 
         if (firebaseUser.profilePic!=null && !firebaseUser.profilePic.equals("")){
-            Glide.with(mContext).load(firebaseUser.profilePic).
+            Picasso.with(mContext).load(firebaseUser.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).into(holder.ivProfilePic);
         }
 

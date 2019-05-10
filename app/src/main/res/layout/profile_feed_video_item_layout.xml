@@ -69,72 +69,17 @@
                 android:layout_alignParentBottom="true"
                 android:layout_height="40dp" />
 
-            <RelativeLayout
-                android:id="@+id/ly_share"
-                android:layout_width="100dp"
+            <include
+                layout="@layout/feed_item_menu2"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="22dp"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/shape_img" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/tv_report"
-                        android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:fontFamily="@font/nunito_regular"
-                        android:scaleType="center"
-                        android:paddingLeft="15dp"
-                        android:text="Report post"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center"
-                        android:textColor="@color/dark_gray"
-                        android:textSize="14dp" />
-
-                    <View
-                        android:id="@+id/view_divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="0.8dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@color/gray2"/>
-
-                    <TextView
-                        android:id="@+id/tv_share_post"
-                        android:layout_below="@+id/tv_report"
-                        android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:paddingLeft="15dp"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="2dp"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="@font/nunito_regular"
-                        android:scaleType="center"
-                        android:text="Share post"
-                        android:layout_gravity="center"
-                        android:textColor="@color/dark_gray"
-                        android:textSize="14dp" />
+                android:layout_marginRight="5.5dp"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone"/>
 
 
-                </LinearLayout>
-
-
-
-            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -147,7 +92,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:fontFamily="@font/nunito_regular"
+            android:fontFamily="@font/nunito_semibold"
             android:textColorLink="@color/text_color"
             android:textColor="@color/text_color"
             android:visibility="gone" />

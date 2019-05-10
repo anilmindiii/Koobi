@@ -405,9 +405,8 @@ public class GroupDetailActivity extends AppCompatActivity implements View.OnCli
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
-                //for enter from bottom
-                //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
+                //ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+
             }
         });
 
@@ -681,7 +680,7 @@ public class GroupDetailActivity extends AppCompatActivity implements View.OnCli
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+                //ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -728,7 +727,7 @@ public class GroupDetailActivity extends AppCompatActivity implements View.OnCli
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+               // ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -776,7 +775,7 @@ public class GroupDetailActivity extends AppCompatActivity implements View.OnCli
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+            //    ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }

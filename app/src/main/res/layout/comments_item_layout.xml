@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,13 +8,14 @@
     android:layout_marginRight="10dp"
     android:layout_marginTop="8dp"
     card_view:cardCornerRadius="4dp"
-    android:background="@color/white"
-    card_view:cardElevation="4dp">
+    android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,7 +100,7 @@
                         android:layout_marginTop="5dp"
                         android:scaleType="centerCrop"
                         app:ari_aspect="height"
-                        app:ari_ratio="0.75"/>
+                        app:ari_ratio="0.75" />
 
 
                     <LinearLayout
@@ -146,8 +147,17 @@
             android:layout_alignParentBottom="true"
             android:background="@color/gray2"/>
 
+
+
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:visibility="gone"/>
 
 
-</RelativeLayout>
+
+</FrameLayout>

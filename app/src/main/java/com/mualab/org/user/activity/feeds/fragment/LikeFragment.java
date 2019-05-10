@@ -106,7 +106,7 @@ public class LikeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if(activity!=null){
-            tvHeaderTitle = activity.findViewById(R.id.tvHeaderTitle);
+            tvHeaderTitle = getActivity().findViewById(R.id.tvHeaderTitle);
             ivHeaderBack = activity.findViewById(R.id.btnBack);
             ibtnChat = activity.findViewById(R.id.ivChat);
             ivAppIcon = activity.findViewById(R.id.ivAppIcon);
@@ -117,6 +117,9 @@ public class LikeFragment extends Fragment {
             ibtnChat.setVisibility(View.GONE);
             ivUserProfile.setVisibility(View.GONE);
             tvHeaderTitle.setText(R.string.likes);
+
+            TextView tv_batch_count = activity.findViewById(R.id.tv_batch_count);
+            tv_batch_count.setVisibility(View.GONE);
 
             ivHeaderBack.setOnClickListener(new View.OnClickListener() {
                 @Override

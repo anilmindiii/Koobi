@@ -32,7 +32,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:singleLine="true"
-                android:textColor="@color/gray"
+                android:textColor="@color/red_color"
                 android:fontFamily="@font/nunito_regular"
                 android:textSize="16sp"
                 />
@@ -61,7 +61,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="?selectableItemBackground"
-                android:textColor="@color/gray"
+                android:textColor="@color/colorPrimary"
                 android:fontFamily="@font/nunito_regular"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
@@ -135,10 +135,10 @@
 
                     <ImageView
                         android:id="@+id/snap_button"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
-                        android:padding="4dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:gravity="center"
+                        android:layout_marginLeft="4dp"
                         android:src="@drawable/ic_menu_crop" />
 
                     <View

@@ -26,6 +26,14 @@
             @transition/change_image_transform</item>
     </style>
 
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="AppTheme.Splash" parent="AppTheme.FullScreen">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@drawable/background_splash</item>
@@ -71,6 +79,16 @@
         <item name="android:minWidth">22dip</item>
         <item name="android:maxWidth">20dip</item>
         <item name="android:maxHeight">26dip</item>
+    </style>
+
+    <style name="RatingBarGraycustom" parent="android:style/Widget.Material.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/ratingbar_selector2</item>
+        <!-- <item name="colorAccent">#f9a825</item>
+         <item name="android:colorControlNormal">#f9a825</item>-->
+        <item name="android:minHeight">10dip</item>
+        <item name="android:minWidth">12dip</item>
+        <item name="android:maxWidth">50dip</item>
+        <item name="android:maxHeight">56dip</item>
     </style>
 
     <style name="MyRadioButton" parent="Theme.AppCompat.Light">

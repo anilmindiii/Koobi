@@ -189,14 +189,25 @@
 
         </LinearLayout>
 
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_some_one_to_be_tagged"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@color/white"
             android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
 
     </LinearLayout>
 
@@ -229,6 +240,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:orientation="vertical" />
+
+
 
     </RelativeLayout>
 

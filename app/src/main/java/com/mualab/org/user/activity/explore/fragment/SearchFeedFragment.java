@@ -134,7 +134,7 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
         endlesScrollListener = new EndlessRecyclerViewScrollListener(wgm) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                feedAdapter.showHideLoading(true);
+                if (feedAdapter != null) feedAdapter.showHideLoading(true);
                 searchFeed(page, false);
             }
         };
@@ -226,8 +226,8 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
         new HttpTask(new HttpTask.Builder(mContext, "userFeed", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                ll_progress.setVisibility(View.GONE);
-                feedAdapter.showHideLoading(false);
+                if (ll_progress != null)  ll_progress.setVisibility(View.GONE);
+                if (feedAdapter != null) feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -245,7 +245,7 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
 
             @Override
             public void ErrorListener(VolleyError error) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null)ll_progress.setVisibility(View.GONE);
                 if(isPulltoRefrash){
                     isPulltoRefrash = false;
                     mRefreshLayout.stopRefresh(false, 500);

@@ -23,7 +23,9 @@ public class BusinessDay implements Serializable {
     public int dayId;
     public String dayName;
     public boolean isOpen;
+    public boolean isExpand;
     public ArrayList<TimeSlot> slots = new ArrayList<>();
+
 
 
     public void addTimeSlot(TimeSlot slot){

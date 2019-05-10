@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mualab.org.user.R;
+import com.mualab.org.user.dialogs.MyToast;
 
 import java.util.ArrayList;
 
@@ -72,5 +73,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             }
 
         }
+
+
     }
 }

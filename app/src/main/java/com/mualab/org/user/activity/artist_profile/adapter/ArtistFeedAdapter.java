@@ -42,8 +42,10 @@ import com.mualab.org.user.activity.explore.SearchFeedActivity;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.ReportActivity;
+import com.mualab.org.user.activity.feeds.activity.SaveToFolderActivity;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
+import com.mualab.org.user.activity.feeds.listener.SaveToFolderListner;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
@@ -52,6 +54,7 @@ import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 
+import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.listener.OnDoubleTapListener;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
@@ -227,6 +230,15 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 h.likeIcon.setChecked(feeds.isLike == 1);
                 h.tv_text.setText(feeds.caption);
 
+                if (feedItems.get(h.getAdapterPosition()).isSave == 1) {
+                    h.iv_save_to_folder.setImageResource(R.drawable.active_book_mark_ico1);
+                } else h.iv_save_to_folder.setImageResource(R.drawable.inactive_book_mark_ico1);
+
+                SaveToFolderListner.getmInctance().setListner((Text, pos) -> {
+                    feedItems.get(pos).isSave = 1;
+                    notifyItemChanged(pos);
+                });
+
                 if (!TextUtils.isEmpty(feeds.caption)) {
                     h.tv_text.setVisibility(View.VISIBLE);
                     h.tv_text.setText(feeds.caption);
@@ -388,7 +400,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private void setupTextFeedClickableViews(final FeedTextHolder holder) {
         holder.tv_text.setHashtagColor(ContextCompat.getColor(mContext, R.color.text_color));
-        holder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.colorAccent));
+        holder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.text_color));
         holder.tv_text.setOnHyperlinkClickListener(new Function2<SocialView, CharSequence, Unit>() {
             @Override
             public Unit invoke(SocialView socialView, CharSequence charSequence) {
@@ -408,6 +420,22 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 goHashTag(charSequence);
                 hide_menu_Text(holder);
                 return null;
+            }
+        });
+
+        holder.iv_save_to_folder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (feedItems.get(holder.getAdapterPosition()).isSave == 1) {
+                    removeToFolder(feedItems.get(holder.getAdapterPosition())._id,holder.getAdapterPosition());
+                } else {
+                    Intent intent = new Intent(mContext, SaveToFolderActivity.class);
+                    intent.putExtra("feedId", feedItems.get(holder.getAdapterPosition())._id);
+                    intent.putExtra("pos", holder.getAdapterPosition());
+                    mContext.startActivity(intent);
+                }
+
+                hide_menu_Text(holder);
             }
         });
 
@@ -481,7 +509,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        holder.ly_share.setOnClickListener(new View.OnClickListener() {
+        holder.tv_share_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -561,7 +589,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private void setupFeedVideoClickableViews(final FeedVideoHolder videoHolder) {
         videoHolder.tv_text.setHashtagColor(ContextCompat.getColor(mContext, R.color.text_color));
-        videoHolder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.colorAccent));
+        videoHolder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.text_color));
         videoHolder.tv_text.setOnHyperlinkClickListener(new Function2<SocialView, CharSequence, Unit>() {
             @Override
             public Unit invoke(SocialView socialView, CharSequence charSequence) {
@@ -592,6 +620,22 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 apiForgetUserIdFromUserName(charSequence);
                 hide_menu_Video(videoHolder);
                 return null;
+            }
+        });
+
+        videoHolder.iv_save_to_folder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (feedItems.get(videoHolder.getAdapterPosition()).isSave == 1) {
+                    removeToFolder(feedItems.get(videoHolder.getAdapterPosition())._id,videoHolder.getAdapterPosition());
+                } else {
+                    Intent intent = new Intent(mContext, SaveToFolderActivity.class);
+                    intent.putExtra("feedId", feedItems.get(videoHolder.getAdapterPosition())._id);
+                    intent.putExtra("pos", videoHolder.getAdapterPosition());
+                    mContext.startActivity(intent);
+                }
+
+                hide_menu_Video(videoHolder);
             }
         });
 
@@ -654,7 +698,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        videoHolder.ly_share.setOnClickListener(new View.OnClickListener() {
+        videoHolder.tv_share_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -733,7 +777,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private void setupClickableViews(final CellFeedViewHolder cellFeedViewHolder) {
         cellFeedViewHolder.tv_text.setHashtagColor(ContextCompat.getColor(mContext, R.color.text_color));
-        cellFeedViewHolder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.colorAccent));
+        cellFeedViewHolder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.text_color));
         cellFeedViewHolder.tv_text.setOnHyperlinkClickListener(new Function2<SocialView, CharSequence, Unit>() {
             @Override
             public Unit invoke(SocialView socialView, CharSequence charSequence) {
@@ -755,6 +799,23 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 return null;
             }
         });
+
+        cellFeedViewHolder.iv_save_to_folder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (feedItems.get(cellFeedViewHolder.getAdapterPosition()).isSave == 1) {
+                    removeToFolder(feedItems.get(cellFeedViewHolder.getAdapterPosition())._id,cellFeedViewHolder.getAdapterPosition());
+                } else {
+                    Intent intent = new Intent(mContext, SaveToFolderActivity.class);
+                    intent.putExtra("feedId", feedItems.get(cellFeedViewHolder.getAdapterPosition())._id);
+                    intent.putExtra("pos", cellFeedViewHolder.getAdapterPosition());
+                    mContext.startActivity(intent);
+                }
+
+                hide_menu_cellFeed(cellFeedViewHolder);
+            }
+        });
+
 
         cellFeedViewHolder.main_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -828,7 +889,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        cellFeedViewHolder.ly_share.setOnClickListener(new View.OnClickListener() {
+        cellFeedViewHolder.tv_share_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -929,6 +990,8 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             user_name = userName.toString().replaceFirst("@", "");
             params.put("userName", user_name + "");
         } else params.put("userName", userName + "");
+
+        params.put("userName", userName + "");
         new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
@@ -1026,7 +1089,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     static class Holder extends RecyclerView.ViewHolder {
         protected CheckBox likeIcon;
-        protected ImageView ivLike,iv_menu;
+        protected ImageView ivLike,iv_menu,iv_save_to_folder;
         protected ImageView ivProfile, ivComments; //btnLike
         protected LinearLayout ly_like_count, ly_comments;
         protected TextView tvUserName, tvUserLocation, tvPostTime;
@@ -1041,7 +1104,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             /*Common ui*/
             ivProfile = itemView.findViewById(R.id.iv_user_image);
-            ly_share = itemView.findViewById(R.id.ly_share);
+            ly_share = itemView.findViewById(R.id.ly_report);
             iv_menu = itemView.findViewById(R.id.iv_menu);
             rl_imageView = itemView.findViewById(R.id.rl_imageView);
             ivComments = itemView.findViewById(R.id.iv_comments);
@@ -1058,7 +1121,9 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             likeIcon = itemView.findViewById(R.id.likeIcon);
             main_layout = itemView.findViewById(R.id.main_layout);
             tv_report = itemView.findViewById(R.id.tv_report);
+            tv_share_post = itemView.findViewById(R.id.tv_share_post);
             view_divider = itemView.findViewById(R.id.view_divider);
+            iv_save_to_folder = itemView.findViewById(R.id.iv_save_to_folder);
         }
     }
 
@@ -1280,6 +1345,44 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             sharIntent.putExtra(Intent.EXTRA_TEXT, text+"\n"+imageNvideoUrl+"\n\n"+"http://koobi.co.uk/feedDetail/"+feedId+"");
             mContext.startActivity(Intent.createChooser(sharIntent, "Share:"));
         }
+
+
+    }
+
+    private void removeToFolder(final int feedId,int pos) {
+        Progress.show(mContext);
+        Map<String, String> map = new HashMap<>();
+        map.put("feedId", String.valueOf(feedId));
+        map.put("folderId", "");
+
+        new HttpTask(new HttpTask.Builder(mContext, "removeToFolder", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                Progress.hide(mContext);
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    //String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+                        feedItems.get(pos).isSave = 0;
+                        notifyItemChanged(pos);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Progress.hide(mContext);
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                Progress.hide(mContext);
+            }
+        }).setAuthToken(Mualab.currentUser.authToken)
+                .setParam(map)
+                .setMethod(Request.Method.POST)
+                .setProgress(false)
+                .setBodyContentType(HttpTask.ContentType.X_WWW_FORM_URLENCODED))
+                .execute("removeToFolder");
 
 
     }

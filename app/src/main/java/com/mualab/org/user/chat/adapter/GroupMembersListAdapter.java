@@ -76,7 +76,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<RecyclerView.V
         final GroupMember member = userList.get(position);
 
         if (member.profilePic!=null && !member.profilePic.equals("")){
-            Picasso.with(mContext).load(member.profilePic).
+            Picasso.with(mContext).load(member.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfilePic);
         }
 

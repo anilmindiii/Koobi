@@ -96,7 +96,6 @@ import static com.mualab.org.user.utils.constants.Constant.PLACE_AUTOCOMPLETE_RE
 public class SearchBoardFragment extends BaseFragment implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static String TAG = SearchBoardFragment.class.getName();
-
     private RecyclerView rvSearchBoard;
     private ImageView ivFav;
     private TextView tv_msg;
@@ -118,8 +117,9 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
     private TextView tv_location;
     private RelativeLayout ly_change_location;
     private boolean isAlreadySelectedLocation = false;
-    Session session;
-    RefineSearchBoard locationData = null;
+    private Session session;
+    private RefineSearchBoard locationData = null;
+    private boolean isFilterNChngLocaApply = false;
 
     public static SearchBoardFragment newInstance(RefineSearchBoard item, RefineSearchBoard locationData) {
         SearchBoardFragment fragment = new SearchBoardFragment();
@@ -145,6 +145,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             item = (RefineSearchBoard) getArguments().getSerializable("param1");
             locationData = (RefineSearchBoard) getArguments().getSerializable("locationData");
         }
+
         if (artistsList == null)
             artistsList = new ArrayList<>();
     }
@@ -173,8 +174,9 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
         session = new Session(mContext);
 
         if (session.getSaveSearch() != null) {
+            isFilterNChngLocaApply = true;
             ivFilter.setImageResource(R.drawable.active_filter_ico);
-        }
+        } else isFilterNChngLocaApply = false;
 
 
         if (session.getCurrentLatltude() != null && session.getCurrentLongitude() != null) {
@@ -389,6 +391,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
 
     }
 
+
     private synchronized void apiForGetLatestService(final String artistId, final Intent intent) {
         Progress.show(mContext);
         if (!ConnectionDetector.isConnected()) {
@@ -443,9 +446,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                         intent.putExtra("isFromSearchBoard", true);
 
 
-
-
-                        if (item != null){
+                        if (item != null) {
                             if (item.serviceType != null)
                                 if (item.serviceType.equals("1")) {
                                     //searchBoard.isOutCallSelected = true;
@@ -661,13 +662,16 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             params.put("latitude", lat);
             params.put("longitude", lng);
 
-            params.put("minPrice", "0");
+
             if (item == null) {
+                params.put("minPrice", "0");
                 params.put("maxPrice", "0");
                 params.put("rating", "");
                 params.put("distance", "");
                 params.put("certificate", "");
             } else {
+                params.put("minPrice", item.priceMinFilter);
+                params.put("maxPrice", item.priceFilter);
                 params.put("distance", item.LocationFilter);
                 params.put("maxPrice", item.priceFilter);
                 params.put("certificate", item.certificate);
@@ -754,15 +758,15 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                                 JSONObject jsonObject = artistArray.getJSONObject(i);
                                 ArtistsSearchBoard item = gson.fromJson(String.valueOf(jsonObject), ArtistsSearchBoard.class);
                                 String services = "";
-                                if (item.service.size() != 0) {
-                                    if (item.service.size() < 2) {
-                                        services = item.service.get(0).title;
+                                if (item.subcate.size() != 0) {
+                                    if (item.subcate.size() < 2) {
+                                        services = item.subcate.get(0).subServiceName;
                                     } else {
                                         for (int j = 0; j < 2; j++) {
                                             if (services.equals("")) {
-                                                services = item.service.get(j).title;
+                                                services = item.subcate.get(j).subServiceName;
                                             } else {
-                                                services = services + ", " + item.service.get(j).title;
+                                                services = services + ", " + item.subcate.get(j).subServiceName;
                                             }
                                         }
                                     }
@@ -870,14 +874,17 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             params.put("longitude", lng);
             // params.put("distance", "10");
 
-            params.put("minPrice", "0");
+
             if (item == null) {
+                params.put("minPrice", "0");
                 params.put("maxPrice", "0");
                 params.put("rating", "");
                 params.put("distance", "");
                 params.put("certificate", "");
             } else {
+                params.put("minPrice", item.priceMinFilter);
                 params.put("maxPrice", item.priceFilter);
+
                 params.put("distance", item.LocationFilter);
                 params.put("certificate", item.certificate);
 
@@ -1162,6 +1169,14 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             add = add + "," + obj.getAdminArea();
             tv_location.setText(add);
 
+            if (!isFilterNChngLocaApply){
+                if (isFavClick)
+                    apiForGetFavArtist(0, false);
+                else
+                    apiForGetArtist(0, false);
+            }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1190,7 +1205,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 LatLng latLng = place.getLatLng();
                 lat = String.valueOf(latLng.latitude);
                 lng = String.valueOf(latLng.longitude);
-
+                isFilterNChngLocaApply = true;
                 apiForGetArtist(0, false);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);
@@ -1325,6 +1340,9 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        if (!isFilterNChngLocaApply)
+            getDeviceLocation();
+
         if (mFusedLocationClient == null)
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext);
         mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper());

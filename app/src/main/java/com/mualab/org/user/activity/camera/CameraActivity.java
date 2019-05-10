@@ -329,7 +329,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                         btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video);
                         if(countDownTimer!=null) countDownTimer.onFinish();
                     }else {
-                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active);
+                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active_story);
                         btnTakePhoto.setEnabled(false);
                         cameraView.setSessionType(SessionType.VIDEO);
                         startTimear();
@@ -479,7 +479,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             currentState = STATE_TAKE_VIDEO;
             cameraView.setSessionType(SessionType.VIDEO);
             btnTakePhoto.setText(R.string.rec);
-            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video);
+            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_rec);
             btnCameraMode.setImageResource(R.drawable.ic_photo_camera_white);
             updateState(STATE_TAKE_VIDEO);
             //btnTakePhoto.setOnTouchListener(onTouchListener);

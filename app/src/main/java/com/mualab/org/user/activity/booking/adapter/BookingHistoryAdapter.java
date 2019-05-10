@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.mualab.org.user.R;
@@ -27,7 +28,9 @@ import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.squareup.picasso.Picasso;
+
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,32 +51,32 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_booking_history,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_booking_history, viewGroup, false);
         return new ViewHolder(view);
     }
 
-    public interface CallApis{
-        void call(int artistId, int bookingId, String comments, float rating,String type);
+    public interface CallApis {
+        void call(int artistId, int bookingId, String comments, float rating, String type);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final BookingHistoryInfo.DataBean bean = dataBean.get(position);
 
-        if(bean.bookingInfo.size() > 1){
+        if (bean.bookingInfo.size() > 1) {
             holder.newText.setVisibility(View.VISIBLE);
-            holder.tvServicesnew.setText(bean.bookingInfo.get(1).artistServiceName+"");
-        }else holder.newText.setVisibility(View.GONE);
+            holder.tvServicesnew.setText(bean.bookingInfo.get(1).artistServiceName + "");
+        } else holder.newText.setVisibility(View.GONE);
 
-        if(bean.bookingInfo.size() > 0){
-            holder.tvServices.setText(bean.bookingInfo.get(0).artistServiceName+"");
+        if (bean.bookingInfo.size() > 0) {
+            holder.tvServices.setText(bean.bookingInfo.get(0).artistServiceName + "");
         }
 
         holder.rlServices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tagToBookService(bean.bookingInfo.get(0).artistServiceId, String.valueOf(bean.artistDetail.get(0)._id),
-                        bean.bookingInfo.get(0).serviceId,bean.bookingInfo.get(0).subServiceId);
+                        bean.bookingInfo.get(0).serviceId, bean.bookingInfo.get(0).subServiceId);
             }
         });
 
@@ -81,87 +84,97 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             @Override
             public void onClick(View v) {
                 tagToBookService(bean.bookingInfo.get(1).artistServiceId, String.valueOf(bean.artistDetail.get(0)._id),
-                        bean.bookingInfo.get(1).serviceId,bean.bookingInfo.get(1).subServiceId);
+                        bean.bookingInfo.get(1).serviceId, bean.bookingInfo.get(1).subServiceId);
             }
         });
 
         holder.artist_total_Rating.setIsIndicator(true);
 
+        holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName + "");
+        holder.tv_view_more.setVisibility(View.GONE);
 
-
-        if(bean.bookingInfo.size() == 1){
-            holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName+"");
+       /* if (bean.bookingInfo.size() == 1) {
+            holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName + "");
             holder.tv_view_more.setVisibility(View.GONE);
-        }else if(bean.bookingInfo.size() == 2){
+        } else if (bean.bookingInfo.size() == 2) {
             holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName
-                    +", "+bean.bookingInfo.get(1).staffName);
+                    + ", " + bean.bookingInfo.get(1).staffName);
             holder.tv_view_more.setVisibility(View.GONE);
-        }else if(bean.bookingInfo.size() == 3){
+        } else if (bean.bookingInfo.size() == 3) {
             holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName
-                    +", "+bean.bookingInfo.get(1).staffName);
+                    + ", " + bean.bookingInfo.get(1).staffName);
             holder.tv_view_more.setVisibility(View.VISIBLE);
-        }
+        }*/
 
+        holder.tv_price.setText("£" + bean.totalPrice + "");
+        holder.tvDateTime.setText(bean.bookingDate + ", " + bean.bookingTime);
 
-        holder.tv_price.setText("£"+bean.totalPrice+"");
-
-        holder.tvDateTime.setText(bean.bookingDate+", "+bean.bookingTime);
-
-        if(bean.artistRating != 0){
+     /*   if(bean.artistRating != 0){
             double d = bean.artistRating;
             float rating = (float)d;
             holder.artist_total_Rating.setRating(rating);
-        }
 
-        if (bean.artistDetail.get(0).profileImage!= null && !bean.artistDetail.get(0).profileImage.equals("")){
+        }*/
+
+        if (bean.artistDetail.get(0).profileImage != null && !bean.artistDetail.get(0).profileImage.equals("")) {
             Picasso.with(mContext).load(bean.artistDetail.get(0).profileImage).placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfile);
-        }else {
+        } else {
             holder.ivProfile.setImageDrawable(mContext.getResources().getDrawable(R.drawable.default_placeholder));
         }
 
-        if(bean.reviewByUser.equals("") && bean.userRating == 0){
+        if (bean.reviewByUser.equals("") && bean.userRating == 0) {
             holder.tv_give_view_review.setText("Give Review");
-        }
-        else {
+            holder.tv_give_view_review.setVisibility(View.VISIBLE);
+            holder.ly_edit_review.setVisibility(View.GONE);
+            holder.artist_total_Rating.setVisibility(View.GONE);
+        } else {
+            holder.ly_edit_review.setVisibility(View.VISIBLE);
+            holder.tv_give_view_review.setVisibility(View.GONE);
             holder.tv_give_view_review.setText("Edit Review");
             holder.ed_comments.setText(bean.reviewByUser);
             holder.ed_comments.setSelection(holder.ed_comments.getText().toString().length());
             holder.artistRatingbar.setRating(bean.userRating);
+
+            holder.artist_total_Rating.setVisibility(View.VISIBLE);
+            holder.artist_total_Rating.setRating(bean.userRating);
         }
 
-       holder.tv_give_view_review.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if(holder.ly_review_view.getVisibility() == View.VISIBLE){
-                   holder.ly_review_view.setVisibility(View.GONE);
-               }else {
-                   holder.ly_review_view.setVisibility(View.VISIBLE);
-               }
-           }
-       });
+        holder.tv_give_view_review.setOnClickListener(v -> {
+            if (holder.ly_review_view.getVisibility() == View.VISIBLE) {
+                holder.ly_review_view.setVisibility(View.GONE);
+            } else {
+                holder.ly_review_view.setVisibility(View.VISIBLE);
+            }
+        });
 
-       holder.btn_submit.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               String comments = holder.ed_comments.getText().toString();
-               float rating = holder.artistRatingbar.getRating();
-               if(rating == 0.0){
-                   MyToast.getInstance(mContext).showDasuAlert("Please give rating");
-                   return;
-               }
-               else if(comments.equals("")){
-                   MyToast.getInstance(mContext).showDasuAlert(mContext.getString(R.string.give_review));
-                   return;
-               }else {
-                   if(!bean.reviewByUser.equals("") && bean.userRating != 0){
-                       callApis.call(bean.artistDetail.get(0)._id,bean._id,comments,rating,"edit");
-                   }else  callApis.call(bean.artistDetail.get(0)._id,bean._id,comments,rating,"insert");
+        holder.ly_edit_review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.tv_give_view_review.callOnClick();
+            }
+        });
+
+        holder.btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comments = holder.ed_comments.getText().toString();
+                float rating = holder.artistRatingbar.getRating();
+                if (rating == 0.0) {
+                    MyToast.getInstance(mContext).showDasuAlert("Please give rating");
+                    return;
+                } else if (comments.equals("")) {
+                    MyToast.getInstance(mContext).showDasuAlert(mContext.getString(R.string.give_review));
+                    return;
+                } else {
+                    if (!bean.reviewByUser.equals("") && bean.userRating != 0) {
+                        callApis.call(bean.artistDetail.get(0)._id, bean._id, comments, rating, "edit");
+                    } else
+                        callApis.call(bean.artistDetail.get(0)._id, bean._id, comments, rating, "insert");
 
 
-
-               }
-           }
-       });
+                }
+            }
+        });
 
         holder.ivProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,11 +191,12 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView ivProfile;
-        TextView tvArtistName,tv_price,tvServices,tvServicesnew,tvDateTime,btn_submit,tv_give_view_review,tv_view_more;
-        RelativeLayout newText,rlServices;
+        TextView tvArtistName, tv_price, tvServices, tvServicesnew, tvDateTime, btn_submit, tv_give_view_review, tv_view_more;
+        RelativeLayout newText, rlServices;
         LinearLayout ly_review_view;
         EditText ed_comments;
-        RatingBar artistRatingbar,artist_total_Rating;
+        RatingBar artistRatingbar, artist_total_Rating;
+        RelativeLayout ly_edit_review;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -202,6 +216,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             artistRatingbar = itemView.findViewById(R.id.artistRatingbar);
             artist_total_Rating = itemView.findViewById(R.id.artist_total_Rating);
             rlServices = itemView.findViewById(R.id.rlServices);
+            ly_edit_review = itemView.findViewById(R.id.ly_edit_review);
 
             itemView.setOnClickListener(this);
 
@@ -210,7 +225,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(mContext, BookingDetailsActivity.class);
-            intent.putExtra("bookingId",dataBean.get(getAdapterPosition())._id);
+            intent.putExtra("bookingId", dataBean.get(getAdapterPosition())._id);
             mContext.startActivity(intent);
         }
     }
@@ -219,10 +234,10 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
 
         final Map<String, String> params = new HashMap<>();
-        if(userName.contains("@")){
+        /*if(userName.contains("@")){
             userName = userName.replace("@","");
-        }
-        params.put("userName", userName+"");
+        }*/
+        params.put("userName", userName + "");
         new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
@@ -241,12 +256,11 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
                             Intent intent = new Intent(mContext, UserProfileActivity.class);
                             intent.putExtra("userId", String.valueOf(userId));
                             mContext.startActivity(intent);
-                        }else if (userType.equals("artist") && userId== Mualab.currentUser.id){
+                        } else if (userType.equals("artist") && userId == Mualab.currentUser.id) {
                             Intent intent = new Intent(mContext, UserProfileActivity.class);
                             intent.putExtra("userId", String.valueOf(userId));
                             mContext.startActivity(intent);
-                        }
-                        else {
+                        } else {
                             Intent intent = new Intent(mContext, ArtistProfileActivity.class);
                             intent.putExtra("artistId", String.valueOf(userId));
                             mContext.startActivity(intent);
@@ -262,7 +276,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             @Override
             public void ErrorListener(VolleyError error) {
             }
-        }).setBody(params,HttpTask.ContentType.APPLICATION_JSON)
+        }).setBody(params, HttpTask.ContentType.APPLICATION_JSON)
                 .setMethod(Request.Method.POST)
                 .setProgress(true))
                 .execute("FeedAdapter");
@@ -271,7 +285,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     }
 
 
-    private void tagToBookService(int _id, String artistId,int serviceId,int subserviceId) {
+    private void tagToBookService(int _id, String artistId, int serviceId, int subserviceId) {
         Intent intent = new Intent(mContext, BookingActivity.class);
         intent.putExtra("_id", _id);
         intent.putExtra("artistId", artistId);
@@ -287,7 +301,6 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
         intent.putExtra("isFromSearchBoard", true);
         mContext.startActivity(intent);
     }
-
 
 
 }

@@ -1,10 +1,8 @@
 package com.mualab.org.user.activity.story;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -28,30 +26,35 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
-
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.Views.statusstories.StoryStatusView;
 import com.mualab.org.user.Views.swipback.SwipeBackActivity;
 import com.mualab.org.user.Views.swipback.SwipeBackLayout;
+import com.mualab.org.user.activity.booking.BookingActivity;
+import com.mualab.org.user.activity.booking.BookingConfirmActivity;
 import com.mualab.org.user.activity.camera.CameraActivity;
+import com.mualab.org.user.activity.dialogs.BottomSheetPopup;
+import com.mualab.org.user.activity.dialogs.ItemClickListener;
+import com.mualab.org.user.activity.dialogs.model.Item;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.feeds.Story;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.transformers.SimpleGestureFilter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -61,9 +64,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-
 
 public class StoriesActivity extends SwipeBackActivity implements StoryStatusView.UserInteractionListener,
         SimpleGestureFilter.SimpleGestureListener {
@@ -85,11 +85,13 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
     private int counter = 0;
     private boolean isRunningStory;
     private ImageButton img_btn;
+    private ImageView iv_menu;
     private boolean isFirstTime = true;
     private boolean isStoryTypeVideo;
     private FrameLayout parent;
     private long pressTime = 0L;
     private SimpleGestureFilter detector;
+    ArrayList<Item> items;
 
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -159,6 +161,7 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
         ivPhoto = findViewById(R.id.ivPhoto);
         parent = findViewById(R.id.parent);
         img_btn = findViewById(R.id.img_btn);
+        iv_menu = findViewById(R.id.iv_menu);
         progress_bar = findViewById(R.id.imageProgressBar);
         ivUserImg = findViewById(R.id.iv_user_image);
         tvUserName = findViewById(R.id.tv_user_name);
@@ -169,47 +172,54 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
 
         setDragEdge(SwipeBackLayout.DragEdge.TOP);
 
-        addMoreStory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(StoriesActivity.this, CameraActivity.class));
-                finish();
-            }
+        addMoreStory.setOnClickListener(v -> {
+            startActivity(new Intent(StoriesActivity.this, CameraActivity.class));
+            finish();
         });
 
-        img_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+        img_btn.setOnClickListener(view -> finish());
 
-            }
+        iv_menu.setOnClickListener(view -> {
+            storyStatusView.pause();
+            videoView.pause();
+
+            Item item  = new Item();
+            item.id = "1";
+            item.name = "Delete";
+            item.icon = R.drawable.ic_delete;
+
+            items = new ArrayList<>();
+            items.add(item);
+
+            BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
+                @Override
+                public void onClickItem(int pos) {
+                    //askDelete();
+                    MyToast.getInstance(StoriesActivity.this).showDasuAlert(getString(R.string.under_development));
+                }
+
+                @Override
+                public void onDialogDismiss() {
+                    storyStatusView.resume();
+                    videoView.resume();
+                }
+            }).show(getSupportFragmentManager());
+
+
         });
 
 
-        ivPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                storyStatusView.skip();
-            }
-        });
+        ivPhoto.setOnClickListener(v -> storyStatusView.skip());
 
 
         // bind reverse view
         View reverse = findViewById(R.id.reverse);
-        reverse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                storyStatusView.reverse();
-            }
-        });
+        reverse.setOnClickListener(v -> storyStatusView.reverse());
 
-        reverse.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                storyStatusView.pause();
-                videoView.pause();
-                return false;
-            }
+        reverse.setOnLongClickListener(v -> {
+            storyStatusView.pause();
+            videoView.pause();
+            return false;
         });
 
         reverse.setOnTouchListener(onTouchListener);
@@ -218,20 +228,12 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
 
         // bind skip view
         View skip = findViewById(R.id.skip);
-        skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                storyStatusView.skip();
-            }
-        });
+        skip.setOnClickListener(v -> storyStatusView.skip());
 
-        skip.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                storyStatusView.pause();
-                videoView.pause();
-                return false;
-            }
+        skip.setOnLongClickListener(v -> {
+            storyStatusView.pause();
+            videoView.pause();
+            return false;
         });
 
         skip.setOnTouchListener(onTouchListener);
@@ -303,6 +305,10 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
             progress_bar.setProgress(65, true);
         }*/
         //  if(!isFirstTime) storyStatusView.pause();
+
+
+
+        iv_menu.setVisibility(story.userId.equals(String.valueOf(Mualab.currentUser.id)) ? View.VISIBLE:View.GONE);
 
         if (story.storyType.equals("image")) {
             isStoryTypeVideo = false;
@@ -415,17 +421,25 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
 
 
     private void updateUI() {
-        counter = 0;
-        if (liveUserList.size() > 0) {
-            userInfo = liveUserList.get(currentIndex);
-            addMoreStory.setVisibility(userInfo.id == Mualab.currentUser.id ? View.VISIBLE : View.GONE);
-           // img_btn.setVisibility(userInfo.id == Mualab.currentUser.id ? View.GONE : View.VISIBLE);
+        try {
+            counter = 0;
+            if (liveUserList.size() > 0) {
+                userInfo = liveUserList.get(currentIndex);
 
-            tvUserName.setText(String.format("%s", userInfo.userName));
-            if (TextUtils.isEmpty(userInfo.profileImage)) {
-                Picasso.with(this).load(R.drawable.default_placeholder).fit().into(ivUserImg);
-            } else Picasso.with(this).load(userInfo.profileImage).fit().into(ivUserImg);
+
+                iv_menu.setVisibility(userInfo.id == Mualab.currentUser.id ? View.VISIBLE:View.GONE);
+                addMoreStory.setVisibility(userInfo.id == Mualab.currentUser.id ? View.VISIBLE : View.GONE);
+                // img_btn.setVisibility(userInfo.id == Mualab.currentUser.id ? View.GONE : View.VISIBLE);
+
+                tvUserName.setText(String.format("%s", userInfo.userName));
+                if (TextUtils.isEmpty(userInfo.profileImage)) {
+                    Picasso.with(this).load(R.drawable.default_placeholder).fit().into(ivUserImg);
+                } else Picasso.with(this).load(userInfo.profileImage).fit().into(ivUserImg);
+            }
+        }catch (Exception e){
+
         }
+
     }
 
 
@@ -451,6 +465,27 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
                                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         }
+    }
+
+
+    private void askDelete() {
+        android.app.AlertDialog.Builder builder;
+        builder = new android.app.AlertDialog.Builder(StoriesActivity.this);
+        builder.setTitle("Alert")
+                .setMessage("Are you sure you want to remove this story?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with Apis
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
 

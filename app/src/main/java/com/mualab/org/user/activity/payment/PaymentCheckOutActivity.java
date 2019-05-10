@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.SystemClock;
@@ -16,11 +17,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.Views.SweetAlert.SweetAlertDialog;
@@ -29,6 +34,7 @@ import com.mualab.org.user.activity.booking.BookingDetailsActivity;
 import com.mualab.org.user.activity.main.MainActivity;
 import com.mualab.org.user.activity.payment.model.StripeSaveCardResponce;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.chat.GroupDetailActivity;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
 import com.mualab.org.user.data.remote.HttpResponceListner;
@@ -94,6 +100,13 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
 
         this.activity = PaymentCheckOutActivity.this;
 
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
@@ -118,12 +131,6 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         }
         else tvHeaderTitle.setText(getString(R.string.payment_checkout));
 
-        findViewById(R.id.btnBack).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
 
         binding.tvDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -379,7 +386,7 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
         monthPicker.setWrapSelectorWheel(false);
-        monthPicker.setValue(month);
+        monthPicker.setValue(month+1);
         monthPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
 
@@ -543,29 +550,38 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         dialog.show();
     }
 
-    private void confirmDialog(final String cardId){
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(PaymentCheckOutActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(PaymentCheckOutActivity.this);
-        }
+    private void confirmDialog(final String cardId) {
+        final Dialog dialog = new Dialog(PaymentCheckOutActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_delete_chat);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        builder.setCancelable(false);
-        builder.setTitle("Alert !")
-                .setMessage("Are you sure you want to delete this card?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        removedSaveCardApi(cardId);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .show();
+        TextView tv_delete_alert = dialog.findViewById(R.id.tv_delete_alert);
+        tv_delete_alert.setText("Are you sure you want to delete this card?");
+        TextView title = dialog.findViewById(R.id.tv_title);
+        title.setText("Alert !");
+        dialog.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                removedSaveCardApi(cardId);
+            }
+        });
+
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
+
 
 }

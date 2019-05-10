@@ -27,8 +27,10 @@ public class BookingConfirmInfo {
         public String staffImage;
         public int companyId;
         public String companyName;
+        public String artistName;
         public String companyAddress;
         public String companyImage;
+        public String bookingSetting;
         public int status;
     }
 }

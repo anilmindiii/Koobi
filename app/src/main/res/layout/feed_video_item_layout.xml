@@ -14,58 +14,11 @@
     android:id="@+id/main_layout"
     android:orientation="vertical">
 
-   <!-- <RelativeLayout
+    <include
+        layout="@layout/feed_item_header"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/screen_bg_color"
-        android:paddingLeft="10dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/iv_user_image"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/defoult_user_img"
-            app:civ_border_width="1dp"
-            android:padding="1dp"
-            android:background="@drawable/gradient_circle_img"
-            app:civ_border_color="@color/transparent"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/iv_user_image"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:fontFamily="@string/likes"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:fontFamily="@font/roboto_regular"
-                android:layout_marginTop="5dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-    </RelativeLayout>-->
-
-    <include layout="@layout/feed_item_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -114,73 +67,16 @@
             android:layout_alignParentBottom="true"
             android:layout_height="40dp" />
 
-        <RelativeLayout
-            android:id="@+id/ly_report"
-            android:layout_width="100dp"
+        <include
+            layout="@layout/feed_item_menu2"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="7dp"
-            android:layout_marginBottom="22dp"
-            android:visibility="gone">
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/shape_img" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tv_report"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:fontFamily="@font/nunito_regular"
-                    android:scaleType="center"
-                    android:paddingLeft="15dp"
-                    android:text="Report post"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="14dp" />
-
-                <View
-                    android:id="@+id/view_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.8dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:background="@color/gray2"
-                   />
-
-                <TextView
-                    android:id="@+id/tv_share_post"
-                    android:layout_below="@+id/tv_report"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:paddingLeft="15dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="2dp"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="@font/nunito_regular"
-                    android:scaleType="center"
-                    android:text="Share post"
-                    android:layout_gravity="center"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="14dp" />
-
-
-            </LinearLayout>
-
-
-
-        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -194,7 +90,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingBottom="10dp"
-        android:fontFamily="@font/nunito_regular"
+        android:fontFamily="@font/nunito_semibold"
         android:textColorLink="@color/text_color"
         android:textColor="@color/text_color"
         android:visibility="gone" />

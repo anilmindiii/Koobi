@@ -54,7 +54,9 @@ import com.mualab.org.user.activity.artist_profile.fragments.ProfileComboFragmen
 import com.mualab.org.user.activity.artist_profile.fragments.ProfileComboFragment2;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.booking.BookingActivity;
+import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
+import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
@@ -97,9 +99,9 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     public String artistId;
     private String TAG = this.getClass().getName();
     private User user;
-    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg ;
-    private ImageView  ivActive, ivFav;
-    private LinearLayout lowerLayout1, lowerLayout2, ll_progress,llRating;
+    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg;
+    private ImageView ivActive, ivFav;
+    private LinearLayout lowerLayout1, lowerLayout2, ll_progress, llRating;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
     private RecyclerViewScrollListenerProfile endlesScrollListener;
@@ -126,6 +128,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     private CollapsingToolbarLayout ly_main;
     private RelativeLayout ly_main_layout;
     private int page = 0;
+    private LinearLayout llDots;
 
 
     @Override
@@ -152,6 +155,8 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         iv_search_icon = findViewById(R.id.iv_search_icon);
         ly_main = findViewById(R.id.ly_main);
         ly_main_layout = findViewById(R.id.ly_main_layout);
+        llDots = findViewById(R.id.llDots);
+        llDots.setVisibility(View.VISIBLE);
 
         btnFollow = findViewById(R.id.btnFollow);
         AppCompatButton btnBook = findViewById(R.id.btnBook);
@@ -167,7 +172,6 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         LinearLayout lyImage = findViewById(R.id.ly_images);
         LinearLayout lyVideos = findViewById(R.id.ly_videos);
         LinearLayout lyFeed = findViewById(R.id.ly_feeds);
-
 
         lowerLayout2 = findViewById(R.id.lowerLayout2);
         lowerLayout1 = findViewById(R.id.lowerLayout);
@@ -189,13 +193,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
         feedAdapter = new ArtistFeedAdapter(ArtistProfileActivity.this, feeds, this);
 
-
         endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
             public void onLoadMore() {
                 if (feedAdapter != null) {
-                    setAdapterLoading(true);
                     ++page;
+                    setAdapterLoading(true);
                     apiForGetAllFeeds(page, 20, false, "");
                 }
             }
@@ -254,6 +257,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 page = 0;
                 feeds.clear();
                 endlesScrollListener.resetState();
+                Mualab.getInstance().cancelPendingRequests("artistProfileApi");
                 apiForGetAllFeeds(0, 20, false, s.toString().trim());
             }
         });
@@ -276,11 +280,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 page = 0;
                 feeds.clear();
                 isGrideView = true;
+                ed_search.setText("");
                 rvFeed.setLayoutManager(new GridLayoutManager(ArtistProfileActivity.this, 3));
                 feedAdapter.isGrideView(true);
                 endlesScrollListener.resetState();
 
-                apiForGetAllFeeds(page,20, true, ""); //last limit 200
+                apiForGetAllFeeds(page, 20, true, ""); //last limit 200
                 iv_gride_view.setImageResource(R.drawable.active_grid_icon);
                 iv_list_view.setImageResource(R.drawable.inactive_list);
             }
@@ -296,6 +301,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 page = 0;
                 feeds.clear();
                 isGrideView = false;
+                ed_search.setText("");
                 rvFeed.setLayoutManager(new LinearLayoutManager(ArtistProfileActivity.this));
                 feedAdapter.isGrideView(false);
                 endlesScrollListener.resetState();
@@ -325,6 +331,8 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         ly_main.setOnClickListener(this);
         ly_main_layout.setOnClickListener(this);
         llRating.setOnClickListener(this);
+        llDots.setOnClickListener(this);
+
 
         apiForGetProfile();
 
@@ -364,7 +372,6 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         });
     }
 
-
     private void addBottomDots(LinearLayout ll_dots, int totalSize, int currentPage) {
         TextView tvDot1 = (TextView) ll_dots.getChildAt(0);
         TextView tvDot2 = (TextView) ll_dots.getChildAt(1);
@@ -403,9 +410,6 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         }
 
     }
-
-
-
 
     private void apiForGetProfile() {
 
@@ -518,30 +522,63 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.btnBook:
-                Intent intent = new Intent(ArtistProfileActivity.this, BookingActivity.class);
-                intent.putExtra("_id", 0);
-                intent.putExtra("artistId", artistId);
-                intent.putExtra("callType", "In Call");
+                if (profileData != null){
+                    if (profileData.serviceCount.equals("0")) {
+                        MyToast.getInstance(ArtistProfileActivity.this).showDasuAlert("No services added by the artist!");
+                        return;
+                    }
 
-                intent.putExtra("mainServiceName", "");
-                intent.putExtra("subServiceName", "");
-                startActivity(intent);
+                    Intent intent = new Intent(ArtistProfileActivity.this, BookingActivity.class);
+                    intent.putExtra("_id", 0);
+                    intent.putExtra("artistId", artistId);
+                    intent.putExtra("callType", "In Call");
+
+                    intent.putExtra("mainServiceName", "");
+                    intent.putExtra("subServiceName", "");
+                    startActivity(intent);
+                }
+
                 break;
 
             case R.id.btnFollow:
+                if (btnFollow.getText().toString().equals("Message")) {
+                    Intent chat_intent = new Intent(ArtistProfileActivity.this, ChatActivity.class);
+                    chat_intent.putExtra("opponentChatId", profileData._id);
+                    startActivity(chat_intent);
+                    return;
+                }
                 int followersCount = Integer.parseInt(profileData.followersCount);
-
                 if (profileData.followerStatus.equals("1")) {
                     profileData.followerStatus = "0";
                     btnFollow.setText("Follow");
                     followersCount--;
+                    profileData.followersCount = String.valueOf(followersCount);
+                    apiForGetFollowUnFollow();
                 } else {
+                    btnFollow.setText("Message");
                     profileData.followerStatus = "1";
-                    btnFollow.setText("Unfollow");
                     followersCount++;
+                    profileData.followersCount = String.valueOf(followersCount);
+                    apiForGetFollowUnFollow();
                 }
-                profileData.followersCount = String.valueOf(followersCount);
-                apiForGetFollowUnFollow();
+
+                break;
+
+            case R.id.llDots:
+                arrayList = new ArrayList<>();
+                arrayList.add("Block");
+                arrayList.add("Report");
+                if (profileData.followerStatus.equals("1")) {
+                    arrayList.add("Unfollow");
+
+
+                }
+
+                NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
+                    String data = arrayList.get(pos);
+                    getClickedData(data);
+                }).show(getSupportFragmentManager());
+
                 break;
 
             case R.id.llServices:
@@ -557,7 +594,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             case R.id.llAboutUs:
                 if (profileData != null)
                     if (!profileData.bio.equals("")) {
-                        intent = new Intent(this, AboutUsActivity.class);
+                        Intent intent = new Intent(this, AboutUsActivity.class);
                         intent.putExtra("bio", profileData.bio);
                         startActivity(intent);
                     } else MyToast.getInstance(this).showDasuAlert("No about us added");
@@ -604,7 +641,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
             case R.id.ll_filter:
                 int[] location = new int[2];
-                // Get the x, y location and store it in the location[] array
+               /* // Get the x, y location and store it in the location[] array
                 // location[0] = x, location[1] = y.
                 ivFilter.getLocationOnScreen(location);
                 //Initialize the Point with x, and y positions
@@ -617,23 +654,91 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 } else {
                     isMenuOpen = false;
                     popupWindow.dismiss();
-                }
+                }*/
+                arrayList.clear();
+                arrayList.add("All");
+                arrayList.add("Photo");
+                arrayList.add("Video");
+
+                NameDisplayDialog.newInstance(getString(R.string.post_type), arrayList, pos -> {
+                    String data = arrayList.get(pos);
+                    int prevSize = feeds.size();
+                    switch (data) {
+                        case "All":
+                            page = 0;
+                            tvFilter.setText(R.string.all);
+                            ed_search.setText("");
+                            feeds.clear();
+                            endlesScrollListener.resetState();
+                            feedType = "";
+                            CURRENT_FEED_STATE = Constant.FEED_STATE;
+                            feedAdapter.notifyDataSetChanged();
+                            apiForGetAllFeeds(0, 20, true, "");
+
+                            // popupWindow.dismiss();
+                            break;
+
+                        case "Photo":
+                            page = 0;
+                            tvFilter.setText(R.string.photo);
+                            ed_search.setText("");
+                            feeds.clear();
+                            endlesScrollListener.resetState();
+                            feedType = "image";
+                            CURRENT_FEED_STATE = Constant.IMAGE_STATE;
+                            feedAdapter.notifyDataSetChanged();
+                            apiForGetAllFeeds(0, 20, true, "");
+                            // popupWindow.dismiss();
+                            break;
+
+                        case "Video":
+                            page = 0;
+                            tvFilter.setText(R.string.video);
+                            ed_search.setText("");
+                            // popupWindow.dismiss();
+                            feeds.clear();
+                            endlesScrollListener.resetState();
+                            feedType = "video";
+                            CURRENT_FEED_STATE = Constant.VIDEO_STATE;
+                            feedAdapter.notifyDataSetChanged();
+                            apiForGetAllFeeds(0, 20, true, "");
+                            break;
+
+                    }
+                }).show(getSupportFragmentManager());
+
                 break;
 
             case R.id.llRating:
-                intent = new Intent(this, ReviewRatingActivity.class);
-                intent.putExtra("id",artistId);
-                intent.putExtra("userType","artist");
+               Intent intent = new Intent(this, ReviewRatingActivity.class);
+                intent.putExtra("id", artistId);
+                intent.putExtra("userType", "artist");
                 startActivity(intent);
                 break;
 
 
             case R.id.ly_main_layout:
             case R.id.ly_main:
-                if (ed_search.getText().toString().trim().equals("")){
+                if (ed_search.getText().toString().trim().equals("")) {
                     ed_search.setVisibility(View.GONE);
                 }
 
+                break;
+
+
+        }
+    }
+
+    private void getClickedData(String data) {
+        switch (data) {
+            case "Unfollow":
+                int followersCount = Integer.parseInt(profileData.followersCount);
+
+                profileData.followerStatus = "0";
+                btnFollow.setText("Follow");
+                followersCount--;
+                profileData.followersCount = String.valueOf(followersCount);
+                apiForGetFollowUnFollow();
                 break;
         }
     }
@@ -733,7 +838,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             }
 
             if (profileData.followerStatus.equals("1")) {
-                btnFollow.setText("Unfollow");
+                btnFollow.setText("Message");
             } else {
                 btnFollow.setText("Follow");
             }
@@ -759,13 +864,13 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             iv_Profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ArrayList<String> tempList = new ArrayList<>();
+                 /*   ArrayList<String> tempList = new ArrayList<>();
                     tempList.add(profileData.profileImage);
 
                     Intent intent = new Intent(ArtistProfileActivity.this, PreviewImageActivity.class);
                     intent.putExtra("imageArray", tempList);
                     intent.putExtra("startIndex", 0);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
             });
 
@@ -857,13 +962,14 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         params.put("loginUserId", String.valueOf(user.id));
         params.put("search", searchText);
         // params.put("appType", "user");
-        Mualab.getInstance().cancelPendingRequests(this.getClass().getName());
+        Mualab.getInstance().cancelPendingRequests(TAG);
+
         new HttpTask(new HttpTask.Builder(ArtistProfileActivity.this, "profileFeed", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                 setAdapterLoading(false);
-                feedAdapter.showHideLoading(false);
+                if (feedAdapter != null) feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -871,6 +977,9 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
                     if (status.equalsIgnoreCase("success")) {
                         //removeProgress();
+                        if (page == 0) {
+                            feeds.clear();
+                        }
                         ParseAndUpdateUI(response);
 
                     } else if (page == 0) {
@@ -885,7 +994,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void ErrorListener(VolleyError error) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                 setAdapterLoading(false);
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
@@ -902,7 +1011,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 .setMethod(Request.Method.POST)
                 .setProgress(false)
                 .setBodyContentType(HttpTask.ContentType.X_WWW_FORM_URLENCODED))
-                .execute(TAG);
+                .execute("artistProfileApi");
         //ll_progress.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
     }
 
@@ -1360,7 +1469,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onFeedClick(Feeds feed, int index, View v) {
-        ArrayList<String> tempList = new ArrayList<>();
+        /*Intent intent = new Intent(ArtistProfileActivity.this, FeedSingleActivity.class);
+        intent.putExtra("feedId", String.valueOf(feed._id));
+        startActivity(intent);*/
+       /* ArrayList<String> tempList = new ArrayList<>();
         for (int i = 0; i < feed.feedData.size(); i++) {
             tempList.add(feed.feedData.get(i).feedPost);
         }
@@ -1368,7 +1480,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent(ArtistProfileActivity.this, PreviewImageActivity.class);
         intent.putExtra("imageArray", tempList);
         intent.putExtra("startIndex", index);
-        startActivity(intent);
+        startActivity(intent);*/
         //publicationQuickView(feed, index);
         //showLargeImage(feed, index);
     }
@@ -1390,7 +1502,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 if (CURRENT_FEED_STATE == Constant.FEED_STATE) {
                     int pos = data.getIntExtra("feedPosition", 0);
                     Feeds feed = (Feeds) data.getSerializableExtra("feed");
-                    feeds.get(pos).commentCount = data.getIntExtra("commentCount", 0);
+                    feeds.get(pos).commentCount = feed.commentCount;
                     feedAdapter.notifyItemChanged(pos);
                 }
             }
@@ -1481,7 +1593,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
         ArrayList<TagToBeTagged> tags = feeds.taggedImgMap.get(index);
         if (tags != null && tags.size() != 0) {
-            postImage.addTagViewFromTagsToBeTagged("",tags, false);
+            postImage.addTagViewFromTagsToBeTagged("", tags, false);
             postImage.hideTags("");
         }
 

@@ -1,6 +1,7 @@
 package com.mualab.org.user.activity.feeds.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -16,8 +17,11 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
+import com.mualab.org.user.activity.dialogs.BottomSheetPopup;
+import com.mualab.org.user.activity.dialogs.model.Item;
 import com.mualab.org.user.activity.feeds.model.Comment;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
+import com.mualab.org.user.activity.story.StoriesActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.remote.HttpResponceListner;
@@ -29,6 +33,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +49,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private Listner listner;
     private Feeds feed;
 
+
     public interface Listner{
         void onItemChange();
+        void getLongClick(int commentsPos);
     }
 
     public void setFeedId(Feeds feed){
@@ -93,6 +100,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             }
         });
 
+        if (commentListInfo.isSelected){
+            holder.tv_transparent.setVisibility(View.VISIBLE);
+        }else  holder.tv_transparent.setVisibility(View.GONE);
+
+
         if(commentListInfo.type.equals("image")){
             holder.ivImg.setVisibility(View.VISIBLE);
             Picasso.with(mContext).load(commentListInfo.comment)
@@ -117,9 +129,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return commentList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         ImageView iv_profileImage,ivImg, iv_like;
-        TextView tv_user_name, tv_comments, tv_comments_time, tv_like_count;
+        TextView tv_user_name, tv_comments, tv_comments_time, tv_like_count,tv_transparent;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -130,8 +142,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             iv_profileImage = itemView.findViewById(R.id.iv_profileImage);
             ivImg = itemView.findViewById(R.id.ivImg);
             iv_like = itemView.findViewById(R.id.iv_like);
+            tv_transparent = itemView.findViewById(R.id.tv_transparent);
+
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            listner.getLongClick(getAdapterPosition());
+
+            return false;
         }
     }
+
+
 
     private void apiForCommentLike(final Comment comment, final int position, final ViewHolder holder) {
 

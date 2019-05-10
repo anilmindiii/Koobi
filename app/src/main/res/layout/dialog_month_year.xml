@@ -15,9 +15,7 @@
             android:layout_height="40dp"
             android:background="@color/white"
             android:gravity="center"
-            android:orientation="vertical"
-
-            >
+            android:orientation="vertical">
 
             <TextView
                 style="@style/My_Button"
@@ -60,29 +58,61 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
+            android:layout_height="50dp"
+            android:background="#EFEFF4"
+            android:padding="5dp">
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:text="@string/cancel"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:gravity="end">
 
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="0dp"
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/white_rectangle"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red_color"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_weight=".2" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:text="@string/set"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:gravity="start">
+
+                <!--white_rectangle-->
+
+                <Button
+                    android:id="@+id/button1"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/primary_bg_round"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="center"
+                    android:text="@string/save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
+
+
     </LinearLayout>
 </LinearLayout>

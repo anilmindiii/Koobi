@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -24,10 +25,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -115,6 +118,8 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
     private Address address;
     private TextView txt_address;
     private int yearShow = 1980, monthShow = 0, dayShow = 1;
+    private CheckBox cb_tnc;
+    private RelativeLayout ly_term_n_policies;
     //private WebServiceAPI api;
 
 
@@ -197,6 +202,8 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
         ed_userName = findViewById(R.id.ed_userName);
         tv_dob = findViewById(R.id.tv_dob);
         radioGroup = findViewById(R.id.radioGroup);
+        cb_tnc = findViewById(R.id.cb_tnc);
+        ly_term_n_policies = findViewById(R.id.ly_term_n_policies);
         findViewById(R.id.btnContinue1).setOnClickListener(this);
         tv_dob.setOnClickListener(this);
 
@@ -210,10 +217,12 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
         findViewById(R.id.btnContinue2).setOnClickListener(this);
         findViewById(R.id.alreadyHaveAnAccount).setOnClickListener(this);
 
+        ly_term_n_policies.setOnClickListener(this::onClick);
+
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
         yearShow = calendar.get(Calendar.YEAR);
-        monthShow = calendar.get(Calendar.MONTH) + 1;
+        monthShow = calendar.get(Calendar.MONTH);
         dayShow = calendar.get(Calendar.DAY_OF_MONTH);
 
     }
@@ -256,7 +265,11 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
                     user.password = edPwd.getText().toString().trim();
                     user.dob = tv_dob.getText().toString().trim();
                     user.gender = radioSexButton.getText().toString();
-                    registration();
+
+                    if(cb_tnc.isChecked()){
+                        registration();
+                    }else MyToast.getInstance(this).showDasuAlert("Please accept term and policies");
+
 
 
                 }
@@ -280,8 +293,11 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
                 showDate(yearShow, monthShow, dayShow);
                 //datePicker();
                 //  setDateField();
+                break;
 
-
+            case R.id.ly_term_n_policies:
+                intent  = new Intent(this,WebViewActivity.class);
+                startActivity(intent);
                 break;
 
         }
@@ -764,16 +780,18 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+
     void showDate(int year, int month, int day) {
-        new SpinnerDatePickerDialogBuilder()
+        new Handler().post(() -> new SpinnerDatePickerDialogBuilder()
                 .context(Registration2Activity.this)
                 .callback(Registration2Activity.this)
                 .isActivity("Registration")
                 .dialogTheme(R.style.AppTheme)
                 .defaultDate(year, month, day)
                 .build()
-                .show();
+                .show());
+
+
     }
 
     @Override

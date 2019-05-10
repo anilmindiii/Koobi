@@ -111,11 +111,21 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OR"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="@dimen/btn_text_size"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
-                android:layout_marginTop="15dp"
                 android:background="@color/white">
 
                 <TextView
@@ -174,7 +184,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="40dp"
                 android:background="@color/white">
 
                 <TextView
@@ -195,6 +205,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="20"
                     android:textSize="@dimen/evp_text_size_medium"
+                    android:minHeight="40dp"
                     android:fontFamily="@font/nunito_regular"
                     android:textColor="@color/gray"
                     android:textColorHint="@color/gray"

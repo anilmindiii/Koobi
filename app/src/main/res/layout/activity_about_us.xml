@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="About Us"
-            android:fontFamily="@font/nunito_semibold"
+            android:fontFamily="@font/nunito_regular"
             android:textSize="16sp"
             android:layout_marginTop="5dp"
             android:textColor="@color/gray"/>

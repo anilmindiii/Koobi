@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mualab.org.user.R;
 
+import com.mualab.org.user.activity.booking.BookingHisoryActivity;
+import com.mualab.org.user.activity.booking.adapter.BookingHistoryAdapter;
+import com.mualab.org.user.activity.booking.adapter.ScheduledAdapter;
+import com.mualab.org.user.activity.booking.model.BookingHistoryInfo;
+import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.adapter.ChatHistoryAdapter;
 import com.mualab.org.user.chat.adapter.MenuAdapter;
@@ -71,12 +77,13 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
     private Map<String, MuteUser> muteUsersMap;
     //private Map<String, FirebaseUser> firebaseUsersMap;
     private DatabaseReference databaseReference, isOppTypingRef, blockUsersRef, chatRefMuteUser,
-            mFirebaseOtherUserRef, groupRef;
+            mFirebaseOtherUserRef, groupRef,mGroupReqRef;
     private Thread thread, blockThread;
     private String myId, filterType = "";
     private ImageView ic_add_chat, ivFavChat, ivChatFilter;
     private long mLastClickTime = 0;
     private boolean isFavFilter = false, isReadFilter;
+    private ArrayList<String> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +100,36 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
         chatRefMuteUser = mFirebaseDatabaseReference.child("mute_user").child(myId);
         mFirebaseOtherUserRef = mFirebaseDatabaseReference.child("users");
         groupRef = FirebaseDatabase.getInstance().getReference().child("group");
+        mGroupReqRef =  FirebaseDatabase.getInstance().getReference().child("group_request").child(myId);
+
+
+
+        mGroupReqRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                arrayList = new ArrayList<>();
+                if(dataSnapshot.getValue() == null){
+                    arrayList.add("Create New Chat");
+                    arrayList.add("Create New Broadcast");
+                    arrayList.add("Create New Group");
+                    arrayList.add("Join New Group");
+                }else {
+                    arrayList.add("Create New Chat");
+                    arrayList.add("Create New Broadcast");
+                    arrayList.add("Create New Group");
+                    arrayList.add("Join New Group");
+                    arrayList.add("Group Requests");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         init();
+
     }
 
     private void init() {
@@ -217,9 +253,6 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 newList.addAll(demoValues);
                 chatHistories.addAll(newList);
                 shorting();
-
-
-
             }
             //  }
         }
@@ -871,7 +904,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 KeyboardUtil.hideKeyboard(searchview, ChatHistoryActivity.this);
                 //rlOptionMenu.setVisibility(View.VISIBLE);
 
-                int[] point = new int[2];
+                /*int[] point = new int[2];
 
                 // Get the x, y location and store it in the location[] array
                 // location[0] = x, location[1] = y.
@@ -884,14 +917,26 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 p.x = point[0];
                 p.y = point[1];
 
-                popupForHisyory(p);
+                popupForHisyory(p);*/
+
+                final ArrayList<String> filterList = new ArrayList<>();
+                filterList.add("All");
+                filterList.add("All Groups");
+                filterList.add("My Groups");
+                filterList.add("Read");
+                filterList.add("Unread");
+
+                NameDisplayDialog.newInstance("Select Option", filterList, pos -> {
+                    String data = filterList.get(pos);
+                    popupWindowOptionClicks(data);
+                }).show(getSupportFragmentManager());
 
                 break;
 
             case R.id.ic_add_chat:
                 KeyboardUtil.hideKeyboard(searchview, ChatHistoryActivity.this);
 
-                int[] location = new int[2];
+              /*  int[] location = new int[2];
 
                 // Get the x, y location and store it in the location[] array
                 // location[0] = x, location[1] = y.
@@ -904,7 +949,19 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                 p2.x = location[0];
                 p2.y = location[1];
 
-                popupWindowForAdd(p2);
+                popupWindowForAdd(p2);*/
+
+
+
+
+                NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
+                    String data = arrayList.get(pos);
+
+                    AddOptionMenuClicks(data);
+
+
+                    }).show(getSupportFragmentManager());
+
 
                 break;
         }
@@ -1021,12 +1078,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 popupWindow.setElevation(5);
             }
-            final ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.add("Create New Chat");
-            arrayList.add("Create New Broadcast");
-            arrayList.add("Create New Group");
-            arrayList.add("Join New Group");
-            arrayList.add("Group Requests");
+
 
             popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
             RecyclerView recycler_view = layout.findViewById(R.id.recycler_view);

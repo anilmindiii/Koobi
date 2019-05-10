@@ -1,5 +1,6 @@
 package com.mualab.org.user.activity.notification.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -9,12 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.booking.BookingDetailsActivity;
@@ -25,28 +30,41 @@ import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActiv
 import com.mualab.org.user.activity.notification.model.NotificationInfo;
 import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
 import com.mualab.org.user.activity.story.StoriesActivity;
+import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
+import com.mualab.org.user.data.feeds.Story;
+import com.mualab.org.user.data.remote.HttpResponceListner;
+import com.mualab.org.user.data.remote.HttpTask;
+import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.dialogs.NoConnectionDialog;
+import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
-    List<NotificationInfo.NotificationListBean> listBeans;
-    Context mContext;
+    private List<NotificationInfo.NotificationListBean> listBeans;
+    private Context mContext;
+    private ArrayList<LiveUserInfo> liveUserList;
 
     public NotificationAdapter(List<NotificationInfo.NotificationListBean> listBeans, Context mContext) {
         this.listBeans = listBeans;
         this.mContext = mContext;
+        liveUserList = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_notifications,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_notifications, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -65,20 +83,30 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         viewHolder.tvDate.setText(bean.timeElapsed);
 
-        if(!TextUtils.isEmpty(bean.profileImage)){
+        if (bean.shouldShowLable) {
+            viewHolder.tvDateStatus.setVisibility(View.VISIBLE);
+        } else viewHolder.tvDateStatus.setVisibility(View.GONE);
+
+        viewHolder.tvDateStatus.setText(bean.dateStaus);
+
+
+        if (!TextUtils.isEmpty(bean.profileImage)) {
             Picasso.with(mContext).load(bean.profileImage)
                     .fit()
                     .placeholder(R.drawable.default_placeholder)
                     .error(R.drawable.default_placeholder)
                     .into(viewHolder.ivProfilePic);
-        }else Picasso.with(mContext).load(R.drawable.default_placeholder).into(viewHolder.ivProfilePic);
+        } else
+            Picasso.with(mContext).load(R.drawable.default_placeholder).into(viewHolder.ivProfilePic);
+
+        viewHolder.ivProfilePic.setOnClickListener(v -> apiForgetUserIdFromUserName(bean.userName));
     }
 
-    private String getFirstWord(String input){
+    private String getFirstWord(String input) {
 
-        for(int i = 0; i < input.length(); i++){
+        for (int i = 0; i < input.length(); i++) {
 
-            if(input.charAt(i) == ' '){
+            if (input.charAt(i) == ' ') {
 
                 return input.substring(0, i);
             }
@@ -93,7 +121,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView tvMsg,tvDate;
+        TextView tvMsg, tvDate, tvDateStatus;
         ImageView ivProfilePic;
 
         public ViewHolder(@NonNull View itemView) {
@@ -102,6 +130,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tvMsg = itemView.findViewById(R.id.tvMsg);
             tvDate = itemView.findViewById(R.id.tvDate);
             ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
+            tvDateStatus = itemView.findViewById(R.id.tvDateStatus);
 
             itemView.setOnClickListener(this);
         }
@@ -109,23 +138,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @Override
         public void onClick(View v) {
 
-            String type = listBeans.get(getAdapterPosition()).type;
             int notifyId = listBeans.get(getAdapterPosition()).notifyId;
             String userName = listBeans.get(getAdapterPosition()).userName;
             String urlImageString = listBeans.get(getAdapterPosition()).profileImage;
             String userType = listBeans.get(getAdapterPosition()).userType;
             int notifincationType = listBeans.get(getAdapterPosition()).notifincationType;
+            int senderId = listBeans.get(getAdapterPosition()).senderId;
 
-            notificationRedirections(String.valueOf(notifyId), userName, urlImageString, userType, String.valueOf(notifincationType));
+            notificationRedirections(senderId, String.valueOf(notifyId), userName, urlImageString, userType, String.valueOf(notifincationType));
 
         }
 
-        private void notificationRedirections(String notifyId, String userName, String urlImageString, String userType, String notifincationType) {
+        private void notificationRedirections(int senderId, String notifyId, String userName, String urlImageString, String userType, String notifincationType) {
             switch (notifincationType) {
                 case "13":
+                    LiveUserInfo me = new LiveUserInfo();
+                    me.id = senderId;
+                    me.userName = userName;
+                    me.profileImage = urlImageString;
+                    me.storyCount = 0;
+                    liveUserList.add(me);
                     Intent intent_story = new Intent(mContext, StoriesActivity.class);
                     Bundle args = new Bundle();
-                   // args.putSerializable("ARRAYLIST", liveUserList);
+                    args.putSerializable("ARRAYLIST", liveUserList);
                     args.putInt("position", 0);
                     intent_story.putExtra("BUNDLE", args);
                     mContext.startActivity(intent_story);
@@ -152,12 +187,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     break;
 
                 case "16":
-                    case "10":
-
+                case "10":
                     Intent intent_like_post = new Intent(mContext, FeedSingleActivity.class);
                     intent_like_post.putExtra("feedId", notifyId);
                     mContext.startActivity(intent_like_post);
-
                     break;
 
                 case "20":
@@ -166,7 +199,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 case "26":
                 case "2":
                     Intent booking2 = new Intent(mContext, BookingDetailsActivity.class);
-
                     if (!notifyId.equals(""))
                         booking2.putExtra("bookingId", Integer.parseInt(notifyId));
                     booking2.putExtra("artistName", userName);
@@ -194,7 +226,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     booking3.putExtra("artistProfile", urlImageString);
                     booking3.putExtra("key", "main");
 
-                    mContext. startActivity(booking3);
+                    mContext.startActivity(booking3);
                     break;
 
                 case "4":
@@ -207,6 +239,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     mContext.startActivity(booking4);
                     break;
 
+                case "6":
                 case "5":
                     Intent booking5 = new Intent(mContext, BookingDetailsActivity.class);
                     if (!notifyId.equals(""))
@@ -218,12 +251,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     mContext.startActivity(booking5);
                     break;
 
-                case "6":
+               /* case "6":
                     // here we go for review list
                     Intent booking6 = new Intent(mContext, ReviewRatingActivity.class);
                     mContext.startActivity(booking6);
-                    break;
-
+                    break;*/
+                case "14":
                 case "12":
 
                     if (userType.equals("user")) {
@@ -233,7 +266,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                     } else {
                         Intent intent_user_profile = new Intent(mContext, ArtistProfileActivity.class);
-                        intent_user_profile.putExtra("feedId", notifyId);
+                        //intent_user_profile.putExtra("feedId", notifyId);
                         intent_user_profile.putExtra("artistId", notifyId);
                         mContext.startActivity(intent_user_profile);
                     }
@@ -244,4 +277,61 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
     }
+
+    private void apiForgetUserIdFromUserName(final CharSequence userName) {
+        String user_name = "";
+
+        final Map<String, String> params = new HashMap<>();
+        if (userName.toString().startsWith("@")) {
+
+            user_name = userName.toString().replaceFirst("@", "");
+            params.put("userName", user_name + "");
+        } else params.put("userName", userName + "");
+        new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                Log.d("hfjas", response);
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+
+                        JSONObject userDetail = js.getJSONObject("userDetail");
+                        String userType = userDetail.getString("userType");
+                        int userId = userDetail.getInt("_id");
+
+                        if (userType.equals("user")) {
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        } else if (userType.equals("artist") && userId == Mualab.currentUser.id) {
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
+                            intent.putExtra("artistId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        }
+
+
+                    } else {
+                        MyToast.getInstance(mContext).showDasuAlert(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+            }
+        }).setBody(params, HttpTask.ContentType.APPLICATION_JSON)
+                .setMethod(Request.Method.POST)
+                .setProgress(true))
+                .execute("FeedAdapter");
+    }
+
+
 }

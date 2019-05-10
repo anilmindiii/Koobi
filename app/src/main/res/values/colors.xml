@@ -13,6 +13,7 @@
     <color name="custom_alert_bg_color">#B34c3549</color>
     <color name="black">#000</color>
     <color name="dark_transperant">#66000000</color>
+    <color name="dark_transperant2">#A6000000</color>
     <color name="gray">#999999</color>
     <color name="main_green_color">#00BB27</color>
     <color name="green_color">#00BB27</color>
@@ -26,6 +27,7 @@
     <color name="dark_grey">#434343</color>
     <color name="gray3">#ececec</color>
     <color name="gray4">#e9ebf0</color>
+    <color name="gray5">#b1b1b1</color>
     <item name="blue" type="color">#FF33B5E5</item>
     <item name="very_light" type="color">#f2f2f2</item>
 
@@ -46,6 +48,7 @@
     <color name="btn_context_menu_normal">#ffffff</color>
     <color name="btn_context_menu_pressed">#40000000</color>
     <color name="btn_context_menu_text_red">#ffff0000</color>
+    <color name="red_color">#FF0000</color>
     <color name="text_like_counter">#2b5a83</color>
     <color name="screen_bg_color">#f2f2f2</color>
     <color name="bg_edit_color">#e5e5e5</color>

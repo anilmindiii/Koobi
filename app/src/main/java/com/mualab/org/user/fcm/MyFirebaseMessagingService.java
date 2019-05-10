@@ -143,6 +143,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setShowBadge(true);
+            mChannel.enableLights(true);
             assert notificationManager != null;
             notificationManager.createNotificationChannel(mChannel);
         }
@@ -206,6 +208,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setShowBadge(true);
+            mChannel.enableLights(true);
             assert notificationManager != null;
             notificationManager.createNotificationChannel(mChannel);
         }

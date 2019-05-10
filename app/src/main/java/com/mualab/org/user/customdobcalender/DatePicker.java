@@ -101,7 +101,7 @@ public class DatePicker extends LinearLayout {
 
     private boolean mIsDayShown = true;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    //@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     DatePicker(ViewGroup root, int numberPickerStyle, String activity) {
         super(root.getContext());
         mContext = root.getContext();

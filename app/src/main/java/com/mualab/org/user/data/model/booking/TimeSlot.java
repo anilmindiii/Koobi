@@ -24,6 +24,9 @@ public class TimeSlot implements Serializable {
 
     public String slotTime = "10:00 AM - 07:00 PM";
 
+    public String minStartTime = "10:00 AM";
+    public String maxEndTime = "07:00 PM";
+
     @SerializedName("status")
     public int status = 1;
 

@@ -113,7 +113,8 @@
                     android:layout_height="27dp"
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/video_player_ico"
+                    android:padding="2dp"
+                    app:srcCompat="@drawable/ic_ico_video_camera"
                     android:tint="@color/white" />
 
             </LinearLayout>

@@ -18,6 +18,7 @@ public class Feeds  implements Serializable{
     // public static Feeds tmpFeed;
     public int _id;
     public String feedType;
+    public boolean isShow;
     public boolean ispopupOpen;
     public List<String> feed = new ArrayList<>();
     public List<Feed> feedData = new ArrayList<>();
@@ -40,6 +41,8 @@ public class Feeds  implements Serializable{
 
     public List<User> userInfo;
     public String timeElapsed;
+
+    public int isSave;
 
     /*tmp*/
     public String fullName;

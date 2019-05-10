@@ -15,6 +15,7 @@ import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mindiii on 21/12/18.
@@ -25,11 +26,13 @@ public class TagTextHorizontalAdapter extends RecyclerView.Adapter<TagTextHorizo
     private List<ExSearchTag> tempTxtTagHoriList;
     private Context mContext;
     onDataChangeListner listner;
+    private Map<String,ExSearchTag> idsMap;
 
-    public TagTextHorizontalAdapter(List<ExSearchTag> tempTxtTagHoriList, Context mContext,onDataChangeListner listner) {
+    public TagTextHorizontalAdapter(Map<String,ExSearchTag> idsMap,List<ExSearchTag> tempTxtTagHoriList, Context mContext,onDataChangeListner listner) {
         this.tempTxtTagHoriList = tempTxtTagHoriList;
         this.mContext = mContext;
         this.listner = listner;
+        this.idsMap = idsMap;
     }
 
     public interface onDataChangeListner{
@@ -47,14 +50,13 @@ public class TagTextHorizontalAdapter extends RecyclerView.Adapter<TagTextHorizo
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final ExSearchTag searchTag = tempTxtTagHoriList.get(position);
 
-        /*if (searchTag.imageUrl != null && !searchTag.imageUrl.equals("")) {
-            Picasso.with(mContext).load(searchTag.imageUrl).
+        if (searchTag.imageUrl != null && !searchTag.imageUrl.equals("")) {
+            Picasso.with(mContext).load(searchTag.imageUrl).fit().
                     placeholder(R.drawable.default_placeholder).into(holder.iv_user_image);
         } else {
             holder.iv_user_image.setImageResource(R.drawable.default_placeholder);
-        }*/
+        }
 
-        Glide.with(mContext).load(searchTag.imageUrl).placeholder(R.drawable.default_placeholder).into(holder.iv_user_image);
 
 
         holder.tv_user_name.setText(searchTag.title);
@@ -62,6 +64,7 @@ public class TagTextHorizontalAdapter extends RecyclerView.Adapter<TagTextHorizo
         holder.iv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                idsMap.remove(String.valueOf(searchTag.id));
                 listner.dataChange(searchTag);
                 tempTxtTagHoriList.remove(position);
                 notifyDataSetChanged();

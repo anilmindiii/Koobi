@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.mualab.org.user.R;
 import com.mualab.org.user.Views.refreshviews.CircleHeaderView;
@@ -32,6 +34,7 @@ import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.listener.EndlessRecyclerViewScrollListener;
 import com.mualab.org.user.utils.constants.Constant;
+import com.stripe.model.Card;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,6 +89,11 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         ivUserProfile = getActivity().findViewById(R.id.ivUserProfile);
         btnBack = getActivity().findViewById(R.id.btnBack);
         rlHeader1 = getActivity().findViewById(R.id.topLayout1);
+        ImageView ivChat = getActivity().findViewById(R.id.ivChat);
+        ivChat.setVisibility(View.GONE);
+
+        TextView tv_batch_count = getActivity().findViewById(R.id.tv_batch_count);
+        tv_batch_count.setVisibility(View.GONE);
 
         ivUserProfile.setVisibility(View.GONE);
         btnBack.setVisibility(View.VISIBLE);
@@ -129,7 +137,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         endlesScrollListener = new EndlessRecyclerViewScrollListener(manager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                feedAdapter.showHideLoading(true);
+                if (feedAdapter != null) feedAdapter.showHideLoading(true);
                 //apiForGetAllFeeds(page, 10, false);
             }
         };
@@ -169,6 +177,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         super.onDetach();
     }
 
+
     @Override
     public void onClick(View v) {
 
@@ -195,7 +204,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
     @Override
     public void onFeedClick(Feeds feed, int index, View v) {
 
-        ArrayList<String> tempList = new ArrayList<>();
+      /*  ArrayList<String> tempList = new ArrayList<>();
         for(int i=0; i<feed.feedData.size(); i++){
             tempList.add(feed.feedData.get(i).feedPost);
         }
@@ -203,7 +212,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         Intent intent = new Intent(mContext, PreviewImageActivity.class);
         intent.putExtra("imageArray", tempList);
         intent.putExtra("startIndex", index);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     @Override
@@ -216,7 +225,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         if(resultCode == RESULT_OK){
             int pos = data.getIntExtra("feedPosition", 0);
             Feeds feed = (Feeds) data.getSerializableExtra("feed");
-            feedItems.get(pos).commentCount = data.getIntExtra("commentCount", 0);
+            feedItems.get(pos).commentCount = feed.commentCount;
             feedAdapter.notifyItemChanged(pos);
         }
 

@@ -29,7 +29,6 @@ public class UsersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<FirebaseUser> firebaseUsers;
     private OnUserClickListener onUserClickListener = null;
 
-
     // Constructor of the class
     public UsersListAdapter(Context mContext, List<FirebaseUser> firebaseUsers) {
         this.mContext = mContext;
@@ -63,7 +62,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         final FirebaseUser firebaseUser = firebaseUsers.get(position);
 
         if (firebaseUser.profilePic!=null && !firebaseUser.profilePic.equals("")){
-            Picasso.with(mContext).load(firebaseUser.profilePic).
+            Picasso.with(mContext).load(firebaseUser.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfilePic);
         }
 

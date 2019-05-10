@@ -216,7 +216,7 @@ public class SearchBoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     intent2.putExtra("item",item);
                     intent2.putExtra("artistId",item._id);
                     context.startActivity(intent2);
-
+                    break;
                 case R.id.lyContainer:
                    /* Intent intent3 = new Intent(context, ArtistProfileActivity.class);
                     intent3.putExtra("item",item);

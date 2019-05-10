@@ -39,6 +39,7 @@ import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
+import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.listener.FeedsListner;
@@ -125,6 +126,7 @@ public class FeedSingleActivity extends AppCompatActivity implements View.OnClic
         rvFeed.setLayoutManager(lm);
         rvFeed.setHasFixedSize(true);
         adapter = new FeedAdapter(FeedSingleActivity.this, userType,list, this);
+        adapter.isFromSingleActivity = true;
 
         rvFeed.setAdapter(adapter);
         rvFeed.scrollToPosition(0);
@@ -176,6 +178,13 @@ public class FeedSingleActivity extends AppCompatActivity implements View.OnClic
                             mRefreshLayout.stopRefresh(true, 500);
                         }*/
                         JSONArray array = js.getJSONArray("feedDetail");
+
+                        if(array.length() == 0){
+                            MyToast.getInstance(FeedSingleActivity.this).showDasuAlert("Post is no longer available");
+                            finish();
+                            return;
+                        }
+
                         Gson gson = new Gson();
                         for (int i = 0; i < array.length(); i++) {
 
@@ -435,7 +444,7 @@ public class FeedSingleActivity extends AppCompatActivity implements View.OnClic
     public void onFeedClick(Feeds feed, int index, View v) {
       //  showLargeImage(feed, index);
 
-        ArrayList<String> tempList = new ArrayList<>();
+      /*  ArrayList<String> tempList = new ArrayList<>();
         for(int i=0; i<feed.feedData.size(); i++){
             tempList.add(feed.feedData.get(i).feedPost);
         }
@@ -443,7 +452,7 @@ public class FeedSingleActivity extends AppCompatActivity implements View.OnClic
         Intent intent = new Intent(FeedSingleActivity.this, PreviewImageActivity.class);
         intent.putExtra("imageArray", tempList);
         intent.putExtra("startIndex", index);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     @Override
@@ -582,7 +591,7 @@ public class FeedSingleActivity extends AppCompatActivity implements View.OnClic
 
                     int pos = data.getIntExtra("feedPosition", 0);
                     Feeds feed = (Feeds) data.getSerializableExtra("feed");
-                    list.get(pos).commentCount = data.getIntExtra("commentCount", 0);
+                    list.get(pos).commentCount = feed.commentCount;
                     adapter.notifyItemChanged(pos);
 
                     break;

@@ -138,38 +138,47 @@ public class GroupRequestActivity extends AppCompatActivity {
                  listenerUser =  mUserRef.child(requestInfo.senderId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        final FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
-                        Log.d("dsds",user+"");
+                        try{
 
-                        listenerGroup =  groupRef.child(requestInfo.groupId).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Groups groups = dataSnapshot.getValue(Groups.class);
+                            final FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
+                            Log.d("dsds",user+"");
 
-                                CustomData customData = new CustomData();
-                                customData.firebaseUser = user;
-                                customData.firebaseUser.lastActivity = requestInfo.timestamp;
-                                customData.firebaseUser.authToken = key;
-                                customData.groups = groups;
+                            listenerGroup =  groupRef.child(requestInfo.groupId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Groups groups = dataSnapshot.getValue(Groups.class);
 
-                                if(!isAcceptClicked){
-                                    customDataMap.put(key,customData);
-                                    Collection<CustomData> CustomData = customDataMap.values();
+                                    CustomData customData = new CustomData();
+                                    customData.firebaseUser = user;
+                                    customData.firebaseUser.lastActivity = requestInfo.timestamp;
+                                    customData.firebaseUser.authToken = key;
+                                    customData.groups = groups;
 
-                                    dataArrayList.clear();
-                                    dataArrayList.addAll(CustomData);
-                                    shortList();
+                                    if(!isAcceptClicked){
+                                        customDataMap.put(key,customData);
+                                        Collection<CustomData> CustomData = customDataMap.values();
+
+                                        dataArrayList.clear();
+                                        dataArrayList.addAll(CustomData);
+                                        shortList();
+                                    }
+
+
+
                                 }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
 
-                            }
+                        }catch (Exception e){
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
 
-                            }
-                        });
+
 
                     }
 

@@ -56,7 +56,7 @@ public class CreateNewChatActivity extends AppCompatActivity implements View.OnC
         rvMembers = findViewById(R.id.rvMembers);
         ImageView btnBack = findViewById(R.id.btnBack);
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
-        tvHeaderTitle.setText("Create New Chat");
+        tvHeaderTitle.setText("New Chat");
 
 
         btnBack.setOnClickListener(this::onClick);

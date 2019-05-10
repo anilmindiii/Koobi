@@ -37,6 +37,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -159,8 +160,15 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
                 break;
 
             case R.id.ly_working_houre:
-                intent = new Intent(this, WorkingHourActivity.class);
+                /*intent = new Intent(this, WorkingHourActivity.class);
                 intent.putExtra("busineshoursList", busineshoursList);
+                startActivity(intent);
+*/
+                intent = new Intent(this, OperationHoursActivity.class);
+                Bundle args = new Bundle();
+                args.putSerializable("workingHours", (Serializable) companyDetail.businessDays);
+                args.putBoolean("isEditable", false);
+                intent.putExtra("BUNDLE",args);
                 startActivity(intent);
                 break;
         }

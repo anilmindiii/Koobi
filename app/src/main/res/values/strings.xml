@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Koobi Customer</string>
+    <string name="app_name">Koobi</string>
 
     <!--facebook-->
     <string name="facebook_app_id">629983144084097</string>
@@ -30,6 +30,9 @@
     <string name="error_session_expired">Alert message</string>
     <string name="error_session_expired_msg">Your session is expired please login again</string>
 
+    <string name="business_types">Business Types</string>
+    <string name="category_types">Category Types</string>
+    <string name="post_type">Feed Type</string>
 
     <!-- Material Camera Stuff -->
     <string name="mcam_defaultDuration">00:00</string>
@@ -47,7 +50,7 @@
     <string name="mcam_file_size_limit_reached">You\'ve reached the maximum file size!</string>
     <string name="mcam_image_preview_error_title">Image preview error</string>
     <string name="mcam_image_preview_error_message">Could not decode bitmap</string>
-    <string name="there_are_no_available_slots_please_select_another_day">There are no available slots. Please select another day.</string>
+    <string name="there_are_no_available_slots_please_select_another_day">Unfortunately! there are no available slots at this time. \nNew booking slots will be made available, \nPlease select another day.</string>
     <string name="write_a_comment_here">Write your comment</string>
     <string name="write_a_description_here">Write your description</string>
     <string name="unfollow_user">Unfollow <b>@%s?</b></string>
@@ -120,6 +123,7 @@
     <string name="what_happened">What happened?</string>
     <string name="txt_description_maintenance">Server and website need regular maintenance just like a car to keep them up and running smoothly.</string>
     <string name="text_services">Services</string>
+    <string name="txt_service">Service</string>
     <string name="text_total">Total</string>
     <string name="text_voucher_code">Voucher Code</string>
     <string name="not_working">not working</string>
@@ -228,6 +232,14 @@
     <string name="day">Day</string>
     <string name="year">Year</string>
 
+
+    <string name="monday1">Monday</string>
+    <string name="tuesday1">Tuesday</string>
+    <string name="wednesday1">Wednesday</string>
+    <string name="thursday1">Thursday</string>
+    <string name="frieday1">Friday</string>
+    <string name="saturday1">Saturday</string>
+    <string name="sunday1">Sunday</string>
 
     <!--calender-->
     <string name="monday">Mon</string>
@@ -415,7 +427,7 @@
     <string name="please_provide_the_following_details_to_report_this_post">Please provide the following details to report this post</string>
     <string name="please_provide_service">Please provide the following details to report this service</string>
     <string name="link">link</string>
-    <string name="select_reason">Select Reason</string>
+    <string name="select_reason">Report Reason</string>
     <string name="description">Description</string>
     <string name="add">Add</string>
     <string name="merge">Merge</string>
@@ -443,7 +455,7 @@
     <string name="add_debit_credit_card">Add credit or debit card</string>
     <string name="give_review">Please give review</string>
     <string name="no_saved_cards">No Saved Cards</string>
-    <string name="your_service_has_been_completed_nplease_review_how_satisfied_you_are_nwith">Your service has been completed. Please review how satisfied you are with</string>
+    <string name="your_service_has_been_completed_nplease_review_how_satisfied_you_are_nwith">Your service has been completed. Please review how satisfied you are with </string>
     <string name="card_details">Card Details</string>
     <string name="remove_card">Remove Card</string>
     <string name="congratulations">Congratulations</string>
@@ -493,6 +505,18 @@
     <string name="tap_the_photo_to_tag_people">Tap the photo to tag people</string>
     <string name="tap_the_photo_to_tag_service">Tap the photo to tag people</string>
     <string name="card">Card</string>
+    <string name="term_amp_policies"><![CDATA[Term & Policies]]></string>
+    <string name="i_accept">I accept</string>
+    <string name="certificate">Certificate</string>
+    <string name="staff_info">Staff Info</string>
+    <string name="delete_post">Delete post</string>
+    <string name="business_text">Business</string>
+    <string name="appointment_info">Appointment Info</string>
+    <string name="service_status">Service Status</string>
+    <string name="save_to_folder">Save To Folder</string>
+    <string name="operation_hours">Operation Hours</string>
+    <string name="select_service_category">Select Service Category</string>
+    <string name="booking_type">Booking Type</string>
 
 
 </resources>

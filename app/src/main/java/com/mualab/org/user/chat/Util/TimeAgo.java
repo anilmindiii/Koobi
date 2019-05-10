@@ -2,10 +2,14 @@ package com.mualab.org.user.chat.Util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.mualab.org.user.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class TimeAgo {
     private static final int SECOND_MILLIS = 1000;
@@ -105,35 +109,164 @@ public class TimeAgo {
         return words.trim();
     }
 
-    /* SimpleDateFormat sd = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss");
-                                        try {
-                                            String lastTime = sd.format(new Date((Long) otherUser.lastActivity));
-                                            Date past = sd.parse(lastTime);
-                                            Date now = new Date();
-                                            long seconds=TimeUnit.MILLISECONDS.toSeconds(now.getTime() - past.getTime());
-                                            long minutes= TimeUnit.MILLISECONDS.toMinutes(now.getTime() - past.getTime());
-                                            long hours=TimeUnit.MILLISECONDS.toHours(now.getTime() - past.getTime());
-                                            long days=TimeUnit.MILLISECONDS.toDays(now.getTime() - past.getTime());
+    /*...........................notifications.....................................*/
 
-                                            if(seconds<60)
-                                            {
-                                                onlineStatus = seconds+" seconds ago";
-                                            }
-                                            else if(minutes<60)
-                                            {
-                                                onlineStatus = minutes+" minutes ago";
-                                            }
-                                            else if(hours<24)
-                                            {
-                                                onlineStatus = hours+" hours ago";
-                                            }
-                                            else
-                                            {
-                                                onlineStatus = days+" days ago";
-                                            }
+    public static String covertTimeToText(String dataDate) {
 
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                        }*/
+        String convTime = null;
+        String prefix = "";
+        String suffix = "";
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date pasTime = dateFormat.parse(dataDate);
+
+            Date nowTime = new Date();
+
+            long dateDiff = nowTime.getTime() - pasTime.getTime();
+
+            long day  = TimeUnit.MILLISECONDS.toDays(dateDiff);
+
+            if (day >= 7) {
+                if (day > 30) {
+                    convTime = "This Months "+ suffix;
+                } else if (day > 360) {
+                    convTime = "This Years "+ suffix;
+                } else {
+                    convTime =   "This Months "+ suffix;
+                }
+            } else if (day < 7) {
+                convTime = day+" Days "+suffix;
+
+                if(day == 0){
+                    convTime = "New";
+                }else if(day == 1 ||day == 2){
+                    convTime = "Yesterday";
+                }else convTime = "This week";
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e("ConvTimeE", e.getMessage());
+        }
+
+        return convTime;
+
+    }
+
+    public String covertTimeToTextR(String dataDate) {
+
+        String convTime = null;
+        String prefix = "";
+        String suffix = "";
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date pasTime = dateFormat.parse(dataDate);
+
+            Date nowTime = new Date();
+
+            long dateDiff = nowTime.getTime() - pasTime.getTime();
+
+            long second = TimeUnit.MILLISECONDS.toSeconds(dateDiff);
+            long minute = TimeUnit.MILLISECONDS.toMinutes(dateDiff);
+            long hour   = TimeUnit.MILLISECONDS.toHours(dateDiff);
+            long day  = TimeUnit.MILLISECONDS.toDays(dateDiff);
+
+            if (second < 60) {
+                convTime = "New";
+            }
+            else if (minute < 60) {
+                convTime = "New";
+            }
+            else if (hour < 24) {
+                convTime = hour+" Hours "+suffix;
+            }
+            else if (day >= 7) {
+                if (day > 30) {
+                    convTime = (day / 30)+" Months "+suffix;
+                } else if (day > 360) {
+                    convTime = (day / 360)+" Years "+suffix;
+                } else {
+                    convTime = (day / 7) + " Week "+suffix;
+                }
+            }
+            else if (day < 7) {
+                convTime = day+" Days "+suffix;
+
+                if(day == 1 || day == 0){
+                    convTime = "New";
+                }else if(day == 2){
+                    convTime = "Yesterday";
+                }else convTime = "This week";
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e("ConvTimeE", e.getMessage());
+        }
+
+        return convTime;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*public String covertTimeToTextR(String dataDate) {
+
+        String convTime = null;
+        String prefix = "";
+        String suffix = "Ago";
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date pasTime = dateFormat.parse(dataDate);
+
+            Date nowTime = new Date();
+
+            long dateDiff = nowTime.getTime() - pasTime.getTime();
+
+            long second = TimeUnit.MILLISECONDS.toSeconds(dateDiff);
+            long minute = TimeUnit.MILLISECONDS.toMinutes(dateDiff);
+            long hour   = TimeUnit.MILLISECONDS.toHours(dateDiff);
+            long day  = TimeUnit.MILLISECONDS.toDays(dateDiff);
+
+            if (second < 60) {
+                convTime = second+" Seconds "+suffix;
+            } else if (minute < 60) {
+                convTime = minute+" Minutes "+suffix;
+            } else if (hour < 24) {
+                convTime = hour+" Hours "+suffix;
+            } else if (day >= 7) {
+                if (day > 30) {
+                    convTime = (day / 30)+" Months "+suffix;
+                } else if (day > 360) {
+                    convTime = (day / 360)+" Years "+suffix;
+                } else {
+                    convTime = (day / 7) + " Week "+suffix;
+                }
+            } else if (day < 7) {
+                convTime = day+" Days "+suffix;
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e("ConvTimeE", e.getMessage());
+        }
+
+        return convTime;
+
+    }*/
+
 
 }

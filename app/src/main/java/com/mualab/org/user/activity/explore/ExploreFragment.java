@@ -177,11 +177,11 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
         rvFeed.setLayoutManager(wgm);
         rvFeed.setHasFixedSize(true);
 
-        feedAdapter = new ExploreGridViewAdapter(mContext,new ExSearchTag(), feeds, this,feedsListner);
+        feedAdapter = new ExploreGridViewAdapter(mContext,new ExSearchTag(), feeds, this,feedsListner,false);
         endlesScrollListener = new EndlessRecyclerViewScrollListener(wgm) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                feedAdapter.showHideLoading(true);
+                if (feedAdapter != null)  feedAdapter.showHideLoading(true);
                 apiForGetAllFeeds(page, 10, false);
             }
         };
@@ -360,8 +360,8 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
         new HttpTask(new HttpTask.Builder(mContext, "getAllFeeds", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                ll_progress.setVisibility(View.GONE);
-                feedAdapter.showHideLoading(false);
+                if (ll_progress != null)ll_progress.setVisibility(View.GONE);
+                if (feedAdapter != null)  feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -379,7 +379,7 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
 
             @Override
             public void ErrorListener(VolleyError error) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null)ll_progress.setVisibility(View.GONE);
                 if(isPulltoRefrash){
                     isPulltoRefrash = false;
                     mRefreshLayout.stopRefresh(false, 500);

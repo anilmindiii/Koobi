@@ -208,14 +208,15 @@
 
         </RelativeLayout>
 
-
         <ViewSwitcher
             android:id="@+id/vLowerPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-           >
+            android:layout_marginBottom="16dp">
+
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -251,10 +252,10 @@
 
                     <Button
                         android:id="@+id/btnTakePhoto"
-                        android:layout_width="38dp"
-                        android:layout_height="38dp"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/btn_capture"
+                        android:background="@drawable/btn_capture_camera"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -282,31 +283,34 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <LinearLayout
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center">
+                android:gravity="right">
 
                 <RelativeLayout
                     android:id="@+id/add_to_story"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="right"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right"
                     android:padding="5dp">
 
                     <ImageView
                         android:id="@+id/ic_add_to_story"
                         android:layout_width="42dp"
                         android:layout_height="42dp"
-                        android:layout_centerHorizontal="true"
-                        android:src="@drawable/ic_add_to_story" />
+                        android:src="@drawable/new_send_ico" />
 
                 </RelativeLayout>
 
-            </LinearLayout>
-
-
+            </RelativeLayout>
 
 
 

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -178,7 +179,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         mScrollView = view.findViewById(R.id.mScrollView);
         ivFilter = view.findViewById(R.id.ivFilter);
         bottomSheetLayout = view.findViewById(R.id.bottomSheetLayout);
+
         view.findViewById(R.id.ed_search).setOnClickListener(this);
+
 
         // filter screen views
         TextView tv_reset = view.findViewById(R.id.tv_reset);
@@ -252,7 +255,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     // endlesScrollListener.resetState();
                     feeds.clear();
                     page = 0;
-                    apiForGetAllFeeds(0, 10, true);
+                    apiForGetAllFeeds(0, 20, true);
                 });
         rcv_service.setAdapter(exploreServiceAdapter);
 
@@ -322,7 +325,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 feeds.clear();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(0, 10, true);
+                apiForGetAllFeeds(0, 20, true);
                 break;
 
             case R.id.lyRefineLocation:
@@ -346,11 +349,16 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 break;
 
             case R.id.lyArtistService:
-                serviceServiceDialog();
+                if (categoryIds.equals("")) {
+                    MyToast.getInstance(mContext).showDasuAlert("Please select service category");
+                    return;
+                } else serviceServiceDialog();
+
                 break;
 
-case R.id.iv_title:
-    addFragment(GrideToListFragment.newInstance(feeds, 0), true);
+
+            case R.id.iv_title:
+                addFragment(GrideToListFragment.newInstance(feeds, 0), true);
                 break;
 
 
@@ -362,7 +370,7 @@ case R.id.iv_title:
                 feeds.clear();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(0, 10, true);
+                apiForGetAllFeeds(0, 20, true);
                 break;
 
             case R.id.tv_reset:
@@ -405,7 +413,7 @@ case R.id.iv_title:
 
                 page = 0;
                 feeds.clear();
-                apiForGetAllFeeds(0, 10, true);
+                apiForGetAllFeeds(0, 20, true);
                 break;
         }
     }
@@ -452,13 +460,15 @@ case R.id.iv_title:
         super.onViewCreated(view, savedInstanceState);
 
         int mNoOfColumns = ScreenUtils.calculateNoOfColumns(mContext.getApplicationContext());
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
+
         WrapContentGridLayoutManager wgm = new WrapContentGridLayoutManager(mContext,
                 mNoOfColumns < 3 ? 3 : mNoOfColumns, LinearLayoutManager.VERTICAL, false);
         rvFeed.setItemAnimator(null);
-        rvFeed.setLayoutManager(wgm);
+        rvFeed.setLayoutManager(staggeredGridLayoutManager);
         rvFeed.setHasFixedSize(true);
 
-        feedAdapter = new ExploreGridViewAdapter(mContext, new ExSearchTag(), feeds, this, feedsListner);
+        feedAdapter = new ExploreGridViewAdapter(mContext, new ExSearchTag(), feeds, this, feedsListner, true);
 
 
         mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -473,7 +483,7 @@ case R.id.iv_title:
                     // your pagination code
                     if (feedAdapter != null) {
                         feedAdapter.showHideLoading(true);
-                        apiForGetAllFeeds(++page, 10, false);
+                        apiForGetAllFeeds(++page, 20, false);
                     }
 
                 }
@@ -502,7 +512,7 @@ case R.id.iv_title:
         feedType = "image";
         feedAdapter.notifyItemRangeRemoved(0, prevSize);
         showLoading();
-        apiForGetAllFeeds(0, 10, true);
+        apiForGetAllFeeds(0, 20, true);
 
     }
 
@@ -594,18 +604,18 @@ case R.id.iv_title:
         params.put("longitude", lng);
 
         String providRating = String.valueOf(rating.getRating());
-        if(providRating.contains(".")){
-            providRating = providRating.replace(".0","");
+        if (providRating.contains(".")) {
+            providRating = providRating.replace(".0", "");
         }
-        params.put("rating",providRating );
+        params.put("rating", providRating);
 
 
         Mualab.getInstance().cancelPendingRequests(this.getClass().getName());
         new HttpTask(new HttpTask.Builder(mContext, "exploreFeeds", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                ll_progress.setVisibility(View.GONE);
-                feedAdapter.showHideLoading(false);
+                if (ll_progress != null) ll_progress.setVisibility(View.GONE);
+                if (feedAdapter != null)  feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -623,7 +633,7 @@ case R.id.iv_title:
 
             @Override
             public void ErrorListener(VolleyError error) {
-                ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
                     //mRefreshLayout.stopRefresh(false, 500);
@@ -771,6 +781,9 @@ case R.id.iv_title:
 
 
                         feeds.add(feed);
+                        if (feeds.size() != 0) {
+                            feeds.get(0).isShow = true;
+                        }
 
                     } catch (JsonParseException e) {
                         e.printStackTrace();
@@ -796,13 +809,13 @@ case R.id.iv_title:
                 if (feeds.size() != 0) {
                     iv_title.setVisibility(View.VISIBLE);
                     Picasso.with(mContext).load(feeds.get(0).feedData.get(0).feedPost)
-
-                            .resize(200, 200)
-                            .centerCrop().placeholder(R.drawable.gallery_placeholder)
+                            .placeholder(R.drawable.gallery_placeholder)
                             .into(iv_title);
+                    // feedAdapter.removeFirstItem(true);
                 }
 
-                feedAdapter.notifyDataSetChanged();
+                if (array.length() != 0)
+                    feedAdapter.notifyDataSetChanged();
 
             } else if (status.equals("fail") && feeds.size() == 0) {
                 rvFeed.setVisibility(View.GONE);
@@ -847,7 +860,7 @@ case R.id.iv_title:
         boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
         if (!fragmentPopped) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_in, 0, 0);
+            //transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_in, 0, 0);
            /* transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right,
                     R.anim.slide_in_from_right, R.anim.slide_out_to_left);*/
             transaction.add(R.id.container, fragment, backStackName);
@@ -864,8 +877,8 @@ case R.id.iv_title:
         dialog.setContentView(R.layout.dialog_show_service);
         TextView tvHeader = dialog.findViewById(R.id.tvHeader);
         android.support.v7.widget.SearchView searchview = dialog.findViewById(R.id.searchview);
-        searchview.setQueryHint("Search Category");
-        tvHeader.setText(getResources().getString(R.string.select_category));
+        searchview.setQueryHint(getResources().getString(R.string.select_service_category));
+        tvHeader.setText(getResources().getString(R.string.select_service_category));
         final RecyclerView recyclerView = dialog.findViewById(R.id.recyclerview);
         ImageView img_cancel = dialog.findViewById(R.id.img_cancel);
         Button btn_done = dialog.findViewById(R.id.btn_done);
@@ -1015,6 +1028,12 @@ case R.id.iv_title:
 
         for (ExploreCategoryInfo.DataBean.ArtistservicesBean services : artistservicesBeans) {
             services.isCheckedservicesLocal = services.isCheckedservices;
+        }
+
+        if (artistservicesBeans.size() == 0) {
+            tv_msg.setVisibility(View.VISIBLE);
+        } else {
+            tv_msg.setVisibility(View.GONE);
         }
 
         final ArrayList<ExploreCategoryInfo.DataBean.ArtistservicesBean> searchList = new ArrayList<>();

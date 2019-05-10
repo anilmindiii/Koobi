@@ -5,20 +5,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.booking.adapter.BookingHistoryDetailsAdapter;
 import com.mualab.org.user.activity.booking.dialog.BookingReviewRatingCallback;
 import com.mualab.org.user.activity.booking.dialog.BookingReviewRatingDialog;
@@ -53,21 +67,21 @@ public class BookingDetailsActivity extends AppCompatActivity {
     private BookingHistoryDetailsAdapter adapter;
     private RecyclerView rcv_service;
     private ImageView iv_profile_artist;
-    private TextView tv_artist_name,tv_address,booking_status,tv_payment_method,tv_new_amount,tv_amount,
-            tv_voucher_code,tv_discounted_price,tv_call_type,tv_pay;
+    private TextView tv_artist_name, tv_address, booking_status, tv_payment_method, tv_new_amount, tv_amount,
+            tv_voucher_code, tv_discounted_price, tv_call_type, tv_pay;
     private FrameLayout ly_amount;
-    private RelativeLayout ly_voucher_code,ly_map_direction,ly_cancel_booking,ly_give_review;
+    private RelativeLayout ly_voucher_code, ly_map_direction, ly_cancel_booking, ly_give_review;
     private BookingListInfo historyInfo;
-    private int bookingId,serviceId,subServiceId,artistServiceId,artistId;
+    private int bookingId, serviceId, subServiceId, artistServiceId, artistId;
     private boolean isOutCallType;
-    private RelativeLayout ly_txt_Id,ly_txt_status;
-    private TextView tv_txt_id ,tv_txt_status;
+    private RelativeLayout ly_txt_Id, ly_txt_status;
+    private TextView tv_txt_id, tv_txt_status;
     private boolean shouldPopupOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,new IntentFilter("com.mualab.org.user"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("com.mualab.org.user"));
         setContentView(R.layout.activity_booking_details);
 
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
@@ -103,10 +117,9 @@ public class BookingDetailsActivity extends AppCompatActivity {
         tv_txt_status = findViewById(R.id.tv_txt_status);
 
 
-
         if (getIntent().getIntExtra("bookingId", 0) != 0) {
             bookingId = getIntent().getIntExtra("bookingId", 0);
-            shouldPopupOpen = getIntent().getBooleanExtra("shouldPopupOpen",false);
+            shouldPopupOpen = getIntent().getBooleanExtra("shouldPopupOpen", false);
         }
 
         historyInfo = new BookingListInfo();
@@ -115,36 +128,37 @@ public class BookingDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ArrayList<TrackInfo> mapBeanArrayList = new ArrayList<>();
-                if(historyInfo.data != null){
+                if (historyInfo.data != null) {
                     TrackInfo trackUser = new TrackInfo();
                     trackUser.address = historyInfo.data.location;
                     trackUser.latitude = historyInfo.data.latitude;
                     trackUser.longitude = historyInfo.data.longitude;
 
-                    if(historyInfo.data.userDetail.get(0).profileImage.equals("")){
+                    if (historyInfo.data.userDetail.get(0).profileImage.equals("")) {
                         trackUser.profileImage = "https://image.shutterstock.com/image-vector/male-default-placeholder-avatar-profile-260nw-387516193.jpg";
 
-                    }else trackUser.profileImage = historyInfo.data.userDetail.get(0).profileImage;
+                    } else trackUser.profileImage = historyInfo.data.userDetail.get(0).profileImage;
 
                     TrackInfo trackArtist = new TrackInfo();
-                    trackArtist.address =  "";
-                    trackArtist.latitude =  historyInfo.data.bookingInfo.get(0).trackingLatitude;
-                    trackArtist.longitude =  historyInfo.data.bookingInfo.get(0).trackingLongitude;
-                    trackArtist.staffName =  historyInfo.data.bookingInfo.get(0).staffName;
-                    trackArtist.bookingDate =  historyInfo.data.bookingInfo.get(0).bookingDate;
-                    trackArtist.startTime =  historyInfo.data.bookingInfo.get(0).startTime;
-                    trackArtist.artistServiceName =  historyInfo.data.bookingInfo.get(0).artistServiceName;
-                    trackArtist.contactNo =  historyInfo.data.artistDetail.get(0).contactNo;
-                    trackArtist.ratingCount =  historyInfo.data.artistDetail.get(0).ratingCount;
+                    trackArtist.address = "";
+                    trackArtist.latitude = historyInfo.data.bookingInfo.get(0).trackingLatitude;
+                    trackArtist.longitude = historyInfo.data.bookingInfo.get(0).trackingLongitude;
+                    trackArtist.staffName = historyInfo.data.bookingInfo.get(0).staffName;
+                    trackArtist.bookingDate = historyInfo.data.bookingInfo.get(0).bookingDate;
+                    trackArtist.startTime = historyInfo.data.bookingInfo.get(0).startTime;
+                    trackArtist.artistServiceName = historyInfo.data.bookingInfo.get(0).artistServiceName;
+                    trackArtist.contactNo = historyInfo.data.artistDetail.get(0).contactNo;
+                    trackArtist.ratingCount = historyInfo.data.artistDetail.get(0).ratingCount;
 
-                    if(historyInfo.data.bookingInfo.get(0).staffImage.equals("")){
+                    if (historyInfo.data.bookingInfo.get(0).staffImage.equals("")) {
                         trackArtist.profileImage = "https://image.shutterstock.com/image-vector/male-default-placeholder-avatar-profile-260nw-387516193.jpg";
-                    }else trackArtist.profileImage = historyInfo.data.bookingInfo.get(0).staffImage;
+                    } else
+                        trackArtist.profileImage = historyInfo.data.bookingInfo.get(0).staffImage;
 
-                    Intent intent = new Intent(BookingDetailsActivity.this,TrackingActivity.class);
-                    intent.putExtra("trackUser",trackUser);
-                    intent.putExtra("trackArtist",trackArtist);
-                    intent.putExtra("bookingId",bookingId);
+                    Intent intent = new Intent(BookingDetailsActivity.this, TrackingActivity.class);
+                    intent.putExtra("trackUser", trackUser);
+                    intent.putExtra("trackArtist", trackArtist);
+                    intent.putExtra("bookingId", bookingId);
                     startActivity(intent);
                 }
 
@@ -163,35 +177,40 @@ public class BookingDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String amount = "";
-                Intent intent = new Intent(BookingDetailsActivity.this,AllCardActivity.class);
-                intent.putExtra("bookingId",bookingId);
+                Intent intent = new Intent(BookingDetailsActivity.this, AllCardActivity.class);
+                intent.putExtra("bookingId", bookingId);
 
-                if(historyInfo.data.discountPrice.equals("")){
+                if (historyInfo.data.discountPrice.equals("")) {
                     String roundValue = String.format("%.2f", Double.parseDouble(historyInfo.data.totalPrice));
-                    amount = "£"+roundValue;
-                }else {
+                    amount = "£" + roundValue;
+                } else {
                     String roundValue = String.format("%.2f", Double.parseDouble(historyInfo.data.discountPrice));
-                    amount = "£"+roundValue;
+                    amount = "£" + roundValue;
                 }
 
-                intent.putExtra("amount",amount);
+                intent.putExtra("amount", amount);
 
                 startActivity(intent);
             }
         });
 
-        ly_give_review.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                askForReviewRating();
-            }
+        ly_give_review.setOnClickListener(v -> {
+           // askForReviewRating();
+            bottomSheetDialog();
         });
+
+        iv_profile_artist.setOnClickListener(v->{
+            Intent intent = new Intent(this, ArtistProfileActivity.class);
+            intent.putExtra("artistId", String.valueOf(historyInfo.data.artistDetail.get(0)._id));
+            startActivity(intent);
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(bookingId != 0){
+        if (bookingId != 0) {
             getDetailsBookService(bookingId);
         }
     }
@@ -273,7 +292,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         task.execute(this.getClass().getName());
     }
 
-    void setData(BookingListInfo historyInfo){
+    void setData(BookingListInfo historyInfo) {
         if (historyInfo.data.bookingType == 2) {
             //bookingType = "2";
             tv_call_type.setText("Out Call");
@@ -288,129 +307,126 @@ public class BookingDetailsActivity extends AppCompatActivity {
         if (!historyInfo.data.artistDetail.get(0).profileImage.isEmpty() && !historyInfo.data.artistDetail.get(0).profileImage.equals("")) {
             Picasso.with(BookingDetailsActivity.this).load(historyInfo.data.artistDetail.get(0).profileImage).placeholder(R.drawable.default_placeholder).
                     fit().into(iv_profile_artist);
-        }else {
+        } else {
             iv_profile_artist.setImageResource(R.drawable.default_placeholder);
         }
 
-        tv_artist_name.setText(historyInfo.data.artistDetail.get(0).userName+"");
+        tv_artist_name.setText(historyInfo.data.artistDetail.get(0).userName + "");
         tv_address.setText(historyInfo.data.location);
 
 
-
-        if(historyInfo.data.bookStatus.equals("0")){
+        if (historyInfo.data.bookStatus.equals("0")) {
             booking_status.setText(R.string.pending);
             ly_map_direction.setVisibility(View.GONE);
             ly_cancel_booking.setVisibility(View.VISIBLE);
             ly_give_review.setVisibility(View.GONE);
-            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_orange_color));
-        }else  if(historyInfo.data.bookStatus.equals("1")){
+            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_orange_color));
+        } else if (historyInfo.data.bookStatus.equals("1")) {
             booking_status.setText(R.string.confirm);
             ly_map_direction.setVisibility(View.GONE);
             ly_cancel_booking.setVisibility(View.GONE);
             ly_give_review.setVisibility(View.GONE);
-            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
-        }else if(historyInfo.data.bookStatus.equals("2")){
+            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_green_color));
+        } else if (historyInfo.data.bookStatus.equals("2")) {
             booking_status.setText("Cancelled");
             ly_cancel_booking.setVisibility(View.GONE);
-            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.red));
+            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.red));
             ly_map_direction.setVisibility(View.GONE);
             ly_give_review.setVisibility(View.GONE);
-        }
-        else if(historyInfo.data.bookStatus.equals("3")){
+        } else if (historyInfo.data.bookStatus.equals("3")) {
             booking_status.setText("Completed");
             ly_cancel_booking.setVisibility(View.GONE);
-            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
+            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_green_color));
             ly_map_direction.setVisibility(View.GONE);
             ly_give_review.setVisibility(View.VISIBLE);
-        }
-        else if(historyInfo.data.bookStatus.equals("5")){
+        } else if (historyInfo.data.bookStatus.equals("5")) {
             ly_map_direction.setVisibility(View.VISIBLE);
             ly_cancel_booking.setVisibility(View.GONE);
             booking_status.setText("In progress");
             ly_give_review.setVisibility(View.GONE);
-            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
+            booking_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_green_color));
         }
 
-        if(historyInfo.data.paymentType == 1){
-            if(historyInfo.data.paymentStatus == 0){
+        if (historyInfo.data.paymentType == 1) {
+            if (historyInfo.data.paymentStatus == 0) {
                 tv_txt_status.setText("Pending");
-                tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_orange_color));
+                tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_orange_color));
                 tv_txt_id.setText("NA");
-            }else {
+            } else {
                 tv_txt_status.setText("Completed");
-                tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
+                tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_green_color));
                 tv_txt_id.setText(historyInfo.data.transjectionId);
             }
 
-            if(historyInfo.data.bookStatus.equals("1") || historyInfo.data.bookStatus.equals("5")){
+            if (historyInfo.data.bookStatus.equals("1") || historyInfo.data.bookStatus.equals("5")) {
                 tv_pay.setVisibility(View.VISIBLE);
-                if(historyInfo.data.paymentStatus == 0){
+                if (historyInfo.data.paymentStatus == 0) {
                     tv_pay.setText("Pay");
                     tv_txt_status.setText("Pending");
-                    tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_orange_color));
+                    tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_orange_color));
                     tv_txt_id.setText("NA");
                     tv_pay.setEnabled(true);
-                }else {
+                } else {
                     tv_pay.setText("Paid");
                     tv_txt_status.setText("Completed");
-                    tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.main_green_color));
+                    tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_green_color));
                     tv_txt_id.setText(historyInfo.data.transjectionId);
                     tv_pay.setEnabled(false);
                     tv_pay.setVisibility(View.GONE);
                 }
-            }else tv_pay.setVisibility(View.GONE);
-        }else {
+            } else tv_pay.setVisibility(View.GONE);
+        } else {
             tv_pay.setVisibility(View.GONE);
         }
 
-        if(!isOutCallType){
+        if (!isOutCallType) {
             ly_map_direction.setVisibility(View.GONE);
         }
 
-        if(historyInfo.data.paymentType == 2){
+        if (historyInfo.data.paymentType == 2) {
             ly_txt_Id.setVisibility(View.GONE);
             ly_txt_status.setVisibility(View.GONE);
             tv_payment_method.setText(R.string.cash);
-        }else{
+        } else {
             ly_txt_Id.setVisibility(View.VISIBLE);
             ly_txt_status.setVisibility(View.VISIBLE);
             tv_payment_method.setText(getString(R.string.card));
         }
 
 
-
-        if(historyInfo.data.discountPrice.equals("")){
+        if (historyInfo.data.discountPrice.equals("")) {
             ly_amount.setVisibility(View.GONE);
             String roundValue = String.format("%.2f", Double.parseDouble(historyInfo.data.totalPrice));
-            tv_new_amount.setText("£"+roundValue+"");
-        }else {
+            tv_new_amount.setText("£" + roundValue + "");
+        } else {
             ly_amount.setVisibility(View.VISIBLE);
-            tv_amount.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this,R.color.red));
-            tv_amount.setText("£"+historyInfo.data.totalPrice+"");
+            tv_amount.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.red));
+            tv_amount.setText("£" + historyInfo.data.totalPrice + "");
             String roundValue = String.format("%.2f", Double.parseDouble(historyInfo.data.discountPrice));
-            tv_new_amount.setText(getString(R.string.pond_symbol)+roundValue+"");
+            tv_new_amount.setText(getString(R.string.pond_symbol) + roundValue + "");
         }
 
-        if(historyInfo.data.voucher.voucherCode == null){
+        if (historyInfo.data.voucher.voucherCode == null) {
             ly_voucher_code.setVisibility(View.GONE);
-        }else {
+        } else {
             ly_voucher_code.setVisibility(View.VISIBLE);
             tv_voucher_code.setText(historyInfo.data.voucher.voucherCode);
-            if(historyInfo.data.voucher.discountType.equals("1")){ // 1 for fix amount
-                tv_discounted_price.setText("-£"+historyInfo.data.voucher.amount);
-            }else if(historyInfo.data.voucher.discountType.equals("2")){// 2 for percentage
-                tv_discounted_price.setText("-"+historyInfo.data.voucher.amount+"%");
+            if (historyInfo.data.voucher.discountType.equals("1")) { // 1 for fix amount
+                tv_discounted_price.setText("-£" + historyInfo.data.voucher.amount);
+            } else if (historyInfo.data.voucher.discountType.equals("2")) {// 2 for percentage
+                tv_discounted_price.setText("-" + historyInfo.data.voucher.amount + "%");
             }
         }
 
         //payment time
-        if(historyInfo.data.paymentType == 1 && historyInfo.data.paymentStatus == 0){ // case of online and payment not pay
+        if (historyInfo.data.paymentType == 1 && historyInfo.data.paymentStatus == 0) { // case of online and payment not pay
             paymentTimer(historyInfo);
         }
 
 
-        if(shouldPopupOpen){
-            askForReviewRating();
+        if (shouldPopupOpen) {
+            //askForReviewRating();
+            bottomSheetDialog();
             shouldPopupOpen = false;
         }
 
@@ -421,7 +437,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));   // This line converts the given date into UTC time zone
         Date dateObj = null;
         try {
-            dateObj = sdf.parse( historyInfo.data.paymentTime);
+            dateObj = sdf.parse(historyInfo.data.paymentTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -446,7 +462,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         String currentDateandTime = sdf2.format(new Date());
         System.out.println(currentDateandTime);/*... this is current date and time we have to compare...*/
 
-        try{
+        try {
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy KK:mm:ss a");
             String str1 = newTime;
@@ -455,26 +471,25 @@ public class BookingDetailsActivity extends AppCompatActivity {
             String str2 = currentDateandTime;
             Date date2 = formatter.parse(str2);
 
-            if (date1.compareTo(date2)<0)
-            {
+            if (date1.compareTo(date2) < 0) {
                 System.out.println("date2 is Greater than date1");
                 setBookingAction("reject");
-            }else {
+            } else {
                 System.out.println("date1 is Greater than date2");
             }
 
-        }catch (ParseException e1){
+        } catch (ParseException e1) {
             e1.printStackTrace();
         }
     }
 
     private void setBookingAction(final String type) {
-        Progress.show(BookingDetailsActivity.this);
+        //Progress.show(BookingDetailsActivity.this);
         Session session = Mualab.getInstance().getSessionManager();
         User user = session.getUser();
 
         if (!ConnectionDetector.isConnected()) {
-            new NoConnectionDialog(BookingDetailsActivity.this,new NoConnectionDialog.Listner() {
+            new NoConnectionDialog(BookingDetailsActivity.this, new NoConnectionDialog.Listner() {
                 @Override
                 public void onNetworkChange(Dialog dialog, boolean isConnected) {
                     if (isConnected) {
@@ -535,27 +550,27 @@ public class BookingDetailsActivity extends AppCompatActivity {
             }
         })
                 .setAuthToken(user.authToken)
-                .setProgress(true)
+                .setProgress(false)
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
         task.execute(this.getClass().getName());
     }
 
     private void askForReviewRating() {
-              BookingReviewRatingDialog.newInstance(historyInfo,new BookingReviewRatingCallback() {
-                @Override
-                public void onSubmitClick(String rating, String comment ,String type) {
-                    bookingReviewRating(artistId,bookingId,comment,rating,type);
-                }
+        BookingReviewRatingDialog.newInstance(historyInfo, new BookingReviewRatingCallback() {
+            @Override
+            public void onSubmitClick(String rating, String comment, String type) {
+                bookingReviewRating(artistId, bookingId, comment, rating, type);
+            }
 
-                @Override
-                public void onReportThisClick() {
-                    MyToast.getInstance(BookingDetailsActivity.this).showSmallMessage(getString(R.string.under_development));
-                }
-            }).show(getSupportFragmentManager());
+            @Override
+            public void onReportThisClick() {
+                MyToast.getInstance(BookingDetailsActivity.this).showSmallMessage(getString(R.string.under_development));
+            }
+        }).show(getSupportFragmentManager());
     }
 
-    private void bookingReviewRating(final int artistId , final int  bookingId,
-                                     final String reviewByUser, final String rating,final String type) {
+    private void bookingReviewRating(final int artistId, final int bookingId,
+                                     final String reviewByUser, final String rating, final String type) {
         Progress.show(BookingDetailsActivity.this);
         Session session = Mualab.getInstance().getSessionManager();
         User user = session.getUser();
@@ -566,7 +581,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
                 public void onNetworkChange(Dialog dialog, boolean isConnected) {
                     if (isConnected) {
                         dialog.dismiss();
-                        bookingReviewRating(artistId,bookingId,reviewByUser,rating,type);
+                        bookingReviewRating(artistId, bookingId, reviewByUser, rating, type);
                     }
                 }
             }).show();
@@ -592,6 +607,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
 
                     if (status.equals("success")) {
                         getDetailsBookService(bookingId);
+                        MyToast.getInstance(BookingDetailsActivity.this).showDasuAlert("Review Submitted Successfully");
                     } else {
                         MyToast.getInstance(BookingDetailsActivity.this).showDasuAlert(message);
                     }
@@ -620,6 +636,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
         task.execute(this.getClass().getName());
     }
+
     public String giveDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -635,18 +652,90 @@ public class BookingDetailsActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(bookingId != 0){
-              String  notificationType =  intent.getStringExtra("notificationType");
-              String  notifyId =  intent.getStringExtra("notifyId");//userId
-              String  title =  intent.getStringExtra("title");
+            if (bookingId != 0) {
+                String notificationType = intent.getStringExtra("notificationType");
+                String notifyId = intent.getStringExtra("notifyId");//userId
+                String title = intent.getStringExtra("title");
 
-              if(notificationType.equals("5")){// open Popupcase
-                  shouldPopupOpen = true;
-              }
-              getDetailsBookService(bookingId);
+                if (notificationType.equals("5")) {// open Popupcase
+                    shouldPopupOpen = true;
+                }
+                getDetailsBookService(bookingId);
 
             }
         }
     };
 
+    private void bottomSheetDialog() {
+       final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(this,R.style.CustomBottomSheetDialogTheme);
+
+        final View bottomSheetLayout = getLayoutInflater().inflate(R.layout.rating_bottom_sheet, null);
+      //  bottomSheetLayout.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        EditText etComments  = bottomSheetLayout.findViewById(R.id.etComments);
+        RatingBar userRating = bottomSheetLayout.findViewById(R.id.userRating);
+        TextView tv_msg = bottomSheetLayout.findViewById(R.id.tv_msg);
+        LinearLayout llAddComment = bottomSheetLayout.findViewById(R.id.llAddComment);
+        ImageView ivDropDown = bottomSheetLayout.findViewById(R.id.ivDropDown);
+
+
+
+        llAddComment.setOnClickListener(v -> {
+            if(etComments.getVisibility() == View.GONE){
+                ivDropDown.setRotation(0);
+                etComments.setVisibility(View.VISIBLE);
+            }else {
+                ivDropDown.setRotation(180);
+                etComments.setVisibility(View.GONE);
+            }
+        });
+
+        if(!historyInfo.data.reviewByUser.equals("") && !historyInfo.data.userRating.equals("")){
+            etComments.setText(historyInfo.data.reviewByUser);
+            etComments.setSelection(historyInfo.data.reviewByUser.length());
+            userRating.setRating(Float.parseFloat(historyInfo.data.userRating));
+        }
+
+        String artistUserName = " @"+historyInfo.data.artistDetail.get(0).userName+" 's";
+        String msg = getString(R.string.your_service_has_been_completed_nplease_review_how_satisfied_you_are_nwith)
+                .concat(artistUserName).concat(" service");
+
+        int startingPosition = msg.indexOf(artistUserName);
+        int endingPosition = startingPosition + artistUserName.length();
+
+        Spannable msgSpan = new SpannableString(msg);
+        msgSpan.setSpan(new ForegroundColorSpan(Color.BLACK), startingPosition, endingPosition, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        msgSpan.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startingPosition, endingPosition, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv_msg.setText(msgSpan);
+
+
+        (bottomSheetLayout.findViewById(R.id.btnSumbit)).setOnClickListener(view -> {
+            if (verifyInputs((int) userRating.getRating(), etComments.getText().toString().trim())) {
+
+                String type = "insert";
+                if(!historyInfo.data.reviewByUser.equals("") && !historyInfo.data.userRating.equals("0")){
+                    type = "edit";
+                }
+                mBottomSheetDialog.dismiss();
+                bookingReviewRating(artistId, bookingId, etComments.getText().toString().trim(),
+                        String.valueOf(userRating.getRating()), type);
+            }
+        });
+
+        mBottomSheetDialog.setContentView(bottomSheetLayout);
+        BottomSheetBehavior mBehavior = BottomSheetBehavior.from((View) bottomSheetLayout.getParent());
+       // mBehavior.setPeekHeight(160);
+        mBottomSheetDialog.show();
+    }
+
+    private boolean verifyInputs(int rating, String comments) {
+        if (rating == 0) {
+            MyToast.getInstance(BookingDetailsActivity.this).showDasuAlert(getString(R.string.give_rating));
+            return false;
+        } else if (comments.isEmpty()) {
+            MyToast.getInstance(BookingDetailsActivity.this).showDasuAlert(getString(R.string.give_review));
+            return false;
+        } else return true;
+    }
 }

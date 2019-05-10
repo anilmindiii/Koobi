@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.daimajia.swipe.SwipeLayout;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
@@ -100,17 +103,17 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    private void setAnimation(View viewToAnimate, int position)
+    /*private void setAnimation(View viewToAnimate, int position)
     {
         // If the bound view wasn't previously displayed on screen, it's animated
 
         if (position > lastPosition)
         {
-            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_out);
             viewToAnimate.startAnimation(animation);
             lastPosition = position;
         }
-    }
+    }*/
 
     @Override
     public int getItemViewType(int position) {
@@ -136,6 +139,8 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         RelativeLayout rlChatHistory,llHistoryDate,rlMsgCount;
         View vBottom,viewTop;
         ImageView ivMuteIcon;
+        LinearLayout ly_delete_chat;
+        SwipeLayout swipeLayout;
 
         SingleChatViewHolder(View itemView) {
             super(itemView);
@@ -152,8 +157,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewTop = itemView.findViewById(R.id.viewTop);
             rlMsgCount = itemView.findViewById(R.id.rlMsgCount);
             ivMuteIcon = itemView.findViewById(R.id.ivMuteIcon);
+            ly_delete_chat = itemView.findViewById(R.id.ly_delete_chat);
+            swipeLayout = itemView.findViewById(R.id.sample1);
 
             rlChatHistory.setOnClickListener(this);
+
+            swipeLayout.setRightSwipeEnabled(false);
+            swipeLayout.setLeftSwipeEnabled(false);
 
         }
 
@@ -176,9 +186,6 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Picasso.with(context).load(chat.profilePic).placeholder(R.drawable.default_placeholder).
                         into(ivProfile);
             }
-
-
-
             String num = String.valueOf(chat.unreadMessage);
 
             if (chat.unreadMessage!=0){
@@ -232,7 +239,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }catch (Exception e){
                 e.printStackTrace();
             }
-            setAnimation(itemView, position);
+            //setAnimation(itemView, position);
+
+            ly_delete_chat.setOnClickListener(v->{
+                Toast.makeText(context, "ly_delete_chat", Toast.LENGTH_SHORT).show();
+                swipeLayout.close(true,true);
+            });
         }
 
         @Override
@@ -264,8 +276,10 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView tvUname,tvMsg,tvChatType,tvUnReadCount,tvTime,tvHistoryTime;
         CircleImageView ivProfile;
         RelativeLayout rlChatHistory,llHistoryDate,rlMsgCount;
+        LinearLayout ly_delete_broadcast;
         View vBottom,viewTop;
         ImageView ivMuteIcon;
+        SwipeLayout swipeLayout;
 
         BroadCastChatViewHolder(View itemView) {
             super(itemView);
@@ -282,7 +296,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             rlMsgCount = itemView.findViewById(R.id.rlMsgCount);
             ivMuteIcon = itemView.findViewById(R.id.ivMuteIcon);
             rlChatHistory = itemView.findViewById(R.id.rlChatHistory);
+            ly_delete_broadcast = itemView.findViewById(R.id.ly_delete_broadcast);
+            swipeLayout = itemView.findViewById(R.id.sample1);
             rlChatHistory.setOnClickListener(this);
+
+            swipeLayout.setRightSwipeEnabled(false);
+            swipeLayout.setLeftSwipeEnabled(false);
 
         }
 
@@ -364,7 +383,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 e.printStackTrace();
             }
 
-            setAnimation(itemView, position);
+            ly_delete_broadcast.setOnClickListener(v -> {
+                Toast.makeText(context, "broadcast", Toast.LENGTH_SHORT).show();
+                swipeLayout.close(true,true);
+            });
+
+           // setAnimation(itemView, position);
         }
 
         @Override
@@ -392,6 +416,8 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         RelativeLayout rlChatHistory,llHistoryDate,rlMsgCount;
         View vBottom,viewTop;
         ImageView ivMuteIcon;
+        LinearLayout ly_delete_group_chat;
+        SwipeLayout swipeLayout;
 
         GroupChatViewHolder(View itemView) {
             super(itemView);
@@ -408,7 +434,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             rlMsgCount = itemView.findViewById(R.id.rlMsgCount);
             ivMuteIcon = itemView.findViewById(R.id.ivMuteIcon);
             rlChatHistory = itemView.findViewById(R.id.rlChatHistory);
+            ly_delete_group_chat = itemView.findViewById(R.id.ly_delete_group_chat);
+            swipeLayout = itemView.findViewById(R.id.sample1);
+
             rlChatHistory.setOnClickListener(this);
+            swipeLayout.setRightSwipeEnabled(false);
+            swipeLayout.setLeftSwipeEnabled(false);
 
         }
 
@@ -498,7 +529,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }catch (Exception e){
                 e.printStackTrace();
             }
-            setAnimation(itemView, position);
+           // setAnimation(itemView, position);
+
+            ly_delete_group_chat.setOnClickListener(v ->{
+                Toast.makeText(context, "ly_delete_group_chat", Toast.LENGTH_SHORT).show();
+                swipeLayout.close(true,true);
+            });
         }
 
         @Override

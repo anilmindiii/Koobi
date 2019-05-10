@@ -45,9 +45,18 @@ public class JoinNewGroupAdapter extends RecyclerView.Adapter<JoinNewGroupAdapte
         viewHolder.tvMsg.setText(groups.groupDescription);
         viewHolder.tvMemberCount.setText((groups.member.size())+" Members");
 
+        if(groups.isPending){
+            viewHolder.rlPending.setVisibility(View.VISIBLE);
+            viewHolder.rlJoin.setVisibility(View.GONE);
+        }else {
+            viewHolder.rlJoin.setVisibility(View.VISIBLE);
+            viewHolder.rlPending.setVisibility(View.GONE);
+
+        }
+
         if(!groups.groupImg.equals(""))
         Picasso.with(mContext)
-                .load(groups.groupImg).placeholder(R.drawable.group_defoult_icon).into(viewHolder.ivProfile);
+                .load(groups.groupImg).fit().placeholder(R.drawable.group_defoult_icon).into(viewHolder.ivProfile);
 
 
 
@@ -70,7 +79,7 @@ public class JoinNewGroupAdapter extends RecyclerView.Adapter<JoinNewGroupAdapte
                 FirebaseDatabase.getInstance().getReference().child("group_request").
                         child(adminId).push().setValue(requestInfo);
 
-                arrayList.remove(i);
+                arrayList.get(i).isPending = true;
                 notifyDataSetChanged();
             }
         });
@@ -85,7 +94,7 @@ public class JoinNewGroupAdapter extends RecyclerView.Adapter<JoinNewGroupAdapte
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvUname,tvMsg,tvMemberCount;
         ImageView ivProfile;
-        RelativeLayout rlJoin;
+        RelativeLayout rlJoin,rlPending;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,6 +104,7 @@ public class JoinNewGroupAdapter extends RecyclerView.Adapter<JoinNewGroupAdapte
             tvMemberCount = itemView.findViewById(R.id.tvMemberCount);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             rlJoin = itemView.findViewById(R.id.rlJoin);
+            rlPending = itemView.findViewById(R.id.rlPending);
 
             itemView.setOnClickListener(this);
         }

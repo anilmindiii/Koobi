@@ -14,6 +14,11 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.androidnetworking.error.ANError;
+import com.mualab.org.user.R;
+import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.dialogs.ServerErrorDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +33,31 @@ import java.util.HashMap;
  */
 
 public class Helper {
+
+    public static void parseError(Context context, ANError anError) {
+        if (anError.getErrorBody() != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(anError.getErrorBody());
+                String status = jsonObject.getString("status");
+                String message = "";
+                if (jsonObject.has("message")) message = jsonObject.getString("message");
+
+                if (message.equals("Invalid Auth Token")) {
+                    Mualab.getInstance().getSessionManager().logout();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                MyToast.getInstance(context).showDasuAlert(context.getString(R.string.msg_some_thing_went_wrong));
+            }
+        } else if (anError.getErrorDetail() != null && anError.getErrorDetail().equalsIgnoreCase("connectionError")) {
+            try {
+                new ServerErrorDialog(context).show();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
     public  String error_Messages(VolleyError error) {
         NetworkResponse networkResponse = error.networkResponse;
         String errorMessage = "Something went wrong.";

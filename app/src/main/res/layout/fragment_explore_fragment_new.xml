@@ -95,11 +95,13 @@
                 <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/iv_title"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="240dp"
                     android:src="@drawable/gallery_placeholder"
                     android:layout_marginLeft="7dp"
                     android:layout_marginRight="7dp"
-                    app:siRadius="5dp"
+                    app:siRadius="6dp"
+                    app:siBorderColor="@color/white"
+                    app:siBorderWidth="0dp"
                     android:scaleType="centerCrop"
                     android:visibility="gone"/>
 
@@ -147,9 +149,8 @@
                 </RelativeLayout>
             </LinearLayout>
 
-
-
         </android.support.v4.widget.NestedScrollView>
+
     </LinearLayout>
 
     <TextView
@@ -174,7 +175,6 @@
         android:id="@+id/ll_loadingBox"
         android:gravity="center"/>
 
-
     <RelativeLayout
         android:id="@+id/bottomSheetLayout"
         android:layout_width="match_parent"
@@ -188,8 +188,6 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:orientation="vertical">
-
-
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -218,7 +216,7 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:layout_centerVertical="true"
-                    android:text="Filter Service Tag"
+                    android:text="Filter Booking Tag"
                     android:textColor="@color/text_color"
                     android:textSize="18sp" />
 
@@ -324,7 +322,7 @@
                         android:id="@+id/lyArtistService"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         android:gravity="center_vertical"
                         android:minHeight="40dp"
                         android:orientation="vertical">
@@ -603,7 +601,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
                         android:layout_marginRight="5dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:weightSum="2">
@@ -611,18 +609,18 @@
 
                         <android.support.v7.widget.AppCompatRatingBar
                             android:id="@+id/rating"
-                            style="@style/RatingBarGray"
+                            style="@style/RatingBarGraycustom"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="12dp"
-                            android:layout_marginTop="5dp"
+                            android:minHeight="32dp"
+                            android:layout_marginLeft="-48dp"
                             android:layout_marginBottom="5dp"
                             android:gravity="center"
                             android:isIndicator="false"
                             android:numStars="5"
                             android:rating="0"
-                            android:scaleX="1.2"
-                            android:scaleY="1.2"
+                            android:scaleX=".6"
+                            android:scaleY=".6"
                             android:stepSize="1"
                             android:layout_weight="1"/>
 
@@ -631,8 +629,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="-38dp"
                             android:ellipsize="end"
                             android:fontFamily="@font/nunito_regular"
                             android:maxLines="1"
@@ -642,6 +639,7 @@
                             android:layout_weight="1"/>
 
                     </LinearLayout>
+
 
 
                     <TextView
@@ -665,7 +663,6 @@
 
 
     </RelativeLayout>
-
 
 </RelativeLayout>
 

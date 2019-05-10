@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_left"
-        app:cardBackgroundColor="@color/custom_alert_bg_color"
+        app:cardBackgroundColor="@color/dark_gray"
         app:cardCornerRadius="10dp"
         android:layout_marginTop="50dp">
 

@@ -6,13 +6,131 @@
     android:layout_height="match_parent"
     tools:context="com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity">
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0.8dp">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tv_social"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Social"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textSize="18sp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimary"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_batch_social_count"
+                        android:layout_toRightOf="@+id/tv_social"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:backgroundTint="@color/red"
+                        android:text="0"
+                        android:gravity="center"
+                        android:textSize="8dp"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="2dp"
+                        android:visibility="gone"
+                        android:background="@drawable/circle_selected_bg" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_booking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Booking"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/nunito_regular"
+                    android:textSize="18sp"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_batch_booking_count"
+                    android:layout_toRightOf="@+id/tv_booking"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:backgroundTint="@color/red"
+                    android:text="0"
+                    android:gravity="center"
+                    android:textSize="8dp"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="2dp"
+                    android:visibility="gone"
+                    android:background="@drawable/circle_selected_bg" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:background="@color/gray2"
+                android:layout_alignParentBottom="true"/>
+
+            <View
+                android:id="@+id/view_div_social"
+                android:layout_width="180dp"
+                android:layout_height="1.5dp"
+                android:background="@color/colorPrimary"
+                android:layout_alignParentBottom="true"/>
+
+            <View
+                android:id="@+id/view_div_bookibg"
+                android:layout_width="180dp"
+                android:layout_height="1.5dp"
+                android:background="@color/colorPrimary"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/cv_header"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
+    <include layout="@layout/layout_inner_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/tv_no_notifications"
@@ -23,6 +141,5 @@
         android:layout_centerInParent="true"
         android:textColor="@color/black"
         android:visibility="gone" />
-
 
 </RelativeLayout>

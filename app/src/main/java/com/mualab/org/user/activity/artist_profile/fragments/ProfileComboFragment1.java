@@ -96,12 +96,12 @@ public class ProfileComboFragment1 extends BaseFragment implements View.OnClickL
                 break;
 
             case R.id.llCertificate:
-                if (bizProfileActivity != null) {
+                if (bizProfileActivity != null && !bizProfileActivity.profileData.certificateCount.equalsIgnoreCase("0")) {
                     Intent intent = new Intent(bizProfileActivity, CertificateActivity.class);
                     intent.putExtra("artistId", bizProfileActivity.artistId);
                     intent.putExtra("from", "profile");
                     startActivity(intent);
-                }
+                }else MyToast.getInstance(getBaseActivity()).showDasuAlert("No qualifications added");
                 break;
         }
     }

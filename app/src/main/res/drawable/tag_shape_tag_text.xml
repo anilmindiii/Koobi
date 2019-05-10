@@ -17,6 +17,6 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <corners android:radius="@dimen/dp2" />
-    <solid android:color="@color/dark_transperant" />
+    <corners android:radius="@dimen/dp4" />
+    <solid android:color="@color/dark_transperant2" />
 </shape>

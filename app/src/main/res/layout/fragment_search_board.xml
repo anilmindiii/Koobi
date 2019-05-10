@@ -113,7 +113,7 @@
                 android:theme="@style/SearchViewTheme"
                 app:iconifiedByDefault="false"
                 app:queryBackground="@color/white"
-                app:queryHint="Search..."
+                app:queryHint="Search"
 
 
                 app:searchIcon="@null" />

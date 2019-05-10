@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mualab.org.user.R;
@@ -40,9 +41,11 @@ public class ExploreServiceAdapter extends RecyclerView.Adapter<ExploreServiceAd
         viewHolder.category_name.setText(dataBean.title);
 
         if(dataBean.isCheckedCategory){
-            viewHolder.cv_category.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.colorPrimary));
+            viewHolder.category_name.setTextColor(ContextCompat.getColor(mContext,R.color.white));
+            viewHolder.cv_category.setBackgroundResource(R.drawable.rounded_border_gray_selected);
         }else {
-            viewHolder.cv_category.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.gray_hard));
+            viewHolder.category_name.setTextColor(ContextCompat.getColor(mContext,R.color.black));
+            viewHolder.cv_category.setBackgroundResource(R.drawable.rounded_border_dark_unselected);
 
         }
     }
@@ -54,7 +57,7 @@ public class ExploreServiceAdapter extends RecyclerView.Adapter<ExploreServiceAd
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView category_name;
-        CardView cv_category;
+        RelativeLayout cv_category;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.explore.adapter.SearchAdapter;
 import com.mualab.org.user.application.Mualab;
 
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.listener.RecyclerViewScrollListener;
@@ -99,6 +101,12 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
         rvTopSearch.setLayoutManager(lm);
         adapter = new SearchAdapter(mContext, list, this);
         rvTopSearch.setAdapter(adapter);
+
+        CustomeClick.getmInctance().setListner((inputContentInfo, flags, opts) -> {
+          /*  rvTopSearch.scrollToPosition(0);
+            lm.scrollToPositionWithOffset(0, 0);
+            lm.smoothScrollToPosition(rvTopSearch, null, 0);*/
+        });
 
         endlesScrollListener = new RecyclerViewScrollListener(lm) {
             @Override
@@ -217,25 +225,26 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
                                 JSONObject jsonObject = array.getJSONObject(i);
                                 ExSearchTag searchTag = gson.fromJson(String.valueOf(jsonObject), ExSearchTag.class);
 
-                                switch (exSearchType){
+                                if(searchTag.uniTxt != null &&!searchTag.uniTxt.equals("") || exSearchType.equals("hasTag")){
+                                    switch (exSearchType){
 
-                                    case "top":
-                                        searchTag.type = 0;
-                                        searchTag.title = searchTag.uniTxt;
-                                        searchTag.desc = searchTag.postCount+" post";
-                                        break;
+                                        case "top":
+                                            searchTag.type = 0;
+                                            searchTag.title = searchTag.uniTxt;
+                                            searchTag.desc = searchTag.postCount+" post";
+                                            break;
 
-                                    case "people":
-                                        searchTag.type = 1;
-                                        searchTag.title = searchTag.uniTxt;
-                                        searchTag.desc = searchTag.postCount+" post";
-                                        break;
+                                        case "people":
+                                            searchTag.type = 1;
+                                            searchTag.title = searchTag.uniTxt;
+                                            searchTag.desc = searchTag.postCount+" post";
+                                            break;
 
-                                    case "hasTag":
-                                        searchTag.type = 2;
-                                        searchTag.title = "#"+searchTag.tag;
-                                        searchTag.desc = searchTag.postCount+" public post";
-                                        break;
+                                        case "hasTag":
+                                            searchTag.type = 2;
+                                            searchTag.title = "#"+searchTag.tag;
+                                            searchTag.desc = searchTag.postCount+" public post";
+                                            break;
 
                                   /*  case "serviceTag":
                                         searchTag.type = 3;
@@ -244,14 +253,16 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
                                         searchTag.desc = searchTag.postCount+" public post";
                                         break;*/
 
-                                    case "place":
-                                        searchTag.type = 4;
-                                        searchTag.title = searchTag.uniTxt;
-                                        searchTag.desc = "0 Public post";
-                                        break;
+                                        case "place":
+                                            searchTag.type = 4;
+                                            searchTag.title = searchTag.uniTxt;
+                                            searchTag.desc = "0 Public post";
+                                            break;
+                                    }
+
+                                    list.add(searchTag);
                                 }
 
-                                list.add(searchTag);
                             }
                         }
                         adapter.notifyDataSetChanged();

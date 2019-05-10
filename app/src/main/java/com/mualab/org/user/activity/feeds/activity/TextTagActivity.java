@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -35,13 +36,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class TextTagActivity extends AppCompatActivity {
 
     private RecyclerViewScrollListener endlesScrollListener;
-    private RecyclerView mRecyclerViewSomeOneToBeTagged,rcv_horizontal;
+    private RecyclerView rcv_horizontal;
     private String searchKeyword = "";
     private List<ExSearchTag> list;
     private List<ExSearchTag> tempTxtTagHoriList;
@@ -49,10 +51,10 @@ public class TextTagActivity extends AppCompatActivity {
     private ProgressBar progress_bar;
     private TextView tv_msg,tv_done;
     private TextTagAdapter textTagAdapter;
-    private String allIds;
     private TagTextHorizontalAdapter adapter;
     private String uniTextUserNames = "";
     private View view_div;
+    private Map<String,ExSearchTag> idsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,43 +68,35 @@ public class TextTagActivity extends AppCompatActivity {
         tv_msg = findViewById(R.id.tv_msg);
         tv_done = findViewById(R.id.tv_done);
         view_div = findViewById(R.id.view_div);
-        mRecyclerViewSomeOneToBeTagged = findViewById(R.id.rv_some_one_to_be_tagged);
+        RecyclerView mRecyclerViewSomeOneToBeTagged = findViewById(R.id.rv_some_one_to_be_tagged);
         list = new ArrayList<>();
         tempTxtTagHoriList = new ArrayList<>();
+        idsMap = new HashMap<>();
 
-        findViewById(R.id.iv_back_press).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
+        findViewById(R.id.iv_back_press).setOnClickListener(v -> onBackPressed());
+
+        tv_done.setOnClickListener(v -> {
+            for(int i=0;i<tempTxtTagHoriList.size();i++){
+                uniTextUserNames = " @"+ tempTxtTagHoriList.get(i).uniTxt + uniTextUserNames;
             }
-        });
 
-        tv_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for(int i=0;i<tempTxtTagHoriList.size();i++){
-                    uniTextUserNames = " @"+ tempTxtTagHoriList.get(i).uniTxt + uniTextUserNames;
-                }
-
-
-                if (uniTextUserNames.startsWith(" @")) {
-                    uniTextUserNames = uniTextUserNames.startsWith(" @") ? uniTextUserNames.substring(1) : uniTextUserNames;
-                }
-
-                Intent intent = new Intent();
-                intent.putExtra("allIds",allIds);
-                intent.putExtra("caption",uniTextUserNames);
-                intent.putExtra("tagCount",tempTxtTagHoriList.size());
-                intent.putExtra("tempTxtTagHoriList", (Serializable) tempTxtTagHoriList);
-                setResult(RESULT_OK,intent);
-                finish();
+            if (uniTextUserNames.startsWith(" @")) {
+                uniTextUserNames = uniTextUserNames.startsWith(" @") ? uniTextUserNames.substring(1) : uniTextUserNames;
             }
+
+            Intent intent = new Intent();
+            intent.putExtra("idsMap", (Serializable) idsMap);
+            intent.putExtra("caption",uniTextUserNames);
+            intent.putExtra("tagCount",tempTxtTagHoriList.size());
+            intent.putExtra("tempTxtTagHoriList", (Serializable) tempTxtTagHoriList);
+            setResult(RESULT_OK,intent);
+            finish();
         });
 
 
         if(getIntent().getSerializableExtra("tempTxtTagHoriList") != null){
             tempTxtTagHoriList = (List<ExSearchTag>) getIntent().getSerializableExtra("tempTxtTagHoriList");
-            allIds = getIntent().getStringExtra("allIds");
+            idsMap = (Map<String, ExSearchTag>) getIntent().getSerializableExtra("idsMap");
             InnerAdapter(tempTxtTagHoriList);
             // adapter.notifyDataSetChanged();
             if(tempTxtTagHoriList.size() != 0){
@@ -113,19 +107,14 @@ public class TextTagActivity extends AppCompatActivity {
 
         searchview.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
                 String newText = s.toString().trim();
-
                 searchKeyword = newText;
                 list.clear();
                 textTagAdapter.notifyDataSetChanged();
@@ -135,26 +124,17 @@ public class TextTagActivity extends AppCompatActivity {
             }
         });
 
-        textTagAdapter = new TextTagAdapter(TextTagActivity.this, list, new TextTagAdapter.getValue() {
-            @Override
-            public void getTextTagData(String ids, List<ExSearchTag> tempTxtTagList) {
-                allIds = ids;
-                tempTxtTagHoriList = tempTxtTagList;
+        textTagAdapter = new TextTagAdapter(idsMap,TextTagActivity.this, list, (tempTxtTagList) -> {
+           // allIds = ids;
+            tempTxtTagHoriList = tempTxtTagList;
 
-                InnerAdapter(tempTxtTagHoriList);
+            InnerAdapter(tempTxtTagHoriList);
 
-                if(tempTxtTagHoriList.size() != 0){
-                    view_div.setVisibility(View.VISIBLE);
-                }else view_div.setVisibility(View.GONE);
+            if(tempTxtTagHoriList.size() != 0){
+                view_div.setVisibility(View.VISIBLE);
+            }else view_div.setVisibility(View.GONE);
 
-            }
-        },tempTxtTagHoriList,allIds);
-
-
-
-
-
-
+        },tempTxtTagHoriList);
 
         mRecyclerViewSomeOneToBeTagged.setAdapter(textTagAdapter);
         LinearLayoutManager lm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -183,35 +163,19 @@ public class TextTagActivity extends AppCompatActivity {
     }
 
     private void InnerAdapter(List<ExSearchTag> tempTxtTagList) {
-        adapter = new TagTextHorizontalAdapter(tempTxtTagList, TextTagActivity.this, new TagTextHorizontalAdapter.onDataChangeListner() {
-            @Override
-            public void dataChange(ExSearchTag searchTag) {
+        adapter = new TagTextHorizontalAdapter(idsMap,tempTxtTagList, TextTagActivity.this, searchTag -> {
 
-
-                for(int i =0;i<list.size();i++){
-                    if(list.get(i).id == searchTag.id){
-                        list.get(i).isCheck = false;
-                    }
+            for(int i =0;i<list.size();i++){
+                if(list.get(i).id == searchTag.id){
+                    list.get(i).isCheck = false;
                 }
-
-                String id = String.valueOf(searchTag.id);
-
-                if (allIds.contains(id + ",")) {
-                    allIds = allIds.replace((id + ","), "");
-                }
-                else if (allIds.contains("," + id)) {
-                    allIds = allIds.replace(("," + id), "");
-                }
-                else if (allIds.contains(id+"")) {
-                    allIds = allIds.replace(id+"", "");
-                }
-
-                textTagAdapter.notifyDataSetChanged();
-
-                if(tempTxtTagHoriList.size() != 0){
-                    view_div.setVisibility(View.VISIBLE);
-                }else view_div.setVisibility(View.GONE);
             }
+
+            textTagAdapter.notifyDataSetChanged();
+
+            if(tempTxtTagHoriList.size() != 0){
+                view_div.setVisibility(View.VISIBLE);
+            }else view_div.setVisibility(View.GONE);
         });
 
 
@@ -267,24 +231,18 @@ public class TextTagActivity extends AppCompatActivity {
 
                                 list.add(searchTag);
                             }
-
                         }
-
                         textTagAdapter.notifyDataSetChanged();
 
-                        List<String> itemsIds = Arrays.asList(allIds.split("\\s*,\\s*"));
-
-                        for(int i =0;i<itemsIds.size();i++){
+                        for (String entry : idsMap.keySet()) {
+                            ExSearchTag value = idsMap.get(entry);
 
                             for(int j =0;j<list.size();j++){
                                 String id = String.valueOf(list.get(j).id);
-
-                                if(id.equals(itemsIds.get(i))){
+                                if(id.equals(entry)){
                                     list.get(j).isCheck = true;
                                 }
-
-                            }
-                        }
+                            } }
 
                         textTagAdapter.notifyDataSetChanged();
                     }

@@ -7,6 +7,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tvDateStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/nunito_semibold"
+        android:gravity="end|center_vertical"
+        android:maxLines="1"
+        android:text="New"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +77,6 @@
             android:text="12/12/19"
             android:textColor="@color/gray"
             android:textSize="11sp" />
-
 
         <View
             android:layout_below="@+id/ly_details"

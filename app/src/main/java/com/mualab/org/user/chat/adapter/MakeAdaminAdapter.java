@@ -47,7 +47,7 @@ public class MakeAdaminAdapter extends RecyclerView.Adapter<MakeAdaminAdapter.Vi
         holder.tvUserName.setText(member.userName);
 
         if (member.profilePic!=null && !member.profilePic.equals("")){
-            Picasso.with(mContext).load(member.profilePic).
+            Picasso.with(mContext).load(member.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfilePic);
         }
     }

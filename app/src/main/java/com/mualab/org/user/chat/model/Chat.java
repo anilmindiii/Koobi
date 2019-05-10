@@ -10,4 +10,5 @@ public class Chat implements Serializable {
     public String senderId;
     public Object timestamp;
     public String banner_date;
+    public boolean isLongSelected;
 }

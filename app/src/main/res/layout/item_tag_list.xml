@@ -36,7 +36,7 @@
             android:id="@+id/ivRemoveTag"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:padding="5dp"
+            android:padding="8dp"
             android:src="@drawable/cancel_ico"
             android:tint="@color/white"
             android:layout_gravity="center_vertical"

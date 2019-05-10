@@ -720,7 +720,8 @@ public class RjRefreshLayout extends ViewGroup implements NestedScrollingParent,
                 break;
             case REFRESH_COMPLETE:
                 if (mHeaderListener != null) {
-                    mHeaderListener.onRefreshComplete(scrollY, headerHeight, isRefreshSuccess);
+                    mHeaderListener.onRefreshCancel(scrollY, headerHeight);
+                    //mHeaderListener.onRefreshComplete(scrollY, headerHeight, isRefreshSuccess);
                 }
                 break;
             case REFRESH_CANCEL:

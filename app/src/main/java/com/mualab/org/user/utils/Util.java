@@ -172,11 +172,11 @@ public class Util {
         return date;
     }
 
-    public  void goToOnlineStatus(Context context,String status) {
+    public static void goToOnlineStatus(Context context,String status) {
         Session session = new Session(context);
         User user = session.getUser();
 
-        if(session.getUser() != null){
+        if(session.getUser().authToken != null){
 
             DatabaseReference mDatabase  = FirebaseDatabase.getInstance().getReference();
             FirebaseUser firebaseUser = new FirebaseUser();

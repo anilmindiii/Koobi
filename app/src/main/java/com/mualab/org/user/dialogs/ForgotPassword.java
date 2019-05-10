@@ -59,7 +59,7 @@ public class ForgotPassword implements View.OnClickListener{
                 //ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
 
                 //for enter from bottom
-                ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
+            //    ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
 
         });

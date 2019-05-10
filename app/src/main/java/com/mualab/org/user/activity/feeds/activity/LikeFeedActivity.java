@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 public class LikeFeedActivity extends AppCompatActivity {
-
-
     private EditText ed_search;
     private ProgressBar progress_bar;
     private LinearLayout ll_loadingBox;
@@ -60,9 +58,6 @@ public class LikeFeedActivity extends AppCompatActivity {
         initView();
     }
 
-
-
-
     public void initView(){
         TextView tvHeaderTitle =findViewById(R.id.tvHeaderTitle);
         ImageView ivHeaderBack =findViewById(R.id.btnBack);
@@ -73,6 +68,9 @@ public class LikeFeedActivity extends AppCompatActivity {
         ivAppIcon.setVisibility(View.GONE);
         ibtnChat.setVisibility(View.GONE);
         tvHeaderTitle.setText(R.string.likes);
+
+        TextView tv_batch_count = findViewById(R.id.tv_batch_count);
+        tv_batch_count.setVisibility(View.GONE);
 
         findViewById(R.id.btnBack)
                 .setOnClickListener(new View.OnClickListener() {

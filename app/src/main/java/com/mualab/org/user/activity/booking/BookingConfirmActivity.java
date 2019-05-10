@@ -12,7 +12,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -23,19 +22,15 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.Views.SweetAlert.SweetAlertDialog;
-import com.mualab.org.user.activity.artist_profile.activity.ArtistServiceDetailsActivity;
 import com.mualab.org.user.activity.authentication.AddAddressActivity;
 import com.mualab.org.user.activity.booking.adapter.ConfirmServiceAdapter;
 import com.mualab.org.user.activity.booking.model.BookingConfirmInfo;
 import com.mualab.org.user.activity.booking.model.VoucherInfo;
 import com.mualab.org.user.activity.main.MainActivity;
-import com.mualab.org.user.activity.payment.AllCardActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
@@ -76,15 +71,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private TextView tv_address, tv_apply, tv_new_amount, tv_amount;
     private EditText ed_vouchar_code;
     private ImageView iv_voucher_arrow;
-    double total_price = 0.0;
+    private double total_price = 0.0;
     private FrameLayout ly_amount;
-    JSONObject voucher;
+    private JSONObject voucher;
     private String bookingType = "1", paymentType = "2", discountPrice = "", bookingDate = "", bookingTime = "";
     private AppCompatButton btn_confirm_booking, brn_add_more;
     private ImageView iv_location_arrow, iv_voucher_cancel;
     private TextView tv_call_type;
     private String radius = "", artistLat = "0.0", artistLng = "0.0";
-    private Double commisiion;
+    private Double commisiion = 0.0;
+    //private SoftKeyboard softKeyboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,7 +252,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 tv_amount.setVisibility(View.GONE);
                 discountPrice = String.valueOf(total_price);
                 tv_apply.setText("Apply");
-                tv_apply.setTextColor(ContextCompat.getColor(BookingConfirmActivity.this,R.color.colorPrimaryDark));
+                tv_apply.setTextColor(ContextCompat.getColor(BookingConfirmActivity.this, R.color.colorPrimaryDark));
             }
         });
 
@@ -274,7 +270,27 @@ public class BookingConfirmActivity extends AppCompatActivity {
             }
         });
 
+        /*ScrollView main_scroll_view = findViewById(R.id.main_scroll_view);
+        RelativeLayout mainLayout = findViewById(R.id.main_layout); // You must use your root layout
+        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
 
+        softKeyboard = new SoftKeyboard(mainLayout, im);
+        softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged()
+        {
+
+            @Override
+            public void onSoftKeyboardHide()
+            {
+                // Code here
+            }
+
+            @Override
+            public void onSoftKeyboardShow()
+            {
+                main_scroll_view.fullScroll(ScrollView.FOCUS_DOWN);
+                main_scroll_view.smoothScrollTo(0, 0);
+            }
+        });*/
 
         GetServices(artistId);
         startTimer();
@@ -449,9 +465,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                         VoucherInfo.DataBean voucherItem = gson.fromJson(data.toString(), VoucherInfo.DataBean.class);
 
-
                         tv_apply.setText("Applied");
-                        tv_apply.setTextColor(ContextCompat.getColor(BookingConfirmActivity.this,R.color.green_color));
+                        tv_apply.setTextColor(ContextCompat.getColor(BookingConfirmActivity.this, R.color.green_color));
 
                         ly_amount.setVisibility(View.VISIBLE);
                         tv_amount.setVisibility(View.VISIBLE);
@@ -636,30 +651,38 @@ public class BookingConfirmActivity extends AppCompatActivity {
         params.put("bookingDate", bookingDate);
         params.put("bookingTime", bookingTime);
         params.put("location", tv_address.getText().toString().trim());
-        params.put("totalPrice", String.valueOf(total_price));
-        params.put("discountPrice", discountPrice);
+
         params.put("paymentType", paymentType);
         params.put("bookingType", bookingType);
 
         params.put("latitude", artistLat);
         params.put("longitude", artistLng);
-        if(voucher != null){
+
+        if (bookingList.size() != 0){
+            params.put("bookingSetting", String.valueOf(bookingList.get(0).bookingSetting));
+        }else   params.put("bookingSetting", String.valueOf(0));
+
+        if (voucher != null) {
             params.put("voucher", voucher.toString());
         }
         double v;
-        if(!discountPrice.equals("")){
-            double disAmoungt = Double.parseDouble(discountPrice);
-             v = ((disAmoungt * commisiion)/100);
+        v = ((total_price * commisiion) / 100);
 
-        }else {
+        if (!discountPrice.equals("")) {
+            double disCountPrice = Double.parseDouble(discountPrice);
+            discountPrice = String.valueOf((disCountPrice + v));
+            discountPrice = String.format("%.2f", Double.parseDouble(discountPrice));
+        } else {
             // total amount
-             v = ((total_price * commisiion)/100);
+            total_price = (total_price + v);
+            total_price = Double.parseDouble(String.format("%.2f", total_price));
         }
+
+        params.put("discountPrice", discountPrice);
+        params.put("totalPrice", String.valueOf(total_price));
 
         params.put("adminAmount", String.valueOf(v));
         params.put("adminCommision", String.valueOf(commisiion));
-
-
 
      /*   Map<String, JSONObject> paramsobj = new HashMap<>();
         paramsobj.put("voucher", voucher);*/
@@ -671,12 +694,13 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
                     String message = js.getString("message");
+                    String bookingId = js.getString("bookingId");
 
                     if (status.equals("success")) {
                         SweetAlertDialog dialog = new SweetAlertDialog(BookingConfirmActivity.this, SweetAlertDialog.SUCCESS_TYPE);
 
                         dialog.setTitleText("Congratulation!");
-                        dialog.setContentText("Your booking request has been successfully sent to artist.");
+                        dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. Click here to see the status of your booking");
                         dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
@@ -685,7 +709,13 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 showLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 showLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(showLogin);
+
+                                showLogin = new Intent(BookingConfirmActivity.this, BookingDetailsActivity.class);
+                                showLogin.putExtra("bookingId", Integer.parseInt(bookingId));
+                                showLogin.putExtra("shouldPopupOpen", false);
+                                startActivity(showLogin);
                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
                             }
                         });
 
@@ -777,6 +807,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //softKeyboard.unRegisterSoftKeyboardCallback();
         stopTimer();
     }
 
@@ -934,8 +965,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     String message = js.getString("message");
                     String adminCommision = js.getString("adminCommision");
                     if (status.equals("success")) {
-                        if(!adminCommision.equals("")){
-                             commisiion = Double.valueOf(adminCommision);
+                        if (!adminCommision.equals("")) {
+                            commisiion = Double.valueOf(adminCommision);
                         }
                     } else {
                         MyToast.getInstance(BookingConfirmActivity.this).showDasuAlert(message);

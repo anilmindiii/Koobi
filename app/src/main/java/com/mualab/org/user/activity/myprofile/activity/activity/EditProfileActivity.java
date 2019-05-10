@@ -739,7 +739,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }*/
 
     public void getPermissionAndPicImage() {
-
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -785,12 +784,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     e.printStackTrace();
                 }
 
-            } else if (requestCode == 1003) {
-                Country country = (Country) data.getSerializableExtra("country");
-                tvCountryCode.setText(String.format("+%s", country.phone_code));
-                countryCode = "+" + country.phone_code;
-
-
             } else if (requestCode == 1001) {
                 address = (Address) data.getSerializableExtra("address");
                 if (address != null) {
@@ -815,6 +808,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     imgVerifyStatus.setVisibility(View.GONE);
                 }
+            }
+
+            if (requestCode == 1003) {
+                Country country = (Country) data.getSerializableExtra("country");
+                tvCountryCode.setText(String.format("+%s", country.phone_code));
+                countryCode = "+" + country.phone_code;
 
 
             }

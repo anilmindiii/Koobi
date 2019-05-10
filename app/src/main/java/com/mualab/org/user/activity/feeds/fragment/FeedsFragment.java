@@ -43,6 +43,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -64,6 +65,7 @@ import com.mualab.org.user.activity.base.BaseListner;
 import com.mualab.org.user.activity.camera.CameraActivity;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedPostActivity;
+import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.FeedAdapter;
 import com.mualab.org.user.activity.feeds.adapter.HashtagAdapter;
@@ -99,6 +101,7 @@ import com.mualab.org.user.utils.WrapContentLinearLayoutManager;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.media.ImageVideoUtil;
 import com.mualab.org.user.utils.media.PathUtil;
+import com.viven.imagezoom.ImageZoomHelper;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -230,7 +233,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         LiveUserInfo me = new LiveUserInfo();
         if (Mualab.currentUser != null) {
             me.id = Mualab.currentUser.id;
-            me.userName = "Your story";
+            me.userName = "Your Story";
             me.profileImage = Mualab.currentUser.profileImage;
             me.storyCount = 0;
             liveUserList.add(me);
@@ -250,6 +253,14 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            View decorView = getActivity().getWindow().getDecorView();
+            // Hide the status bar.
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
         View rootView = inflater.inflate(R.layout.fragment_feeds, container, false);
         initView(rootView);
         return rootView;
@@ -268,7 +279,6 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         appbar = view.findViewById(R.id.appbar);
         ImageView ivUserProfile = getActivity().findViewById(R.id.ivUserProfile);
         ivUserProfile.setVisibility(View.GONE);
-
 
         addRemoveHeader();
         liveUserAdapter = new LiveUserAdapter(mContext, liveUserList, this);
@@ -369,6 +379,8 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                 return null;
             }
         });*/
+
+        progress_bar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -536,10 +548,6 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
     private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress,
                                    final String searchText) {
-
-        progress_bar.setVisibility(View.VISIBLE);
-
-
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(mContext, new NoConnectionDialog.Listner() {
                 @Override
@@ -552,8 +560,6 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                 }
             }).show();
         }
-
-
         Map<String, String> params = new HashMap<>();
         params.put("feedType", feedType);
         params.put("search", "");
@@ -568,7 +574,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
             @Override
             public void onResponse(String response, String apiName) {
                 progress_bar.setVisibility(View.GONE);
-                feedAdapter.showHideLoading(false);
+                if (feedAdapter != null) feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -834,7 +840,11 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
     @Override
     public void onFeedClick(Feeds feed, int index, View view) {
-        ArrayList<String> tempList = new ArrayList<>();
+       /* Intent intent = new Intent(mContext, FeedSingleActivity.class);
+        intent.putExtra("feedId",String.valueOf(feed._id));
+        mContext.startActivity(intent);*/
+
+        /*ArrayList<String> tempList = new ArrayList<>();
         for(int i=0; i<feed.feedData.size(); i++){
             tempList.add(feed.feedData.get(i).feedPost);
         }
@@ -843,7 +853,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         intent.putExtra("imageArray", tempList);
         intent.putExtra("startIndex", index);
         startActivity(intent);
-
+*/
         // publicationQuickView(feed, index);
         //showLargeImage(feed, index);
         /* */
@@ -1135,7 +1145,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                     if (CURRENT_FEED_STATE == Constant.FEED_STATE) {
                         int pos = data.getIntExtra("feedPosition", 0);
                         Feeds feed = (Feeds) data.getSerializableExtra("feed");
-                        feeds.get(pos).commentCount = data.getIntExtra("commentCount", 0);
+                        feeds.get(pos).commentCount = feed.commentCount;
                         feedAdapter.notifyItemChanged(pos);
                     }
                     break;
@@ -1301,6 +1311,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
         @Override
         public boolean onDoubleTapEvent(MotionEvent e) {
+
             return true;
         }
 

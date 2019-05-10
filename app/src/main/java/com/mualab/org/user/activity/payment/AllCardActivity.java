@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -53,7 +54,7 @@ import java.util.Map;
 public class AllCardActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityAllCardBinding binding;
     private CardAdapter cardAdapter;
-    private TextView btnAdd;
+    ImageView ic_add_chat;
     private StripeSaveCardResponce cardResponce;
     String from = "",token = "",amount = "";
     int bookingId = 0;
@@ -71,10 +72,11 @@ public class AllCardActivity extends AppCompatActivity implements View.OnClickLi
             amount = getIntent().getStringExtra("amount");
         }
 
-        btnAdd = findViewById(R.id.btnAdd);
+        ic_add_chat = findViewById(R.id.ic_add_chat);
+        ic_add_chat.setVisibility(View.VISIBLE);
 
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
-        tvHeaderTitle.setText(getString(R.string.payment));
+        tvHeaderTitle.setText(getString(R.string.payment_info));
         findViewById(R.id.btnBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +87,7 @@ public class AllCardActivity extends AppCompatActivity implements View.OnClickLi
         //cardAdapter = new CardAdapter();
         //recyclerView.setAdapter(cardAdapter);
 
-        btnAdd.setOnClickListener(this);
+        ic_add_chat.setOnClickListener(this);
         binding.btnCOnfirmBooking.setOnClickListener(this);
         showCreditCardInfo();
     }
@@ -111,7 +113,7 @@ public class AllCardActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnAdd:
+            case R.id.ic_add_chat:
                 Intent intent = new Intent(this, PaymentCheckOutActivity.class);
                 intent.putExtra("from",from);
                 intent.putExtra("bookingId",bookingId);

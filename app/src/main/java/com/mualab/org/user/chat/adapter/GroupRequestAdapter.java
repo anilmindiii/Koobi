@@ -55,7 +55,7 @@ public class GroupRequestAdapter extends RecyclerView.Adapter<GroupRequestAdapte
 
         if (!customData.firebaseUser.profilePic.equals(""))
             Picasso.with(mContext)
-                    .load(customData.firebaseUser.profilePic)
+                    .load(customData.firebaseUser.profilePic).fit()
                     .placeholder(R.drawable.default_placeholder)
                     .into(viewHolder.ivProfile);
 
@@ -89,7 +89,7 @@ public class GroupRequestAdapter extends RecyclerView.Adapter<GroupRequestAdapte
                 FirebaseDatabase.getInstance().getReference().child("group_request").
                         child(myId).child(customData.firebaseUser.authToken).removeValue();
 
-                FirebaseDatabase.getInstance().getReference().child("my_group_request")
+                FirebaseDatabase.getInstance().getReference().child("my_group_request")//pending
                         .child(String.valueOf(customData.firebaseUser.uId)).child(customData.groups.groupId).removeValue();
 
                 //add data  to member table...

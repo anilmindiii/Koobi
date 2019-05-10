@@ -12,6 +12,7 @@
     <color name="custom_alert_bg_color">#B34c3549</color>
     <color name="black">#000</color>
     <color name="dark_transperant">#66000000</color>
+    <color name="red_color">#FF0000</color>
 
     <!-- VIDEO TRIMMER -->
     <color name="background_video_color">#2f3031</color>

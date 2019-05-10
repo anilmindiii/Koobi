@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -56,6 +57,7 @@ import com.ablanco.zoomy.Zoomy;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.tag_module.callback.RemoveDuplicateTagListener;
 import com.mualab.org.user.activity.tag_module.models.TagViewBean;
+import com.viven.imagezoom.ImageZoomHelper;
 
 
 import java.util.ArrayList;
@@ -81,6 +83,7 @@ public class InstaTag extends RelativeLayout {
     private Drawable mCarrotLeftDrawable;
     private Drawable mCarrotRightDrawable;
     private Drawable mCarrotBottomDrawable;
+    ImageZoomHelper imageZoomHelper;
 
    /* @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -251,11 +254,9 @@ public class InstaTag extends RelativeLayout {
         if (inflater != null) {
             inflater.inflate(R.layout.tag_root, this);
         }
-
         mRoot = findViewById(R.id.tag_root);
         mTagImageView = findViewById(R.id.tag_image_view);
-        Zoomy.Builder builder = new Zoomy.Builder((Activity) context).target(mRoot);
-        builder.register();
+
         mLikeImage = new ImageView(context);
         int likeColor, likeSrc, likeSize;
         if (obtainStyledAttributes != null) {
@@ -282,7 +283,19 @@ public class InstaTag extends RelativeLayout {
         setLayoutParamsToBeSetForRootLayout(mContext);
         mRoot.post(mSetRootHeightWidth);
         mTagImageView.setOnTouchListener(mTagOnTouchListener);
+
+        /*Zoomy.Builder builde1r = new Zoomy.Builder((Activity) mContext).target(mTagImageView);
+        builde1r.register();*/
+
+         imageZoomHelper = new ImageZoomHelper((Activity) mContext);
+
+        ImageZoomHelper.setViewZoomable(findViewById(R.id.tag_image_view));
         mGestureDetector = new GestureDetector(mRoot.getContext(), mTagGestureListener);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return  super.dispatchTouchEvent(ev);
     }
 
     private void initView(AttributeSet attrs, Context context) {
@@ -636,7 +649,7 @@ public class InstaTag extends RelativeLayout {
         final LinearLayout textContainer = tagView.findViewById(R.id.tag_text_container);
 
         tagTextView.setText(tagText);
-        setColorForTag(tagView);
+        //setColorForTag(tagView);
 
         //Todo hs
         /*layoutParams.setMargins(x - tagTextView.length() * 8,

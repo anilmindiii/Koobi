@@ -23,4 +23,5 @@ public class Comment {
     public String profileImage;
     public String timeElapsed;
     public String type;
+    public boolean isSelected;
 }

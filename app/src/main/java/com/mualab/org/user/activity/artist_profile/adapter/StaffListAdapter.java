@@ -112,10 +112,12 @@ public class StaffListAdapter extends RecyclerView.Adapter<StaffListAdapter.View
         String user_name="";
 
         final Map<String, String> params = new HashMap<>();
-        if(userName.toString().startsWith("@")){
+       /* if(userName.toString().startsWith("@")){
             user_name = userName.toString().replace("@","");
             params.put("userName", user_name+"");
-        }else params.put("userName", userName+"");
+        }else params.put("userName", userName+"");*/
+
+        params.put("userName", userName + "");
         new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {

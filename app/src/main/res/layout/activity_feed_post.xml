@@ -39,19 +39,47 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
+
+
                     <com.github.siyamed.shapeimageview.RoundedImageView
                         android:id="@+id/iv_selectedImage"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
                         android:layout_gravity="center"
-                        android:scaleType="centerCrop"
                         android:src="@drawable/gallery_placeholder"
                         android:transitionName="profile"
                         app:siBorderColor="@color/colorPrimary"
                         app:siBorderWidth="1dp"
                         app:siRadius="3dp"
-                        app:siSquare="true"
                         tools:ignore="UnusedAttribute" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_placeholder"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:background="@color/transparent"
+                        android:visibility="gone">
+
+                        <com.github.siyamed.shapeimageview.RoundedImageView
+                            android:id="@+id/iv_isVideo"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/play_bg_icon"
+                            android:transitionName="profile"
+                            android:layout_centerInParent="true"
+                            app:siBorderColor="@color/colorPrimary"
+                            app:siBorderWidth="1dp"
+                            app:siRadius="3dp"
+                            android:padding="5dp"
+                            tools:ignore="UnusedAttribute" />
+
+
+                    </RelativeLayout>
+
+
+
+
 
                     <TextView
                         android:id="@+id/tvMediaSize"
@@ -198,6 +226,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:gravity="center|left"
+                        android:maxLines="2"
                         android:text="@string/add_location"
                         android:textColor="@color/dark_gray" />
 
@@ -319,15 +348,15 @@
 
                 <RelativeLayout
                     android:id="@+id/tv_post"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:gravity="center">
 
                     <Button
                         android:id="@+id/btn_post"
-                        android:layout_width="100dp"
-                        android:layout_height="30dp"
+                        android:layout_width="90dp"
+                        android:layout_height="35dp"
                         android:layout_centerInParent="true"
                         android:background="@drawable/rounded_primary_bg"
                         android:fontFamily="@font/nunito_regular"

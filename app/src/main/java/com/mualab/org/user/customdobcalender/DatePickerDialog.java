@@ -218,7 +218,7 @@ public class DatePickerDialog extends Dialog implements OnClickListener,
     }
 
     /**
-     * The callback used to indicate the user is done filling in the date.
+     * The callback used to indicate the user is i filling in the date.
      */
     public interface OnDateSetListener {
         /**

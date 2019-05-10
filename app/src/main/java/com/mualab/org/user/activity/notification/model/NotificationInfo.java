@@ -25,6 +25,8 @@ public class NotificationInfo {
         public String redirectId;
         public String timeElapsed;
         public String message;
-        
+        public String dateStaus;
+        public boolean shouldShowLable;
+
     }
 }

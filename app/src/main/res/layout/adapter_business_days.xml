@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:id="@+id/rlParent"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp"
+        >
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_gravity="top|center"
+            android:background="@null"
+            android:button="@drawable/checkbox_selector" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="34dp"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:layout_marginLeft="5dp"
+            >
+
+            <TextView
+                android:id="@+id/tv_dayName"
+                android:layout_width="90dp"
+                android:layout_height="32dp"
+                style="@style/TextView"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:text="@string/wednesday"/>
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="2dp"
+                android:layout_marginLeft="5dp"
+                android:minHeight="50dp"
+                android:visibility="gone"
+                android:listSelector="@android:color/transparent"
+                />
+
+            <TextView
+                android:id="@+id/tv_workingStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center"
+                style="@style/TextView"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/gray"
+                android:text="@string/not_working"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_addTimeSlot"
+        android:layout_width="35dp"
+        android:layout_alignParentEnd="true"
+        android:layout_height="35dp"
+        android:gravity="center"
+        android:background="@color/white"
+        >
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:tint="@color/colorPrimary"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_add"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray2"/>
+
+</RelativeLayout>

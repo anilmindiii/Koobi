@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -118,8 +119,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private ArrayList<Services.ArtistDetailBean.BusineshoursBean> busineshoursList;
     private boolean isEditService;
     private CalendarAdapter adapter;
-    private boolean isFromSearchBoard;
+    private boolean isFromSearchBoard, isFromServiceTag, isToastShow;
     private String bookingDate;
+
+    private BottomSheetDialog mBizTypeDialog;
+    private BottomSheetDialog mCatTypeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +150,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         isFromSearchBoard = i.getBooleanExtra("isFromSearchBoard", false);
         bookingDate = i.getStringExtra("bookingDate");
 
+        isFromServiceTag = i.getBooleanExtra("isFromServiceTag", false);
+        staff = i.getIntExtra("staffId", 0);
+
+        if (isFromServiceTag)
+            if (Integer.parseInt(artistId) == staff) {
+                staff = 0;
+            }
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         tvHeaderTitle.setText(getString(R.string.booking));
 
@@ -171,8 +182,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         tvArtistName = findViewById(R.id.tvArtistName);
         ly_biz_type = findViewById(R.id.ly_biz_type);
         ly_category = findViewById(R.id.ly_category);
-        rcv_biz_type = findViewById(R.id.rcv_biz_type);
-        rcv_category_type = findViewById(R.id.rcv_category_type);
+        //rcv_biz_type = findViewById(R.id.rcv_biz_type);
+        //rcv_category_type = findViewById(R.id.rcv_category_type);
         rcv_incall = findViewById(R.id.rcv_incall);
         tv_bizType = findViewById(R.id.tv_bizType);
         tv_category = findViewById(R.id.tv_category);
@@ -184,6 +195,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         lyArtistTopView = findViewById(R.id.lyArtistTopView);
         ly_main = findViewById(R.id.ly_main);
         AppCompatButton btnToday = findViewById(R.id.btnToday);
+
+        setBizTypeDialog(false);
+        setCatTypeDialog(false);
 
         cv_ly_category = findViewById(R.id.cv_ly_category);
         cv_ly_biz_type = findViewById(R.id.cv_ly_biz_type);
@@ -234,7 +248,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         ly_biz_type.setOnClickListener(this);
         ly_category.setOnClickListener(this);
         main_scroll_view.setOnClickListener(this);
-       // ly_outcall.setOnClickListener(this); // here is comments for new changes
+        // ly_outcall.setOnClickListener(this); // here is comments for new changes
         btnCOnfirmBooking.setOnClickListener(this);
         lyArtistTopView.setOnClickListener(this);
         ly_main.setOnClickListener(this);
@@ -249,10 +263,10 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         timeSlotAdapter = new TimeSlotAdapter(this, timeSlotList, new TimeSlotAdapter.getSelectTime() {
             @Override
             public void getSelectedTimeSlot(TimeSlotInfo slotInfo) {
-                if(slotInfo != null){
+                if (slotInfo != null) {
                     startTime = slotInfo.timeSlots;
-                }else startTime = "";
-
+                } else startTime = "";
+                viewCalendar.collapse(5);
             }
         });
 
@@ -297,12 +311,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
         if (isFromSearchBoard) {
             if (bookingDate != null)
-                if (!bookingDate.equals("")){
+                if (!bookingDate.equals("")) {
                     selectedDate = Helper.formateDateFromstring("dd/MM/yyyy", "yyyy-MM-dd", bookingDate);//2019-02-01
                     setDate(bookingDate);
                     viewCalendar.expand(5);
                 }
         }
+        viewCalendar.expand(5);
 
 
         apiForGetAllServices();
@@ -364,24 +379,32 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     if (services.artistServices.size() == 1) {
                         return;
                     }
-                if (cv_ly_biz_type.getVisibility() == View.VISIBLE) {
+                /*if (cv_ly_biz_type.getVisibility() == View.VISIBLE) {
                     cv_ly_biz_type.setVisibility(View.GONE);
                 } else {
                     cv_ly_biz_type.setVisibility(View.VISIBLE);
                 }
 
-                cv_ly_category.setVisibility(View.GONE);
+                cv_ly_category.setVisibility(View.GONE);*/
+                if (!tv_bizType.getText().toString().equals("No business type available"))
+                    setBizTypeDialog(true);
+
                 break;
 
             case R.id.ly_category:
                 if (isOpenCategory) {
-                    if (cv_ly_category.getVisibility() == View.VISIBLE) {
+                    /*if (cv_ly_category.getVisibility() == View.VISIBLE) {
                         cv_ly_category.setVisibility(View.GONE);
                     } else {
                         cv_ly_category.setVisibility(View.VISIBLE);
                     }
 
-                    cv_ly_biz_type.setVisibility(View.GONE);
+                    cv_ly_biz_type.setVisibility(View.GONE);*/
+
+                    if (!tv_category.getText().toString().equals("No category available"))
+                        setCatTypeDialog(true);
+
+
                 }
                 break;
 
@@ -657,8 +680,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         main_scroll_view.fullScroll(ScrollView.FOCUS_UP);
         main_scroll_view.smoothScrollTo(0, 0);
 
-        if(isFromSearchBoard){
-            if(callType.equals("Out Call")){
+        if (isFromSearchBoard) {
+            if (callType.equals("Out Call")) {
                 ly_outcall.setEnabled(false);
             }
         }
@@ -857,7 +880,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         adapterBizType = new CustomStringAdapter("bizType", services, null, BookingActivity.this, new CustomStringAdapter.onClickItem() {
                             @Override
                             public void onclick(final Services.ArtistServicesBean artistServicesBean, int adapterPosition) {
-
+                                if (mBizTypeDialog != null) mBizTypeDialog.dismiss();
 
                                 if (!checkPositon.equals(artistServicesBean.serviceName)) {
                                     childPos = 0;
@@ -975,6 +998,31 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                                             }
                                         }
 
+                                        if (!isOutCallSelected) {
+                                            if (inCallList.size() == 0) {
+                                                main_scroll_view.setVisibility(View.GONE);
+                                                tv_msg.setVisibility(View.VISIBLE);
+                                                if (isFromServiceTag) { // this is the case when service is not avail when comes from service tag
+                                                    if (!isToastShow) {
+                                                        MyToast.getInstance(BookingActivity.this).showDasuAlert("Service is no longer available. Please select another service for booking");
+                                                        isToastShow = true;
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if (outCallList.size() == 0) {
+                                                main_scroll_view.setVisibility(View.GONE);
+                                                tv_msg.setVisibility(View.VISIBLE);
+                                                if (isFromServiceTag) { // this is the case when service is not avail when comes from service tag
+                                                    if (!isToastShow) {
+                                                        MyToast.getInstance(BookingActivity.this).showDasuAlert("Service is no longer available. Please select another service for booking");
+                                                        isToastShow = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+
                                         if (isOutCallSelected) {
                                             inCallAdapter = new IncallOutCallAdapter(BookingActivity.this, outCallList, "Out Call", true);
                                         } else {
@@ -1006,6 +1054,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                                 adapterCategory = new CustomStringAdapter("categoryType", null, artistServicesBean.subServies, BookingActivity.this, null, new CustomStringAdapter.onClickItemCategory() {
                                     @Override
                                     public void onclick(Services.ArtistServicesBean.SubServiesBean bean, int position) {
+                                        if (mCatTypeDialog != null) mCatTypeDialog.dismiss();
+
                                         subServiceId = bean.subServiceId;
                                         resetAllServices();
                                         childPos = position;
@@ -1080,10 +1130,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                                 }
                             }
                         } else if (services.artistServices.size() == 0) {
-                            tv_bizType.setText("No business type available");
-                            tv_category.setText("No category available");
+                            tv_bizType.setText("No Business Type Available");
+                            tv_category.setText("No Category Available");
                             iv_down_arrow_bizType.setVisibility(View.GONE);
                             iv_down_arrow_category.setVisibility(View.GONE);
+
+                            main_scroll_view.setVisibility(View.GONE);
+                            tv_msg.setVisibility(View.VISIBLE);
                         }
 
                        /* if (services.artistServices.size() != 0) {
@@ -1104,7 +1157,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         if (mainServiceName.equals("")) {
                             adapterBizType.clickItem();
                         } else {
-                           if(childId != 0)
+                            if (childId != 0)
                                 if (!isAlreadybooked) {
                                     apiForserviceStaff(String.valueOf(childId));
                                 } else if (isEditService) {
@@ -1224,7 +1277,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                                     staffInfoBeanList.remove(i);
                                 }
                             }
+                        }
 
+                        for (int i = 0; i < staffInfoBeanList.size(); i++) {
                             if (Mualab.currentUser != null) {
                                 if (staffInfoBeanList.get(i).staffId == Mualab.currentUser.id) {
                                     staffInfoBeanList.remove(i);
@@ -1242,12 +1297,26 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                             }
                             //staff = 0;
                         } else {
-                            staffInfoBeanList.get(0).isSelected = true;
+                            if (staffInfoBeanList.size() < 0)
+                                staffInfoBeanList.get(0).isSelected = true;
                         }
 
-                        staffAdapter.notifyDataSetChanged();
+                        if (staffInfoBeanList.size() == 1) {
+                            ly_staff_main.setVisibility(View.GONE);
+                        }else {
+                            staffAdapter.notifyDataSetChanged();
+                        }
 
-                        apiForstaffSlot(String.valueOf(0));
+
+
+
+                        if (isFromServiceTag) {
+                            apiForstaffSlot(String.valueOf(staff));
+                        } else {
+                            apiForstaffSlot(String.valueOf(0));
+                        }
+
+
                         ly_time_slot_main.setVisibility(View.VISIBLE);
                     }
 
@@ -1571,6 +1640,35 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 .setProgress(true)
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
         task.execute(this.getClass().getName());
+    }
+    /*.......................................................................................*/
+
+    private void setBizTypeDialog(boolean isShow) {
+        if (mBizTypeDialog == null) {
+            mBizTypeDialog = new BottomSheetDialog(BookingActivity.this, R.style.CustomBottomSheetDialogTheme);
+            View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
+            TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
+            tvTitle.setText(getString(R.string.business_types));
+            rcv_biz_type = sheetView.findViewById(R.id.recyclerView);
+            mBizTypeDialog.setContentView(sheetView);
+        }
+
+        if (isShow)
+            mBizTypeDialog.show();
+    }
+
+    private void setCatTypeDialog(boolean isShow) {
+        if (mCatTypeDialog == null) {
+            mCatTypeDialog = new BottomSheetDialog(BookingActivity.this, R.style.CustomBottomSheetDialogTheme);
+            View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
+            TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
+            tvTitle.setText(getString(R.string.category_types));
+            rcv_category_type = sheetView.findViewById(R.id.recyclerView);
+            mCatTypeDialog.setContentView(sheetView);
+        }
+
+        if (isShow)
+            mCatTypeDialog.show();
     }
 
 

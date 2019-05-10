@@ -3,6 +3,10 @@ package com.mualab.org.user.application;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -43,7 +47,7 @@ import java.util.Timer;
  **/
 
 @SuppressLint("Registered")
-public class Mualab extends Application  implements LifeCycleDelegateListner{
+public class Mualab extends Application  implements LifecycleObserver {
 
     public static final String TAG = Mualab.class.getSimpleName();
     public static boolean IS_DEBUG_MODE = BuildConfig.DEBUG;
@@ -93,23 +97,16 @@ public class Mualab extends Application  implements LifeCycleDelegateListner{
         myTimer = new Timer();
         getMyTimer();
 
+        AndroidNetworking.initialize(this);
+
         utility = new Util(getApplicationContext());
 
         // ref = FirebaseDatabase.getInstance().getReference();
 
-        AndroidNetworking.initialize(getApplicationContext());
-        if (BuildConfig.DEBUG) {
-            AndroidNetworking.enableLogging(HttpLoggingInterceptor.Level.BODY);
-        }
-
-        AppLifeCycle lifecycleHandler = new AppLifeCycle(this);
-        registerLifecycle(lifecycleHandler);
+        // register observer
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
 
-    private void registerLifecycle (AppLifeCycle lifecycleHandler){
-        registerActivityLifecycleCallbacks(lifecycleHandler);
-        registerComponentCallbacks(lifecycleHandler);
-    }
 
 
 
@@ -208,17 +205,18 @@ public class Mualab extends Application  implements LifeCycleDelegateListner{
         editor.apply();
     }
 
-    @Override
-    public void onAppBackgrounded() {
-        utility.goToOnlineStatus(mInstance, Constant.offline);
-
-    }
-
-    @Override
-    public void onAppForegrounded() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onMoveToForeground() {
+        // app moved to foreground
         utility.goToOnlineStatus(mInstance, Constant.online);
-
     }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onMoveToBackground() {
+        // app moved to background
+        utility.goToOnlineStatus(mInstance, Constant.offline);
+    }
+
 
     private enum Keys {
         TAGGED_PHOTOS("TAGGED_PHOTOS");

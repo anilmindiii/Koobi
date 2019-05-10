@@ -3,10 +3,12 @@ package com.mualab.org.user.chat.brodcasting;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -15,8 +17,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
@@ -52,9 +56,14 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.dialogs.BottomSheetPopup;
+import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
+import com.mualab.org.user.activity.dialogs.model.Item;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.chat.ChatActivity;
 import com.mualab.org.user.chat.adapter.ChattingAdapter;
 import com.mualab.org.user.chat.adapter.MenuAdapter;
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.listner.DateTimeScrollListner;
 import com.mualab.org.user.chat.model.BlockUser;
 import com.mualab.org.user.chat.model.Chat;
@@ -112,6 +121,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     private Map<Integer, String> memberToken;
     private String allMemberName = "";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +145,18 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         init();
         getBroadCastDetails();
         getBroadcastChatList();
+
+        CustomeClick.getmInctance().setListner(new CustomeClick.ExploreSearchListener() {
+            @Override
+            public void onTextChange(InputContentInfoCompat inputContentInfo, int flags, Bundle opts) {
+                ImageQuickUri = inputContentInfo.getLinkUri();
+                if(ImageQuickUri != null){
+                    sendQuickImage(ImageQuickUri, queryName(getContentResolver(),ImageQuickUri));
+                }
+
+            }
+
+        });
 
     }
 
@@ -395,6 +417,40 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onLongPress(int position) {
+        ArrayList<Item> items;
+        Item item  = new Item();
+        item.id = "1";
+        item.name = "Delete";
+        item.icon = R.drawable.ic_delete;
+
+        items = new ArrayList<>();
+        items.add(item);
+
+        chatList.get(position).isLongSelected = true;
+        chattingAdapter.notifyDataSetChanged();
+
+        BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
+            @Override
+            public void onClickItem(int pos) {
+                //askDelete();
+                MyToast.getInstance(BroadCastChatActivity.this).showDasuAlert(getString(R.string.under_development));
+            }
+
+            @Override
+            public void onDialogDismiss() {
+                chatList.get(position).isLongSelected = false;
+                chattingAdapter.notifyDataSetChanged();
+            }
+        }).show(getSupportFragmentManager());
+    }
+
+    @Override
+    public void onPress(int position) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         if (SystemClock.elapsedRealtime() - mLastClickTime < 500) {
             return;
@@ -405,7 +461,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         switch (v.getId()) {
             case R.id.llDots:
                 KeyboardUtil.hideKeyboard(et_for_sendTxt, BroadCastChatActivity.this);
-                int[] location = new int[2];
+                /*int[] location = new int[2];
                 llDots.getLocationOnScreen(location);
 
                 //Initialize the Point with x, and y positions
@@ -414,9 +470,39 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                 display.getSize(p);
                 p.x = location[0];
                 p.y = location[1];
+              */
                 arrayList.clear();
 
-                popupForUser(p);
+                arrayList.add("Broadcast Details");
+                arrayList.add("Add Recipients");
+                arrayList.add("Remove Recipients");
+
+                NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
+                    String data = arrayList.get(pos);
+                    switch (data) {
+                        case "Broadcast Details":
+                            Intent intent = new Intent(BroadCastChatActivity.this, BroadcastDetails.class);
+                            intent.putExtra("broadcastId", broadcastId);
+                            startActivityForResult(intent, Constant.REQUEST_CODE_CHOOSE);
+                            break;
+
+                        case "Add Recipients":
+                            intent = new Intent(BroadCastChatActivity.this, AddMemberToBrodcastActivity.class);
+                            intent.putExtra("broadcastId", broadcastId);
+                            startActivityForResult(intent, Constant.REQUEST_CODE_CHOOSE);
+                            break;
+
+                        case "Remove Recipients":
+                            intent = new Intent(BroadCastChatActivity.this, RemoveBroadcastMemberActivity.class);
+                            intent.putExtra("broadcastId", broadcastId);
+                            startActivityForResult(intent, Constant.REQUEST_CODE_CHOOSE);
+
+                            break;
+
+
+                    }
+                }).show(getSupportFragmentManager());
+
 
                 break;
 
@@ -634,8 +720,6 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             arrayList.add("Add Recipients");
             arrayList.add("Remove Recipients");
 
-
-
             popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
             RecyclerView recycler_view = layout.findViewById(R.id.recycler_view);
 
@@ -728,7 +812,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+              //  ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -783,7 +867,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+           //     ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -836,7 +920,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                         imageUri = getImageUri(BroadCastChatActivity.this, bitmap);
                     }
                     ImageQuickUri = imageUri;
-                    sendQuickImage(imageUri);
+                    sendQuickImage(imageUri, queryName(getContentResolver(),imageUri));
 
 
                     //  CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.RECTANGLE).setAspectRatio(400, 400).start(this);
@@ -849,6 +933,23 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         }
     }
 
+    private String queryName(ContentResolver resolver, Uri uri) {
+        if(uri.toString().contains("http")){
+            if(uri.toString().contains("gif")){
+                return ".gif";
+            }else  return ".jpg";
+        }
+
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
+    }
+
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         //inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -856,12 +957,14 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         return Uri.parse(path);
     }
 
-    private void sendQuickImage(Uri imageUri) {
-        Progress.show(BroadCastChatActivity.this);
+    private void sendQuickImage(Uri imageUri,String fileName) {
 
 
-        if (ImageQuickUri != null)
-            uploadImage(ImageQuickUri);
+
+        if (ImageQuickUri != null){
+            uploadImage(ImageQuickUri,fileName);
+
+        }
     }
 
 
@@ -927,72 +1030,87 @@ public class BroadCastChatActivity extends AppCompatActivity implements
 
     }
 
-    private void uploadImage(final Uri imageUri) {
+    private void uploadImage(final Uri imageUri,String fileName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
+        StorageReference storageReference = storage.getReference();
+        
         if (imageUri != null) {
-            StorageReference storageReference = storage.getReference();
+            if(fileName.equals("")){
+                fileName = ".jpg";
+            }else if(fileName.contains("gif")){
+                fileName = ".gif";
+            }else {
+                fileName = ".jpg";
+            }
 
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            ref.putFile(imageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Progress.hide(BroadCastChatActivity.this);
-
-                                    // for broadcast table need to update broadcastChat and broadcast from history
-                                    Chat broadcastChat = new Chat();
-                                    broadcastChat.message = uri.toString();
-                                    broadcastChat.timestamp = ServerValue.TIMESTAMP;
-                                    broadcastChat.reciverId = broadcastId;
-                                    broadcastChat.senderId = myUid;
-                                    broadcastChat.messageType = 1;
-                                    broadcastChat.readStatus = 0;
-
-                                    ChatHistory broadcastHistory = new ChatHistory();
-                                    broadcastHistory.favourite = 0;
-                                    broadcastHistory.memberCount = 0;
-                                    broadcastHistory.message = uri.toString();
-                                    broadcastHistory.messageType = 1;
-                                    broadcastHistory.profilePic = "http://koobi.co.uk:3000/front/img/loader.png";
-                                    broadcastHistory.reciverId = broadcastId;
-                                    broadcastHistory.senderId = myUid;
-                                    broadcastHistory.type = "broadcast";
-                                    broadcastHistory.userName = Mualab.currentUser.userName;
-                                    broadcastHistory.timestamp = ServerValue.TIMESTAMP;
-                                    broadcastHistory.unreadMessage = 0;
-
-
-                                    holdKeyForImage = mBroadCastChatRef.child(broadcastId).push().getKey();
-                                    mBroadCastChatRef.child(broadcastId).child(holdKeyForImage).setValue(broadcastChat);
-
-                                    mChatHistoryRef.child(myUid).child(broadcastId).setValue(broadcastHistory);
-
-                                    sendMsgImg(uri.toString(), broadcastHistory, 1);
-                                }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Progress.hide(BroadCastChatActivity.this);
-                            Log.e("TAG", "onFailure: " + e.getMessage());
-                            Toast.makeText(BroadCastChatActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            //   progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                        }
-                    });
+            if(imageUri.toString().contains("http")){// case from google
+                sendImage(imageUri);
+            }else {
+                Progress.show(BroadCastChatActivity.this);
+                getImageUrl(imageUri, fileName, storageReference);
+            }
         }
+    }
+
+    private void getImageUrl(Uri imageUri, String fileName, StorageReference storageReference) {
+        StorageReference ref = storageReference.child("images/" +  ServerValue.TIMESTAMP + fileName);
+        ref.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Progress.hide(BroadCastChatActivity.this);
+
+                        // for broadcast table need to update broadcastChat and broadcast from history
+                        sendImage(uri);
+                    }
+                }))
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Progress.hide(BroadCastChatActivity.this);
+                        Log.e("TAG", "onFailure: " + e.getMessage());
+                        Toast.makeText(BroadCastChatActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                .getTotalByteCount());
+                        //   progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                    }
+                });
+    }
+
+    private void sendImage(Uri uri) {
+        Chat broadcastChat = new Chat();
+        broadcastChat.message = uri.toString();
+        broadcastChat.timestamp = ServerValue.TIMESTAMP;
+        broadcastChat.reciverId = broadcastId;
+        broadcastChat.senderId = myUid;
+        broadcastChat.messageType = 1;
+        broadcastChat.readStatus = 0;
+
+        ChatHistory broadcastHistory = new ChatHistory();
+        broadcastHistory.favourite = 0;
+        broadcastHistory.memberCount = 0;
+        broadcastHistory.message = uri.toString();
+        broadcastHistory.messageType = 1;
+        broadcastHistory.profilePic = "http://koobi.co.uk:3000/front/img/loader.png";
+        broadcastHistory.reciverId = broadcastId;
+        broadcastHistory.senderId = myUid;
+        broadcastHistory.type = "broadcast";
+        broadcastHistory.userName = Mualab.currentUser.userName;
+        broadcastHistory.timestamp = ServerValue.TIMESTAMP;
+        broadcastHistory.unreadMessage = 0;
+
+
+        holdKeyForImage = mBroadCastChatRef.child(broadcastId).push().getKey();
+        mBroadCastChatRef.child(broadcastId).child(holdKeyForImage).setValue(broadcastChat);
+
+        mChatHistoryRef.child(myUid).child(broadcastId).setValue(broadcastHistory);
+
+        sendMsgImg(uri.toString(), broadcastHistory, 1);
     }
 }
 

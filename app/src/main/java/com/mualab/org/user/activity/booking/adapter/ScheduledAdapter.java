@@ -68,11 +68,11 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
 
         if(bean.bookingInfo.size() > 1){
             holder.newText.setVisibility(View.VISIBLE);
-            holder.tvServicesnew.setText(bean.bookingInfo.get(1).artistServiceName+"");
+            holder.tvServicesnew.setText(bean.bookingInfo.get(1).subServiceName+"");
         }else holder.newText.setVisibility(View.GONE);
 
         if(bean.bookingInfo.size() != 0){
-            holder.tvServices.setText(bean.bookingInfo.get(0).artistServiceName+"");
+            holder.tvServices.setText(bean.bookingInfo.get(0).subServiceName+"");
         }
 
        /* holder.rlServices.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +91,10 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
             }
         });*/
 
+        holder.tvArtistName.setText( bean.artistDetail.get(0).userName+"");
+        holder.tv_view_more.setVisibility(View.GONE);
 
-        if(bean.bookingInfo.size() == 1){
+      /*  if(bean.bookingInfo.size() == 1){
             holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName+"");
             holder.tv_view_more.setVisibility(View.GONE);
         }else if(bean.bookingInfo.size() == 2){
@@ -103,7 +105,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
             holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName
                     +", "+bean.bookingInfo.get(1).staffName);
             holder.tv_view_more.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         holder.tv_price.setText("£"+bean.totalPrice+"");
 
@@ -196,9 +198,9 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
 
 
         final Map<String, String> params = new HashMap<>();
-        if(userName.toString().contains("@")){
+        /*if(userName.toString().contains("@")){
             userName = userName.toString().replace("@","");
-        }
+        }*/
         params.put("userName", userName+"");
         new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
             @Override

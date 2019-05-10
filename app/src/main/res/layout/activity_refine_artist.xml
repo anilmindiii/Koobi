@@ -77,94 +77,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="50dp"
-                    android:layout_gravity="center"
+                    android:minHeight="40dp"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:id="@+id/rlBusiness"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:id="@+id/ivBusiness"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/business_ico" />
-
-
-                        <TextView
-                            android:id="@+id/biz_type_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginLeft="35dp"
-                            android:layout_marginStart="35dp"
-                            android:hint="@string/business_type"
-                            android:layout_centerVertical="true"
-                            android:fontFamily="@font/nunito_regular"
-                            android:textColor="@color/text_color"
-                            android:textColorHint="@color/text_color"
-                            android:textSize="16sp" />
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
-                            app:srcCompat="@drawable/ic_right_arrow_angle"
-                            android:tint="@color/gray" />
-
-
-                    </RelativeLayout>
-
-
-                    <TextView
-                        android:id="@+id/tv_business"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginLeft="35dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginStart="35dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_below="@+id/biz_type_text"
-                        android:layout_toRightOf="@+id/ivBusiness"
-                        android:fontFamily="@font/nunito_regular"
-                        android:textColor="@color/gray"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:paddingRight="20dp"
-                        android:textColorHint="@color/text_color"
-                        android:visibility="gone"/>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginStart="4dp"
                     android:layout_marginTop="5dp"
-                    android:background="@color/gray" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="50dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
 
@@ -236,7 +151,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:minHeight="50dp"
+                    android:minHeight="40dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical">
 
@@ -345,16 +260,12 @@
 
             </LinearLayout>
 
-
-
-
             <RelativeLayout
                 android:id="@+id/rlSelectradiusSeekbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/txtZeroradius"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_below="@+id/linear"
@@ -365,7 +276,6 @@
 
 
                 <TextView
-                    android:id="@+id/txtMaxMiles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -409,7 +319,6 @@
 
             </RelativeLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -431,7 +340,7 @@
                     android:id="@+id/rlDnT"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="50dp"
+                    android:minHeight="40dp"
                     android:orientation="vertical"
                     android:layout_marginTop="15dp"
                     android:gravity="center_vertical">
@@ -448,8 +357,7 @@
                             android:tint="@color/colorPrimary"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
-                            android:backgroundTint="@color/colorPrimary"
-                            android:background="@drawable/calendar_ico" />
+                            android:src="@drawable/calendar_ico" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -500,10 +408,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="50dp"
+                    android:minHeight="40dp"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -595,6 +503,7 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp">
 
+
                     <ImageView
                         android:id="@+id/ivPrice"
                         android:layout_width="wrap_content"
@@ -603,7 +512,6 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/coin_ico" />
-
 
                     <TextView
                         android:id="@+id/txtPriceN"
@@ -619,25 +527,20 @@
                         android:textColor="@color/text_color"
                         android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/tv_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/nunito_regular"
-                        android:text="1-17 Miles"
-                        android:layout_below="@+id/txtPriceN"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="25dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@+id/ivPrice"
-                        android:layout_toRightOf="@+id/ivPrice"
-                        android:textColor="@color/gray"
-                        android:visibility="gone"/>
-
                 </RelativeLayout>
 
-
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="1-17 Miles"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_toEndOf="@+id/ivPrice"
+                    android:layout_toRightOf="@+id/ivPrice"
+                    android:textColor="@color/gray"
+                    android:visibility="gone"/>
 
                 <RelativeLayout
                     android:id="@+id/rlPriceSeekBar"
@@ -645,19 +548,19 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/txtZero"
+                        android:id="@+id/txtstartPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_below="@+id/linearPrice"
                         android:layout_marginLeft="12dp"
                         android:layout_marginRight="12dp"
-                        android:text="@string/_0"
+                        android:text="@string/_1"
                         android:textColor="@color/text_color"
                         android:textSize="14sp" />
 
 
                     <TextView
-                        android:id="@+id/txtMax"
+                        android:id="@+id/txtendPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_alignParentEnd="true"
@@ -675,27 +578,24 @@
                         android:layout_marginBottom="3dp"
                         android:orientation="vertical">
 
-                        <com.warkiz.widget.IndicatorStayLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <!--your layout-->
-                            <com.warkiz.widget.IndicatorSeekBar
-                                android:id="@+id/seekBarPrice"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:isb_indicator_content_layout="@layout/custom_indicator_oval"
-                                app:isb_indicator_text_color="@color/text_color"
-                                app:isb_progress="1"
-                                app:isb_track_background_size="5dp"
-                                app:isb_show_indicator="custom"
-                                app:isb_thumb_color="@color/colorPrimary"
-                                app:isb_thumb_size="18dp"
-                                app:isb_thumb_text_color="@color/text_color"
-                                app:isb_track_progress_color="@color/colorPrimary"
-                                app:isb_track_progress_size="4dp" />
 
-                            <!--your layout-->
-                        </com.warkiz.widget.IndicatorStayLayout>
+                        <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+                            android:id="@+id/rangeSeekbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:corner_radius="1"
+                            app:min_value="1"
+                            app:max_value="995"
+
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="10dp"
+
+                            app:bar_color="@color/light_gray_shadow"
+                            app:bar_highlight_color="@color/colorPrimary"
+                            app:left_thumb_image="@drawable/green_dot_img"
+                            app:right_thumb_image="@drawable/green_dot_img"
+                            app:data_type="_integer"/>
 
                     </LinearLayout>
 
@@ -754,7 +654,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
                         android:layout_marginRight="5dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:weightSum="2">
@@ -762,18 +662,18 @@
 
                         <android.support.v7.widget.AppCompatRatingBar
                             android:id="@+id/userRating"
-                            style="@style/RatingBarGray"
+                            style="@style/RatingBarGraycustom"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="12dp"
-                            android:layout_marginTop="5dp"
+                            android:minHeight="32dp"
+                            android:layout_marginLeft="-48dp"
                             android:layout_marginBottom="5dp"
                             android:gravity="center"
                             android:isIndicator="false"
                             android:numStars="5"
                             android:rating="0"
-                            android:scaleX="1.2"
-                            android:scaleY="1.2"
+                            android:scaleX=".6"
+                            android:scaleY=".6"
                             android:stepSize="1"
                             android:layout_weight="1"/>
 
@@ -782,8 +682,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="-38dp"
                             android:ellipsize="end"
                             android:fontFamily="@font/nunito_regular"
                             android:maxLines="1"
@@ -804,17 +703,14 @@
 
                 android:layout_height="40dp" />
 
-
         </LinearLayout>
 
 
     </android.support.v4.widget.NestedScrollView>
 
-
     <View
         android:layout_width="match_parent"
         android:layout_height="40dp"
-
         android:layout_above="@+id/gg" />
 
     <View

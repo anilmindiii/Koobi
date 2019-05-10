@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,8 +37,8 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -86,18 +87,16 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cz.msebera.android.httpclient.protocol.HTTP;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
@@ -122,7 +121,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
     private int feedType;
     private String caption, textTagString = null;
     private String lastTxt;
-    private String tages = "", allIds = "";
+    private String tages = "";
 
     private MediaUri mediaUri;
     private AlertDialog mAlertDialog;
@@ -142,6 +141,8 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
     private List<ArrayList<TagToBeTagged>> listOfValues;
     private Button btn_post;
     private List<ExSearchTag> tempTxtTagHoriList;
+    private Map<String, ExSearchTag> idsMap;
+    private RelativeLayout rl_placeholder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +150,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_feed_post);
         //setStatusbarColor();
         tvMediaSize = findViewById(R.id.tvMediaSize);
+        rl_placeholder = findViewById(R.id.rl_placeholder);
         Intent intent = getIntent();
         if (intent != null) {
             caption = intent.getStringExtra("caption");
@@ -168,6 +170,12 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
         }
 
         listOfValues = new ArrayList<>();
+
+        if(feedType == Constant.IMAGE_STATE){
+            rl_placeholder.setVisibility(View.GONE);
+        }else if(feedType == Constant.VIDEO_STATE){
+            rl_placeholder.setVisibility(View.VISIBLE);
+        }
 
         viewDidLoad();
 
@@ -222,7 +230,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                 Log.d("editing", s.toString());
                 lastTxt = s.toString();
                 //if (lastTxt.length() > 1)
-                    getDropDown(lastTxt, "");
+                getDropDown(lastTxt, "");
                 return null;
             }
         });
@@ -232,8 +240,8 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
             public Unit invoke(SocialView socialView, CharSequence s) {
                 Log.d("editing", s.toString());
                 lastTxt = s.toString();
-               // if (lastTxt.length() > 1)
-                    getDropDown(lastTxt, "user");
+                // if (lastTxt.length() > 1)
+                getDropDown(lastTxt, "user");
                 return null;
             }
         });
@@ -270,6 +278,12 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                 //initProgressBar();
             }
         }, 1000);
+
+        if (address == null || TextUtils.isEmpty(address.latitude)) {
+            findViewById(R.id.tv_post).setEnabled(true);
+            checkLocationPermisssion(false);
+            return;
+        }
     }
 
     private void getDropDown(String tag, final String type) {
@@ -358,7 +372,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
         edCaption.setHashtagEnabled(true);
         edCaption.setHyperlinkEnabled(true);
         edCaption.setHashtagColor(ContextCompat.getColor(this, R.color.text_color));
-        edCaption.setMentionColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        edCaption.setMentionColor(ContextCompat.getColor(this, R.color.text_color));
 
 
         mentionAdapter = new UserSuggessionAdapter(this);
@@ -472,7 +486,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
 
                         Intent intent = new Intent(FeedPostActivity.this, TextTagActivity.class);
                         intent.putExtra("tempTxtTagHoriList", (Serializable) tempTxtTagHoriList);
-                        intent.putExtra("allIds", allIds);
+                        intent.putExtra("idsMap", (Serializable) idsMap);
                         startActivityForResult(intent, Constant.TextTagREQCODE);
 
                     } else {
@@ -563,7 +577,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
 
         if (address == null || TextUtils.isEmpty(address.latitude)) {
             findViewById(R.id.tv_post).setEnabled(true);
-            checkLocationPermisssion();
+            checkLocationPermisssion(true);
             return;
         }
 
@@ -682,7 +696,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     // All required changes were successfully made
-                    getLocation();
+                    getLocation(true);
                     break;
                 case Activity.RESULT_CANCELED:
                     // The user was asked to change settings, but chose not to
@@ -701,7 +715,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
 
         if (resultCode == RESULT_OK) {
             if (requestCode == Constant.TextTagREQCODE && data != null) {
-                allIds = data.getStringExtra("allIds");
+                idsMap = (Map<String, ExSearchTag>) data.getSerializableExtra("idsMap");
                 textTagString = data.getStringExtra("caption");
                 int tagCount = data.getIntExtra("tagCount", 0);
                 tvTagCount.setText(tagCount + "");
@@ -780,7 +794,6 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
 
         Map<String, String> map = new HashMap<>();
         map.put("feedType", feedTypetxt);
-
 
 
         if (textTagString != null) {
@@ -898,20 +911,20 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
         unregisterUploadReceiver();
     }*/
 
-    private void checkLocationPermisssion() {
+    private void checkLocationPermisssion(boolean isUpload) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         Constant.MY_PERMISSIONS_REQUEST_LOCATION);
             } else {
-                getLocation();
+                getLocation(isUpload);
             }
         } else {
-            getLocation();
+            getLocation(isUpload);
         }
     }
 
-    private void getLocation() {
+    private void getLocation(boolean isUpload) {
 
         FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this,
@@ -932,17 +945,16 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                                 @Override
                                 public void onSuccess(Address adr) {
                                     address = adr;
-                                    feedPostPrerareData();
+                                    tvLoaction.setText(address.placeName);
+                                    if (isUpload)
+                                        feedPostPrerareData();
                                 }
                             }).execute();
 
                 } else getCurrentLocation();
             }
         });
-
-
     }
-
     private void getCurrentLocation() {
         LocationDetector locationDetector = new LocationDetector();
         FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(FeedPostActivity.this);
@@ -959,6 +971,8 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                                             @Override
                                             public void onSuccess(Address adr) {
                                                 address = adr;
+                                                tvLoaction.setText(address.placeName);
+
                                                 feedPostPrerareData();
                                             }
                                         }).execute();

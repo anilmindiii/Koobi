@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="3dp"
+    app:cardBackgroundColor="@color/white"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/iv_cancel"
+                android:layout_width="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_height="30dp"
+                android:padding="7dp"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/cancel_ico"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                style="@style/TextView"
+                android:textSize="18sp"
+                android:layout_centerInParent="true"
+                android:textColor="@color/black"
+                android:text="Create New Folder"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="50dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="10dp"
+                android:padding="3dp"
+                android:tint="@color/gray_hard"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/folder_ico" />
+
+            <EditText
+                android:id="@+id/ed_folder_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="55dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:background="@null"
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                android:fontFamily="@font/nunito_regular"
+                android:hint="Enter Folder Name"
+                android:textColorHint="@color/gray2"
+                android:textSize="18sp"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@color/text_color"/>
+
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="25dp"
+            android:layout_height="?actionBarSize">
+
+
+            <Button
+                android:layout_width="90dp"
+                android:background="@drawable/bg_btn_green"
+                android:text="@string/done"
+                android:id="@+id/btn_done"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:fontFamily="@font/nunito_regular"
+                android:textColor="@color/white"
+                android:layout_gravity="center_vertical"
+                android:layout_height="35dp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</android.support.v7.widget.CardView>

@@ -3,10 +3,12 @@ package com.mualab.org.user.chat;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +18,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,17 +54,22 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.adapter.GroupChattingAdapter;
 import com.mualab.org.user.chat.adapter.MenuAdapter;
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.listner.DateTimeScrollListner;
 import com.mualab.org.user.chat.model.ChatHistory;
 import com.mualab.org.user.chat.model.GroupChat;
 import com.mualab.org.user.chat.model.GroupMember;
 import com.mualab.org.user.chat.model.Groups;
+
+import com.mualab.org.user.chat.model.MyEditText;
 import com.mualab.org.user.chat.model.RemoveFromGroup;
 import com.mualab.org.user.chat.model.WebNotification;
 import com.mualab.org.user.chat.notification_builder.FcmNotificationBuilder;
@@ -115,6 +124,8 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
     private LinearLayout ly_group_info;
     private Uri ImageQuickUri;
     String holdKeyForImage = "",matchImageUrl = "";
+    private boolean isGIF;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +136,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         myUid = String.valueOf(Mualab.currentUser.id);
 
         Mualab.currentGroupId = groupId;
+
 
         isActivityOpen = true;
 
@@ -141,7 +153,22 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
 
         init();
 
+        CustomeClick.getmInctance().setListner(new CustomeClick.ExploreSearchListener() {
+            @Override
+            public void onTextChange(InputContentInfoCompat inputContentInfo, int flags, Bundle opts) {
+                isGIF = true;
+                ImageQuickUri = inputContentInfo.getLinkUri();
+                if(ImageQuickUri != null){
+                    sendQuickImage(ImageQuickUri, queryName(getContentResolver(),ImageQuickUri));
+                }
+
+            }
+
+        });
+
     }
+
+
 
     private void init(){
         // otherUserId = "17";
@@ -306,8 +333,25 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         groupChatRef.orderByKey().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                ArrayList<Groups> groupsList = new ArrayList<>();
                 try {
-                    GroupChat messageOutput = dataSnapshot.getValue(GroupChat.class);
+                    Map<String, Groups> objectMap = (HashMap<String, Groups>) dataSnapshot.getValue();
+
+                    GroupChat messageOutput = new GroupChat();
+
+                    messageOutput.readStatus = Integer.parseInt(String.valueOf(objectMap.get("readStatus")));
+                    messageOutput.message = String.valueOf(objectMap.get("message"));
+                    messageOutput.messageType = Integer.parseInt(String.valueOf(objectMap.get("messageType")));
+                    messageOutput.reciverId = String.valueOf(objectMap.get("reciverId"));
+                    messageOutput.senderId = String.valueOf(objectMap.get("senderId"));
+                    messageOutput.memberCount = Integer.parseInt(String.valueOf(objectMap.get("memberCount")));
+                    messageOutput.userName = String.valueOf(objectMap.get("userName"));
+                    messageOutput.timestamp = (objectMap.get("timestamp"));
+                    messageOutput.banner_date = String.valueOf(objectMap.get("banner_date"));
+
+                  //  messageOutput.readMember.put(String.valueOf(messageOutput.timestamp), groupsList.add(objectMap.get("readMember")));
+
+                    //GroupChat messageOutput = dataSnapshot.getValue(GroupChat.class);
                     // map.put(dataSnapshot.getKey(),messageOutput);
                     getChatDataInmap(dataSnapshot.getKey(),messageOutput);
 
@@ -451,7 +495,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()){
             case R.id.llDots:
                 KeyboardUtil.hideKeyboard(et_for_sendTxt,GroupChatActivity.this);
-                int[] location = new int[2];
+               /* int[] location = new int[2];
                 llDots.getLocationOnScreen(location);
 
                 //Initialize the Point with x, and y positions
@@ -459,18 +503,19 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 Point p = new Point();
                 display.getSize(p);
                 p.x = location[0];
-                p.y = location[1];
+                p.y = location[1];*/
                 arrayList.clear();
 
                 if (groups.member!=null){
                     Map<String,GroupMember> hashMap = (Map<String, GroupMember>) groups.member.get(myUid);
                     if (hashMap!=null) {
                         String type = String.valueOf(hashMap.get("type"));
-
                         if (type.equals("admin"))
-                            popupForAdmin(p);
-                        else
-                            popupForUser(p);
+                            popupForAdmin();
+                        else{
+                            popupForUser();
+                        }
+
                     }
                 }
 
@@ -576,7 +621,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                             chatModel1.timestamp = ServerValue.TIMESTAMP;
                             chatModel1.userName = Mualab.currentUser.userName ;
 
-                            writeToDBProfiles(chatModel1);
+                            writeToDBProfiles(chatModel1,"");
                         }
                     }
 
@@ -585,7 +630,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void writeToDBProfiles(final GroupChat chatModel1) {
+    private void writeToDBProfiles(final GroupChat chatModel1,String fileType) {
         fbTokenListForWeb.clear();
         fbTokenListForMobile.clear();
 
@@ -603,8 +648,12 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             holdKeyForImage = groupChatRef.push().getKey();
             groupChatRef.child(holdKeyForImage).setValue(chatModel1);
 
-            if (ImageQuickUri != null)
-                uploadImage(ImageQuickUri);
+            if (ImageQuickUri != null){
+                if(isGIF){
+                    ImageQuickUri = null;
+                    isGIF = false;
+                }else uploadImage(ImageQuickUri,fileType);
+            }
 
             for (Map.Entry<String,Object> entry : groups.member.entrySet()) {
 
@@ -641,8 +690,56 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void popupForAdmin(Point p) {
+    private void popupForAdmin() {
+        arrayList.add("Group Details");
+        if (isMyFavourite==0)
+            arrayList.add("Add To Favourite");
+        else arrayList.add("Unfavourite");
 
+        arrayList.add("Add New Member");
+        arrayList.add("Remove Member");
+
+        NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
+            String data = arrayList.get(pos);
+            switch (data){
+                case "Group Details":
+                    Intent intent = new Intent(GroupChatActivity.this, GroupDetailActivity.class);
+                    intent.putExtra("groupId",groupId);
+                    startActivityForResult(intent,Constant.REQUEST_CODE_CHOOSE);
+                    break;
+
+                case "Add New Member":
+                    Intent intent2 = new Intent(GroupChatActivity.this, AddMemberActivity.class);
+                    intent2.putExtra("groupId",groupId);
+                    intent2.putExtra("action","add");
+                    startActivity(intent2);
+                    break;
+                case "Remove Member":
+                    Intent intent3 = new Intent(GroupChatActivity.this, RemoveMemberActivity.class);
+                    intent3.putExtra("groupId",groupId);
+                    intent3.putExtra("action","remove");
+                    startActivity(intent3);
+                    break;
+
+                case "Add To Favourite":
+                case "Unfavourite":
+                    if (isMyFavourite==0){
+                        chatHistoryRef.child(myUid).child(groupId).child("favourite").setValue(1);
+                        isMyFavourite = 1;
+                    }else {
+                        chatHistoryRef.child(myUid).child(groupId).child("favourite")
+                                .setValue(0);
+                        isMyFavourite = 0;
+                    }
+                    break;
+            }
+
+
+        }).show(getSupportFragmentManager());
+
+    }
+
+    private void popupForAdminA(Point p) {
         try {
             LayoutInflater inflater = (LayoutInflater) GroupChatActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             assert inflater != null;
@@ -732,10 +829,6 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                             }
                             popupWindow.dismiss();
                             break;
-
-
-
-
                     }
                 }
             });
@@ -749,7 +842,50 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void popupForUser(Point p) {
+    private void popupForUser() {
+        arrayList.add("Group Details");
+
+        if (isMyFavourite==0)
+            arrayList.add("Add To Favourite");
+        else arrayList.add("Unfavourite");
+
+        arrayList.add("Report Group");
+
+        NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
+            String data = arrayList.get(pos);
+            switch (data){
+                case "Group Details":
+                    Intent intent = new Intent(GroupChatActivity.this, GroupDetailActivity.class);
+                    intent.putExtra("groupId",groupId);
+                    startActivityForResult(intent,Constant.REQUEST_CODE_CHOOSE);
+                    break;
+
+                case "Add To Favourite":
+                case "Unfavourite":
+
+                    if (isMyFavourite==0){
+                        chatHistoryRef.child(myUid).child(groupId).child("favourite").setValue(1);
+                        isMyFavourite = 1;
+                    }else {
+                        chatHistoryRef.child(myUid).child(groupId).child("favourite")
+                                .setValue(0);
+                        isMyFavourite = 0;
+                    }
+                    break;
+
+                case "Report Group":
+                    intent = new Intent(GroupChatActivity.this, ReportChatActivity.class);
+                    intent.putExtra("groupId",groupId);
+                    intent.putExtra("groups",groups);
+                    startActivity(intent);
+                    break;
+            }
+
+
+        }).show(getSupportFragmentManager());
+    }
+
+    private void popupForUserA(Point p) {
 
         try {
             LayoutInflater inflater = (LayoutInflater) GroupChatActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -957,7 +1093,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+              //  ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -992,7 +1128,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+             //   ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -1001,13 +1137,20 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
-    private void uploadImage(Uri imageUri) {
+    private void uploadImage(Uri imageUri, String fileType) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         if (imageUri != null) {
             StorageReference storageReference = storage.getReference();
+            if(fileType.equals("")){
+                fileType = ".jpg";
+            }else if(fileType.contains("gif")){
+                fileType = ".gif";
+            }else {
+                fileType = ".jpg";
+            }
 
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images/" + ServerValue.TIMESTAMP + fileType);
             ref.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -1082,16 +1225,17 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             if (requestCode == Constant.CAMERA_REQUEST) {
                 //Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
                 Uri imageUri = ImagePicker.getImageURIFromResult(this, requestCode, resultCode, data);
+
+
                 if (imageUri != null) {
                     uri = imageUri;
-
 
                     if (imageUri.toString().startsWith("file:///storage/emulated")) {
                         Bitmap bitmap = ImagePicker.getImageFromResult(GroupChatActivity.this, requestCode, resultCode, data);
                         imageUri = getImageUri(GroupChatActivity.this, bitmap);
                     }
                     ImageQuickUri = imageUri;
-                    sendQuickImage(imageUri);
+                    sendQuickImage(imageUri, queryName(getContentResolver(),imageUri));
 
 
                   //  CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.RECTANGLE).setAspectRatio(400, 400).start(this);
@@ -1104,9 +1248,26 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void sendQuickImage(Uri imageUri) {
+    private String queryName(ContentResolver resolver, Uri uri) {
+        if(uri.toString().contains("http")){
+            if(uri.toString().contains("gif")){
+                return ".gif";
+            }else  return ".jpg";
+        }
+
+
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
+    }
+
+    private void sendQuickImage(Uri imageUri,String fileType) {
         if (groups!=null){
-            ArrayList<String>arrayList = new ArrayList<>();
             GroupChat chatModel1 = new GroupChat();
             chatModel1.message = imageUri.toString();
             chatModel1.memberCount = groups.member.size();
@@ -1118,7 +1279,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             chatModel1.timestamp = ServerValue.TIMESTAMP;
             chatModel1.userName = Mualab.currentUser.userName ;
 
-            writeToDBProfiles(chatModel1);
+            writeToDBProfiles(chatModel1,fileType);
         }
     }
 
@@ -1198,4 +1359,15 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
+
+    @Override
+    public void onLongPress(int position) {
+
+    }
+
+    @Override
+    public void onPress(int position) {
+
+    }
+
 }

@@ -61,7 +61,7 @@ public class RemoveNewMemberListAdapter extends RecyclerView.Adapter<RecyclerVie
         final GroupMember member = groupMember.get(position);
 
         if (member.profilePic!=null && !member.profilePic.equals("")){
-            Picasso.with(mContext).load(member.profilePic).
+            Picasso.with(mContext).load(member.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfilePic);
         }
 

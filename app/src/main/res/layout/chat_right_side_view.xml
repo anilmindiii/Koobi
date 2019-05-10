@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,11 +7,12 @@
     android:orientation="vertical"
     android:layout_marginTop="14dp"
     android:layout_marginLeft="10dp"
+    android:id="@+id/my_view_main"
     android:layout_marginRight="10dp">
 
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:id="@+id/rl_sender"
@@ -57,7 +58,7 @@
                     android:background="@drawable/bg_sender"
                     android:textSize="16sp"
                     android:gravity="left"
-                    android:layout_marginRight="7dp"
+                    android:layout_marginRight="8dp"
                     android:layout_marginLeft="25dp"
                     android:layout_alignParentRight="true"
                     android:padding="5dp" />
@@ -67,6 +68,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/ly_image_gif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="18dp"
@@ -81,18 +83,14 @@
                     android:layout_height="180dp"
                     android:scaleType="centerCrop"
                     app:siRadius="5dp"
-                    android:layout_margin="5dp"
-                    app:siBorderWidth="0.5dp"
+                    android:layout_margin="3dp"
+                    app:siBorderWidth="0dp"
                     app:siBorderColor="@color/colorPrimary"
                     android:src="@drawable/gallery_placeholder"
                     android:layout_centerInParent="true"
                     android:visibility="gone" />
 
-
             </LinearLayout>
-
-
-
 
         </RelativeLayout>
 
@@ -127,4 +125,11 @@
 
     </RelativeLayout>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tv_transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:visibility="gone"/>
+
+</FrameLayout>

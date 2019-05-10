@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:animateLayoutChanges="true"
+    android:id="@+id/main_layout"
     tools:context="com.mualab.org.user.activity.booking.BookingConfirmActivity">
 
 
@@ -17,6 +18,7 @@
         android:layout_alignParentTop="true" />
 
     <ScrollView
+        android:id="@+id/main_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="50dp"
@@ -218,6 +220,7 @@
                     android:layout_marginLeft="45dp"
                     android:background="@null"
                     android:maxLines="1"
+                    android:paddingBottom="5dp"
                     android:hint="Voucher Code"
                     android:imeOptions="actionDone"
                     android:ellipsize="end"

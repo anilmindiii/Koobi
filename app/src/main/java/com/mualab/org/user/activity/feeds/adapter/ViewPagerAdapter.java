@@ -16,11 +16,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.ablanco.zoomy.DoubleTapListener;
+import com.ablanco.zoomy.LongPressListener;
+import com.ablanco.zoomy.TapListener;
+import com.ablanco.zoomy.Zoomy;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
+import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.businessInvitaion.activity.ServiceDetailActivity;
 import com.mualab.org.user.activity.businessInvitaion.model.Services;
 import com.mualab.org.user.activity.feeds.listener.OnImageSwipeListener;
@@ -55,9 +60,10 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
     //private Feeds feeds;
     private ViewGroup container;
     private boolean isShow, isFromFeed;
+    InstaTag mInstaTag = null;
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
 
-        InstaTag mInstaTag = null;
+
 
         @Override
         public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
@@ -146,17 +152,7 @@ listner.onSingleTap();*/
         this.serviceTaggedImgMap = feeds.serviceTaggedImgMap;
         this.listner = listner;
         this.isShow = false;
-        this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-// tapListener = new MyOnDoubleTapListener(context);
-
-/*int widthPixels = ScreenUtils.getScreenWidth(context);
-widthPixels = widthPixels >= 1080 ? 1080 : widthPixels;*/
-
-/*DisplayMetrics displayMetrics = new DisplayMetrics();
-getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-int height = displayMetrics.heightPixels;
-int width = displayMetrics.widthPixels;*/
-    }
+        this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); }
 
     @NonNull
     @Override
@@ -165,42 +161,53 @@ int width = displayMetrics.widthPixels;*/
         final InstaTag postImages = itemView.findViewById(R.id.post_image);
         RelativeLayout rlShowTag = itemView.findViewById(R.id.lyShowTag);
 
-/* postImages.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-postImages.setRootWidth(postImages.getMeasuredWidth());
-postImages.setRootHeight(postImages.getMeasuredHeight());*/
-
         postImages.setImageToBeTaggedEvent(taggedImageEvent);
         this.container = container;
 
-//itemView.setOnTouchListener(tapListener);
-// postImages.setTouchListnerDisable();
-
         this.isShow = false;
 
-/*Picasso.with(context)
-.load(ImagesList.get(position)).resize(widthPixels,
-320).centerInside().placeholder(R.drawable.ic_gallery_placeholder)
-.into(postImages.getTagImageView());*/
-
-/*Picasso.with(context)
-.load(ImagesList.get(position))
-// .fit()
-.resize(widthPixels,widthPixels)
-.centerCrop()
-.onlyScaleDown() //
-.placeholder(R.drawable.ic_gallery_placeholder)
-.into(postImages.getTagImageView());*/
-
-/*Glide.with(context).load(ImagesList.get(position)).centerCrop().
-placeholder(R.drawable.ic_gallery_placeholder).into(postImages.getTagImageView());*/
         postImages.getTagImageView().setScaleType(ImageView.ScaleType.CENTER_CROP);
         Glide.with(context).load(ImagesList.get(position)).
                 placeholder(R.drawable.gallery_placeholder).into(postImages.getTagImageView());
 
+
+        Zoomy.Builder zoomingBuilder = new Zoomy.Builder((Activity)context)
+                .target(postImages.getTagImageView())
+                .tapListener(new TapListener() {
+                    @Override
+                    public void onTap(View v) {
+                        if (listner != null)
+                            listner.onSingleTap();
+                    }
+                })
+                .longPressListener(new LongPressListener() {
+                    @Override
+                    public void onLongPress(View v) {
+// View view = container.getRootView();
+                        ViewPager viewPager = (ViewPager) container;
+                        View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
+
+                        if (view != null) {
+                            mInstaTag = view.findViewById(R.id.post_image);
+                        }
+                        if (mInstaTag != null) {
+                            showHideTag(mInstaTag, viewPager.getCurrentItem());
+                        }
+                    }
+                }).doubleTapListener(new DoubleTapListener() {
+                    @Override
+                    public void onDoubleTap(View v) {
+                        if (listner != null)
+                            listner.onDoubleTap();
+                    }
+                }).enableImmersiveMode(false)
+                .animateZooming(false);
+        zoomingBuilder.register();
+
         ArrayList<TagToBeTagged> tempPeople = taggedImgMap.get(position);
         ArrayList<TagToBeTagged> tempService = serviceTaggedImgMap.get(position);
 
-        if ((tempPeople != null && tempPeople.size() != 0) || (tempService != null &&serviceTaggedImgMap.size() != 0)) {
+        if ((tempPeople != null && tempPeople.size() != 0) || (tempService != null && tempService.size() != 0 &&serviceTaggedImgMap.size() != 0)) {
             rlShowTag.setVisibility(View.VISIBLE);
         } else
             rlShowTag.setVisibility(View.GONE);
@@ -242,54 +249,79 @@ isShow = true;
                             }
                         } else apiForgetUserIdFromUserName(tagDetail.title);
                     } else apiForgetUserIdFromUserName(tagDetail.title);
-                } else { //service tag
-                    if (tagDetail.businessTypeName != null) {
-                        Services services = new Services();
-                        services.serviceName = tagDetail.title;
-                        services.outCallPrice = tagDetail.outcallPrice.isEmpty() ? 0 : Double.parseDouble(tagDetail.outcallPrice);
-                        services.inCallPrice = tagDetail.incallPrice.isEmpty() ? 0 : Double.parseDouble(tagDetail.incallPrice);
-                        services.description = tagDetail.description;
-                        services.completionTime = tagDetail.completionTime;
-                        services.bizTypeName = tagDetail.businessTypeName;
-                        services.subserviceName = tagDetail.categoryName;
-                        if (services.inCallPrice != 0.0 && services.outCallPrice != 0)
-                            services.bookingType = "Both";
-                        else if (services.inCallPrice != 0.0)
-                            services.bookingType = "Incall";
-                        else if (services.outCallPrice != 0.0)
-                            services.bookingType = "Outcall";
+                } else {
 
-                        services.bookingType = tagDetail.title;
+                    //service tag
+                    Intent intent = new Intent(context, BookingActivity.class);
 
-                        Intent intent = new Intent(context, ServiceDetailActivity.class);
-                        intent.putExtra("serviceItem", services);
+                    if (!tagDetail.tagId.equals("")) {// Apply file case
+                        intent.putExtra("_id", Integer.parseInt(tagDetail.tagId));
+                        intent.putExtra("artistId", tagDetail.artistId);
+                        intent.putExtra("callType", "In Call");
+
+                        intent.putExtra("mainServiceName", "");
+                        intent.putExtra("subServiceName", "yes");
+                        intent.putExtra("isEditService", true);
+                        intent.putExtra("isFromSearchBoard", true);
+
+                        if (!tagDetail.businessTypeId.equals("")) {
+                            if (tagDetail.tagId.contains(",")) {
+                                String id = tagDetail.businessTypeId.split(",")[0];
+                                intent.putExtra("serviceId", Integer.parseInt(id));
+                            } else {
+                                intent.putExtra("serviceId", Integer.parseInt(tagDetail.businessTypeId));
+                            }
+                        }
+
+                        if (!tagDetail.categoryId.equals("")) {
+                            if (tagDetail.categoryId.contains(",")) {
+                                String id = tagDetail.categoryId.split(",")[0];
+                                intent.putExtra("subServiceId", Integer.parseInt(id));
+                            } else
+                                intent.putExtra("subServiceId", Integer.parseInt(tagDetail.categoryId));
+                        }
+
+
+                        boolean isOutCallSelected = false;
+                        boolean isInCallSelected = false;
+
+                        if (Double.parseDouble(tagDetail.incallPrice) != 0.0 &&
+                                Double.parseDouble(tagDetail.outcallPrice) != 0){
+                            //services.bookingType = "Incall";
+                            intent.putExtra("callType", "In Call");
+                            isInCallSelected = true;
+                    } else if (Double.parseDouble(tagDetail.incallPrice) != 0.0){
+                            //services.bookingType = "Incall";
+                            isInCallSelected = true;
+                            intent.putExtra("callType", "In Call");
+                        }
+
+                        else if (Double.parseDouble(tagDetail.outcallPrice) != 0.0){
+                            isOutCallSelected = true;
+                            //services.bookingType = "Outcall";
+                            intent.putExtra("callType", "Out Call");
+                        }
+
+
+
+                        if(tagDetail.staffId == null){
+                            tagDetail.staffId = "0";
+                        }
+                        intent.putExtra("staffId", Integer.parseInt(tagDetail.staffId));
+                        intent.putExtra("isFromServiceTag", true);
+                        intent.putExtra("incallStaff", isInCallSelected);
+                        intent.putExtra("outcallStaff", isOutCallSelected);
+                        //intent.putExtra("bookingDate", item.date);
                         context.startActivity(intent);
-                    }
-                }
+
+
+                    }}
 
 //}
             }
 
             @Override
             public void onTagRemoved(TagDetail tagDetail) {
-/* if (taggedImgMap.size()!=0){
-// taggedImgMap.remove(position);
-for(Map.Entry map : taggedImgMap.entrySet() ) {
-int key = (int) map.getKey();
-if (key == position){
-ArrayList<TagToBeTagged>tags = (ArrayList<TagToBeTagged>) map.getValue();
-
-if(tagDetail!=null){
-for (TagToBeTagged tagToBeTagged : tags){
-if (tagToBeTagged.getUnique_tag_id().
-equals(tagDetail.title)){
-tags.remove(tagToBeTagged);
-}
-}
-}
-}
-}
-}*/
             }
         });
 

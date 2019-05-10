@@ -106,9 +106,17 @@ public class LiveUserAdapter extends RecyclerView.Adapter<LiveUserAdapter.ViewHo
             }
             mLastClickTime = SystemClock.elapsedRealtime();
 
-            int pos = getAdapterPosition();
-            LiveUserInfo userInfo = liveUserList.get(pos);
-            listner.onClickedUserStory(userInfo, pos);
+
+            try {
+
+                int pos = getAdapterPosition();
+                LiveUserInfo userInfo = liveUserList.get(pos);
+                listner.onClickedUserStory(userInfo, pos);
+
+            }catch (Exception e){
+
+            }
+
 /*
              if(pos==0 && userInfo.storyCount==0){
                  mContext.startActivity(new Intent(mContext, CameraActivity.class));

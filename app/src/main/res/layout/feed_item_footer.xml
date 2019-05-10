@@ -99,6 +99,16 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/iv_save_to_folder"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/inactive_book_mark_ico1" />
+
     </LinearLayout>
 
     <ImageView

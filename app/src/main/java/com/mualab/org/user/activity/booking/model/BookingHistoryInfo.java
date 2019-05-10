@@ -68,7 +68,7 @@ public class BookingHistoryInfo {
             public String staffImage;
             public int companyId;
             public String companyName;
-            public String companyImage;
+            public String subServiceName;
 
         }
     }
