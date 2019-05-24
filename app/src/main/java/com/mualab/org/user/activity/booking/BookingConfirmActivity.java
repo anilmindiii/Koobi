@@ -80,6 +80,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private TextView tv_call_type;
     private String radius = "", artistLat = "0.0", artistLng = "0.0";
     private Double commisiion = 0.0;
+    private int payOption = 0,bookingSetting = 0;
+    private int card = 1,cash = 2, both = 3;
+
+
     //private SoftKeyboard softKeyboard;
 
     @Override
@@ -165,6 +169,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (getIntent().getStringExtra("artistId") != null) {
             artistId = getIntent().getStringExtra("artistId");
             isBankAdded = getIntent().getBooleanExtra("isBankAdded", false);
+            payOption = getIntent().getIntExtra("payOption",0);
+            bookingSetting = getIntent().getIntExtra("bookingSetting",0);
 
             radius = getIntent().getStringExtra("radius");
             artistLat = getIntent().getStringExtra("artistLat");
@@ -186,6 +192,21 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (!isBankAdded) {
             rb_case.setChecked(true);
             rb_online.setVisibility(View.GONE);
+        }
+
+        //1 : card , 2 : cash , 3 both
+        if(payOption == card){
+            rb_online.setVisibility(View.VISIBLE);
+            rb_case.setVisibility(View.GONE);
+            rb_online.setChecked(true);
+        }else if(payOption == cash){
+            rb_case.setChecked(true);
+            rb_case.setVisibility(View.VISIBLE);
+            rb_online.setVisibility(View.GONE);
+        }else {
+            rb_case.setChecked(true);
+            rb_online.setVisibility(View.VISIBLE);
+            rb_case.setVisibility(View.VISIBLE);
         }
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -868,7 +889,12 @@ public class BookingConfirmActivity extends AppCompatActivity {
             alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
 
-        alertDialog.show();
+       try {
+           alertDialog.show();
+       }catch (Exception e){
+
+       }
+
     }
 
     private void apiForRemoveAllBooking() {

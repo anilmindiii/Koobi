@@ -75,7 +75,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
     private int bookingId, serviceId, subServiceId, artistServiceId, artistId;
     private boolean isOutCallType;
     private RelativeLayout ly_txt_Id, ly_txt_status;
-    private TextView tv_txt_id, tv_txt_status;
+    private TextView tv_txt_id, tv_txt_status,tvDone;
     private boolean shouldPopupOpen;
 
     @Override
@@ -115,6 +115,8 @@ public class BookingDetailsActivity extends AppCompatActivity {
         ly_give_review = findViewById(R.id.ly_give_review);
         tv_txt_id = findViewById(R.id.tv_txt_id);
         tv_txt_status = findViewById(R.id.tv_txt_status);
+        tvDone = findViewById(R.id.tvDone);
+        tvDone.setVisibility(View.VISIBLE);
 
 
         if (getIntent().getIntExtra("bookingId", 0) != 0) {
@@ -164,6 +166,10 @@ public class BookingDetailsActivity extends AppCompatActivity {
 
 
             }
+        });
+
+        tvDone.setOnClickListener(value->{
+            onBackPressed();
         });
 
         ly_cancel_booking.setOnClickListener(new View.OnClickListener() {

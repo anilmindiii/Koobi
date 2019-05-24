@@ -30,22 +30,44 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="3dp"
                 android:src="@drawable/white_back_ico"
-                android:tint="@color/gray" />
+                android:tint="@color/gray"/>
 
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ivUserProfile"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/gradient_circle_img"
-                android:src="@drawable/celbackgroung"
-                android:visibility="gone"
-                app:civ_border_color="@color/transparent"
-                app:civ_border_width="1.5dp" />
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp">
 
-            />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivUserProfile"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/gradient_circle_img"
+                    android:src="@drawable/celbackgroung"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    app:civ_border_color="@color/transparent"
+                    app:civ_border_width="1.5dp" />
+
+                <TextView
+                    android:id="@+id/tv_business_count"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:backgroundTint="@color/red"
+                    android:text="0"
+                    android:gravity="center"
+                    android:textSize="8dp"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/white"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/circle_selected_bg"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 
@@ -122,18 +144,6 @@
             android:visibility="gone"
             app:srcCompat="@drawable/ic_ico_add_new_chat" />
 
-        <!--<ImageView
-            android:id="@+id/ivUserProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="13dp"
-            android:src="@drawable/user_ico"
-            android:layout_alignParentRight="true"
-            android:tint="@color/black"
-            android:layout_centerVertical="true"
-            android:visibility="gone"
-            android:layout_alignParentEnd="true" />-->
-
         <ImageView
             android:id="@+id/ivChat2"
             android:layout_width="45dp"
@@ -144,7 +154,6 @@
             android:padding="12dp"
             android:src="@drawable/send_chat_ico"
             android:visibility="gone" />
-
 
         <TextView
             android:id="@+id/tv_batch_count"
@@ -193,6 +202,23 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvDone"
+            style="@style/TextView.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:background="?selectableItemBackground"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/nunito_regular"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:text="@string/done"
+            android:textColor="@color/gray"
+            android:textSize="18sp"
+            android:visibility="gone"/>
+
 
     </RelativeLayout>
 
@@ -202,6 +228,8 @@
         android:layout_height="0.7dp"
         android:layout_gravity="bottom"
         android:background="@color/gray2"/>
+
+
 
 
 

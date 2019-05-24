@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.model.GroupMember;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -89,6 +90,10 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<RecyclerView.V
             holder.tvUserName.setText("You");
         else
             holder.tvUserName.setText(member.userName);
+
+        holder.ivProfilePic.setOnClickListener(v -> {
+            Helper.apiForgetUserIdFromUserName(member.userName,mContext);
+        });
 
     }
 

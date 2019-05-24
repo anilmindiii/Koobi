@@ -1,6 +1,7 @@
 package com.mualab.org.user.activity.feeds.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -161,13 +162,23 @@ public class CommentsActivity extends AppCompatActivity {
 
             @Override
             public void getLongClick(int commetsPos) {
-                Item item  = new Item();
+                ArrayList<Item> items = new ArrayList<>();
+                Item item ;
+
+                if (!(commentList.get(commetsPos).type.equalsIgnoreCase("image"))) {
+                    item  = new Item();
+                    item.id = "2";
+                    item.name = "Edit";
+                    item.icon = R.drawable.ic_edit_new;
+                    items.add(item);
+                }
+                item  = new Item();
                 item.id = "1";
                 item.name = "Delete";
                 item.icon = R.drawable.ic_delete;
-
-                ArrayList<Item> items = new ArrayList<>();
                 items.add(item);
+
+
 
                 commentList.get(commetsPos).isSelected = true;
                 commentAdapter.notifyDataSetChanged();
@@ -175,9 +186,16 @@ public class CommentsActivity extends AppCompatActivity {
                 BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
                     @Override
                     public void onClickItem(int pos) {
-                        //askDelete();
 
-                        MyToast.getInstance(CommentsActivity.this).showDasuAlert(getString(R.string.under_development));
+                        if(pos == 1){ // case of edit
+                            askDelete("Are you sure want to remove this comment?",commetsPos);
+                        }else {
+                            Intent intent = new Intent(CommentsActivity.this, EditCommentActivity.class);
+                            intent.putExtra("FeedInfo", feed);
+                            intent.putExtra("CommentInfo", commentList.get(commetsPos));
+                            startActivity(intent);
+
+                        }
                     }
 
                     @Override
@@ -214,8 +232,6 @@ public class CommentsActivity extends AppCompatActivity {
                     Animation shake = AnimationUtils.loadAnimation(CommentsActivity.this, R.anim.shake);
                     btn_post_comments.startAnimation(shake);
                 }
-
-                //recyclerView.smoothScrollToPosition(0);
             }
         });
 
@@ -240,11 +256,28 @@ public class CommentsActivity extends AppCompatActivity {
             }
         });
 
-        commentList.clear();
+
         progress_bar.setVisibility(View.VISIBLE);
         tv_no_comments.setText(getString(R.string.loading));
         searchFilter = "";
-        getCommentList(0, searchFilter);
+        /*commentList.clear();
+        getCommentList(0, searchFilter);*/
+    }
+
+    public void askDelete(String msg, int commetsPos) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+            dialog.cancel();
+            doDeleteComment(commetsPos);
+        });
+
+        alertDialog.setNegativeButton("No", (dialog, which) -> {
+            dialog.cancel();
+        });
+        alertDialog.show();
     }
 
     // check permission or Get image from camera or gallery
@@ -329,8 +362,9 @@ public class CommentsActivity extends AppCompatActivity {
         if (isDataUpdated) {
             Intent output = new Intent();
             output.putExtra("feed", feed);
+            feed.commentCount = commentList.size();
             output.putExtra("feedPosition", feedPosition);
-            output.putExtra("commentCount",count);
+            output.putExtra("commentCount",commentList.size());
 
             setResult(RESULT_OK, output);
         }
@@ -338,7 +372,13 @@ public class CommentsActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        commentList.clear();
+        scrollListener.resetState();
+        getCommentList(0, searchFilter);
+    }
 
     private void getCommentList(int pageNo, String search) {
         progress_bar.setVisibility(View.VISIBLE);
@@ -638,6 +678,63 @@ public class CommentsActivity extends AppCompatActivity {
                 Log.d(TAG, "onError: " + anError.getErrorDetail()+" "+anError.getErrorBody()+" "+anError.getErrorCode()+" "+anError.getResponse());
                 tv_no_comments.setVisibility(commentList.size() == 0 ? View.VISIBLE : View.GONE);
 
+                Helper.parseError(CommentsActivity.this, anError);
+            }
+        });
+    }
+
+    private void doDeleteComment(int pos) {
+        if (!ConnectionDetector.isConnected()) {
+           // NoConnectionDialog.newInstance(() -> doDeleteComment(pos)).show(getSupportFragmentManager(), "BizProfileActivity");
+            return;
+        }
+
+        HashMap<String, String> header = new HashMap<>();
+        header.put("authToken", Mualab.currentUser.authToken);
+
+        Comment commentBean = commentList.get(pos);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("id", String.valueOf(commentBean.id));
+        params.put("feedId", String.valueOf(feed._id));
+//params.put("userId", Mualab.getInstance().getSessionManager().getUser().id);
+
+
+        AndroidNetworking.post(API.BASE_URL+"deleteComment")
+                .addHeaders(header)
+                .addBodyParameter(params)
+                .setTag(TAG)
+                .setPriority(Priority.MEDIUM)
+                .build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+
+                    if (status.equalsIgnoreCase("success")) {
+                        isDataUpdated = true;
+                        commentList.remove(pos);
+                        commentAdapter.notifyItemRemoved(pos);
+                        tv_no_comments.setText(getString(R.string.text_empty_data));
+                        if (commentList.size() == 0) {
+                            tv_no_comments.setVisibility(View.VISIBLE);
+                        } else {
+                            tv_no_comments.setVisibility(View.GONE);
+                        }
+
+
+                        MyToast.getInstance(CommentsActivity.this).showDasuAlert(message);
+                    } else {
+                        MyToast.getInstance(CommentsActivity.this).showDasuAlert(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(ANError anError) {
                 Helper.parseError(CommentsActivity.this, anError);
             }
         });

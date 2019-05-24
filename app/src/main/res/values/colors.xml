@@ -50,7 +50,7 @@
     <color name="btn_context_menu_text_red">#ffff0000</color>
     <color name="red_color">#FF0000</color>
     <color name="text_like_counter">#2b5a83</color>
-    <color name="screen_bg_color">#f2f2f2</color>
+    <color name="screen_bg_color">#FFFFFF</color>  <!--f2f2f2-->
     <color name="bg_edit_color">#e5e5e5</color>
 
     <color name="rsbColorThumbBorder">#FFD7D7D7</color>

@@ -1,7 +1,7 @@
 package com.mualab.org.user.chat;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,7 +26,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +40,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -52,39 +50,37 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.dialogs.BottomSheetPopup;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
+import com.mualab.org.user.activity.dialogs.model.Item;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.adapter.GroupChattingAdapter;
 import com.mualab.org.user.chat.adapter.MenuAdapter;
+import com.mualab.org.user.chat.brodcasting.BroadCastChatActivity;
 import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.listner.DateTimeScrollListner;
 import com.mualab.org.user.chat.model.ChatHistory;
 import com.mualab.org.user.chat.model.GroupChat;
 import com.mualab.org.user.chat.model.GroupMember;
 import com.mualab.org.user.chat.model.Groups;
-
-import com.mualab.org.user.chat.model.MyEditText;
 import com.mualab.org.user.chat.model.RemoveFromGroup;
 import com.mualab.org.user.chat.model.WebNotification;
 import com.mualab.org.user.chat.notification_builder.FcmNotificationBuilder;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
-import com.mualab.org.user.image.cropper.CropImage;
-import com.mualab.org.user.image.cropper.CropImageView;
 import com.mualab.org.user.image.picker.ImagePicker;
 import com.mualab.org.user.utils.CommonUtils;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,8 +89,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GroupChatActivity extends AppCompatActivity implements View.OnClickListener,
@@ -114,7 +108,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
     private PopupWindow popupWindow;
     private ArrayList<String>arrayList;
     private Boolean isActivityOpen = false;
-    private DatabaseReference mFirebaseDatabaseReference,groupRef,groupChatRef,
+    private DatabaseReference mFirebaseDatabaseReference,groupRef,groupChatRef,batchCountRef,mUserRef,
             chatRefWebnotif,chatHistoryRef,groupMsgDeleteRef;
     private long mLastClickTime = 0, addedTime = 0;
     private LinearLayoutManager layoutManager;
@@ -125,6 +119,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
     private Uri ImageQuickUri;
     String holdKeyForImage = "",matchImageUrl = "";
     private boolean isGIF;
+    private Map<String,Integer> badgeCountMap;
 
 
     @Override
@@ -136,7 +131,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         myUid = String.valueOf(Mualab.currentUser.id);
 
         Mualab.currentGroupId = groupId;
-
+        badgeCountMap = new HashMap<>();
 
         isActivityOpen = true;
 
@@ -150,6 +145,11 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         chatHistoryRef = mFirebaseDatabaseReference.child("chat_history");
 
         groupMsgDeleteRef = FirebaseDatabase.getInstance().getReference().child("group_msg_delete");
+
+        batchCountRef = FirebaseDatabase.getInstance().getReference().child("socialBookingBadgeCount");
+
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("users");
+
 
         init();
 
@@ -223,7 +223,6 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                                 getChatHistory();
                             }
                         }).start();
-
                     }
                 }
             }).show();
@@ -312,6 +311,11 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                                 tvCantSendMsg.setVisibility(View.GONE);
                             }
 
+                            for (Map.Entry<String,Object> entry : groups.member.entrySet()) {
+                                String groupMemberVal = entry.getKey();
+                                getBadgeCount(groupMemberVal);
+                            }
+
                         }
                     }catch (Exception e){
                         e.printStackTrace();
@@ -384,6 +388,14 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                try {
+                    //  recycler_view.scrollToPosition(chatList.size() - 1);
+                    GroupChat messageOutput = dataSnapshot.getValue(GroupChat.class);
+                    getChatDataInmapRemove(dataSnapshot.getKey(),messageOutput);
+                    // map.put(dataSnapshot.getKey(),messageOutput);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -395,6 +407,77 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 progress_bar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void getChatDataInmapRemove(final String key, final GroupChat chat) {
+        if (chat != null) {
+            final long currentTime = (long) chat.timestamp;
+
+            if(chat.message.equals(matchImageUrl)){
+                chat.message = ImageQuickUri.toString();
+                matchImageUrl = "";
+            }
+            groupMsgDeleteRef.child(myUid).child(groupId).
+                    addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists() && dataSnapshot.getValue()!=null){
+                                //sendlayout.setVisibility(View.GONE);
+                                long exitByTime = 0000;
+                                RemoveFromGroup fromGroup = dataSnapshot.getValue(RemoveFromGroup.class);
+                                Map<String, Object> objectMap = (HashMap<String, Object>)
+                                        dataSnapshot.getValue();
+                                Object o = objectMap.get("exitBy");
+
+
+                                if(fromGroup.deleteBy != null){
+                                    assert fromGroup != null;
+                                    exitByTime = (long) fromGroup.deleteBy;
+                                    if (currentTime>exitByTime){
+
+                                        if(o != null){
+                                            if (currentTime<(long) o){
+                                                getRemovedNExitChat();
+                                            }
+                                        }else {
+
+                                            getRemovedNExitChat();
+                                        }
+                                    }
+                                }else {
+                                    exitByTime = (long) o;
+                                    if (currentTime<exitByTime){
+                                        getRemovedNExitChat();
+                                    }
+                                }
+
+                            }else {
+                                if (currentTime>addedTime){
+                                    getRemovedNExitChat();
+                                }
+                            }
+                        }
+
+                        private void getRemovedNExitChat() {
+                            chat.ref_key = key;
+                            map.remove(key);
+                            chatList.clear();
+                            Collection<GroupChat> values = map.values();
+                            chat.banner_date = CommonUtils.getDateBanner((Long) chat.timestamp);
+                            chatList.addAll(values);
+                            chattingAdapter.notifyDataSetChanged();
+                            recycler_view.scrollToPosition(map.size() - 1);
+                            shortList();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+        }
+        //  shortList();
     }
 
     private void getChatDataInmap(final String key, final GroupChat chat) {
@@ -447,6 +530,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                         }
 
                         private void getRemovedNExitChat() {
+                            chat.ref_key = key;
                             map.put(key, chat);
                             chatList.clear();
                             Collection<GroupChat> values = map.values();
@@ -483,6 +567,29 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             }
         });
         chattingAdapter.notifyDataSetChanged();
+    }
+
+    private void getBadgeCount(String keyId){
+        batchCountRef.child(keyId).child("totalCount").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    try {
+                        int totalCount = dataSnapshot.getValue(Integer.class);
+                        badgeCountMap.put(keyId,totalCount);
+
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override
@@ -645,21 +752,30 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             }).show();
         }else {
 
-            holdKeyForImage = groupChatRef.push().getKey();
-            groupChatRef.child(holdKeyForImage).setValue(chatModel1);
+            if (ImageQuickUri != null){
+                holdKeyForImage = groupChatRef.push().getKey();
+                groupChatRef.child(holdKeyForImage).setValue(chatModel1);
+            }else {
+                groupChatRef.child(groupChatRef.push().getKey()).setValue(chatModel1);
+            }
+
+
 
             if (ImageQuickUri != null){
                 if(isGIF){
                     ImageQuickUri = null;
                     isGIF = false;
-                }else uploadImage(ImageQuickUri,fileType);
+                }else{
+                    Progress.show(GroupChatActivity.this);
+                    uploadImage(ImageQuickUri,fileType);
+                }
             }
 
             for (Map.Entry<String,Object> entry : groups.member.entrySet()) {
 
                 String groupMemberVal = entry.getKey();
 
-                //            if (!groupMemberVal.equals(myUid))
+                //if (!groupMemberVal.equals(myUid))
                 updateOtherChatHistory(groupMemberVal,chatModel1);
 
                 Map<String,GroupMember> hashMap = (Map<String, GroupMember>) groups.member.
@@ -673,8 +789,47 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                         if (fbToken.equals("") || fbToken.isEmpty())
                             fbTokenListForWeb.add(groupMemberVal);
                         else {
-                            if (!groupMemberVal.equals(myUid))
+                            if (!groupMemberVal.equals(myUid)){
                                 fbTokenListForMobile.add(fbToken);
+
+
+                                mUserRef.child(groupMemberVal).child("firebaseToken").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                       try {
+                                           if(dataSnapshot.getValue() != null){
+
+                                               String fbToken = dataSnapshot.getValue(String.class);
+                                               if(badgeCountMap.containsKey(groupMemberVal)){
+                                                   int count = badgeCountMap.get(groupMemberVal);
+                                                   if (chatModel1.messageType == 0)
+                                                       sendNotifications(fbToken, String.valueOf(count+1),chatModel1.message);
+                                                   else
+                                                       sendNotifications(fbToken, String.valueOf(count+1),"Image");
+                                                   batchCountRef.child(groupMemberVal).child("totalCount").setValue(count+1);
+                                               }else {
+                                                   batchCountRef.child(groupMemberVal).child("totalCount").setValue(1);
+                                               }
+                                           }
+                                       }catch (Exception e){
+
+                                       }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+
+
+
+
+
+                            }
+
 
                         }
                     }
@@ -682,13 +837,15 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             }
 
             et_for_sendTxt.setText("");
-            if (chatModel1.messageType == 0)
+           /* if (chatModel1.messageType == 0)
                 sendPushNotificationToReceiver(chatModel1.message);
             else
-                sendPushNotificationToReceiver("Image");
+                sendPushNotificationToReceiver("Image");*/
         }
 
     }
+
+
 
     private void popupForAdmin() {
         arrayList.add("Group Details");
@@ -1027,15 +1184,6 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
 
     private void sendPushNotificationToReceiver(String message) {
 
-        for (int i=0;i<fbTokenListForWeb.size();i++) {
-
-            WebNotification webNotification = new WebNotification();
-            webNotification.body = message;
-            webNotification.title = Mualab.currentUser.userName;
-            webNotification.url = "";
-            chatRefWebnotif.child(fbTokenListForWeb.get(i)).setValue(webNotification);
-        }
-
         FcmNotificationBuilder.initialize()
                 .title(Mualab.currentUser.userName+" @ "+groups.groupName)
                 .message(message).uid(groupId)
@@ -1043,6 +1191,19 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 .type("groupChat").clickAction("GroupChatActivity")
                 .registrationId(fbTokenListForMobile).send();
 
+
+
+    }
+
+    private void sendNotifications(String fbToken, String count,String message) {
+        FcmNotificationBuilder.initialize()
+                .title(Mualab.currentUser.userName+" @ "+groups.groupName)
+                .batchCount(count)
+                .message(message).uid(groupId)
+                .username(Mualab.currentUser.userName+" @ "+groups.groupName).adminId(String.valueOf(groups.adminId))
+                .type("groupChat").clickAction("GroupChatActivity")
+                .firebaseToken(FirebaseInstanceId.getInstance().getToken())
+                .receiverFirebaseToken(fbToken).send();
     }
 
     private void showAlertDeleteChat(){
@@ -1158,7 +1319,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    //  progressDialog.dismiss();
+                                    Progress.hide(GroupChatActivity.this);
                                     matchImageUrl = uri.toString().trim();
                                     groupChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
                                     ImageQuickUri = null;
@@ -1170,7 +1331,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //  progressDialog.dismiss();
+                            Progress.hide(GroupChatActivity.this);
                             Log.e("TAG", "onFailure: " + e.getMessage());
                             Toast.makeText(GroupChatActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -1361,8 +1522,32 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
-    public void onLongPress(int position) {
+    public void onLongPress(int position,String refKey) {
+        ArrayList<Item> items;
+        Item item  = new Item();
+        item.id = "1";
+        item.name = "Delete";
+        item.icon = R.drawable.ic_delete;
 
+        items = new ArrayList<>();
+        items.add(item);
+
+        chatList.get(position).isLongSelected = true;
+        chattingAdapter.notifyDataSetChanged();
+
+        BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
+            @Override
+            public void onClickItem(int pos) {
+                askDelete("Are you sure want to remove this message?",refKey,position);
+
+            }
+
+            @Override
+            public void onDialogDismiss() {
+                chatList.get(position).isLongSelected = false;
+                chattingAdapter.notifyDataSetChanged();
+            }
+        }).show(getSupportFragmentManager());
     }
 
     @Override
@@ -1370,4 +1555,36 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    public void askDelete(String msg, String refKey, int cell_pos) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+            dialog.cancel();
+            groupChatRef.child(refKey).removeValue();
+
+            if(chatList.size() == 1){
+
+                for (Map.Entry<String,Object> entry : groups.member.entrySet()) {
+                    String groupMemberVal = entry.getKey();
+                    chatHistoryRef.child(String.valueOf(groupMemberVal)).
+                            child(groupId).child("message").setValue("");
+                }
+
+            } else if(cell_pos == (chatList.size()-1)){
+                String holdLastMessage =  chatList.get(chatList.size()-2).message;
+                for (Map.Entry<String,Object> entry : groups.member.entrySet()) {
+                    String groupMemberVal = entry.getKey();
+                    chatHistoryRef.child(String.valueOf(groupMemberVal)).
+                            child(groupId).child("message").setValue(holdLastMessage);
+                }
+            }
+        });
+
+        alertDialog.setNegativeButton("No", (dialog, which) -> {
+            dialog.cancel();
+        });
+        alertDialog.show();
+    }
 }

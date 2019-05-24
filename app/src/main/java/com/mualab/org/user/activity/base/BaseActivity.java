@@ -1,6 +1,7 @@
 package com.mualab.org.user.activity.base;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +46,7 @@ public class BaseActivity extends AppCompatActivity implements BaseListner, Base
     private ViewGroup rootLayout;
     private ProgressDialog mProgressDialog;
 
-
+    private Activity activity = this;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,9 @@ public class BaseActivity extends AppCompatActivity implements BaseListner, Base
     }
 
 
+    protected Activity getActivity() {
+        return activity;
+    }
 
     public void hideKeyboard() {
         View view = this.getCurrentFocus();

@@ -113,7 +113,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private RatingBar rating;
     private LinearLayout ly_staff_main, ly_time_slot_main;
     private boolean outcallStaff, incallStaff, isBankAdded, isAlreadybooked;
-    private int totalTime, endTime;
+    private int totalTime, endTime,payOption = 0,bookingSetting = 0;
     private Double price;
     private String radius = "", artistLat, artistLng;
     private ArrayList<Services.ArtistDetailBean.BusineshoursBean> busineshoursList;
@@ -266,7 +266,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 if (slotInfo != null) {
                     startTime = slotInfo.timeSlots;
                 } else startTime = "";
-                viewCalendar.collapse(5);
+                viewCalendar.collapse(500);
             }
         });
 
@@ -314,10 +314,10 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 if (!bookingDate.equals("")) {
                     selectedDate = Helper.formateDateFromstring("dd/MM/yyyy", "yyyy-MM-dd", bookingDate);//2019-02-01
                     setDate(bookingDate);
-                    viewCalendar.expand(5);
+                    viewCalendar.expand(500);
                 }
         }
-        viewCalendar.expand(5);
+        viewCalendar.expand(500);
 
 
         apiForGetAllServices();
@@ -442,6 +442,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.btnToday:
+                viewCalendar.setToday(true);
+                viewCalendar.collapse(500);
                 selectedDate = getCurrentDate();
                 viewCalendar.isFirstimeLoad = true;
                 if (selectedDate.contains("-")) {
@@ -455,8 +457,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                     Calendar cal = Calendar.getInstance();
                     CalendarAdapter adapter = new CalendarAdapter(this, cal);
+
                     viewCalendar.setAdapter(adapter);
-                    //viewCalendar.expand(500);
                     setCalenderClickListner(viewCalendar);
                     dayId = cal.get(GregorianCalendar.DAY_OF_WEEK) - 2;
                     if (Integer.parseInt(month) < 10) {
@@ -484,6 +486,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     Intent intent = new Intent(BookingActivity.this, BookingConfirmActivity.class);
                     intent.putExtra("artistId", artistId);
                     intent.putExtra("isBankAdded", isBankAdded);
+                    intent.putExtra("payOption", payOption);
+                    intent.putExtra("bookingSetting", bookingSetting);
                     intent.putExtra("isOutCallSelected", isOutCallSelected);
                     intent.putExtra("artistLat", artistLat);
                     intent.putExtra("artistLng", artistLng);
@@ -511,6 +515,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+
 
     private void resetAllServices() {
         childId = 0;
@@ -598,7 +604,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         Log.i("Date Test", "You can't select previous date.");
                     }
 
-
                 }
             }
 
@@ -608,6 +613,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 Day day = viewCalendar.getSelectedDay();
                 Log.i(getClass().getName(), "The Day of Clicked View: "
                         + day.getYear() + "/" + (day.getMonth() + 1) + "/" + day.getDay());
+
             }
 
             @Override
@@ -760,6 +766,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setDate(String bookingDate) {
+
         String dd = Helper.formateDateFromstring("dd/MM/yyyy", "dd", bookingDate);
         String mm = Helper.formateDateFromstring("dd/MM/yyyy", "M", bookingDate);
         String yyyy = Helper.formateDateFromstring("dd/MM/yyyy", "yyyy", bookingDate);
@@ -845,6 +852,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         if (services.artistDetail.bankStatus == 0) {
                             isBankAdded = false;
                         } else isBankAdded = true;
+
+                        payOption = services.artistDetail.payOption;
+                        bookingSetting = services.artistDetail.bookingSetting;
 
                         if (!services.artistDetail.profileImage.isEmpty() && !services.artistDetail.profileImage.equals("")) {
                             Picasso.with(BookingActivity.this).load(services.artistDetail.profileImage).placeholder(R.drawable.default_placeholder).
@@ -1538,6 +1548,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         Intent intent = new Intent(BookingActivity.this, BookingConfirmActivity.class);
                         intent.putExtra("artistId", artistId);
                         intent.putExtra("isBankAdded", isBankAdded);
+                        intent.putExtra("payOption", payOption);
+                        intent.putExtra("bookingSetting", bookingSetting);
                         intent.putExtra("isOutCallSelected", isOutCallSelected);
                         intent.putExtra("artistLat", artistLat);
                         intent.putExtra("artistLng", artistLng);

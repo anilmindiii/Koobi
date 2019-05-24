@@ -14,7 +14,9 @@ public class GroupChat implements Serializable {
     public String senderId;
     public int memberCount;
     public String userName;
+    public String ref_key;
     public Object timestamp;
+    public boolean isLongSelected;
 
     @Exclude
     public  String banner_date;

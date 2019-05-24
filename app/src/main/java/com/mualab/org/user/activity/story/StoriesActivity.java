@@ -27,6 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 import com.android.volley.VolleyError;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.Views.statusstories.StoryStatusView;
@@ -38,9 +42,12 @@ import com.mualab.org.user.activity.camera.CameraActivity;
 import com.mualab.org.user.activity.dialogs.BottomSheetPopup;
 import com.mualab.org.user.activity.dialogs.ItemClickListener;
 import com.mualab.org.user.activity.dialogs.model.Item;
+import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
+import com.mualab.org.user.activity.feeds.model.Comment;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.feeds.Story;
+import com.mualab.org.user.data.remote.API;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import android.app.AlertDialog;
@@ -48,6 +55,7 @@ import android.app.Dialog;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.utils.ConnectionDetector;
+import com.mualab.org.user.utils.Helper;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.transformers.SimpleGestureFilter;
 import com.squareup.picasso.Callback;
@@ -92,6 +100,7 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
     private long pressTime = 0L;
     private SimpleGestureFilter detector;
     ArrayList<Item> items;
+    boolean shouldPause =  true;
 
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -180,6 +189,7 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
         img_btn.setOnClickListener(view -> finish());
 
         iv_menu.setOnClickListener(view -> {
+            shouldPause = true;
             storyStatusView.pause();
             videoView.pause();
 
@@ -191,17 +201,21 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
             items = new ArrayList<>();
             items.add(item);
 
+
             BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
                 @Override
                 public void onClickItem(int pos) {
-                    //askDelete();
-                    MyToast.getInstance(StoriesActivity.this).showDasuAlert(getString(R.string.under_development));
+                    shouldPause = false;
+                    askDelete("Are you sure want to remove this story?");
                 }
 
                 @Override
                 public void onDialogDismiss() {
-                    storyStatusView.resume();
-                    videoView.resume();
+                    if(shouldPause){
+                        storyStatusView.resume();
+                        videoView.resume();
+                    }
+
                 }
             }).show(getSupportFragmentManager());
 
@@ -252,8 +266,68 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
                 return true;
             }
         });
+    }
 
+    private void doDeleteStory() {
+        if (!ConnectionDetector.isConnected()) {
+            // NoConnectionDialog.newInstance(() -> doDeleteComment(pos)).show(getSupportFragmentManager(), "BizProfileActivity");
+            return;
+        }
 
+        HashMap<String, String> header = new HashMap<>();
+        header.put("authToken", Mualab.currentUser.authToken);
+
+        HashMap<String, String> params = new HashMap<>();
+        int id = storyList.get(counter).id;
+        params.put("id", String.valueOf(id));
+
+        AndroidNetworking.post(API.BASE_URL+"deleteStory")
+                .addHeaders(header)
+                .addBodyParameter(params)
+                .setTag("deleteStory")
+                .setPriority(Priority.MEDIUM)
+                .build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+
+                    if (status.equalsIgnoreCase("success")) {
+                        MyToast.getInstance(StoriesActivity.this).showDasuAlert(message);
+                        finish();
+                    } else {
+                        MyToast.getInstance(StoriesActivity.this).showDasuAlert(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(ANError anError) {
+                Helper.parseError(StoriesActivity.this, anError);
+            }
+        });
+    }
+
+    public void askDelete(String msg) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+            dialog.cancel();
+            doDeleteStory();
+        });
+
+        alertDialog.setNegativeButton("No", (dialog, which) -> {
+            storyStatusView.resume();
+            videoView.resume();
+            dialog.cancel();
+        });
+        alertDialog.show();
     }
 
 
@@ -468,24 +542,20 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
     }
 
 
-    private void askDelete() {
-        android.app.AlertDialog.Builder builder;
-        builder = new android.app.AlertDialog.Builder(StoriesActivity.this);
-        builder.setTitle("Alert")
-                .setMessage("Are you sure you want to remove this story?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // continue with Apis
+    public void askDelete(String msg, int commetsPos) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+            dialog.cancel();
+           // doDeleteComment(commetsPos);
+        });
 
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .show();
+        alertDialog.setNegativeButton("No", (dialog, which) -> {
+            dialog.cancel();
+        });
+        alertDialog.show();
     }
 
 

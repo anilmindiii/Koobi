@@ -51,7 +51,7 @@
                         android:gravity="center"
                         android:textSize="8dp"
                         android:textColor="@color/white"
-                        android:layout_marginLeft="2dp"
+                        android:layout_marginLeft="-2dp"
                         android:visibility="gone"
                         android:background="@drawable/circle_selected_bg" />
 
@@ -85,7 +85,7 @@
                     android:gravity="center"
                     android:textSize="8dp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="2dp"
+                    android:layout_marginLeft="-2dp"
                     android:visibility="gone"
                     android:background="@drawable/circle_selected_bg" />
 

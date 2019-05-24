@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +44,11 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mualab.org.user.R;
@@ -129,6 +135,10 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     private RelativeLayout ly_main_layout;
     private int page = 0;
     private LinearLayout llDots;
+    private DatabaseReference mBlockUserWeb,mBlockUser;
+    private String nodeForBlockUser = "";
+    private int myId ;
+    private String blockedId = "";
 
 
     @Override
@@ -139,6 +149,42 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         //  item = (ArtistsSearchBoard) i.getSerializableExtra("item");
         //  artistId =  item._id;
         artistId = i.getStringExtra("artistId");
+        mBlockUserWeb = FirebaseDatabase.getInstance().getReference().child("blockUserArtistWeb");
+        mBlockUser = FirebaseDatabase.getInstance().getReference().child("blockUserArtist");
+
+        myId = Mualab.currentUser.id;
+
+        if(Integer.parseInt(artistId) < myId){
+            nodeForBlockUser = artistId + "_" + myId;
+        }else nodeForBlockUser = myId + "_" + artistId;
+
+        mBlockUser.child(nodeForBlockUser).child("blockedBy").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    try{
+                        blockedId = dataSnapshot.getValue(String.class);
+
+                        if(blockedId.equals(artistId)){// case of hide screen
+
+                        }
+                    }catch (Exception e){
+
+                    }
+
+                }else {
+                    blockedId = "";
+                    // case of show screen
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         init();
     }
 
@@ -566,14 +612,15 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
             case R.id.llDots:
                 arrayList = new ArrayList<>();
-                arrayList.add("Block");
+                if(blockedId.equals(String.valueOf(myId)) || blockedId.equals("Both")){
+                    arrayList.add("Unblock");
+                }else arrayList.add("Block");
+
                 arrayList.add("Report");
+
                 if (profileData.followerStatus.equals("1")) {
                     arrayList.add("Unfollow");
-
-
                 }
-
                 NameDisplayDialog.newInstance("Select Option", arrayList, pos -> {
                     String data = arrayList.get(pos);
                     getClickedData(data);
@@ -739,6 +786,21 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 followersCount--;
                 profileData.followersCount = String.valueOf(followersCount);
                 apiForGetFollowUnFollow();
+                break;
+
+            case "Block":
+
+                if(blockedId.equals(artistId)){
+                    mBlockUserWeb.child(artistId).child(String.valueOf(myId)).setValue("Both");
+                }else {
+                    mBlockUserWeb.child(artistId).child(String.valueOf(myId)).setValue(String.valueOf(myId));
+                }
+                mBlockUser.child(nodeForBlockUser).child("blockedBy").setValue(String.valueOf(myId));
+                break;
+
+            case "Unblock":
+                mBlockUser.child(nodeForBlockUser).removeValue();
+                mBlockUserWeb.child(artistId).child(String.valueOf(myId)).removeValue();
                 break;
         }
     }

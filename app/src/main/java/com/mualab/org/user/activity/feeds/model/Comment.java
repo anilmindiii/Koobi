@@ -2,11 +2,13 @@ package com.mualab.org.user.activity.feeds.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by mindiii on 16/8/17.
  */
 
-public class Comment {
+public class Comment implements Serializable {
 
     @SerializedName("_id")
     public int id;

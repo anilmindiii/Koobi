@@ -68,12 +68,15 @@ import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivit
 import com.mualab.org.user.activity.artist_profile.activity.FollowersActivity;
 import com.mualab.org.user.activity.artist_profile.adapter.ArtistFeedAdapter;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
+import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
+import com.mualab.org.user.activity.main.MainActivity;
+import com.mualab.org.user.activity.main.listner.CountClick;
 import com.mualab.org.user.activity.myprofile.activity.adapter.NavigationMenuAdapter;
 import com.mualab.org.user.activity.myprofile.activity.model.NavigationItem;
 import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
@@ -119,13 +122,15 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener,
+import static com.mualab.org.user.activity.main.MainActivity.businessBadge;
+
+public class UserProfileActivity extends BaseActivity implements View.OnClickListener,
         ArtistFeedAdapter.Listener, NavigationMenuAdapter.Listener {
     private DrawerLayout drawer;
     private String TAG = this.getClass().getName();
     ;
     private User user;
-    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2, tv_profile_followers;
+    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2, tv_profile_followers, tv_business_count;
     private LinearLayout ll_progress, llRating;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
@@ -156,6 +161,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private Bitmap profileImageBitmap;
     private CircleImageView iv_Profile, user_image;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,6 +172,27 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             userId = i.getStringExtra("userId");
         }
         init();
+
+        if (userId != null)
+            if (userId.equals(String.valueOf(user.id)))
+                if (businessBadge > 0) {
+                    tv_business_count.setVisibility(View.VISIBLE);
+                    tv_business_count.setText(businessBadge + "");
+                }
+
+        CountClick.getmCountClick().setListner(new CountClick.InviationCount() {
+            @Override
+            public void onCountChange(int count) {
+                if (userId != null)
+                    if (userId.equals(String.valueOf(user.id)))
+                        if (count > 0) {
+                            tv_business_count.setVisibility(View.VISIBLE);
+                            tv_business_count.setText(count + "");
+                        } else tv_business_count.setVisibility(View.GONE);
+
+            }
+        });
+
     }
 
     private void init() {
@@ -190,6 +217,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         iv_gride_view = toolbar.findViewById(R.id.iv_gride_view);
         iv_list_view = toolbar.findViewById(R.id.iv_list_view);
         llRating = findViewById(R.id.llRating);
+        tv_business_count = findViewById(R.id.tv_invite_count);
         /*tv_dot1 =  findViewById(R.id.tv_dot1);
         tv_dot2 =  findViewById(R.id.tv_dot2);
 */
@@ -669,7 +697,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         new HttpTask(new HttpTask.Builder(UserProfileActivity.this, "profileFeed", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                assert ll_progress !=null;
+                assert ll_progress != null;
                 if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                 setAdapterLoading(false);
                 if (feedAdapter != null) feedAdapter.showHideLoading(false);
@@ -687,7 +715,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         tv_no_data_msg.setVisibility(View.VISIBLE);
                     }
                 } catch (Exception e) {
-                    if (ll_progress != null)ll_progress.setVisibility(View.GONE);
+                    if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                     tv_no_data_msg.setVisibility(View.VISIBLE);
                     tv_no_data_msg.setText("Something went wrong!");
                     e.printStackTrace();
@@ -698,7 +726,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void ErrorListener(VolleyError error) {
                 setAdapterLoading(false);
-                if (ll_progress != null)ll_progress.setVisibility(View.GONE);
+                if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
                     mRefreshLayout.stopRefresh(false, 500);
@@ -863,7 +891,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
 
                         } catch (JsonParseException e) {
-                            if (ll_progress != null)ll_progress.setVisibility(View.GONE);
+                            if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                             tv_no_data_msg.setVisibility(View.VISIBLE);
                             tv_no_data_msg.setText("Something went wrong!");
                             e.printStackTrace();
@@ -992,7 +1020,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             if (requestCode == Constant.ACTIVITY_COMMENT) {
                 if (CURRENT_FEED_STATE == Constant.FEED_STATE) {
                     int pos = data.getIntExtra("feedPosition", 0);
-                    Feeds feed = (Feeds)  data.getSerializableExtra("feed");
+                    Feeds feed = (Feeds) data.getSerializableExtra("feed");
                     // feeds.get(pos).commentCount = feed.commentCount;
                     feeds.get(pos).commentCount = feed.commentCount;
                     feedAdapter.notifyItemChanged(pos);
@@ -1246,7 +1274,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                             CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
                             apiForGetAllFeeds(page, 20, true, "");
-                           // popupWindow.dismiss();
+                            // popupWindow.dismiss();
                             break;
 
                         case "Video":
@@ -1254,7 +1282,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                             page = 0;
                             tvFilter.setText(R.string.video);
                             ed_search.setText("");
-                           // popupWindow.dismiss();
+                            // popupWindow.dismiss();
                             feeds.clear();
                             feedType = "video";
                             CURRENT_FEED_STATE = Constant.VIDEO_STATE;
@@ -1833,5 +1861,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         }
     };
+
 
 }

@@ -51,6 +51,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -99,7 +100,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class BroadCastChatActivity extends AppCompatActivity implements
         DateTimeScrollListner, View.OnClickListener {
     private String myUid, broadcastId;
-    private DatabaseReference mBroadCastChatRef, mChatHistoryRef, mBroadCastRef, mChatRef, chatRefMuteUser;
+    private DatabaseReference mBroadCastChatRef, mChatHistoryRef, mBroadCastRef, mChatRef, chatRefMuteUser,batchCountRef;
     private ProgressBar progress_bar;
     private Map<String, Chat> map;
     private ChattingAdapter chattingAdapter;
@@ -141,6 +142,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         mChatHistoryRef = FirebaseDatabase.getInstance().getReference().child("chat_history");
         mChatRef = FirebaseDatabase.getInstance().getReference().child("chat");
         chatRefMuteUser = FirebaseDatabase.getInstance().getReference().child("mute_user");
+        batchCountRef = FirebaseDatabase.getInstance().getReference().child("socialBookingBadgeCount");
 
         init();
         getBroadCastDetails();
@@ -150,8 +152,8 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             @Override
             public void onTextChange(InputContentInfoCompat inputContentInfo, int flags, Bundle opts) {
                 ImageQuickUri = inputContentInfo.getLinkUri();
-                if(ImageQuickUri != null){
-                    sendQuickImage(ImageQuickUri, queryName(getContentResolver(),ImageQuickUri));
+                if (ImageQuickUri != null) {
+                    sendQuickImage(ImageQuickUri, queryName(getContentResolver(), ImageQuickUri));
                 }
 
             }
@@ -164,11 +166,11 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     private void getAllDeviceToken() {
         allMemberName = "";
         for (Map.Entry<String, Object> entry : groups.member.entrySet()) {
-            getBlockUsers(Integer.parseInt(myUid),Integer.parseInt(entry.getKey()));
+            getBlockUsers(Integer.parseInt(myUid), Integer.parseInt(entry.getKey()));
         }
     }
 
-    private void  getBlockUsers(int myId, final int otherId) {
+    private void getBlockUsers(int myId, final int otherId) {
         String note = "";
         if (myId > otherId) {
             note = otherId + "_" + myId;
@@ -179,13 +181,13 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     BlockUser blockUser = dataSnapshot.getValue(BlockUser.class);
-                    if(blockUser != null) {
+                    if (blockUser != null) {
                         //memberToken.remove(blockUser.blockedBy);
                         //blockUser.blockedBy
                     }
-                }else {
+                } else {
                     getUserWithoutMute(otherId);
                 }
 
@@ -229,6 +231,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                                             e.printStackTrace();
                                         }
                                     }
+
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -417,8 +420,8 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLongPress(int position) {
-        ArrayList<Item> items;
+    public void onLongPress(int position, String Refkey) {
+        /*ArrayList<Item> items;
         Item item  = new Item();
         item.id = "1";
         item.name = "Delete";
@@ -434,7 +437,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             @Override
             public void onClickItem(int pos) {
                 //askDelete();
-                MyToast.getInstance(BroadCastChatActivity.this).showDasuAlert(getString(R.string.under_development));
+                MyToast.getInstance(BroadCastChatActivity.this).showDasuAlert(Refkey);
             }
 
             @Override
@@ -442,7 +445,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                 chatList.get(position).isLongSelected = false;
                 chattingAdapter.notifyDataSetChanged();
             }
-        }).show(getSupportFragmentManager());
+        }).show(getSupportFragmentManager());*/
     }
 
     @Override
@@ -659,25 +662,6 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                 });
     }
 
-    private void sendPushNotificationToReceiver(String message) {
-
-        for (int i = 0; i < fbTokenListForWeb.size(); i++) {
-
-            WebNotification webNotification = new WebNotification();
-            webNotification.body = message;
-            webNotification.title = Mualab.currentUser.userName;
-            webNotification.url = "";
-            //chatRefWebnotif.child(fbTokenListForWeb.get(i)).setValue(webNotification); do it later
-        }
-
-        FcmNotificationBuilder.initialize()
-                .title(Mualab.currentUser.userName)
-                .message(message).uid(myUid)
-                .username(Mualab.currentUser.userName).adminId(String.valueOf(groups.adminId))
-                .type("groupChat").clickAction("GroupChatActivity")
-                .registrationId(fbTokenListForMobile).send();
-
-    }
 
     public void choosePhotoFromGallary() {
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -812,7 +796,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-              //  ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+                //  ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -867,7 +851,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
             public void onShow(DialogInterface dialogInterface) {
                 View view = dialog.getWindow().getDecorView();
                 //for enter from left
-           //     ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+                //     ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
                 //for enter from bottom
                 //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
             }
@@ -898,7 +882,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         Uri uri;
 
-        if(resultCode == 2){
+        if (resultCode == 2) {
             chatList.clear();
             chattingAdapter.notifyDataSetChanged();
         }
@@ -920,7 +904,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                         imageUri = getImageUri(BroadCastChatActivity.this, bitmap);
                     }
                     ImageQuickUri = imageUri;
-                    sendQuickImage(imageUri, queryName(getContentResolver(),imageUri));
+                    sendQuickImage(imageUri, queryName(getContentResolver(), imageUri));
 
 
                     //  CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.RECTANGLE).setAspectRatio(400, 400).start(this);
@@ -934,10 +918,10 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     }
 
     private String queryName(ContentResolver resolver, Uri uri) {
-        if(uri.toString().contains("http")){
-            if(uri.toString().contains("gif")){
+        if (uri.toString().contains("http")) {
+            if (uri.toString().contains("gif")) {
                 return ".gif";
-            }else  return ".jpg";
+            } else return ".jpg";
         }
 
         Cursor returnCursor =
@@ -957,12 +941,11 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         return Uri.parse(path);
     }
 
-    private void sendQuickImage(Uri imageUri,String fileName) {
+    private void sendQuickImage(Uri imageUri, String fileName) {
 
 
-
-        if (ImageQuickUri != null){
-            uploadImage(ImageQuickUri,fileName);
+        if (ImageQuickUri != null) {
+            uploadImage(ImageQuickUri, fileName);
 
         }
     }
@@ -973,6 +956,51 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         for (Map.Entry<String, Object> entry : groups.member.entrySet()) {
             String groupMemberVal = entry.getKey();
             getToKnowIsBlockUser(Integer.parseInt(myUid), Integer.parseInt(groupMemberVal), imageUri, msgType);
+
+            batchCountRef.
+                    child(groupMemberVal).child("totalCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        if (dataSnapshot.getValue() != null) {
+                            int count = dataSnapshot.getValue(Integer.class);
+
+                            if (memberToken.containsKey(Integer.parseInt(groupMemberVal))) {
+                                String token = memberToken.get(Integer.parseInt(groupMemberVal));
+
+                                if (broadcastHistory.messageType == 0)
+                                    sendNotifications(token, String.valueOf(count + 1), broadcastHistory.message);
+                                else
+                                    sendNotifications(token, String.valueOf(count + 1), "Image");
+
+                                batchCountRef.child(groupMemberVal).child("totalCount").setValue(count+1);
+                            }
+                        }else {
+                            if (memberToken.containsKey(Integer.parseInt(groupMemberVal))) {
+                                String token = memberToken.get(Integer.parseInt(groupMemberVal));
+
+                                if (broadcastHistory.messageType == 0)
+                                    sendNotifications(token, String.valueOf(1), broadcastHistory.message);
+                                else
+                                    sendNotifications(token, String.valueOf(1), "Image");
+
+                                batchCountRef.child(groupMemberVal).child("totalCount").setValue(1);
+
+                            }
+                        }
+
+                    } catch (Exception e) {
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
         }
 
 
@@ -983,10 +1011,41 @@ public class BroadCastChatActivity extends AppCompatActivity implements
 
 
         et_for_sendTxt.setText("");
-        if (broadcastHistory.messageType == 0)
+       /* if (broadcastHistory.messageType == 0)
             sendPushNotificationToReceiver(broadcastHistory.message);
         else
-            sendPushNotificationToReceiver("Image");
+            sendPushNotificationToReceiver("Image");*/
+    }
+
+    private void sendPushNotificationToReceiver(String message) {
+
+      /*  for (int i = 0; i < fbTokenListForWeb.size(); i++) {
+
+            WebNotification webNotification = new WebNotification();
+            webNotification.body = message;
+            webNotification.title = Mualab.currentUser.userName;
+            webNotification.url = "";
+            //chatRefWebnotif.child(fbTokenListForWeb.get(i)).setValue(webNotification); do it later
+        }
+*/
+        FcmNotificationBuilder.initialize()
+                .title(Mualab.currentUser.userName)
+                .message(message).uid(myUid)
+                .username(Mualab.currentUser.userName).adminId(String.valueOf(groups.adminId))
+                .type("groupChat").clickAction("GroupChatActivity")
+                .registrationId(fbTokenListForMobile).send();
+
+    }
+
+    private void sendNotifications(String fbToken, String count, String message) {
+        FcmNotificationBuilder.initialize()
+                .title(Mualab.currentUser.userName)
+                .batchCount(count)
+                .message(message).uid(myUid)
+                .username(Mualab.currentUser.userName).adminId(String.valueOf(groups.adminId))
+                .type("groupChat").clickAction("GroupChatActivity")
+                .firebaseToken(FirebaseInstanceId.getInstance().getToken())
+                .receiverFirebaseToken(fbToken).send();
     }
 
 
@@ -1030,22 +1089,22 @@ public class BroadCastChatActivity extends AppCompatActivity implements
 
     }
 
-    private void uploadImage(final Uri imageUri,String fileName) {
+    private void uploadImage(final Uri imageUri, String fileName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-        
+
         if (imageUri != null) {
-            if(fileName.equals("")){
+            if (fileName.equals("")) {
                 fileName = ".jpg";
-            }else if(fileName.contains("gif")){
+            } else if (fileName.contains("gif")) {
                 fileName = ".gif";
-            }else {
+            } else {
                 fileName = ".jpg";
             }
 
-            if(imageUri.toString().contains("http")){// case from google
+            if (imageUri.toString().contains("http")) {// case from google
                 sendImage(imageUri);
-            }else {
+            } else {
                 Progress.show(BroadCastChatActivity.this);
                 getImageUrl(imageUri, fileName, storageReference);
             }
@@ -1053,7 +1112,7 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     }
 
     private void getImageUrl(Uri imageUri, String fileName, StorageReference storageReference) {
-        StorageReference ref = storageReference.child("images/" +  ServerValue.TIMESTAMP + fileName);
+        StorageReference ref = storageReference.child("images/" + ServerValue.TIMESTAMP + fileName);
         ref.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

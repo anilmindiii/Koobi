@@ -34,6 +34,7 @@ import com.mualab.org.user.chat.model.ChatHistory;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -244,6 +245,10 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ly_delete_chat.setOnClickListener(v->{
                 Toast.makeText(context, "ly_delete_chat", Toast.LENGTH_SHORT).show();
                 swipeLayout.close(true,true);
+            });
+
+            ivProfile.setOnClickListener(value->{
+                Helper.apiForgetUserIdFromUserName(chat.userName,context);
             });
         }
 

@@ -93,7 +93,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tv_sender_msg,tv_send_time,tv_my_date_label;
+        TextView tv_sender_msg,tv_send_time,tv_my_date_label,tv_transparent;
         ImageView iv_for_sender,iv_msg_status;
         ProgressBar progress_bar;
 
@@ -106,6 +106,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
             tv_send_time = itemView.findViewById(R.id.tv_send_time);
             progress_bar = itemView.findViewById(R.id.progress_bar);
             tv_my_date_label = itemView.findViewById(R.id.tv_my_date_label);
+            tv_transparent = itemView.findViewById(R.id.tv_transparent);
 
             iv_for_sender.setOnClickListener(this);
 
@@ -161,6 +162,10 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                 progress_bar.setVisibility(View.GONE);
             }
 
+            if(chat.isLongSelected){
+                tv_transparent.setVisibility(View.VISIBLE);
+            }else tv_transparent.setVisibility(View.GONE);
+
             SimpleDateFormat sd = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             try {
                 String date = sd.format(new Date((Long) chat.timestamp));
@@ -197,6 +202,11 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             if (listener!=null)
                 listener.onScrollChange(position,chat.timestamp);
+
+            itemView.setOnLongClickListener(v -> {
+                listener.onLongPress(getAdapterPosition(),chatList.get(getAdapterPosition()).ref_key);
+                return false;
+            });
 
         }
 

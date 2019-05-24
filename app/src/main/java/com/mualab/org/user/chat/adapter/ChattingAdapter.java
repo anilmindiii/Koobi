@@ -167,7 +167,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             if(chat.isLongSelected){
                 tv_transparent.setVisibility(View.VISIBLE);
-            }else tv_transparent.setVisibility(View.GONE);;
+            }else tv_transparent.setVisibility(View.GONE);
 
             SimpleDateFormat sd = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             try {
@@ -196,13 +196,13 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iv_for_sender.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onLongPress(getAdapterPosition());
+                    listener.onLongPress(getAdapterPosition(),chatList.get(getAdapterPosition()).ref_key);
                     return false;
                 }
             });
 
             itemView.setOnLongClickListener(v -> {
-                listener.onLongPress(getAdapterPosition());
+                listener.onLongPress(getAdapterPosition(),chatList.get(getAdapterPosition()).ref_key);
                 return false;
             });
 

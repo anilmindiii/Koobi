@@ -13,6 +13,7 @@ public interface API {
 
     ////new AWS server link
     String BASE_URL = "http://3.17.192.198:3000/api/";
+    String DEEP_LINK_BASE_URL = "http://koobi.co.uk/";
 
 
     //Dev

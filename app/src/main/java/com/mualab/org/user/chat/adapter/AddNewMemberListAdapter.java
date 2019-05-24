@@ -16,6 +16,7 @@ import com.mualab.org.user.R;
 
 import com.mualab.org.user.chat.listner.OnUserClickListener;
 import com.mualab.org.user.chat.model.FirebaseUser;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -93,6 +94,12 @@ public class AddNewMemberListAdapter extends RecyclerView.Adapter<RecyclerView.V
         }else {
             holder.chat_checkbox.setImageResource(R.drawable.inactive_check_ico);
         }
+
+
+        holder.ivProfilePic.setOnClickListener(v -> {
+            Helper.apiForgetUserIdFromUserName(firebaseUser.userName,mContext);
+        });
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener

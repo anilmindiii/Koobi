@@ -25,6 +25,7 @@ public class Constant {
     public static final int OTP_VERIFICATION = 108;
     public static final int ADD_STORY = 465;
     public static final int CLEAR = 468;
+    public static final int MY_PERMISSIONS_REQUEST_CONTACT = 109;
 
     public static final String EXTRA_VIDEO_PATH = "EXTRA_VIDEO_PATH";
     public static final String VIDEO_TOTAL_DURATION = "VIDEO_TOTAL_DURATION";

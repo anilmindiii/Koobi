@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -46,6 +47,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
@@ -58,6 +60,7 @@ import com.mualab.org.user.activity.explore.ExploreFragmentNew;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.fragment.FeedsFragment;
 import com.mualab.org.user.activity.gellery.GalleryActivity;
+import com.mualab.org.user.activity.main.listner.CountClick;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.activity.notification.fragment.NotificationFragment;
 import com.mualab.org.user.activity.searchBoard.fragment.SearchBoardFragment;
@@ -66,6 +69,7 @@ import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatActivity;
 import com.mualab.org.user.chat.ChatHistoryActivity;
 import com.mualab.org.user.chat.GroupChatActivity;
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.model.ChatHistory;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.local.prefs.Session;
@@ -83,20 +87,23 @@ import com.mualab.org.user.utils.LocationDetector;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.network.NetworkChangeReceiver;
 import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import static com.mualab.org.user.data.local.prefs.Session.isLogout;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat;
-    public TextView tvHeaderTitle;
+    public TextView tvHeaderTitle, tv_business_count;
     public RelativeLayout rootLayout;
     public CardView rlHeader1;
     public RefineSearchBoard item;
@@ -118,7 +125,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ArrayList<LiveUserInfo> liveUserList;
     private int unReadCount = 0;
     private TextView tv_batch_count;
-    private HashMap<String,Integer> batchCountMap;
+    private HashMap<String, Integer> batchCountMap;
+    public static int businessBadge;
 
 
     public void setBgColor(int color) {
@@ -154,6 +162,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Mualab.feedBasicInfo.put("state", "MP");
             Mualab.feedBasicInfo.put("country", "India");
         }
+
 
         final NoConnectionDialog network = new NoConnectionDialog(MainActivity.this, new NoConnectionDialog.Listner() {
             @Override
@@ -217,20 +226,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             try {
                 //deeplinking
                 Uri data = getIntent().getData();
-                if (data!=null){
+                if (data != null) {
                     String url = data.toString();
                     String[] urlSplit = url.split("http://koobi.co.uk/feedDetail/");
                     int feedId = Integer.parseInt(urlSplit[1]);
 
                     intent = new Intent(this, FeedSingleActivity.class);
-                    intent.putExtra("feedId",String.valueOf(feedId));
+                    intent.putExtra("feedId", String.valueOf(feedId));
                     startActivity(intent);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
-
 
 
             if (intent.getStringExtra("notifyId") != null) {
@@ -283,8 +291,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         checkPermission();
+        getBusinessInvitaionBadgeCount();
         getHistoryList();
     }
+
 
     private void notificationRedirections(String notifyId, String userName, String urlImageString, String userType, String notifincationType) {
         switch (notifincationType) {
@@ -472,6 +482,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         ivAppIcon = findViewById(R.id.ivAppIcon);
         ivHeaderBack = findViewById(R.id.btnBack);
+        tv_business_count = findViewById(R.id.tv_business_count);
         ivHeaderUser = findViewById(R.id.ivUserProfile);
         ivHeaderUser.setVisibility(View.VISIBLE);
         User user = Mualab.getInstance().getSessionManager().getUser();
@@ -1130,7 +1141,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) { }
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -1147,25 +1159,63 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (messageOutput != null) {
 
             messageOutput.isTyping = false;
-            batchCountMap.put(key,messageOutput.unreadMessage);
+            batchCountMap.put(key, messageOutput.unreadMessage);
 
             unReadCount = 0;
             Iterator myVeryOwnIterator = batchCountMap.keySet().iterator();
-            while(myVeryOwnIterator.hasNext()) {
-                String keyMap =(String)myVeryOwnIterator.next();
+            while (myVeryOwnIterator.hasNext()) {
+                String keyMap = (String) myVeryOwnIterator.next();
                 int value = batchCountMap.get(keyMap);
 
-                unReadCount =  value + unReadCount;
-                tv_batch_count.setText(unReadCount+"");
+                unReadCount = value + unReadCount;
+                tv_batch_count.setText(unReadCount + "");
 
-                if(unReadCount == 0){
+                if (unReadCount == 0) {
                     tv_batch_count.setVisibility(View.GONE);
-                }else  tv_batch_count.setVisibility(View.VISIBLE);
+                } else tv_batch_count.setVisibility(View.VISIBLE);
             }
-        }else tv_batch_count.setVisibility(View.GONE);
+        } else tv_batch_count.setVisibility(View.GONE);
 
     }
 
+    private void getBusinessInvitaionBadgeCount() {
+
+        FirebaseDatabase.getInstance().getReference().
+                child("socialBookingBadgeCount").child(Mualab.currentUser.id + "").child("businessInvitationCount").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    try {
+                        businessBadge = dataSnapshot.getValue(Integer.class);
+                        if (ivHeaderUser.getVisibility() == View.VISIBLE) {
+                            if (businessBadge > 0) {
+                                tv_business_count.setVisibility(View.VISIBLE);
+                                tv_business_count.setText(businessBadge + "");
+                                CountClick.getmCountClick().onCountChange(businessBadge);
+
+                            } else tv_business_count.setVisibility(View.GONE);
+                        }
+                    } catch (Exception e) {
+                        String Badge = dataSnapshot.getValue(String.class);
+                        businessBadge = Integer.parseInt(Badge);
+                        if (ivHeaderUser.getVisibility() == View.VISIBLE) {
+                            if (businessBadge > 0) {
+                                tv_business_count.setVisibility(View.VISIBLE);
+                                tv_business_count.setText(businessBadge + "");
+                                CountClick.getmCountClick().onCountChange(businessBadge);
+                            } else tv_business_count.setVisibility(View.GONE);
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 

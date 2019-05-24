@@ -84,7 +84,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -105,6 +107,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
     private SearchBoardAdapter listAdapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private List<ArtistsSearchBoard> artistsList;
+    private LinkedHashMap<String,ArtistsSearchBoard> mapArtistList;
     public static boolean isFavClick = false;
     private boolean isPulltoRefrash;
     private RefineSearchBoard item;
@@ -120,6 +123,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
     private Session session;
     private RefineSearchBoard locationData = null;
     private boolean isFilterNChngLocaApply = false;
+    private int pagenum = 0;
 
     public static SearchBoardFragment newInstance(RefineSearchBoard item, RefineSearchBoard locationData) {
         SearchBoardFragment fragment = new SearchBoardFragment();
@@ -172,6 +176,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
         ly_change_location.setOnClickListener(this);
 
         session = new Session(mContext);
+        mapArtistList = new LinkedHashMap<>();
 
         if (session.getSaveSearch() != null) {
             isFilterNChngLocaApply = true;
@@ -312,6 +317,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                     // if (page==1 && totalItemsCount>5){
                     listAdapter.showLoading(true);
+                    pagenum = page;
                     hitApi(page, lat, lng);
                     //  }
                 }
@@ -326,6 +332,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
+                pagenum = 0;
                 scrollListener.resetState();
                 isPulltoRefrash = true;
                 if (isFavClick)
@@ -355,6 +362,8 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
 
                 progress_bar.setVisibility(View.VISIBLE);
                 tv_msg.setVisibility(View.GONE);
+                pagenum = 0;
+                mapArtistList.clear();
                 scrollListener.resetState();
                 if (isFavClick)
                     apiForGetFavArtist(0, false);
@@ -561,7 +570,9 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case R.id.ivFav:
+                pagenum = 0;
                 artistsList.clear();
+                mapArtistList.clear();
                 if (!isFavClick) {
                     showProgress();
                     isFavClick = true;
@@ -687,7 +698,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
 
             // params.put("distance", "10");
 
-            params.put("page", "" + page);
+            params.put("page", "" +pagenum);
             params.put("limit", "10");
             params.put("service", mainServId);
             params.put("serviceType", serviceType);
@@ -724,7 +735,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
 
                     System.out.println("searchKeyword====" + searchKeyword + "&page " + page);
 
-                    if (page == 0) artistsList.clear();
+                    //if (page == 0)artistsList.clear();
 
                     if (status.equalsIgnoreCase("success")) {
 
@@ -748,7 +759,9 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                                 isPulltoRefrash = false;
                                 mRefreshLayout.stopRefresh(true, 500);
                                 int prevSize = artistsList.size();
+                                pagenum = 0;
                                 artistsList.clear();
+                                mapArtistList.clear();
                                 listAdapter.notifyItemRangeRemoved(0, prevSize);
                             }
                             //rvSearchBoard.setVisibility(View.VISIBLE);
@@ -775,9 +788,15 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                                 }
                                 item.categoryName = services;
                                 item.isFav = false;
-                                artistsList.add(item);
+                                mapArtistList.put(item._id,item);
+                                //artistsList.add(item);
                             }
                         }
+
+                        artistsList.clear();
+                        Collection<ArtistsSearchBoard> values = mapArtistList.values();
+                        artistsList.addAll(values);
+
                     } else if (status.equals("fail")) {
                         progress_bar.setVisibility(View.GONE);
                         //tv_msg.setVisibility(View.VISIBLE);
@@ -839,7 +858,9 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                             isPulltoRefrash = false;
                             mRefreshLayout.stopRefresh(false, 500);
                             int prevSize = artistsList.size();
+                            pagenum = 0;
                             artistsList.clear();
+                            mapArtistList.clear();
                             listAdapter.notifyItemRangeRemoved(0, prevSize);
                         }
                     }
@@ -895,7 +916,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             }
 
 
-            params.put("page", "" + page);
+            params.put("page", "" + pagenum);
             params.put("limit", "10");
             params.put("service", mainServId);
             params.put("serviceType", serviceType);
@@ -925,7 +946,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                     String message = js.getString("message");
                     System.out.println("searchKeyword====" + searchKeyword + "&page " + page);
 
-                    if (page == 0) artistsList.clear();
+                    //if (page == 0) artistsList.clear();
 
                     if (status.equalsIgnoreCase("success")) {
 
@@ -937,8 +958,10 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                             if (isPulltoRefrash) {
                                 isPulltoRefrash = false;
                                 mRefreshLayout.stopRefresh(true, 500);
+                                pagenum = 0;
                                 int prevSize = artistsList.size();
                                 artistsList.clear();
+                                mapArtistList.clear();
                                 listAdapter.notifyItemRangeRemoved(0, prevSize);
                             }
                             ll_loadingBox.setVisibility(View.GONE);
@@ -964,8 +987,13 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                                 }
                                 item.categoryName = services;
                                 item.isFav = true;
-                                artistsList.add(item);
+                                mapArtistList.put(item._id,item);
+
                             }
+
+                            artistsList.clear();
+                            Collection<ArtistsSearchBoard> values = mapArtistList.values();
+                            artistsList.addAll(values);
                         }
                     } else if (status.equals("fail")) {
                         progress_bar.setVisibility(View.GONE);
@@ -1011,6 +1039,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                     if (isPulltoRefrash) {
                         isPulltoRefrash = false;
                         mRefreshLayout.stopRefresh(false, 500);
+                        pagenum = 0;
                         int prevSize = artistsList.size();
                         artistsList.clear();
                         listAdapter.notifyItemRangeRemoved(0, prevSize);
@@ -1187,6 +1216,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 123:
+                pagenum = 0;
                 if (isFavClick)
                     apiForGetFavArtist(0, false);
                 else
@@ -1206,6 +1236,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 lat = String.valueOf(latLng.latitude);
                 lng = String.valueOf(latLng.longitude);
                 isFilterNChngLocaApply = true;
+                pagenum = 0;
                 apiForGetArtist(0, false);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);

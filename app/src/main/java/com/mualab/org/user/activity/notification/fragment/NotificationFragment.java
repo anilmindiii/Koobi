@@ -157,20 +157,35 @@ public class NotificationFragment extends BaseFragment implements View.OnClickLi
         batchCountRef.child("bookingCount").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
-                    int bookingCount =  dataSnapshot.getValue(Integer.class);
+                try{
+                    if(dataSnapshot.getValue() != null){
+                        int bookingCount =  dataSnapshot.getValue(Integer.class);
+                        tv_batch_booking_count.setText(bookingCount+"");
+
+                        if(!isSocialTabSelected){
+                            tv_batch_booking_count.setVisibility(View.GONE);
+                            batchCountRef.child("bookingCount").setValue(0);
+                        } else {
+                            if(bookingCount == 0){
+                                tv_batch_booking_count.setVisibility(View.GONE);
+                            }else tv_batch_booking_count.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                }catch (Exception e){
+                    String  bookingCount =  dataSnapshot.getValue(String.class);
                     tv_batch_booking_count.setText(bookingCount+"");
 
                     if(!isSocialTabSelected){
                         tv_batch_booking_count.setVisibility(View.GONE);
                         batchCountRef.child("bookingCount").setValue(0);
                     } else {
-                        if(bookingCount == 0){
+                        if(Integer.parseInt(bookingCount) == 0){
                             tv_batch_booking_count.setVisibility(View.GONE);
                         }else tv_batch_booking_count.setVisibility(View.VISIBLE);
                     }
-
                 }
+
             }
 
             @Override
@@ -182,22 +197,35 @@ public class NotificationFragment extends BaseFragment implements View.OnClickLi
         batchCountRef.child("socialCount").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 if(dataSnapshot.getValue() != null){
-                    int socialCount = dataSnapshot.getValue(Integer.class);
-                    tv_batch_social_count.setText(socialCount+"");
+                    try {
+                        int socialCount = dataSnapshot.getValue(Integer.class);
+                        tv_batch_social_count.setText(socialCount+"");
 
-
-
-
-
-                    if(isSocialTabSelected){
-                        tv_batch_social_count.setVisibility(View.GONE);
-                        batchCountRef.child("socialCount").setValue(0);
-                    }else {
-                        if(socialCount == 0){
+                        if(isSocialTabSelected){
                             tv_batch_social_count.setVisibility(View.GONE);
-                        }else tv_batch_social_count.setVisibility(View.VISIBLE);
+                            batchCountRef.child("socialCount").setValue(0);
+                        }else {
+                            if(socialCount == 0){
+                                tv_batch_social_count.setVisibility(View.GONE);
+                            }else tv_batch_social_count.setVisibility(View.VISIBLE);
+                        }
+                    }catch (Exception e){
+                        String socialCount = dataSnapshot.getValue(String.class);
+                        tv_batch_social_count.setText(socialCount+"");
+
+                        if(isSocialTabSelected){
+                            tv_batch_social_count.setVisibility(View.GONE);
+                            batchCountRef.child("socialCount").setValue(0);
+                        }else {
+                            if(Integer.parseInt(socialCount) == 0){
+                                tv_batch_social_count.setVisibility(View.GONE);
+                            }else tv_batch_social_count.setVisibility(View.VISIBLE);
+                        }
                     }
+
+
 
                 }
             }
@@ -243,6 +271,8 @@ public class NotificationFragment extends BaseFragment implements View.OnClickLi
                 scrollListener.resetState();
                 getNotificationList(0);
                 recyclerView.setAdapter(adapterBoooking);
+
+
                 batchCountRef.child("bookingCount").setValue(0);
                 isSocialTabSelected = false;
                 break;

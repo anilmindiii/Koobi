@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.chat.MakeAdminActivity;
 import com.mualab.org.user.chat.model.GroupMember;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,6 +51,10 @@ public class MakeAdaminAdapter extends RecyclerView.Adapter<MakeAdaminAdapter.Vi
             Picasso.with(mContext).load(member.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfilePic);
         }
+
+        holder.ivProfilePic.setOnClickListener(v -> {
+            Helper.apiForgetUserIdFromUserName(member.userName,mContext);
+        });
     }
 
     @Override

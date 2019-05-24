@@ -2,6 +2,7 @@ package com.mualab.org.user.activity.feeds.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +34,14 @@ public class FolderItemAdapter extends RecyclerView.Adapter<FolderItemAdapter.Vi
     ArrayList<FolderInfo.DataBean> folderList;
     clickListner clickListner;
     boolean fromSlider;
+    AppCompatButton btnSave;
 
-    public FolderItemAdapter(boolean fromSlider,Context mContext, ArrayList<FolderInfo.DataBean> folderList, clickListner clickListner) {
+    public FolderItemAdapter(AppCompatButton btnSave, boolean fromSlider, Context mContext, ArrayList<FolderInfo.DataBean> folderList, clickListner clickListner) {
         this.mContext = mContext;
         this.folderList = folderList;
         this.clickListner = clickListner;
         this.fromSlider = fromSlider;
+        this.btnSave = btnSave;
     }
 
     @NonNull
@@ -129,7 +132,14 @@ public class FolderItemAdapter extends RecyclerView.Adapter<FolderItemAdapter.Vi
                     //String message = js.getString("message");
 
                     if (status.equalsIgnoreCase("success")) {
+
                         folderList.remove(pos);
+
+
+                        if(folderList.size()==0){
+                            btnSave.setVisibility(View.GONE);
+                        }
+
                         notifyDataSetChanged();
                     }
                 } catch (JSONException e) {

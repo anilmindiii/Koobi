@@ -36,6 +36,8 @@ public class Services {
         public String radius;
         public String businessType;
         public int bankStatus;
+        public int payOption;
+        public int bookingSetting;
         public List<BusineshoursBean> busineshours;
         public boolean isAlreadybooked;
 

@@ -2,8 +2,10 @@ package com.mualab.org.user.activity.artist_profile.adapter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -56,6 +58,7 @@ import com.mualab.org.user.dialogs.MyToast;
 
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.listener.OnDoubleTapListener;
+import com.mualab.org.user.utils.Helper;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 
@@ -216,9 +219,11 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (feeds.userId == Mualab.currentUser.id) {
                     h.tv_report.setVisibility(View.GONE);
                     h.view_divider.setVisibility(View.GONE);
+                    h.tv_delete.setVisibility(View.VISIBLE);
                 } else {
                     h.tv_report.setVisibility(View.VISIBLE);
                     h.view_divider.setVisibility(View.VISIBLE);
+                    h.tv_delete.setVisibility(View.GONE);
                 }
 
 
@@ -509,6 +514,11 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
+        holder.tv_delete.setOnClickListener(v -> {
+            apiForDeletePost(feedItems.get(holder.getAdapterPosition()), holder.getAdapterPosition());
+
+        });
+
         holder.tv_share_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -696,6 +706,11 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mContext.startActivity(intent);
                 hide_menu_Video(videoHolder);
             }
+        });
+
+        videoHolder.tv_delete.setOnClickListener(v -> {
+            apiForDeletePost(feedItems.get(videoHolder.getAdapterPosition()), videoHolder.getAdapterPosition());
+
         });
 
         videoHolder.tv_share_post.setOnClickListener(new View.OnClickListener() {
@@ -889,6 +904,10 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
+        cellFeedViewHolder.tv_delete.setOnClickListener(v -> {
+            apiForDeletePost(feedItems.get(cellFeedViewHolder.getAdapterPosition()), cellFeedViewHolder.getAdapterPosition());
+        });
+
         cellFeedViewHolder.tv_share_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -930,29 +949,23 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        cellFeedViewHolder.btnFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cellFeedViewHolder.btnFollow.setOnClickListener(v -> {
 
-                //cellFeedViewHolder.btnFollow.setEnabled(false);
-                int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                Feeds feed = feedItems.get(adapterPosition);
-                followUnfollow(feed, adapterPosition);
-                hide_menu_cellFeed(cellFeedViewHolder);
-            }
+            //cellFeedViewHolder.btnFollow.setEnabled(false);
+            int adapterPosition = cellFeedViewHolder.getAdapterPosition();
+            Feeds feed = feedItems.get(adapterPosition);
+            followUnfollow(feed, adapterPosition);
+            hide_menu_cellFeed(cellFeedViewHolder);
         });
 
-        cellFeedViewHolder.ivProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cellFeedViewHolder.ivProfile.setOnClickListener(v -> {
 
-                if (listener != null) {
-                    int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                    Feeds feed = feedItems.get(adapterPosition);
-                    listener.onClickProfileImage(feed, cellFeedViewHolder.ivProfile);
-                }
-                hide_menu_cellFeed(cellFeedViewHolder);
+            if (listener != null) {
+                int adapterPosition = cellFeedViewHolder.getAdapterPosition();
+                Feeds feed = feedItems.get(adapterPosition);
+                listener.onClickProfileImage(feed, cellFeedViewHolder.ivProfile);
             }
+            hide_menu_cellFeed(cellFeedViewHolder);
         });
     }
 
@@ -1092,7 +1105,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         protected ImageView ivLike,iv_menu,iv_save_to_folder;
         protected ImageView ivProfile, ivComments; //btnLike
         protected LinearLayout ly_like_count, ly_comments;
-        protected TextView tvUserName, tvUserLocation, tvPostTime;
+        protected TextView tvUserName, tvUserLocation, tvPostTime ,tv_delete;
         protected TextView tv_like_count, tv_comments_count;
         protected SocialTextView tv_text;
         protected AppCompatButton btnFollow;
@@ -1124,6 +1137,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_share_post = itemView.findViewById(R.id.tv_share_post);
             view_divider = itemView.findViewById(R.id.view_divider);
             iv_save_to_folder = itemView.findViewById(R.id.iv_save_to_folder);
+            tv_delete = itemView.findViewById(R.id.tv_delete);
         }
     }
 
@@ -1294,7 +1308,8 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
         if(imageNvideoUrl == null|| scr_shot_view == null){
-            sharOnsocial(null,text,null,feedId);
+            //sharOnsocial(null,text,null,feedId);
+            Helper.shareOnSocial(mContext,null, text, null, feedId);
         }else {
             try {
                 String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".png";
@@ -1305,7 +1320,8 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 Bitmap bitmap = Bitmap.createBitmap(scr_shot_view.getDrawingCache());
                 bitmap.compress(Bitmap.CompressFormat.PNG, 60, outputStream);
                 scr_shot_view.destroyDrawingCache();
-                sharOnsocial(imageFile,text,imageNvideoUrl,feedId);
+                //sharOnsocial(imageFile,text,imageNvideoUrl,feedId);
+                Helper.shareOnSocial(mContext,imageFile, text, imageNvideoUrl, feedId);
                 //onShareClick(imageFile,text);
                 //doShareLink(text,otherProfileInfo.UserDetail.profileUrl);
             } catch (FileNotFoundException e) {
@@ -1314,6 +1330,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
     }
+
 
     private void sharOnsocial(File imageFile, String text,String imageNvideoUrl,int feedId) {
         if(imageFile == null){
@@ -1383,6 +1400,57 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 .setProgress(false)
                 .setBodyContentType(HttpTask.ContentType.X_WWW_FORM_URLENCODED))
                 .execute("removeToFolder");
+
+
+    }
+
+    private void apiForDeletePost(final Feeds feeds, final int position) {
+        new AlertDialog.Builder(mContext)
+                .setTitle(mContext.getString(R.string.delete_post))
+                .setMessage("Are you sure you want to delete this post?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Progress.show(mContext);
+                        Map<String, String> map = new HashMap<>();
+                        map.put("id", "" + feeds._id);
+                        map.put("feedType", "" + feeds.feedType);
+                        map.put("userId", "" + Mualab.currentUser.id);
+
+                        new HttpTask(new HttpTask.Builder(mContext, "deleteFeed", new HttpResponceListner.Listener() {
+                            @Override
+                            public void onResponse(String response, String apiName) {
+                                Progress.hide(mContext);
+                                try {
+                                    JSONObject js = new JSONObject(response);
+                                    String status = js.getString("status");
+                                    //String message = js.getString("message");
+
+                                    if (status.equalsIgnoreCase("success")) {
+                                        feedItems.remove(position);
+                                    }
+                                    notifyDataSetChanged();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Progress.hide(mContext);
+                                    notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void ErrorListener(VolleyError error) {
+                                notifyItemChanged(position);
+                                Progress.hide(mContext);
+                            }
+                        }).setAuthToken(Mualab.currentUser.authToken)
+                                .setParam(map)
+                                .setMethod(Request.Method.POST)
+                                .setProgress(false)
+                                .setBodyContentType(HttpTask.ContentType.X_WWW_FORM_URLENCODED))
+                                .execute("deletePostApi");
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
 
 
     }

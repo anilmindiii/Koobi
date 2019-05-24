@@ -7,7 +7,7 @@
     android:id="@+id/main_layout"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="275dp">
 
-                <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                <android.support.v4.view.ViewPager
                     android:id="@+id/viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -61,9 +61,9 @@
                 layout="@layout/feed_item_menu2"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="7dp"
+                android:layout_marginEnd="7dp"
                 android:layout_marginBottom="24dp"
                 android:visibility="gone"/>
 

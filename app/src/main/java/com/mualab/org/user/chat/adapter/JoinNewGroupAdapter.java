@@ -17,6 +17,7 @@ import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.JoinNewGroupActivity;
 import com.mualab.org.user.chat.model.GroupRequestInfo;
 import com.mualab.org.user.chat.model.Groups;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,6 +45,8 @@ public class JoinNewGroupAdapter extends RecyclerView.Adapter<JoinNewGroupAdapte
         viewHolder.tvUname.setText(groups.groupName);
         viewHolder.tvMsg.setText(groups.groupDescription);
         viewHolder.tvMemberCount.setText((groups.member.size())+" Members");
+
+
 
         if(groups.isPending){
             viewHolder.rlPending.setVisibility(View.VISIBLE);

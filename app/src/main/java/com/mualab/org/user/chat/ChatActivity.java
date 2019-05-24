@@ -78,6 +78,7 @@ import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.Util.TimeAgo;
 import com.mualab.org.user.chat.adapter.ChattingAdapter;
 import com.mualab.org.user.chat.adapter.MenuAdapter;
+import com.mualab.org.user.chat.brodcasting.BroadCastChatActivity;
 import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.listner.DateTimeScrollListner;
 import com.mualab.org.user.chat.model.BlockUser;
@@ -134,7 +135,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private Handler handler = new Handler();
     private Bitmap bmChatImg;
     private DatabaseReference mFirebaseDatabaseReference, chatRef, otherChatRef, myChatRef, isOppTypingRef,
-            blockUsersRef, myChatHistoryRef, otherChatHistoryRef, chatRefWebnotif, chatRefMuteUser;
+            blockUsersRef, myChatHistoryRef, otherChatHistoryRef, chatRefWebnotif, chatRefMuteUser,lastBadgeCountRef;
     private long mLastClickTime = 0;
     private LinearLayoutManager layoutManager;
     private int unreadMsgCount = 1, isMyFavourite = 0, isOtherFavourite = 0, isMute = 0,
@@ -144,6 +145,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private Uri ImageQuickUri;
     String holdKeyForImage = "",matchImageUrl = "";
     private boolean isGIF;
+    private String lastbadgeCount = "0";
+    private Map<String,String> deletedKeyMap;
 
 
     @Override
@@ -157,6 +160,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Mualab.currentChatUserId = otherUserId;
 
         isActivityOpen = true;
+        deletedKeyMap = new HashMap<>();
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         chatRef = mFirebaseDatabaseReference.child("chat");
@@ -174,6 +178,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 child(myUid).child(otherUserId);
 
         chatRefMuteUser = mFirebaseDatabaseReference.child("mute_user");
+        lastBadgeCountRef = mFirebaseDatabaseReference.child("socialBookingBadgeCount").child(otherUserId);
 
         init();
 
@@ -189,6 +194,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         });
+
+        getBadgeCount();
 
        /* BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(this);
         final View bottomSheetLayout = getLayoutInflater().inflate(R.layout.fragment_explore, null);
@@ -442,6 +449,28 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+    private void getBadgeCount(){
+        lastBadgeCountRef.child("totalCount").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    if(dataSnapshot.getValue() != null){
+                        lastbadgeCount = dataSnapshot.getValue(String.class);
+                    }
+                }catch (Exception e){
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void getOtherUserDetail() {
         progress_bar.setVisibility(View.VISIBLE);
@@ -709,7 +738,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                try {
+                    //  recycler_view.scrollToPosition(chatList.size() - 1);
+                    Chat messageOutput = dataSnapshot.getValue(Chat.class);
+                    getChatDataInmapRemove(dataSnapshot.getKey(), messageOutput);
+                    // map.put(dataSnapshot.getKey(),messageOutput);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -724,6 +760,34 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void getChatDataInmapRemove(String key, Chat chat) {
+        if (chat != null) {
+
+            if(chat.message.equals(matchImageUrl)){
+                chat.message = ImageQuickUri.toString();
+                matchImageUrl = "";
+            }
+
+            chat.ref_key = key;
+            map.remove(key);
+            chatList.clear();
+            Collection<Chat> values = map.values();
+            chat.banner_date = CommonUtils.getDateBanner((Long) chat.timestamp);
+            chatList.addAll(values);
+            chattingAdapter.notifyDataSetChanged();
+            recycler_view.scrollToPosition(map.size() - 1);
+            progress_bar.setVisibility(View.GONE);
+           /* if (chatList.size()==0) {
+                progress_bar.setVisibility(View.GONE);
+                //  tv_no_chat.setVisibility(View.VISIBLE);
+            }else {
+                progress_bar.setVisibility(View.GONE);
+                //   tv_no_chat.setVisibility(View.GONE);
+            }*/
+        }
+        shortList();
+    }
+
     private void getChatDataInmap(String key, Chat chat) {
         if (chat != null) {
 
@@ -732,6 +796,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 matchImageUrl = "";
             }
 
+            chat.ref_key = key;
             map.put(key, chat);
             chatList.clear();
             Collection<Chat> values = map.values();
@@ -1021,7 +1086,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             chatHistory2.timestamp = ServerValue.TIMESTAMP;
                             chatHistory2.unreadMessage = unreadMsgCount;
 
-                            writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,"");
+                            writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,"",false);
                         }
                         //  tv_no_chat.setVisibility(View.GONE);
 
@@ -1034,7 +1099,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void writeToDBProfiles(final Chat chatModel1, final Chat chatModel2,
-                                   final ChatHistory chatHistory1, final ChatHistory chatHistory2,final String fileName) {
+                                   final ChatHistory chatHistory1,
+                                   final ChatHistory chatHistory2,final String fileName,boolean forIMage) {
 
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(ChatActivity.this, new NoConnectionDialog.Listner() {
@@ -1043,12 +1109,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     if (isConnected) {
                         dialog.dismiss();
 
-
-                        holdKeyForImage = otherChatRef.push().getKey();
-
-                        otherChatRef.child(holdKeyForImage).setValue(chatModel1);
-                        myChatRef.child(holdKeyForImage).setValue(chatModel2);
-
+                        if(forIMage){
+                            otherChatRef.child(holdKeyForImage).setValue(chatModel1);
+                            myChatRef.child(holdKeyForImage).setValue(chatModel2);
+                        }else {
+                            String holdKeyFormsg = otherChatRef.push().getKey();
+                            otherChatRef.child(holdKeyFormsg).setValue(chatModel1);
+                            myChatRef.child(holdKeyFormsg).setValue(chatModel2);
+                        }
                         mFirebaseDatabaseReference.child("chat_history").child(myUid).
                                 child(otherUserId).setValue(chatHistory1);
                         // mFirebaseDatabaseReference.child("chat_history").child(otherUserId).child(myUid).setValue(chatHistory2);
@@ -1080,10 +1148,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }).show();
         } else {
-            holdKeyForImage = otherChatRef.push().getKey();
-
-            otherChatRef.child(holdKeyForImage).setValue(chatModel1);
-            myChatRef.child(holdKeyForImage).setValue(chatModel2);
+            if(forIMage){
+                otherChatRef.child(holdKeyForImage).setValue(chatModel1);
+                myChatRef.child(holdKeyForImage).setValue(chatModel2);
+            }else {
+                String holdKeyFormsg = otherChatRef.push().getKey();
+                otherChatRef.child(holdKeyFormsg).setValue(chatModel1);
+                myChatRef.child(holdKeyFormsg).setValue(chatModel2);
+            }
 
             mFirebaseDatabaseReference.child("chat_history").child(myUid).
                     child(otherUserId).setValue(chatHistory1);
@@ -1092,8 +1164,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             et_for_sendTxt.setText("");
 
-            if (ImageQuickUri != null)
+            if (ImageQuickUri != null){
+
                 uploadImage(ImageQuickUri,fileName);
+                ImageQuickUri = null;
+            }
+
 
             isTyping = false;
             handler.removeCallbacks(runnable);
@@ -1110,6 +1186,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendPushNotificationToReceiver(String message, String type) {
+        int count = (Integer.parseInt(lastbadgeCount) + 1) ;
+        lastBadgeCountRef.child("totalCount").setValue(String.valueOf(count));
 
         if (otherUser.firebaseToken.isEmpty()) {
             WebNotification webNotification = new WebNotification();
@@ -1120,6 +1198,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             FcmNotificationBuilder.initialize()
                     .title(Mualab.currentUser.userName)
+                    .batchCount(String.valueOf(count))
                     .message(message).uid(myUid)
                     .username(Mualab.currentUser.userName)
                     .type(type).clickAction("ChatActivity")
@@ -1210,7 +1289,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             break;
                         case "Mute Chat":
                         case "Unmute Chat":
-                            popupWindow.dismiss();
+                          //  popupWindow.dismiss();
                             if (isMute == 0) {
                                 isMute = 1;
                                 chatRefMuteUser.child(myUid).child(otherUserId).child("mute").
@@ -1222,23 +1301,23 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                             break;
                         case "Clear Chat":
-                            popupWindow.dismiss();
+                            //popupWindow.dismiss();
                             showAlertDeleteChat();
                             break;
 
                         case "Unblock User":
                         case "Block User":
-                            popupWindow.dismiss();
+                           // popupWindow.dismiss();
                             if (blockedById == null || blockedById.equals("")) {
-                                popupWindow.dismiss();
+                               // popupWindow.dismiss();
                                 showAlertBlock();
                             } else if (blockedById.equals(myUid)) {
-                                popupWindow.dismiss();
+                               // popupWindow.dismiss();
                                 blockUsersRef.child(blockUserNode).setValue(null);
                             } else if (blockedById.equals(otherUserId)) {
                                 showAlertBlock();
                             } else if (blockedById.equalsIgnoreCase("Both")) {
-                                popupWindow.dismiss();
+                               // popupWindow.dismiss();
                                 BlockUser blockUser = new BlockUser();
                                 blockUser.blockedBy = otherUserId;
                                 blockUsersRef.child(blockUserNode).setValue(blockUser);
@@ -1278,7 +1357,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        popupWindow.dismiss();
+                      //  popupWindow.dismiss();
                         myChatRef.removeValue();
                         //mapKey.put(dataSnapshot.getKey(),dataSnapshot.getKey());
                         mFirebaseDatabaseReference.child("chat_history").child(myUid).child(otherUserId).
@@ -1346,7 +1425,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        popupWindow.dismiss();
+
                         progress_bar.setVisibility(View.GONE);
 
                         if (blockedById.equals(otherUserId)) {
@@ -1456,6 +1535,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void uploadImage(Uri imageUri, String fileType) {
+        Progress.show(ChatActivity.this);
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         if (imageUri != null) {
@@ -1477,18 +1557,17 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
+                                    Progress.hide(ChatActivity.this);
                                     matchImageUrl = uri.toString().trim();
 
-                                    otherChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
-                                    myChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
-
-                                    mFirebaseDatabaseReference.child("chat_history").child(myUid).
-                                            child(otherUserId).child("message").setValue(uri.toString());
-
-                                    otherChatHistoryRef.child("message").setValue(uri.toString());
-
+                                    if(!deletedKeyMap.containsKey(holdKeyForImage)){
+                                        otherChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
+                                        myChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
+                                        mFirebaseDatabaseReference.child("chat_history").child(myUid).
+                                                child(otherUserId).child("message").setValue(uri.toString());
+                                        otherChatHistoryRef.child("message").setValue(uri.toString());
+                                    }
                                     ImageQuickUri = null;
-
                                 }
                             });
 
@@ -1498,6 +1577,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            Progress.hide(ChatActivity.this);
                             //  progressDialog.dismiss();
                             Log.e("TAG", "onFailure: " + e.getMessage());
                             Toast.makeText(ChatActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -1563,7 +1643,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         chatHistory2.timestamp = ServerValue.TIMESTAMP;
         chatHistory2.unreadMessage = unreadMsgCount;
 
-        writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,fileName);
+        holdKeyForImage = otherChatRef.push().getKey();
+        writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,fileName,true);
 
     }
 
@@ -1739,7 +1820,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onLongPress(int position) {
+    public void onLongPress(int position,String refKey) {
         ArrayList<Item> items;
         Item item  = new Item();
         item.id = "1";
@@ -1755,8 +1836,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         BottomSheetPopup.newInstance("", items, new BottomSheetPopup.ItemClick() {
             @Override
             public void onClickItem(int pos) {
-                //askDelete();
-                MyToast.getInstance(ChatActivity.this).showDasuAlert(getString(R.string.under_development));
+                askDelete("Are you sure want to remove this message?",refKey,position);
+
             }
 
             @Override
@@ -1771,4 +1852,29 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void onPress(int position) {
 
     }
+
+    public void askDelete(String msg, String refKey, int cell_pos) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+            dialog.cancel();
+            deletedKeyMap.put(refKey,refKey);
+            myChatRef.child(refKey).removeValue();
+
+            if(chatList.size() == 1){
+                myChatHistoryRef.removeValue();
+            }else if(cell_pos == (chatList.size()-1)){
+                String holdLastMessage =  chatList.get(chatList.size()-2).message;
+                myChatHistoryRef.child("message").setValue(holdLastMessage);
+            }
+        });
+
+        alertDialog.setNegativeButton("No", (dialog, which) -> {
+            dialog.cancel();
+        });
+        alertDialog.show();
+    }
+
 }

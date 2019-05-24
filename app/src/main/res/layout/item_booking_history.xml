@@ -90,6 +90,15 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@+id/ivProfile"
+            android:layout_below="@+id/lyDetail"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="95dp">
+
         <RelativeLayout
             android:id="@+id/rlServices"
             android:layout_width="wrap_content"
@@ -152,7 +161,7 @@
 
         </RelativeLayout>
 
-
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ly_right_view"

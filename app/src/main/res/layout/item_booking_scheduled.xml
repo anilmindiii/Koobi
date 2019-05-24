@@ -90,71 +90,76 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/rlServices"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_below="@+id/lyDetail"
-            android:layout_marginLeft="4dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_toRightOf="@+id/ivProfile"
-            android:gravity="center"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/rounded_border_dark"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_toEndOf="@+id/ivProfile">
-
-            <TextView
-                android:id="@+id/tvServices"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/nunito_bold"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:padding="2dp"
-                android:layout_centerVertical="true"
-                android:text=""
-                android:textColor="@color/black"
-                android:textSize="11sp"
-                />
-
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/newText"
-            android:layout_width="wrap_content"
             android:layout_below="@+id/lyDetail"
-            android:layout_marginLeft="4dp"
-            android:layout_toRightOf="@+id/rlServices"
             android:layout_marginTop="6dp"
-            android:visibility="gone"
-            android:background="@drawable/rounded_border_dark"
-            android:layout_toEndOf="@+id/rlServices"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp">
+            android:layout_marginRight="45dp">
 
-            <TextView
-                android:id="@+id/tvServicesnew"
+            <RelativeLayout
+                android:id="@+id/rlServices"
                 android:layout_width="wrap_content"
+                android:layout_below="@+id/lyDetail"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/ivProfile"
+                android:gravity="center"
+                android:background="@drawable/rounded_border_dark"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/nunito_bold"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:padding="2dp"
-                android:layout_centerVertical="true"
-                android:text=""
-                android:textColor="@color/black"
-                android:textSize="11sp"
-                />
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@+id/ivProfile">
+
+                <TextView
+                    android:id="@+id/tvServices"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:padding="2dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    />
 
 
-        </RelativeLayout>
+            </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/newText"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/lyDetail"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/rlServices"
+                android:visibility="gone"
+                android:background="@drawable/rounded_border_dark"
+                android:layout_toEndOf="@+id/rlServices"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp">
+
+                <TextView
+                    android:id="@+id/tvServicesnew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:padding="2dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ly_right_view"

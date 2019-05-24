@@ -29,7 +29,7 @@ import java.util.Calendar;
 public class MyFlexibleCalendar extends MyUICalendar {
 
     public boolean isFirstimeLoad = true;
-    public boolean isTodayLoad = true;
+    public boolean isTodayClick = false;
     private CalendarAdapter mAdapter;
     private CalendarListener mListener;
     private int mInitHeight = 0;
@@ -115,6 +115,8 @@ public class MyFlexibleCalendar extends MyUICalendar {
         });
 
     }
+
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -283,7 +285,9 @@ public class MyFlexibleCalendar extends MyUICalendar {
         }
     }
 
-    private int getSuitableRowIndex() {
+
+
+   /* private int getSuitableRowIndex() {
         if (getSelectedItemPosition() != -1) {
             View view = mAdapter.getView(getSelectedItemPosition());
             TableRow row = (TableRow) view.getParent();
@@ -297,6 +301,40 @@ public class MyFlexibleCalendar extends MyUICalendar {
         } else {
             return 0;
         }
+    }*/
+
+    public void setToday(boolean isTodayClick){
+        this.isTodayClick = isTodayClick;
+    }
+
+    private int getSuitableRowIndex() {
+        if (isTodayClick){
+            isTodayClick = false;
+            if (getTodayItemPosition() != -1) {
+                View view = mAdapter.getView(getTodayItemPosition());
+                TableRow row = (TableRow) view.getParent();
+
+                return mTableBody.indexOfChild(row);
+            }else {
+                return 0;
+            }
+        }else{
+            if (getSelectedItemPosition() != -1) {
+                View view = mAdapter.getView(getSelectedItemPosition());
+                TableRow row = (TableRow) view.getParent();
+
+                return mTableBody.indexOfChild(row);
+            } else if (getTodayItemPosition() != -1) {
+                View view = mAdapter.getView(getTodayItemPosition());
+                TableRow row = (TableRow) view.getParent();
+
+                return mTableBody.indexOfChild(row);
+            } else {
+                return 0;
+            }
+        }
+
+
     }
 
     public int isServiceSelected(int childId){
@@ -340,6 +378,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
         if (mListener != null) {
             mListener.onItemClick(view);
         }
+       collapse(500);
     }
 
     // public methods
@@ -584,6 +623,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
                 mListener.onDaySelect();
             }
         }
+
     }
 
     public void setStateWithUpdateUI(int state) {

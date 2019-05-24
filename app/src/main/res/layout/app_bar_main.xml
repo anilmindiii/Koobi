@@ -140,6 +140,20 @@
                                 android:src="@drawable/ico_varified"
                                 android:visibility="gone" />
 
+                            <TextView
+                                android:id="@+id/tv_invite_count"
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:backgroundTint="@color/red"
+                                android:text="0"
+                                android:gravity="center"
+                                android:textSize="8dp"
+                                android:textColor="@color/white"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/circle_selected_bg"
+                                android:visibility="gone"/>
+
                         </RelativeLayout>
 
 

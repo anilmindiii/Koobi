@@ -79,7 +79,7 @@ public class SaveToFolderActivity extends AppCompatActivity {
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         folderList = new ArrayList<>();
-        adapter = new FolderItemAdapter(fromSlider, this, folderList, new FolderItemAdapter.clickListner() {
+        adapter = new FolderItemAdapter(btnSave,fromSlider, this, folderList, new FolderItemAdapter.clickListner() {
             @Override
             public void getClick(FolderInfo.DataBean dataBean, String Tag, int pos) {
                 if (fromSlider) {

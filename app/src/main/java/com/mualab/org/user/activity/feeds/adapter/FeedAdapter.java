@@ -54,6 +54,7 @@ import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.listener.OnDoubleTapListener;
+import com.mualab.org.user.utils.Helper;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 
@@ -431,18 +432,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.tv_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.tv_report.getText().toString().trim().equals("Delete post")) {
-                    apiForDeletePost(feedItems.get(holder.getAdapterPosition()), holder.getAdapterPosition());
-                } else {
-                    Intent intent = new Intent(mContext, ReportActivity.class);
-                    intent.putExtra("feedOwenerId", feedItems.get(holder.getAdapterPosition()).userId);
-                    intent.putExtra("feedId", feedItems.get(holder.getAdapterPosition())._id);
-                    mContext.startActivity(intent);
-                    hideMenu(holder);
-                }
-
+                Intent intent = new Intent(mContext, ReportActivity.class);
+                intent.putExtra("feedOwenerId", feedItems.get(holder.getAdapterPosition()).userId);
+                intent.putExtra("feedId", feedItems.get(holder.getAdapterPosition())._id);
+                mContext.startActivity(intent);
+                hideMenu(holder);
 
             }
+        });
+
+        holder.tv_delete.setOnClickListener(v->{
+            apiForDeletePost(feedItems.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
         holder.iv_menu.setOnClickListener(new View.OnClickListener() {
@@ -637,17 +637,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         videoHolder.tv_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (videoHolder.tv_report.getText().toString().trim().equals("Delete post")) {
-                    apiForDeletePost(feedItems.get(videoHolder.getAdapterPosition()), videoHolder.getAdapterPosition());
-                } else {
-                    Intent intent = new Intent(mContext, ReportActivity.class);
-                    intent.putExtra("feedOwenerId", feedItems.get(videoHolder.getAdapterPosition()).userId);
-                    intent.putExtra("feedId", feedItems.get(videoHolder.getAdapterPosition())._id);
-                    mContext.startActivity(intent);
+                Intent intent = new Intent(mContext, ReportActivity.class);
+                intent.putExtra("feedOwenerId", feedItems.get(videoHolder.getAdapterPosition()).userId);
+                intent.putExtra("feedId", feedItems.get(videoHolder.getAdapterPosition())._id);
+                mContext.startActivity(intent);
 
-                    hide_menuVideo(videoHolder);
-                }
+                hide_menuVideo(videoHolder);
             }
+        });
+
+        videoHolder.tv_delete.setOnClickListener(v->{
+            apiForDeletePost(feedItems.get(videoHolder.getAdapterPosition()), videoHolder.getAdapterPosition());
         });
 
         videoHolder.iv_menu.setOnClickListener(new View.OnClickListener() {
@@ -870,6 +870,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
 
             }
+        });
+
+        cellFeedViewHolder.tv_delete.setOnClickListener(v->{
+            apiForDeletePost(feedItems.get(cellFeedViewHolder.getAdapterPosition()), cellFeedViewHolder.getAdapterPosition());
         });
 
         cellFeedViewHolder.iv_menu.setOnClickListener(new View.OnClickListener() {
@@ -1273,7 +1277,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
         if (imageNvideoUrl == null || scr_shot_view == null) {
-            sharOnsocial(null, text, null, feedId);
+            //sharOnsocial(null, text, null, feedId);
+            Helper.shareOnSocial(mContext,null, text, null, feedId);
         } else {
             try {
                 String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".png";
@@ -1284,7 +1289,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Bitmap bitmap = Bitmap.createBitmap(scr_shot_view.getDrawingCache());
                 bitmap.compress(Bitmap.CompressFormat.PNG, 60, outputStream);
                 scr_shot_view.destroyDrawingCache();
-                sharOnsocial(imageFile, text, imageNvideoUrl, feedId);
+                //sharOnsocial(imageFile, text, imageNvideoUrl, feedId);
+                Helper.shareOnSocial(mContext,imageFile, text, imageNvideoUrl, feedId);
                 //onShareClick(imageFile,text);
                 //doShareLink(text,otherProfileInfo.UserDetail.profileUrl);
             } catch (FileNotFoundException e) {

@@ -149,7 +149,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         @Override
         public boolean onLongClick(View v) {
-            listner.getLongClick(getAdapterPosition());
+            if ((commentList.get(getAdapterPosition()).commentById) == (Mualab.currentUser.id)) {
+                if (getAdapterPosition() != -1 && listner != null) {
+                    listner.getLongClick(getAdapterPosition());
+                }
+            }
+
+
+
 
             return false;
         }

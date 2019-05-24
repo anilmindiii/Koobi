@@ -22,6 +22,7 @@ import com.mualab.org.user.chat.model.ChatHistory;
 import com.mualab.org.user.chat.model.FirebaseUser;
 import com.mualab.org.user.chat.model.GroupMember;
 import com.mualab.org.user.chat.model.Groups;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -58,6 +59,10 @@ public class GroupRequestAdapter extends RecyclerView.Adapter<GroupRequestAdapte
                     .load(customData.firebaseUser.profilePic).fit()
                     .placeholder(R.drawable.default_placeholder)
                     .into(viewHolder.ivProfile);
+
+        viewHolder.ivProfile.setOnClickListener(v -> {
+            Helper.apiForgetUserIdFromUserName(customData.firebaseUser.userName,mContext);
+        });
 
         viewHolder.tvReject.setOnClickListener(new View.OnClickListener() {
             @Override

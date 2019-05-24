@@ -1,6 +1,7 @@
 package com.mualab.org.user.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -12,21 +13,30 @@ import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
+import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.androidnetworking.error.ANError;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
+import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
+import com.mualab.org.user.activity.share_module.ShareActivity;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.data.remote.API;
+import com.mualab.org.user.data.remote.HttpResponceListner;
+import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.ServerErrorDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Neha on 28/9/17.
@@ -56,6 +66,61 @@ public class Helper {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    public static void apiForgetUserIdFromUserName(final CharSequence userName,Context mContext) {
+        String user_name = "";
+
+        final Map<String, String> params = new HashMap<>();
+        if (userName.toString().startsWith("@")) {
+
+            user_name = userName.toString().replaceFirst("@", "");
+            params.put("userName", user_name + "");
+        } else params.put("userName", userName + "");
+        new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                Log.d("hfjas", response);
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+
+                        JSONObject userDetail = js.getJSONObject("userDetail");
+                        String userType = userDetail.getString("userType");
+                        int userId = userDetail.getInt("_id");
+
+                        if (userType.equals("user")) {
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        } else if (userType.equals("artist") && userId == Mualab.currentUser.id) {
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            intent.putExtra("userId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
+                            intent.putExtra("artistId", String.valueOf(userId));
+                            mContext.startActivity(intent);
+                        }
+
+
+                    } else {
+                        MyToast.getInstance(mContext).showDasuAlert(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+            }
+        }).setBody(params, HttpTask.ContentType.APPLICATION_JSON)
+                .setMethod(Request.Method.POST)
+                .setProgress(true))
+                .execute("FeedAdapter");
     }
 
     public  String error_Messages(VolleyError error) {
@@ -160,6 +225,30 @@ public class Helper {
         return outputDate;
 
     }
+
+
+    public static void shareOnSocial(Context mContext, File imageFile, String text, String imageNvideoUrl, int feedId) {
+
+
+        if (imageFile == null) {
+            Intent intent = new Intent(mContext, ShareActivity.class);
+            intent.putExtra("from", "post");
+            intent.putExtra("type", "text");
+            intent.putExtra("filePath", "");
+            intent.putExtra("link", text + "\n" + API.DEEP_LINK_BASE_URL + "feedDetail/" + feedId);
+            mContext.startActivity(intent);
+
+        } else {
+            Intent intent = new Intent(mContext, ShareActivity.class);
+            intent.putExtra("from", "post");
+            intent.putExtra("type", "file");
+            intent.putExtra("filePath", imageFile.toString());
+            intent.putExtra("link", text + "\n" + imageNvideoUrl + "\n\n" + API.DEEP_LINK_BASE_URL + "feedDetail/" + feedId);
+            mContext.startActivity(intent);
+        }
+    }
+
+
 
 
 }

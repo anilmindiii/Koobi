@@ -50,6 +50,7 @@ public class FcmNotificationBuilder {
     private static final String KEY_UID = "uid";
     private static final String KEY_FCM_TOKEN = "fcm_token";
 
+    private String batch_count;
     private String mTitle;
     private String mMessage;
     private String mUsername;
@@ -68,6 +69,11 @@ public class FcmNotificationBuilder {
 
     public FcmNotificationBuilder title(String title) {
         mTitle = title;
+        return this;
+    }
+
+    public FcmNotificationBuilder batchCount(String batch_count) {
+        this.batch_count = batch_count;
         return this;
     }
 
@@ -164,7 +170,7 @@ public class FcmNotificationBuilder {
         data.put(KEY_TITLE, mUsername);
         data.put("icon","icon");
         data.put("sound", "default");
-        data.put("badge", "1");
+        data.put("badge", batch_count);
         data.put("notifincationType", "15");
         data.put("click_action",clickAction);
         data.put("opponentChatId", mUid);
@@ -188,6 +194,7 @@ public class FcmNotificationBuilder {
         params.put("title", mTitle);
         params.put("sound", "default");
         params.put("priority", "high");
+        params.put("badge", batch_count);
         params.put("data", data);
         params.put("notification", data);
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.chat.listner.OnMemberSelectListener;
 import com.mualab.org.user.chat.model.GroupMember;
+import com.mualab.org.user.utils.Helper;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -64,6 +65,10 @@ public class RemoveNewMemberListAdapter extends RecyclerView.Adapter<RecyclerVie
             Picasso.with(mContext).load(member.profilePic).fit().
                     placeholder(R.drawable.default_placeholder).fit().into(holder.ivProfilePic);
         }
+
+        holder.ivProfilePic.setOnClickListener(v -> {
+            Helper.apiForgetUserIdFromUserName(member.userName,mContext);
+        });
 
         holder.tvUserName.setText(member.userName);
 

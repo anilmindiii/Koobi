@@ -129,11 +129,11 @@ public class TimeAgo {
 
             if (day >= 7) {
                 if (day > 30) {
-                    convTime = "This Months "+ suffix;
+                    convTime = "This Month "+ suffix;
                 } else if (day > 360) {
                     convTime = "This Years "+ suffix;
                 } else {
-                    convTime =   "This Months "+ suffix;
+                    convTime =   "This Month "+ suffix;
                 }
             } else if (day < 7) {
                 convTime = day+" Days "+suffix;

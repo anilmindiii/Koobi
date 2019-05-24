@@ -72,6 +72,14 @@
     <string name="add_more_story">Add More Story</string>
     <string name="write_a_message">Write a message</string>
 
+    <string name="send_this_voucher_link_to_people_you_want_to_message_with_on_koobibiz">Send this voucher link to people you want to message with on Koobi Social.</string>
+    <string name="send_this_post_link_to_people_you_want_to_message_with_on_koobibiz">Send this post link to people you want to message with on Koobi Social.</string>
+    <string name="close">Close</string>
+    <string name="share_link">Share Link</string>
+    <string name="share_voucher_code">Share Voucher Code</string>
+    <string name="share_invitation_link">Share invitation link</string>
+    <string name="find_in_contacts">Find in contacts</string>
+
 
     <!--Validation text-->
     <string name="error_required_field">Please enter required field</string>
@@ -516,7 +524,11 @@
     <string name="save_to_folder">Save To Folder</string>
     <string name="operation_hours">Operation Hours</string>
     <string name="select_service_category">Select Service Category</string>
-    <string name="booking_type">Booking Type</string>
+    <string name="booking_type">Booking Types</string>
+    <string name="update">Update</string>
+    <string name="edit_comment">Edit Comment</string>
+    <string name="share_post">Share Post</string>
+    <string name="add_friends">Add friends</string>
 
 
 </resources>
