@@ -80,8 +80,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
 
         ly_biz_type = findViewById(R.id.ly_biz_type);
         ly_category = findViewById(R.id.ly_category);
-       // rcv_biz_type = findViewById(R.id.rcv_biz_type);
-       // rcv_category_type = findViewById(R.id.rcv_category_type);
+        // rcv_biz_type = findViewById(R.id.rcv_biz_type);
+        // rcv_category_type = findViewById(R.id.rcv_category_type);
         rcv_incall = findViewById(R.id.rcv_incall);
         rcv_outcall = findViewById(R.id.rcv_outcall);
         tv_bizType = findViewById(R.id.tv_bizType);
@@ -213,10 +213,11 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                         Gson gson = new Gson();
                         services = gson.fromJson(response, Services.class);
 
+
                         adapterBizType = new CustomStringAdapter("bizType", services, null, ArtistServicesActivity.this, new CustomStringAdapter.onClickItem() {
                             @Override
                             public void onclick(final Services.ArtistServicesBean artistServicesBean, int adapterPosition) {
-                                if(mBizTypeDialog != null) mBizTypeDialog.dismiss();
+                                if (mBizTypeDialog != null) mBizTypeDialog.dismiss();
 
                                 mainServiceName = artistServicesBean.serviceName;
                                 serviceId = artistServicesBean.serviceId;
@@ -230,13 +231,39 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
 
                                 if (artistServicesBean.subServies.size() > 0) {
                                     if (artistServicesBean.subServies.get(0) != null) {
-                                        tv_category.setText(artistServicesBean.subServies.get(0).subServiceName + "");
+
                                         subServiceName = artistServicesBean.subServies.get(0).subServiceName;
                                         subServiceId = artistServicesBean.subServies.get(0).subServiceId;
 
                                         inCallList.clear();
                                         outCallList.clear();
-                                        for (int i = 0; i < artistServicesBean.subServies.get(0).artistservices.size(); i++) {
+
+                                        for (int g = 0; g < artistServicesBean.subServies.size(); g++) {
+
+                                            if (artistServicesBean.subServies.get(g).artistservices.size() > 0) {
+
+                                                for (int i = 0; i < artistServicesBean.subServies.get(g).artistservices.size(); i++) {
+
+                                                    if (artistServicesBean.subServies.get(g).artistservices.get(i).bookingType.equals("Both")) {
+
+                                                        inCallList.add(artistServicesBean.subServies.get(g).artistservices.get(i));
+                                                        outCallList.add(artistServicesBean.subServies.get(g).artistservices.get(i));
+                                                    } else if (artistServicesBean.subServies.get(g).artistservices.get(i).bookingType.equals("Outcall")) {
+                                                        outCallList.add(artistServicesBean.subServies.get(g).artistservices.get(i));
+                                                    } else if (artistServicesBean.subServies.get(g).artistservices.get(i).bookingType.equals("Incall")) {
+                                                        inCallList.add(artistServicesBean.subServies.get(g).artistservices.get(i));
+                                                    }
+
+
+                                                }
+                                                tv_category.setText(artistServicesBean.subServies.get(g).subServiceName + "");
+                                                break;
+                                            }
+
+                                        }
+
+
+                                       /* for (int i = 0; i < artistServicesBean.subServies.get(0).artistservices.size(); i++) {
 
                                             if (artistServicesBean.subServies.get(0).artistservices.get(i).bookingType.equals("Both")) {
 
@@ -247,7 +274,7 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                                             } else if (artistServicesBean.subServies.get(0).artistservices.get(i).bookingType.equals("Incall")) {
                                                 inCallList.add(artistServicesBean.subServies.get(0).artistservices.get(i));
                                             }
-                                        }
+                                        }*/
 
                                         if (inCallList.size() == 0) {
                                             ly_incall.setVisibility(View.GONE);
@@ -294,7 +321,7 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                                 adapterCategory = new CustomStringAdapter("categoryType", null, artistServicesBean.subServies, ArtistServicesActivity.this, null, new CustomStringAdapter.onClickItemCategory() {
                                     @Override
                                     public void onclick(Services.ArtistServicesBean.SubServiesBean bean, int position) {
-                                        if(mCatTypeDialog != null) mCatTypeDialog.dismiss();
+                                        if (mCatTypeDialog != null) mCatTypeDialog.dismiss();
 
                                         subServiceName = bean.subServiceName;
                                         subServiceId = bean.subServiceId;
@@ -355,7 +382,18 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
                             }
                         }, null);
 
-                        adapterBizType.clickItem();
+                        for (int i = 0; i < services.artistServices.size(); i++) {
+
+                            for (int j = 0; j < services.artistServices.get(i).subServies.size(); j++) {
+
+                                if (services.artistServices.get(i).subServies.get(j).artistservices.size() > 0) {
+                                    adapterBizType.clickItem(i);
+                                    break;
+                                }
+                            }
+
+                        }
+
 
                         rcv_biz_type.setAdapter(adapterBizType);
 
@@ -392,7 +430,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
 
     private void setBizTypeDialog(boolean isShow) {
         if (mBizTypeDialog == null) {
-            mBizTypeDialog = new BottomSheetDialog(ArtistServicesActivity.this, R.style.CustomBottomSheetDialogTheme);
+            mBizTypeDialog = new BottomSheetDialog(ArtistServicesActivity.this,
+                    R.style.CustomBottomSheetDialogTheme);
             View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
             TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
             tvTitle.setText(getString(R.string.business_types));
@@ -406,7 +445,8 @@ public class ArtistServicesActivity extends AppCompatActivity implements View.On
 
     private void setCatTypeDialog(boolean isShow) {
         if (mCatTypeDialog == null) {
-            mCatTypeDialog = new BottomSheetDialog(ArtistServicesActivity.this, R.style.CustomBottomSheetDialogTheme);
+            mCatTypeDialog = new BottomSheetDialog(ArtistServicesActivity.this,
+                    R.style.CustomBottomSheetDialogTheme);
             View sheetView = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
             TextView tvTitle = sheetView.findViewById(R.id.tvTitle);
             tvTitle.setText(getString(R.string.category_types));

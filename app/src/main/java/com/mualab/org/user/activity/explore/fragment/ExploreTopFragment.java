@@ -17,6 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.base.BaseFragment;
@@ -29,6 +33,7 @@ import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
+import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.listener.RecyclerViewScrollListener;
 import com.mualab.org.user.listener.SearchViewListner;
 import com.mualab.org.user.utils.KeyboardUtil;
@@ -44,7 +49,8 @@ import java.util.Map;
 /**
  * Dharmraj Acharya
  **/
-public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
+public class
+ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
         SearchViewListner {
     //public static String TAG = ExploreTopFragment.class.getName();
 
@@ -60,7 +66,9 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
     private String searchKeyWord = "";
     private boolean isViewCreated;
     private boolean isFirstTimeVisiable;
-
+    int tabPosition = 0;
+    int myId = Mualab.currentUser.id;
+    String blockedByUser = "";
 
     public ExploreTopFragment() {
         // Required empty public constructor
@@ -106,6 +114,7 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
           /*  rvTopSearch.scrollToPosition(0);
             lm.scrollToPositionWithOffset(0, 0);
             lm.smoothScrollToPosition(rvTopSearch, null, 0);*/
+           tabPosition = flags;
         });
 
         endlesScrollListener = new RecyclerViewScrollListener(lm) {
@@ -149,9 +158,51 @@ public class ExploreTopFragment extends BaseFragment implements SearchAdapter.Li
 
     @Override
     public void onItemClick(ExSearchTag searchTag, int index) {
-        Intent intent = new Intent(mContext, SearchFeedActivity.class);
-        intent.putExtra("searchKey",searchTag);
-        startActivity(intent);
+        String nodeForBlockUser = "";
+
+        if(tabPosition == 0 || tabPosition == 1){
+            if(searchTag.id < myId){
+                nodeForBlockUser = searchTag.id + "_" + myId;
+            }else nodeForBlockUser = myId + "_" + searchTag.id;
+
+            FirebaseDatabase.getInstance().getReference().child("blockUserArtist").
+                    child(nodeForBlockUser).child("blockedBy").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue() != null){
+                        try {
+                            blockedByUser = dataSnapshot.getValue(String.class);
+                        }catch (Exception e){
+                            blockedByUser = String.valueOf(dataSnapshot.getValue(Integer.class));
+                        }
+
+                        if(blockedByUser.equals(String.valueOf(searchTag.id)) || blockedByUser.equals("Both")){// case of hide screen
+                            MyToast.getInstance(mContext).showDasuAlert("You are blocked by this user! will no longer see their feed");
+                        }else {
+                            Intent intent = new Intent(mContext, SearchFeedActivity.class);
+                            intent.putExtra("searchKey",searchTag);
+                            startActivity(intent);
+                        }
+                    }else {
+                        Intent intent = new Intent(mContext, SearchFeedActivity.class);
+                        intent.putExtra("searchKey",searchTag);
+                        startActivity(intent);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }else {
+            Intent intent = new Intent(mContext, SearchFeedActivity.class);
+            intent.putExtra("searchKey",searchTag);
+            startActivity(intent);
+        }
+
     }
 
     @Override

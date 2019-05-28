@@ -39,13 +39,15 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     Context mContext;
     ArrayList<BookingHistoryInfo.DataBean> dataBean;
     CallApis callApis;
+    RecyclerView recycler_view;
 
-    public BookingHistoryAdapter(Context mContext,
+    public BookingHistoryAdapter(RecyclerView recycler_view,Context mContext,
                                  ArrayList<BookingHistoryInfo.DataBean> dataBean,
                                  CallApis callApis) {
         this.mContext = mContext;
         this.dataBean = dataBean;
         this.callApis = callApis;
+        this.recycler_view = recycler_view;
     }
 
     @NonNull
@@ -70,6 +72,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         if (bean.bookingInfo.size() > 0) {
             holder.tvServices.setText(bean.bookingInfo.get(0).subServiceName + "");
+            holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName + "");
         }
 
         holder.rlServices.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +93,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         holder.artist_total_Rating.setIsIndicator(true);
 
-        holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName + "");
+
         holder.tv_view_more.setVisibility(View.GONE);
 
        /* if (bean.bookingInfo.size() == 1) {
@@ -144,6 +147,10 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
                 holder.ly_review_view.setVisibility(View.GONE);
             } else {
                 holder.ly_review_view.setVisibility(View.VISIBLE);
+            }
+
+            if(position == (dataBean.size()-1)){
+                recycler_view.scrollToPosition(position);
             }
         });
 

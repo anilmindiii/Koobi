@@ -107,7 +107,7 @@ public class InvitationActivity extends AppCompatActivity {
 
     public void showCongratsAlert(String name){
         String s1 = "You are a member of ";
-        String s2 = " You can use the same credential to login in our \nKoobi Biz app";
+        String s2 = " You can use the same credential to login in our \nKoobi app";
         View dialogView = View.inflate(this, R.layout.new_alert_dialog, null);
         final Dialog dialog = new Dialog(this,android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

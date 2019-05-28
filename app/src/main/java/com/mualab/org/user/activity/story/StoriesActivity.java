@@ -73,6 +73,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.mualab.org.user.application.Mualab.isStoryUploaded;
+
 public class StoriesActivity extends SwipeBackActivity implements StoryStatusView.UserInteractionListener,
         SimpleGestureFilter.SimpleGestureListener {
     private StoryStatusView storyStatusView;
@@ -295,6 +297,9 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
                     String message = js.getString("message");
 
                     if (status.equalsIgnoreCase("success")) {
+                        if(storyList.size() == 1){
+                            isStoryUploaded = false;
+                        }
                         MyToast.getInstance(StoriesActivity.this).showDasuAlert(message);
                         finish();
                     } else {

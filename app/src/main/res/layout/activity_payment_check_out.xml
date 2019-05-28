@@ -283,6 +283,7 @@
                         android:inputType="number"
                         android:imeOptions="actionNext"
                         android:padding="5dp"
+                        android:maxLength="16"
                         android:background="@null"
                         android:textColor="@color/dark_gray"
                         android:textColorHint="@color/gray"

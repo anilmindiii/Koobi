@@ -1,14 +1,17 @@
 package com.mualab.org.user.activity.artist_profile.activity;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -59,6 +62,7 @@ import com.mualab.org.user.activity.artist_profile.adapter.ArtistFeedAdapter;
 import com.mualab.org.user.activity.artist_profile.fragments.ProfileComboFragment1;
 import com.mualab.org.user.activity.artist_profile.fragments.ProfileComboFragment2;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
+import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
@@ -72,6 +76,7 @@ import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
 import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatActivity;
+import com.mualab.org.user.chat.model.BlockUser;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.SearchBoard.ArtistsSearchBoard;
@@ -85,6 +90,7 @@ import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
 import com.mualab.org.user.menu.MenuAdapter;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.WrapContentLinearLayoutManager;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
@@ -101,13 +107,13 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ArtistProfileActivity extends AppCompatActivity implements View.OnClickListener, ArtistFeedAdapter.Listener {
+public class ArtistProfileActivity extends BaseActivity implements View.OnClickListener, ArtistFeedAdapter.Listener {
     public String artistId;
     private String TAG = this.getClass().getName();
     private User user;
-    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg;
+    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg,tv_distance,tv_block_msg;
     private ImageView ivActive, ivFav;
-    private LinearLayout lowerLayout1, lowerLayout2, ll_progress, llRating;
+    private LinearLayout ly_feed_view, ll_progress, llRating, ll_Dot,ly_block_view;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
     private RecyclerViewScrollListenerProfile endlesScrollListener;
@@ -119,7 +125,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     private long mLastClickTime = 0;
     public UserProfileData profileData = null;
     private ArtistsSearchBoard item;
-    private AppCompatButton btnFollow;
+    private AppCompatButton btnFollow, btnBook;
     private ViewPagerAdapter.LongPressListner longPressListner;
     private EditText ed_search;
     private LinearLayout ll_filter;
@@ -139,15 +145,21 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     private String nodeForBlockUser = "";
     private int myId ;
     private String blockedId = "";
+    private Toolbar toolbar;
+    private  ViewPager profileItemPager;
+    //block view show some views
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_profile);
-        Intent i = getIntent();
+
         //  item = (ArtistsSearchBoard) i.getSerializableExtra("item");
         //  artistId =  item._id;
+
+
+        Intent i = getIntent();
         artistId = i.getStringExtra("artistId");
         mBlockUserWeb = FirebaseDatabase.getInstance().getReference().child("blockUserArtistWeb");
         mBlockUser = FirebaseDatabase.getInstance().getReference().child("blockUserArtist");
@@ -157,6 +169,8 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         if(Integer.parseInt(artistId) < myId){
             nodeForBlockUser = artistId + "_" + myId;
         }else nodeForBlockUser = myId + "_" + artistId;
+        init();
+
 
         mBlockUser.child(nodeForBlockUser).child("blockedBy").addValueEventListener(new ValueEventListener() {
             @Override
@@ -165,16 +179,16 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                     try{
                         blockedId = dataSnapshot.getValue(String.class);
 
-                        if(blockedId.equals(artistId)){// case of hide screen
+                        if(blockedId.equals(artistId) || blockedId.equals("Both")){// case of hide screen
+                            hideShowView(true);
+                        }else  hideShowView(false);
 
-                        }
-                    }catch (Exception e){
-
-                    }
+                    }catch (Exception e){ }
 
                 }else {
                     blockedId = "";
                     // case of show screen
+                    hideShowView(false);
                 }
 
             }
@@ -185,7 +199,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             }
         });
 
-        init();
+
     }
 
     private void init() {
@@ -204,8 +218,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         llDots = findViewById(R.id.llDots);
         llDots.setVisibility(View.VISIBLE);
 
+        ly_block_view = findViewById(R.id.ly_block_view);
+        ll_Dot = findViewById(R.id.ll_Dot);
+        profileItemPager = findViewById(R.id.profileItemPager);
+
         btnFollow = findViewById(R.id.btnFollow);
-        AppCompatButton btnBook = findViewById(R.id.btnBook);
+        btnBook = findViewById(R.id.btnBook);
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView ivChat2 = findViewById(R.id.ivChat2);
         ivChat2.setVisibility(View.GONE);
@@ -219,14 +237,15 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         LinearLayout lyVideos = findViewById(R.id.ly_videos);
         LinearLayout lyFeed = findViewById(R.id.ly_feeds);
 
-        lowerLayout2 = findViewById(R.id.lowerLayout2);
-        lowerLayout1 = findViewById(R.id.lowerLayout);
+        ly_feed_view = findViewById(R.id.ly_feed_view);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         tvFilter = toolbar.findViewById(R.id.tvFilter);
         iv_gride_view = toolbar.findViewById(R.id.iv_gride_view);
         iv_list_view = toolbar.findViewById(R.id.iv_list_view);
 
+        tv_block_msg = findViewById(R.id.tv_block_msg);
+        tv_distance = findViewById(R.id.tv_distance);
         tv_msg = findViewById(R.id.tv_msg);
         tv_no_data_msg = findViewById(R.id.tv_no_data_msg);
         ll_progress = findViewById(R.id.ll_progress);
@@ -239,13 +258,14 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
         feedAdapter = new ArtistFeedAdapter(ArtistProfileActivity.this, feeds, this);
 
+        feedAdapter.setHasStableIds(true);
         endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
             public void onLoadMore() {
                 if (feedAdapter != null) {
                     ++page;
                     setAdapterLoading(true);
-                    apiForGetAllFeeds(page, 20, false, "");
+                    apiForGetAllFeeds(page, 20, true, "");
                 }
             }
         };
@@ -384,6 +404,16 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    private void hideShowView(boolean shouldHide){
+        if(shouldHide){
+            ly_block_view.setVisibility(View.VISIBLE);
+            llDots.setVisibility(View.GONE);
+        }else {
+            ly_block_view.setVisibility(View.GONE);
+            llDots.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void setAdapterLoading(boolean isLoad) {
         if (feedAdapter != null) {
             feedAdapter.showLoading(isLoad);
@@ -392,8 +422,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initProfilePager() {
-        final LinearLayout ll_Dot = findViewById(R.id.ll_Dot);
-        ViewPager profileItemPager = findViewById(R.id.profileItemPager);
+
         ViewPagerAdapterSwip viewPagerAdapter = new ViewPagerAdapterSwip(getSupportFragmentManager());
         viewPagerAdapter.addFragment(ProfileComboFragment1.newInstance(profileData));
         viewPagerAdapter.addFragment(ProfileComboFragment2.newInstance(profileData));
@@ -497,6 +526,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                         //   profileData = gson.fromJson(response, UserProfileData.class);
                         setProfileData(profileData);
                         initProfilePager();
+                        tv_block_msg.setText(profileData.firstName+" "+profileData.lastName+" has blocked you");
                         // updateViewType(profileData,R.id.ly_videos);
 
                     } else {
@@ -574,43 +604,51 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                         return;
                     }
 
-                    Intent intent = new Intent(ArtistProfileActivity.this, BookingActivity.class);
+                    apiForGetLatestService(artistId);
+
+                   /* Intent intent = new Intent(ArtistProfileActivity.this, BookingActivity.class);
                     intent.putExtra("_id", 0);
                     intent.putExtra("artistId", artistId);
                     intent.putExtra("callType", "In Call");
 
                     intent.putExtra("mainServiceName", "");
                     intent.putExtra("subServiceName", "");
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
 
                 break;
 
             case R.id.btnFollow:
-                if (btnFollow.getText().toString().equals("Message")) {
-                    Intent chat_intent = new Intent(ArtistProfileActivity.this, ChatActivity.class);
-                    chat_intent.putExtra("opponentChatId", profileData._id);
-                    startActivity(chat_intent);
-                    return;
+                if(profileData != null){
+                    if (btnFollow.getText().toString().equals("Message")) {
+                        Intent chat_intent = new Intent(ArtistProfileActivity.this, ChatActivity.class);
+                        chat_intent.putExtra("opponentChatId", profileData._id);
+                        startActivity(chat_intent);
+                        return;
+                    }
+                    int followersCount = Integer.parseInt(profileData.followersCount);
+                    if (profileData.followerStatus.equals("1")) {
+                        profileData.followerStatus = "0";
+                        btnFollow.setText("Follow");
+                        followersCount--;
+                        profileData.followersCount = String.valueOf(followersCount);
+                        apiForGetFollowUnFollow();
+                    } else {
+                        btnFollow.setText("Message");
+                        profileData.followerStatus = "1";
+                        followersCount++;
+                        profileData.followersCount = String.valueOf(followersCount);
+                        apiForGetFollowUnFollow();
+                    }
                 }
-                int followersCount = Integer.parseInt(profileData.followersCount);
-                if (profileData.followerStatus.equals("1")) {
-                    profileData.followerStatus = "0";
-                    btnFollow.setText("Follow");
-                    followersCount--;
-                    profileData.followersCount = String.valueOf(followersCount);
-                    apiForGetFollowUnFollow();
-                } else {
-                    btnFollow.setText("Message");
-                    profileData.followerStatus = "1";
-                    followersCount++;
-                    profileData.followersCount = String.valueOf(followersCount);
-                    apiForGetFollowUnFollow();
-                }
+
 
                 break;
 
             case R.id.llDots:
+                if(profileData == null){
+                    return;
+                }
                 arrayList = new ArrayList<>();
                 if(blockedId.equals(String.valueOf(myId)) || blockedId.equals("Both")){
                     arrayList.add("Unblock");
@@ -708,18 +746,22 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 arrayList.add("Video");
 
                 NameDisplayDialog.newInstance(getString(R.string.post_type), arrayList, pos -> {
+
+                    if (!ed_search.getText().toString().trim().isEmpty()){
+                        ed_search.getText().clear();
+                    }
+
                     String data = arrayList.get(pos);
                     int prevSize = feeds.size();
                     switch (data) {
                         case "All":
                             page = 0;
-                            tvFilter.setText(R.string.all);
-                            ed_search.setText("");
                             feeds.clear();
+                            feedAdapter.notifyDataSetChanged();
+                            tvFilter.setText(R.string.all);
                             endlesScrollListener.resetState();
                             feedType = "";
                             CURRENT_FEED_STATE = Constant.FEED_STATE;
-                            feedAdapter.notifyDataSetChanged();
                             apiForGetAllFeeds(0, 20, true, "");
 
                             // popupWindow.dismiss();
@@ -727,13 +769,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
                         case "Photo":
                             page = 0;
-                            tvFilter.setText(R.string.photo);
-                            ed_search.setText("");
                             feeds.clear();
+                            feedAdapter.notifyDataSetChanged();
+                            tvFilter.setText(R.string.photo);
                             endlesScrollListener.resetState();
                             feedType = "image";
                             CURRENT_FEED_STATE = Constant.IMAGE_STATE;
-                            feedAdapter.notifyDataSetChanged();
                             apiForGetAllFeeds(0, 20, true, "");
                             // popupWindow.dismiss();
                             break;
@@ -741,18 +782,17 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                         case "Video":
                             page = 0;
                             tvFilter.setText(R.string.video);
-                            ed_search.setText("");
                             // popupWindow.dismiss();
                             feeds.clear();
+                            feedAdapter.notifyDataSetChanged();
                             endlesScrollListener.resetState();
                             feedType = "video";
                             CURRENT_FEED_STATE = Constant.VIDEO_STATE;
-                            feedAdapter.notifyDataSetChanged();
                             apiForGetAllFeeds(0, 20, true, "");
                             break;
 
                     }
-                }).show(getSupportFragmentManager());
+                }).show(getSupportFragmentManager(), "");
 
                 break;
 
@@ -789,20 +829,22 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case "Block":
-
-                if(blockedId.equals(artistId)){
-                    mBlockUserWeb.child(artistId).child(String.valueOf(myId)).setValue("Both");
-                }else {
-                    mBlockUserWeb.child(artistId).child(String.valueOf(myId)).setValue(String.valueOf(myId));
-                }
-                mBlockUser.child(nodeForBlockUser).child("blockedBy").setValue(String.valueOf(myId));
+                if(profileData != null)
+                showAlertBlock("Block",profileData.userName,"Are you sure want to block?");
                 break;
 
             case "Unblock":
-                mBlockUser.child(nodeForBlockUser).removeValue();
-                mBlockUserWeb.child(artistId).child(String.valueOf(myId)).removeValue();
+                showAlertBlock("Unblock",profileData.userName,"Are you sure want to unblock?");
+                break;
+
+            case "Report":
+                Intent intent = new Intent(this,ReportUserActivity.class);
+                intent.putExtra("reportForUser",artistId);
+                startActivity(intent);
                 break;
         }
+
+
     }
 
     private void initiatePopupWindow(Point p) {
@@ -883,14 +925,19 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setProfileData(final UserProfileData profileData) {
+        TextView tv_ProfileNameBlock = findViewById(R.id.tv_ProfileNameBlock);
+        TextView tv_usernameBlock = findViewById(R.id.tv_usernameBlock);
+
         TextView tv_ProfileName = findViewById(R.id.tv_ProfileName);
         TextView tv_username = findViewById(R.id.tv_username);
         TextView tvRatingCount = findViewById(R.id.tvRatingCount);
-        TextView tv_distance = findViewById(R.id.tv_distance);
+        TextView tvRatingCountBlock = findViewById(R.id.tvRatingCountBlock);
+
 
         CircleImageView iv_Profile = findViewById(R.id.iv_Profile);
         ImageView ivActive = findViewById(R.id.ivActive);
         RatingBar rating = findViewById(R.id.rating);
+        RatingBar ratingBlock = findViewById(R.id.ratingBlock);
 
         if (profileData != null) {
             if (profileData.favoriteStatus.equals("1")) {
@@ -907,11 +954,15 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
 
             tv_ProfileName.setText(profileData.firstName + " " + profileData.lastName);
+            tv_ProfileNameBlock.setText(profileData.firstName + " " + profileData.lastName);
             tv_distance.setText(profileData.radius + " Miles");
             tv_username.setText("@" + profileData.userName);
+            tv_usernameBlock.setText("@" + profileData.userName);
             tvRatingCount.setText("(" + profileData.reviewCount + ")");
+            tvRatingCountBlock.setText("(" + profileData.reviewCount + ")");
 
             rating.setRating(Float.parseFloat(profileData.ratingCount));
+            ratingBlock.setRating(Float.parseFloat(profileData.ratingCount));
 
             if (profileData.isCertificateVerify.equals("1")) {
                 ivActive.setVisibility(View.VISIBLE);
@@ -992,6 +1043,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         lastFeedTypeId = id;
     }
 
+/*
     private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, final String searchText) {
 
         if (ll_progress != null)
@@ -1039,13 +1091,12 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
 
                     if (status.equalsIgnoreCase("success")) {
                         //removeProgress();
-                        if (page == 0) {
-                            feeds.clear();
-                        }
+                        if (page==0)feeds.clear();
+
                         ParseAndUpdateUI(response);
 
                     } else if (page == 0) {
-                        rvFeed.setVisibility(View.GONE);
+                        //rvFeed.setVisibility(View.GONE);
                         tv_no_data_msg.setVisibility(View.VISIBLE);
                     }
                 } catch (Exception e) {
@@ -1076,6 +1127,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 .execute("artistProfileApi");
         //ll_progress.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
     }
+*/
 
     private void ParseAndUpdateUI(final String response) {
 
@@ -1227,7 +1279,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                         }
                     } // loop end.
                 } else if (feeds.size() == 0) {
-                    rvFeed.setVisibility(View.GONE);
+                   // rvFeed.setVisibility(View.GONE);
                     tv_no_data_msg.setVisibility(View.VISIBLE);
                 }
 
@@ -1245,7 +1297,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 feedAdapter.notifyDataSetChanged();
 
             } else if (status.equals("fail") && feeds.size() == 0) {
-                rvFeed.setVisibility(View.GONE);
+               // rvFeed.setVisibility(View.GONE);
                 tv_msg.setVisibility(View.VISIBLE);
 
                 if (isPulltoRefrash) {
@@ -1255,7 +1307,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
                 }
                 feedAdapter.notifyDataSetChanged();
             } else {
-                rvFeed.setVisibility(View.GONE);
+               // rvFeed.setVisibility(View.GONE);
                 tv_no_data_msg.setVisibility(View.VISIBLE);
             }
 
@@ -1411,90 +1463,6 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
         task.execute(this.getClass().getName());
     }
 
-    private void ParseAndUpdateUI(final int page, final String response) {
-
-        try {
-            JSONObject js = new JSONObject(response);
-            String status = js.getString("status");
-            // String message = js.getString("message");
-
-            if (status.equalsIgnoreCase("success")) {
-                rvFeed.setVisibility(View.VISIBLE);
-                JSONArray array = js.getJSONArray("AllFeeds");
-                if (isPulltoRefrash) {
-                    isPulltoRefrash = false;
-                    mRefreshLayout.stopRefresh(true, 500);
-                    int prevSize = feeds.size();
-                    feeds.clear();
-                    feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                }
-
-                Gson gson = new Gson();
-                if (array.length() != 0) {
-                    for (int i = 0; i < array.length(); i++) {
-
-                        try {
-                            JSONObject jsonObject = array.getJSONObject(i);
-                            Feeds feed = gson.fromJson(String.valueOf(jsonObject), Feeds.class);
-
-                            /*tmp get data and set into actual json format*/
-                            if (feed.userInfo != null && feed.userInfo.size() > 0) {
-                                Feeds.User user = feed.userInfo.get(0);
-                                feed.userName = user.userName;
-                                feed.fullName = user.firstName + " " + user.lastName;
-                                feed.profileImage = user.profileImage;
-                                feed.userId = user._id;
-                                feed.crd = feed.timeElapsed;
-                            }
-
-                            if (feed.feedData != null && feed.feedData.size() > 0) {
-
-                                feed.feed = new ArrayList<>();
-                                feed.feedThumb = new ArrayList<>();
-
-                                for (Feeds.Feed tmp : feed.feedData) {
-                                    feed.feed.add(tmp.feedPost);
-                                    if (!TextUtils.isEmpty(feed.feedData.get(0).videoThumb))
-                                        feed.feedThumb.add(tmp.feedPost);
-                                }
-
-                                if (feed.feedType.equals("video"))
-                                    feed.videoThumbnail = feed.feedData.get(0).videoThumb;
-                            }
-
-                            feeds.add(feed);
-
-                        } catch (JsonParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (page == 0 || feeds.size() == 0) {
-                    tv_no_data_msg.setVisibility(View.VISIBLE);
-                    rvFeed.setVisibility(View.GONE);
-                }
-                // loop end.
-
-                feedAdapter.notifyDataSetChanged();
-                //updateViewType(R.id.ly_feeds);
-
-            } else if (status.equals("fail") && feeds.size() == 0) {
-                rvFeed.setVisibility(View.GONE);
-                tv_msg.setVisibility(View.VISIBLE);
-
-                if (isPulltoRefrash) {
-                    isPulltoRefrash = false;
-                    mRefreshLayout.stopRefresh(false, 500);
-
-                }
-                feedAdapter.notifyDataSetChanged();
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            feedAdapter.notifyDataSetChanged();
-            //MyToast.getInstance(mContext).showSmallCustomToast(getString(R.string.alert_something_wenjt_wrong));
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -1729,4 +1697,442 @@ public class ArtistProfileActivity extends AppCompatActivity implements View.OnC
             finish();
         }
     }
+
+    private synchronized void apiForGetLatestService(final String artistId) {
+        Progress.show(getActivity());
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(getActivity(), new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        apiForGetLatestService(artistId);
+                    }
+                }
+            }).show();
+        }
+
+        Map<String, String> params = new HashMap<>();
+        try {
+            params.put("userId", String.valueOf(Mualab.currentUser.id));
+            params.put("artistId", artistId);
+        } catch (Exception e) {
+
+        }
+        HttpTask task = new HttpTask(new HttpTask.Builder(getActivity(), "getMostBookedService", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                Progress.hide(getActivity());
+                try {
+
+                    tv_msg.setVisibility(View.GONE);
+                    tv_msg.setTextColor(getActivity().getResources().getColor(R.color.text_color));
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+
+                        JSONObject object = js.getJSONObject("artistServices");
+                        int _id = object.getInt("_id");
+                        int serviceId = object.getInt("serviceId");
+                        int subserviceId = object.getInt("subserviceId");
+                        int bookingCount = object.getInt("bookingCount");
+
+                        Intent intent = new Intent(getActivity(), BookingActivity.class);
+                        intent.putExtra("_id", _id);
+                        intent.putExtra("artistId", artistId);
+                        intent.putExtra("callType", "In Call");
+
+                        intent.putExtra("mainServiceName", "");
+                        intent.putExtra("subServiceName", "yes");
+
+                        intent.putExtra("serviceId", serviceId);
+                        intent.putExtra("subServiceId", subserviceId);
+
+                        intent.putExtra("isEditService", true);
+                        intent.putExtra("isFromSearchBoard", true);
+
+
+                        if (item != null) {
+                            if (item.serviceType != null)
+                                if (item.serviceType.equals("1")) {
+                                    //searchBoard.isOutCallSelected = true;
+                                    intent.putExtra("callType", "Out Call");
+                                }
+
+                          /*  if (item.date != null)
+                                if (!item.date.isEmpty())
+                                    intent.putExtra("bookingDate", item.date);*/
+                        }
+
+
+                        startActivity(intent);
+
+                    } else if (status.equals("fail")) {
+
+                    }
+
+                    //  showToast(message);
+                } catch (Exception e) {
+                    tv_msg.setText(getString(R.string.msg_some_thing_went_wrong));
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                Progress.hide(getActivity());
+            }
+        })
+                .setAuthToken(Mualab.currentUser.authToken)
+                .setProgress(false)
+                .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
+        task.execute(TAG);
+    }
+
+    private void showAlertBlock(String type,String userName,String msg) {
+        final Dialog dialog = new Dialog(ArtistProfileActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_block_chat);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        TextView tv_user_name = dialog.findViewById(R.id.tv_user_name);
+        tv_user_name.setText(msg);
+
+        TextView tv_user_name_chat = dialog.findViewById(R.id.tv_user_name_chat);
+        tv_user_name_chat.setText(userName );
+
+        dialog.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(type.equals("Block")){
+                    if(blockedId.equals(artistId)){
+                        mBlockUser.child(nodeForBlockUser).child("blockedBy").setValue("Both");
+                    }else {
+                        mBlockUser.child(nodeForBlockUser).child("blockedBy").setValue(String.valueOf(myId));
+                    }
+
+                    mBlockUserWeb.child(artistId).child(String.valueOf(myId)).setValue(myId);
+
+                }else {
+                    mBlockUser.child(nodeForBlockUser).removeValue();
+                    mBlockUserWeb.child(artistId).child(String.valueOf(myId)).removeValue();
+                }
+
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                View view = dialog.getWindow().getDecorView();
+                //for enter from left
+                ObjectAnimator.ofFloat(view, "translationX", -view.getWidth(), 0.0f).start();
+                //for enter from bottom
+                //ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0.0f).start();
+            }
+        });
+
+
+        dialog.show();
+    }
+
+
+    /*...................................................................*/
+
+    private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, String searchText) {
+
+        setFeedLoading(isEnableProgress);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("feedType", feedType);
+        params.put("search", "");
+        params.put("page", String.valueOf(page));
+        params.put("limit", String.valueOf(feedLimit));
+        params.put("type", "");
+        params.put("userId", artistId);
+        params.put("viewBy", "user");
+        params.put("loginUserId", String.valueOf(user.id));
+        params.put("search", searchText);
+        // params.put("appType", "user");
+
+
+        Mualab.getInstance().cancelPendingRequests(this.getClass().getName());
+        new HttpTask(new HttpTask.Builder(ArtistProfileActivity.this, "profileFeed", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                setFeedLoading(false);
+                setAdapterLoading(false);
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+//String message = js.getString("message");
+
+
+                    if (status.equalsIgnoreCase("success")) {
+//removeProgress();
+                        ParseAndUpdateUI(page, response);
+
+                    } else  {
+//rvFeed.setVisibility(View.GONE);
+                        if(feeds.size() == 0){
+                            tv_no_data_msg.setVisibility(View.VISIBLE);
+                        }else  tv_no_data_msg.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+// MyToast.getInstance(mContext).showSmallMessage(getString(R.string.msg_some_thing_went_wrong));
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                setFeedLoading(false);
+                setAdapterLoading(false);
+                if(isPulltoRefrash){
+                    isPulltoRefrash = false;
+//mRefreshLayout.stopRefresh(false, 500);
+                    int prevSize = feeds.size();
+                    feeds.clear();
+                    feedAdapter.notifyItemRangeRemoved(0, prevSize);
+                }
+
+                try {
+                    Helper helper = new Helper();
+                    if (helper.error_Messages(error).contains("Session")) {
+                        Mualab.getInstance().getSessionManager().logout();
+//MyToast.getInstance(BookingActivity.this).showSmallCustomToast(helper.error_Messages(error));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//MyToast.getInstance(mContext).showSmallMessage(getString(R.string.msg_some_thing_went_wrong));
+            }})
+                .setAuthToken(user.authToken)
+                .setParam(params)
+                .setMethod(Request.Method.POST)
+                .setProgress(false)
+                .setBodyContentType(HttpTask.ContentType.X_WWW_FORM_URLENCODED))
+                .execute("profileFeed");
+    }
+
+    private void ParseAndUpdateUI(int page, final String response) {
+        try {
+            JSONObject js = new JSONObject(response);
+            String status = js.getString("status");
+// String message = js.getString("message");
+
+            if (status.equalsIgnoreCase("success")) {
+//rvFeed.setVisibility(View.VISIBLE);
+                JSONArray array = js.getJSONArray("AllFeeds");
+                if (isPulltoRefrash) {
+                    isPulltoRefrash = false;
+//mRefreshLayout.stopRefresh(true, 500);
+                    int prevSize = feeds.size();
+                    feeds.clear();
+                    feedAdapter.notifyItemRangeRemoved(0, prevSize);
+                }
+
+                Gson gson = new Gson();
+                if (array.length() != 0) {
+
+                    if (page == 0) {
+                        feeds.clear();
+                    }
+
+/*if (isGrideView) {
+feeds.clear();
+}*/
+                    int feedNewSize = 0;
+                    int feedOldSize = feeds.size() + 1;
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            JSONObject jsonObject = array.getJSONObject(i);
+                            Feeds feed = gson.fromJson(String.valueOf(jsonObject), Feeds.class);
+// feed.taggedImgMap = new HashMap<>();
+                            /*tmp get data and set into actual json format*/
+                            if (feed.userInfo != null && feed.userInfo.size() > 0) {
+                                Feeds.User user = feed.userInfo.get(0);
+                                feed.userName = user.userName;
+                                feed.fullName = user.firstName + " " + user.lastName;
+                                feed.profileImage = user.profileImage;
+                                feed.userId = user._id;
+                                feed.crd = feed.timeElapsed;
+                            }
+
+                            if (feed.feedData != null && feed.feedData.size() > 0) {
+
+                                feed.feed = new ArrayList<>();
+                                feed.feedThumb = new ArrayList<>();
+
+                                for (Feeds.Feed tmp : feed.feedData) {
+                                    feed.feed.add(tmp.feedPost);
+                                    if (!TextUtils.isEmpty(feed.feedData.get(0).videoThumb))
+                                        feed.feedThumb.add(tmp.feedPost);
+                                }
+
+                                if (feed.feedType.equals("video"))
+                                    feed.videoThumbnail = feed.feedData.get(0).videoThumb;
+                            }
+
+                            JSONArray jsonArray = jsonObject.getJSONArray("peopleTag");
+                            if (jsonArray.length() != 0) {
+
+                                for (int j = 0; j < jsonArray.length(); j++) {
+
+                                    feed.peopleTagList = new ArrayList<>();
+                                    JSONArray arrayJSONArray = jsonArray.getJSONArray(j);
+
+                                    for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                        JSONObject object = arrayJSONArray.getJSONObject(k);
+
+// HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                        String unique_tag_id = object.getString("unique_tag_id");
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                        JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                        TagDetail tag;
+                                        if (tagOjb.has("tabType")) {
+                                            tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                        } else {
+                                            JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                            tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                        }
+//tagDetails.put(tag.title, tag);
+                                        TagToBeTagged tagged = new TagToBeTagged();
+                                        tagged.setUnique_tag_id(unique_tag_id);
+                                        tagged.setX_co_ord(x_axis);
+                                        tagged.setY_co_ord(y_axis);
+//tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
+
+                                        feed.peopleTagList.add(tagged);
+                                    }
+                                    feed.taggedImgMap.put(j, feed.peopleTagList);
+                                }
+                            }
+
+                            if (jsonObject.has("serviceTag")) {
+                                JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                                if (serviceTagArray.length() != 0) {
+
+                                    for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                        feed.serviceTagList = new ArrayList<>();
+                                        JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                        for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                            JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                            String unique_tag_id = object.getString("unique_tag_id");
+                                            float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                            float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                            JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                            TagDetail tag;
+                                            if (tagOjb.has("tabType")) {
+                                                tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                            } else {
+                                                JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                                tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                            }
+//tagDetails.put(tag.title, tag);
+                                            TagToBeTagged tagged = new TagToBeTagged();
+                                            tagged.setUnique_tag_id(unique_tag_id);
+                                            tagged.setX_co_ord(x_axis);
+                                            tagged.setY_co_ord(y_axis);
+//tagged.setTagDetails(tagDetails);
+                                            tagged.setTagDetails(tag);
+
+                                            feed.serviceTagList.add(tagged);
+                                        }
+                                        feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                    }
+                                }
+                            }
+
+                            if (isGrideView) {
+                                if (!feed.feedType.equals("text")) {
+                                    ++feedNewSize;
+                                    feeds.add(feed);
+                                }
+                            } else {
+                                ++feedNewSize;
+                                feeds.add(feed);
+                            }
+
+
+                        } catch (JsonParseException e) {
+                            setFeedLoading(false);
+                            tv_no_data_msg.setVisibility(View.VISIBLE);
+                            tv_no_data_msg.setText("Something went wrong!");
+                            e.printStackTrace();
+                        }
+                    }// loop end.
+
+                    feedAdapter.notifyItemRangeInserted(feedOldSize, feedNewSize);
+                } else if (feeds.size() == 0) {
+//rvFeed.setVisibility(View.GONE);
+                    feedAdapter.notifyDataSetChanged();
+                }
+
+/* if (isGrideView) {
+rvFeed.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+feedAdapter.isGrideView(true);
+endlesScrollListener.resetState();
+} else {
+rvFeed.setLayoutManager(new LinearLayoutManager(getActivity()));
+feedAdapter.isGrideView(false);
+endlesScrollListener.resetState();
+}*/
+
+            } else if (status.equals("fail") && feeds.size() == 0) {
+// rvFeed.setVisibility(View.GONE);
+                tv_msg.setVisibility(View.VISIBLE);
+
+                if (isPulltoRefrash) {
+                    isPulltoRefrash = false;
+//mRefreshLayout.stopRefresh(false, 500);
+
+                }
+                feedAdapter.notifyDataSetChanged();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            feedAdapter.notifyDataSetChanged();
+//MyToast.getInstance(mContext).showSmallCustomToast(getString(R.string.alert_something_wenjt_wrong));
+        }
+
+        if(feeds.size() == 0){
+            tv_no_data_msg.setVisibility(View.VISIBLE);
+        }else  tv_no_data_msg.setVisibility(View.GONE);
+
+    }
+
+    private void setFeedLoading(boolean isLoad) {
+        if (ll_progress != null)
+            ll_progress.setVisibility(isLoad ? View.VISIBLE : View.GONE);
+
+    }
+
 }

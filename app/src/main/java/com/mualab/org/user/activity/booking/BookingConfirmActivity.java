@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,7 +82,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private String radius = "", artistLat = "0.0", artistLng = "0.0";
     private Double commisiion = 0.0;
     private int payOption = 0,bookingSetting = 0;
-    private int card = 1,cash = 2, both = 3;
+    private int card = 1,cash = 2, both = 3;private long mLastClickTime = 0;
+
+
 
 
     //private SoftKeyboard softKeyboard;
@@ -280,6 +283,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
         btn_confirm_booking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 3000){
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
                 confirmBooking();
             }
         });
@@ -691,11 +698,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         if (!discountPrice.equals("")) {
             double disCountPrice = Double.parseDouble(discountPrice);
-            discountPrice = String.valueOf((disCountPrice + v));
+            discountPrice = String.valueOf((disCountPrice));
             discountPrice = String.format("%.2f", Double.parseDouble(discountPrice));
         } else {
             // total amount
-            total_price = (total_price + v);
+            //total_price = (total_price);
             total_price = Double.parseDouble(String.format("%.2f", total_price));
         }
 
@@ -721,7 +728,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         SweetAlertDialog dialog = new SweetAlertDialog(BookingConfirmActivity.this, SweetAlertDialog.SUCCESS_TYPE);
 
                         dialog.setTitleText("Congratulation!");
-                        dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. Click here to see the status of your booking");
+                        if(bookingSetting == 1){
+                            dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. check my bookings to review status.");
+                        }else {
+                            dialog.setContentText("Your booking has been made with "+ bookingList.get(0).artistName +" check my bookings to review status.");
+                        }
                         dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {

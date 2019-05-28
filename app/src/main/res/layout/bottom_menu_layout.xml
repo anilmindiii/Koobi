@@ -86,12 +86,40 @@
             android:layout_weight="1"
             android:gravity="center">
 
-            <ImageView
-                android:id="@+id/ibtnNotification"
+            <RelativeLayout
                 android:layout_width="45dp"
-                android:layout_height="42dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/inactive_notifications_ico" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ibtnNotification"
+                    android:layout_width="45dp"
+                    android:layout_height="42dp"
+                    android:layout_centerInParent="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/inactive_notifications_ico" />
+
+
+                <TextView
+                    android:id="@+id/tv_badge_count"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:backgroundTint="@color/red"
+                    android:text="0"
+                    android:gravity="center"
+                    android:textSize="8dp"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/white"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="3dp"
+                    android:background="@drawable/circle_selected_bg"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+
+
+
+
 
         </LinearLayout>
 

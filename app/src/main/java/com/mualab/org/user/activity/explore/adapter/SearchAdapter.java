@@ -3,6 +3,7 @@ package com.mualab.org.user.activity.explore.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,11 +21,13 @@ import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -46,6 +49,11 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Context mContext;
     private List<ExSearchTag> feedItems;
     private Listener listener;
+    private int tabPos;
+
+    public void setTabPosition(int tabPos){
+        this.tabPos = tabPos;
+    }
 
     public interface Listener{
         void onItemClick(ExSearchTag searchTag, int index);
@@ -104,11 +112,41 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return;
         }
 
+
+
         final ExSearchTag searchTag = feedItems.get(position);
         final Holder h = ((Holder) holder);
         h.tvDesc.setVisibility(View.VISIBLE);
         h.tvHeader.setText(searchTag.title);
         h.tvDesc.setText(searchTag.desc);
+
+        if(tabPos == 0 || tabPos == 1){
+            h.btnFollow.setVisibility(View.VISIBLE);
+        }else h.btnFollow.setVisibility(View.GONE);
+
+        if (searchTag.id == Mualab.currentUser.id) {
+            h.btnFollow.setVisibility(View.GONE);
+        } else {
+            h.btnFollow.setVisibility(View.VISIBLE);
+            if (searchTag.followingStatus == 1) {
+                h.btnFollow.setBackgroundResource(R.drawable.btn_bg_blue_broder);
+                h.btnFollow.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                h.btnFollow.setText(R.string.following);
+            } else {
+                h.btnFollow.setBackgroundResource(R.drawable.button_effect_invert);
+                h.btnFollow.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                h.btnFollow.setText(R.string.follow);
+            }
+        }
+
+        h.btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ExSearchTag searchTag = feedItems.get(position);
+                apiForFollowUnFollow(searchTag, position);
+            }
+        });
 
         switch (searchTag.type){
             case 0:
@@ -157,12 +195,14 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private CircleImageView ivProfile;
         private TextView tvHeader;
         private TextView tvDesc;
+        protected AppCompatButton btnFollow;
 
         private Holder(View itemView) {
             super(itemView);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvHeader = itemView.findViewById(R.id.tvHeader);
             tvDesc = itemView.findViewById(R.id.tvDesc);
+            btnFollow = itemView.findViewById(R.id.btnFollow);
             itemView.setOnClickListener(this);
         }
 
@@ -175,58 +215,37 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         }
     }
+    private void apiForFollowUnFollow(final ExSearchTag feeds, final int position) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", "" + Mualab.currentUser.id);
+        map.put("followerId", "" + feeds.id);
 
-    private void apiForgetUserIdFromUserName(String userName) {
-        final Map<String, String> params = new HashMap<>();
-        if(userName.toString().contains("@")){
-            userName = userName.toString().replace("@","");
-        }
-        params.put("userName", userName+"");
-        new HttpTask(new HttpTask.Builder(mContext, "profileByUserName", new HttpResponceListner.Listener() {
+        new HttpTask(new HttpTask.Builder(mContext, "followFollowing", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                Log.d("hfjas", response);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
-                    String message = js.getString("message");
+                    //String message = js.getString("message");
+
                     if (status.equalsIgnoreCase("success")) {
-
-                        JSONObject userDetail = js.getJSONObject("userDetail");
-                        String userType = userDetail.getString("userType");
-                        int userId = userDetail.getInt("_id");
-
-                        if (userType.equals("user")) {
-                            Intent intent = new Intent(mContext, UserProfileActivity.class);
-                            intent.putExtra("userId", String.valueOf(userId));
-                            mContext.startActivity(intent);
-                        }else if (userType.equals("artist") && userId== Mualab.currentUser.id){
-                            Intent intent = new Intent(mContext, UserProfileActivity.class);
-                            intent.putExtra("userId", String.valueOf(userId));
-                            mContext.startActivity(intent);
+                        if (feeds.followingStatus == 0) {
+                            feeds.followingStatus = 1;
+                        } else if (feeds.followingStatus == 1) {
+                            feeds.followingStatus = 0;
                         }
-                        else {
-                            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
-                            intent.putExtra("artistId", String.valueOf(userId));
-                            mContext.startActivity(intent);
-                        }
-
-                    } else {
-                        MyToast.getInstance(mContext).showDasuAlert(message);
                     }
-                } catch (Exception e) {
+                    notifyItemChanged(position);
+                } catch (JSONException e) {
                     e.printStackTrace();
+                    notifyItemChanged(position);
                 }
             }
 
             @Override
             public void ErrorListener(VolleyError error) {
+                notifyItemChanged(position);
             }
-        }).setBody(params,HttpTask.ContentType.APPLICATION_JSON)
-                .setMethod(Request.Method.POST)
-                .setProgress(true))
-                .execute("FeedAdapter");
-
-
+        }).setParam(map)).execute("followFollowing");
     }
 }

@@ -297,7 +297,7 @@
                     android:fontFamily="@font/nunito_regular"
                     android:gravity="center"
                     android:ellipsize="end"
-                    android:maxWidth="140dp"
+                    android:maxWidth="130dp"
                     android:maxLines="1"
                     android:textColor="@color/gray"
                     android:textSize="16sp" />

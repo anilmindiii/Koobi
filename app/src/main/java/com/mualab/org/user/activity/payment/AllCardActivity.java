@@ -90,6 +90,7 @@ public class AllCardActivity extends AppCompatActivity implements View.OnClickLi
         ic_add_chat.setOnClickListener(this);
         binding.btnCOnfirmBooking.setOnClickListener(this);
         showCreditCardInfo();
+
     }
 
     @Override

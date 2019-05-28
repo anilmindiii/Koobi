@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -48,6 +49,7 @@ public class ArtistServiceDetailsActivity extends AppCompatActivity {
     String  mainServiceName = "", subServiceName = "";
     private boolean outcallStaff,incallStaff;
     private int serviceId, subServiceId;
+    private ImageView btnBack;
 
 
 
@@ -64,6 +66,7 @@ public class ArtistServiceDetailsActivity extends AppCompatActivity {
         recycler_view = findViewById(R.id.recycler_view);
         id_tv_staff_text = findViewById(R.id.id_tv_staff_text);
         btn_book = findViewById(R.id.btn_book);
+        btnBack = findViewById(R.id.btnBack);
 
         _id  = getIntent().getIntExtra("_id",0);
         artistId = getIntent().getStringExtra("artistId");
@@ -84,12 +87,7 @@ public class ArtistServiceDetailsActivity extends AppCompatActivity {
         adapter = new StaffListAdapter(this,detailsInfoList,callTypeString);
         recycler_view.setAdapter(adapter);
 
-        findViewById(R.id.btnBack).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        btnBack.setOnClickListener(view -> onBackPressed());
 
         btn_book.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -19,10 +19,15 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.booking.BookingDetailsActivity;
+import com.mualab.org.user.activity.explore.SearchFeedActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.fragment.FeedsFragment;
 import com.mualab.org.user.activity.main.MainActivity;
@@ -54,6 +59,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private List<NotificationInfo.NotificationListBean> listBeans;
     private Context mContext;
     private ArrayList<LiveUserInfo> liveUserList;
+    String blockedByUser = "";
+    int myId = Mualab.currentUser.id;
 
     public NotificationAdapter(List<NotificationInfo.NotificationListBean> listBeans, Context mContext) {
         this.listBeans = listBeans;
@@ -137,7 +144,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         @Override
         public void onClick(View v) {
-
+            String nodeForBlockUser = "";
             int notifyId = listBeans.get(getAdapterPosition()).notifyId;
             String userName = listBeans.get(getAdapterPosition()).userName;
             String urlImageString = listBeans.get(getAdapterPosition()).profileImage;
@@ -145,11 +152,56 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             int notifincationType = listBeans.get(getAdapterPosition()).notifincationType;
             int senderId = listBeans.get(getAdapterPosition()).senderId;
 
-            notificationRedirections(senderId, String.valueOf(notifyId), userName, urlImageString, userType, String.valueOf(notifincationType));
+            if(notifincationType == 7 || notifincationType == 16){
+                if (senderId < myId) {
+                    nodeForBlockUser = senderId + "_" + myId;
+                } else nodeForBlockUser = myId + "_" + senderId;
+
+                FirebaseDatabase.getInstance().getReference().child("blockUserArtist").
+                        child(nodeForBlockUser).child("blockedBy").
+                        addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue() != null) {
+                                    try {
+                                        blockedByUser = dataSnapshot.getValue(String.class);
+                                    } catch (Exception e) {
+                                        blockedByUser = String.valueOf(dataSnapshot.getValue(Integer.class));
+                                    }
+
+                                    if (blockedByUser.equals(String.valueOf(senderId)) || blockedByUser.equals("Both")) {// case of hide screen
+                                        MyToast.getInstance(mContext).showDasuAlert("You are blocked by this user! will no longer see their feed");
+                                    } else {
+                                        notificationRedirections(senderId, String.valueOf(notifyId), userName,
+                                                urlImageString, userType, String.valueOf(notifincationType));
+                                    }
+                                } else {
+                                    notificationRedirections(senderId, String.valueOf(notifyId),
+                                            userName, urlImageString, userType, String.valueOf(notifincationType));
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+            }else {
+                notificationRedirections(senderId, String.valueOf(notifyId),
+                        userName, urlImageString, userType, String.valueOf(notifincationType));
+            }
+
+
+
 
         }
 
-        private void notificationRedirections(int senderId, String notifyId, String userName, String urlImageString, String userType, String notifincationType) {
+        private void notificationRedirections(int senderId, String notifyId, String userName,
+                                              String urlImageString, String userType,
+                                              String notifincationType) {
             switch (notifincationType) {
                 case "13":
                     LiveUserInfo me = new LiveUserInfo();
@@ -187,8 +239,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     break;
 
                 case "16":
-                case "10":
                     Intent intent_like_post = new Intent(mContext, FeedSingleActivity.class);
+                    intent_like_post.putExtra("feedId", notifyId);
+                    mContext.startActivity(intent_like_post);
+                    break;
+
+                case "10":
+                    intent_like_post = new Intent(mContext, FeedSingleActivity.class);
                     intent_like_post.putExtra("feedId", notifyId);
                     mContext.startActivity(intent_like_post);
                     break;

@@ -13,6 +13,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -46,6 +48,7 @@ import com.mualab.org.user.Views.refreshviews.CircleHeaderView;
 import com.mualab.org.user.activity.base.BaseFragment;
 import com.mualab.org.user.activity.explore.adapter.ExploreGridViewAdapter;
 import com.mualab.org.user.activity.explore.adapter.ExploreServiceAdapter;
+import com.mualab.org.user.activity.explore.adapter.HeaderGrideAdapter;
 import com.mualab.org.user.activity.explore.adapter.ServiceCategoryFilterAdapter;
 import com.mualab.org.user.activity.explore.adapter.ServiceFilterAdapter;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
@@ -61,6 +64,7 @@ import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.listener.FeedsListner;
+import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.ScreenUtils;
 import com.mualab.org.user.utils.WrapContentGridLayoutManager;
@@ -90,10 +94,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     private LinearLayout ll_progress;
     private ProgressBar progress_bar;
     private IndicatorSeekBar seekBarLocation;
-    private ExploreGridViewAdapter feedAdapter;
+    HeaderGrideAdapter feedAdapter;
     private RecyclerView rvFeed;
     private List<Feeds> feeds;
-    private NestedScrollView mScrollView;
     private BottomSheetBehavior bottomSheetBehavior;
     private String feedType = "image";
     private boolean isPulltoRefrash;
@@ -101,7 +104,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     private RecyclerView rcv_service;
     private ExploreServiceAdapter exploreServiceAdapter;
     private ArrayList<ExploreCategoryInfo.DataBean> dataBeans;
-    private ImageView iv_title, ivFilter;
+    private ImageView ivFilter;
     private int page = 0;
     private RelativeLayout bottomSheetLayout, rlSelectradiusSeekbar, rlSelectLocation;
     private TextView tv_refine_loc, btn_apply_filter, tv_service_category, tv_services;
@@ -113,7 +116,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     private NestedScrollView nested_scroll_view;
     private int lastCategoryPos = 0;
     private ServiceCategoryFilterAdapter categoryFilterAdapter;
-
+    private RecyclerViewScrollListenerProfile endlesScrollListener;
+    private ImageView imageViewHeader;
+    private CardView main_layout_header;
 
     public ExploreFragmentNew() {
     }
@@ -142,7 +147,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         tv_msg = null;
         ll_progress = null;
         page = 0;
-        // endlesScrollListener = null;
+        endlesScrollListener = null;
         feedAdapter = null;
         feeds = null;
         rvFeed = null;
@@ -175,10 +180,10 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         ll_progress = view.findViewById(R.id.ll_loadingBox);
         progress_bar = view.findViewById(R.id.progress_bar);
         rcv_service = view.findViewById(R.id.rcv_service);
-        iv_title = view.findViewById(R.id.iv_title);
-        mScrollView = view.findViewById(R.id.mScrollView);
         ivFilter = view.findViewById(R.id.ivFilter);
         bottomSheetLayout = view.findViewById(R.id.bottomSheetLayout);
+        imageViewHeader = view.findViewById(R.id.imageView);
+        main_layout_header = view.findViewById(R.id.main_layout_header);
 
         view.findViewById(R.id.ed_search).setOnClickListener(this);
 
@@ -252,7 +257,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     } else tv_service_category.setVisibility(View.VISIBLE);
                     tv_service_category.setText(CategoryName);
 
-                    // endlesScrollListener.resetState();
+                    endlesScrollListener.resetState();
                     feeds.clear();
                     page = 0;
                     apiForGetAllFeeds(0, 20, true);
@@ -265,7 +270,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         lyArtistService.setOnClickListener(this);
         lyRefineLocation.setOnClickListener(this);
         btn_apply_filter.setOnClickListener(this);
-        iv_title.setOnClickListener(this);
+        main_layout_header.setOnClickListener(this);
 
         tv_refine_loc.setText(Mualab.currentUser.address);
         lat = Mualab.currentUser.latitude;
@@ -348,17 +353,16 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 serviceCategoryDialog();
                 break;
 
+            case R.id.main_layout_header:
+                addFragment(GrideToListFragment.newInstance(feeds, 0), true);
+                break;
+
             case R.id.lyArtistService:
                 if (categoryIds.equals("")) {
                     MyToast.getInstance(mContext).showDasuAlert("Please select service category");
                     return;
                 } else serviceServiceDialog();
 
-                break;
-
-
-            case R.id.iv_title:
-                addFragment(GrideToListFragment.newInstance(feeds, 0), true);
                 break;
 
 
@@ -394,6 +398,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     }
                 }
 
+                // feedAdapter.isHideFirstIndex(false);
                 tv_refine_loc.setText(Mualab.currentUser.address);
                 lat = Mualab.currentUser.latitude;
                 lng = Mualab.currentUser.longitude;
@@ -459,36 +464,44 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        int mNoOfColumns = ScreenUtils.calculateNoOfColumns(mContext.getApplicationContext());
+       /* int mNoOfColumns = ScreenUtils.calculateNoOfColumns(mContext.getApplicationContext());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
 
         WrapContentGridLayoutManager wgm = new WrapContentGridLayoutManager(mContext,
                 mNoOfColumns < 3 ? 3 : mNoOfColumns, LinearLayoutManager.VERTICAL, false);
         rvFeed.setItemAnimator(null);
         rvFeed.setLayoutManager(staggeredGridLayoutManager);
-        rvFeed.setHasFixedSize(true);
+        rvFeed.setHasFixedSize(true);*/
 
-        feedAdapter = new ExploreGridViewAdapter(mContext, new ExSearchTag(), feeds, this, feedsListner, true);
-
-
-        mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        /////////////////
+        feedAdapter = new HeaderGrideAdapter(mContext, new ExSearchTag(), feeds, this,
+                feedsListner, true);
+        GridLayoutManager manager = new GridLayoutManager(mContext, 3);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public void onScrollChanged() {
-                View view = (View) mScrollView.getChildAt(mScrollView.getChildCount() - 1);
+            public int getSpanSize(int position) {
+                return feedAdapter.isHeader(position) ? manager.getSpanCount() : 1;
+            }
+        });
+        rvFeed.setLayoutManager(manager);
+        rvFeed.setAdapter(feedAdapter);
 
-                int diff = (view.getBottom() - (mScrollView.getHeight() + mScrollView
-                        .getScrollY()));
+        /////////
 
-                if (diff == 0) {
-                    // your pagination code
-                    if (feedAdapter != null) {
-                        feedAdapter.showHideLoading(true);
-                        apiForGetAllFeeds(++page, 20, false);
-                    }
+       /* feedAdapter = new ExploreGridViewAdapter(mContext, new ExSearchTag(), feeds, this,
+                feedsListner, true);*/
+
+        endlesScrollListener = new RecyclerViewScrollListenerProfile() {
+            @Override
+            public void onLoadMore() {
+                if (feedAdapter != null) {
+                    apiForGetAllFeeds(++page, 20, false);
+
 
                 }
             }
-        });
+        };
+
 
         rvFeed.setAdapter(feedAdapter);
 
@@ -505,7 +518,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
 
     private void updateViewType() {
         page = 0;
-        //endlesScrollListener.resetState();
+        endlesScrollListener.resetState();
         int prevSize = feeds.size();
 
         feeds.clear();
@@ -615,7 +628,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
             @Override
             public void onResponse(String response, String apiName) {
                 if (ll_progress != null) ll_progress.setVisibility(View.GONE);
-                if (feedAdapter != null)  feedAdapter.showHideLoading(false);
+                //if (feedAdapter != null)  feedAdapter.showHideLoading(false);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -796,7 +809,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     rvFeed.setVisibility(View.GONE);
                     tv_msg.setVisibility(View.VISIBLE);
                     tv_msg.setText(getString(R.string.no_data_found));
-                    iv_title.setVisibility(View.GONE);
                 } else {
                     tv_msg.setVisibility(View.GONE);
 
@@ -804,15 +816,18 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
 
                 if (feeds.size() == 1) {
                     rvFeed.setVisibility(View.GONE);
+                    main_layout_header.setVisibility(View.VISIBLE);
+                    if (!feeds.get(0).feedData.get(0).feedPost.equals("")) {
+                        Picasso.with(mContext).load(feeds.get(0).feedData.get(0).feedPost)
+                                .resize(200, 200).centerCrop()
+                                .placeholder(R.color.gray2)
+                                .into(imageViewHeader);
+                    }
+
+                } else {
+                    main_layout_header.setVisibility(View.GONE);
                 }
 
-                if (feeds.size() != 0) {
-                    iv_title.setVisibility(View.VISIBLE);
-                    Picasso.with(mContext).load(feeds.get(0).feedData.get(0).feedPost)
-                            .placeholder(R.drawable.gallery_placeholder)
-                            .into(iv_title);
-                    // feedAdapter.removeFirstItem(true);
-                }
 
                 if (array.length() != 0)
                     feedAdapter.notifyDataSetChanged();

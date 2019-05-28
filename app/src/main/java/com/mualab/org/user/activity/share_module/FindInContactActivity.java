@@ -209,7 +209,7 @@ public class FindInContactActivity extends BaseActivity {
         for (Contact d : backupList) {
             //or use .equal(text) with you want equal match
             //use .toLowerCase() for better matches
-            if (d.name.contains(text)) {
+            if (d.name.toLowerCase().contains(text.toLowerCase())) {
                 contactList.add(d);
             }
         }

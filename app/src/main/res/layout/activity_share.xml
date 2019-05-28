@@ -66,10 +66,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/nunito_bold"
+            android:fontFamily="@font/nunito_semibold"
             android:text="@string/find_in_contacts"
             android:textColor="@color/text_color"
             android:textSize="18sp" />
+
 
     </LinearLayout>
 

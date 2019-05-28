@@ -3,6 +3,7 @@ package com.mualab.org.user.activity.share_module.dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,9 @@ public class ShareInvitationDialog extends BaseDialog implements View.OnClickLis
                 : R.string.send_this_post_link_to_people_you_want_to_message_with_on_koobibiz);
 
         TextView tvLink = view.findViewById(R.id.tvLink);
+        tvLink.setMovementMethod(new ScrollingMovementMethod());
+
+
         tvLink.setText(link);
 
         view.findViewById(R.id.btnCancel).setOnClickListener(this);

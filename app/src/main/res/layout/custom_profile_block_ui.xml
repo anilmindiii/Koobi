@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ly_block_view"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_ProfileNameBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:fontFamily="@font/nunito_bold"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_usernameBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/default_placeholder"
+                app:civ_border_width="0dp" />
+
+            <ImageView
+                android:id="@+id/ivActive2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="2dp"
+                android:clickable="false"
+                android:src="@drawable/ico_varified"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llRating2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <RatingBar
+                android:id="@+id/ratingBlock"
+                style="@style/RatingBarGray"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_marginTop="1dp"
+                android:gravity="center"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="0"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:stepSize="0.1"
+                android:transformPivotX="0.1dp"
+                android:transformPivotY="0.1dp" />
+
+            <TextView
+                android:id="@+id/tvRatingCountBlock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="-20dp"
+                android:layout_marginTop="1dp"
+                android:gravity="center"
+                android:text="@string/na"
+                android:fontFamily="@font/nunito_regular"
+                android:textColor="@color/text_color"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/img_block"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:padding="3dp"
+            android:layout_marginTop="60dp"
+            android:tint="@color/gray"
+            app:srcCompat="@drawable/ic_user_block"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_below="@+id/img_block"
+            android:id="@+id/tv_block_msg"
+            style="@style/TextView"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -85,12 +85,12 @@ public class ExplorSearchActivity extends AppCompatActivity  {
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                CustomeClick.getmInctance().onTextChange(null,0,null);
+
             }
 
             @Override
             public void onPageSelected(int position) {
-
+                CustomeClick.getmInctance().onTextChange(null,position,null);
             }
 
             @Override

@@ -249,10 +249,10 @@ public class NotificationFragment extends BaseFragment implements View.OnClickLi
                 view_div_social.setVisibility(View.VISIBLE);
                 view_div_booking.setVisibility(View.GONE);
 
-
+                scrollListener.resetState();
                 lastDateStatusSocial = "";
                 NotificationListSocial.clear();
-                scrollListener.resetState();
+                NotificationListBooking.clear();
                 getNotificationList(0);
 
                 recyclerView.setAdapter(adapterSocial);
@@ -265,10 +265,11 @@ public class NotificationFragment extends BaseFragment implements View.OnClickLi
                 tv_social.setTextColor(ContextCompat.getColor(mContext,R.color.gray));
                 view_div_social.setVisibility(View.GONE);
                 view_div_booking.setVisibility(View.VISIBLE);
-
+                scrollListener.resetState();
                 lastDateStatusBooking = "";
                 NotificationListBooking.clear();
-                scrollListener.resetState();
+                NotificationListSocial.clear();
+
                 getNotificationList(0);
                 recyclerView.setAdapter(adapterBoooking);
 

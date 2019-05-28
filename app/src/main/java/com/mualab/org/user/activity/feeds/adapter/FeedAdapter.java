@@ -200,7 +200,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 h.tv_report.setVisibility(View.GONE);
                 h.view_divider.setVisibility(View.GONE);
                 h.tv_delete.setVisibility(View.VISIBLE);
-                //h.tv_report.setText("Delete post");
+                //h.tv_report.setText("Delete Post");
             } else {
                 // h.tv_report.setText("Report post");
                 h.tv_report.setVisibility(View.VISIBLE);
@@ -859,7 +859,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cellFeedViewHolder.tv_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cellFeedViewHolder.tv_report.getText().toString().trim().equals("Delete post")) {
+                if (cellFeedViewHolder.tv_report.getText().toString().trim().equals("Delete Post")) {
                     apiForDeletePost(feedItems.get(cellFeedViewHolder.getAdapterPosition()), cellFeedViewHolder.getAdapterPosition());
                 } else {
                     Intent intent = new Intent(mContext, ReportActivity.class);

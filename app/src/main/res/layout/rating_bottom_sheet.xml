@@ -31,7 +31,7 @@
             android:layout_marginTop="15dp"
             android:fontFamily="@font/nunito_regular"
             android:textColor="@color/text_color"
-            android:text="Your service has been completed. Please review how satisfied you are with "/>
+            android:text="Please review how satisfied you are with "/>
 
         <android.support.v7.widget.AppCompatRatingBar
             android:id="@+id/userRating"

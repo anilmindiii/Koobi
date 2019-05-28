@@ -91,7 +91,7 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
     private void shareOnSocial(String text) {
         Intent sharIntent = new Intent(Intent.ACTION_SEND);
         sharIntent.setType("text/plain");
-        sharIntent.putExtra(Intent.EXTRA_SUBJECT, "Koobi BIZ Voucher Code");
+        sharIntent.putExtra(Intent.EXTRA_SUBJECT, "Koobi Voucher Code");
         sharIntent.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(Intent.createChooser(sharIntent, "Share:"));
     }
@@ -100,7 +100,7 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
         if (flag.equalsIgnoreCase("text")) {
             Intent sharIntent = new Intent(Intent.ACTION_SEND);
             sharIntent.setType("text/plain");
-            sharIntent.putExtra(Intent.EXTRA_SUBJECT, "Koobi BIZ");
+            sharIntent.putExtra(Intent.EXTRA_SUBJECT, "Koobi");
             sharIntent.putExtra(Intent.EXTRA_TEXT, link);
             startActivity(Intent.createChooser(sharIntent, "Share:"));
         } else {
@@ -124,7 +124,7 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
             sharIntent.setType("image/png");
             sharIntent.setType("text/plain");
             sharIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            sharIntent.putExtra(Intent.EXTRA_SUBJECT, "Koobi BIZ");
+            sharIntent.putExtra(Intent.EXTRA_SUBJECT, "Koobi");
             sharIntent.putExtra(Intent.EXTRA_TEXT, link);
             startActivity(Intent.createChooser(sharIntent, "Share:"));
         }

@@ -53,12 +53,12 @@
             android:layout_marginBottom="50dp"
             android:orientation="vertical">
 
-            <com.github.siyamed.shapeimageview.CircularImageView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:tint="@color/gray"
-                android:src="@drawable/user_group_ico" />
+                app:srcCompat="@drawable/ic_user_info" />
 
             <TextView
                 android:id="@+id/tv_msg"
@@ -71,47 +71,6 @@
                 android:text="@string/please_provide_the_following_details_to_report_this_post"
                 android:fontFamily="@font/nunito_regular"
                 android:textSize="@dimen/mcam_content_inset"/>
-
-            <LinearLayout
-                android:id="@+id/ly_posted_link"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="left"
-                    android:padding="3dp"
-                    android:textColor="@color/dark_gray"
-                    android:text="Reason for report"
-                    android:fontFamily="@font/nunito_regular"
-                    android:textSize="@dimen/mcam_content_inset"/>
-
-                <EditText
-                    android:id="@+id/ed_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:padding="3dp"
-                    android:background="@null"
-                    android:textColorHint="@color/gray"
-                    android:textColor="@color/dark_gray"
-                    android:hint="Enter Reason"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:fontFamily="@font/nunito_regular"
-                    android:textSize="@dimen/evp_text_size_medium"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.7dp"
-                    android:background="@color/gray"
-                    android:layout_alignParentBottom="true"/>
-
-            </LinearLayout>
 
 
             <RelativeLayout
@@ -132,6 +91,52 @@
                         android:gravity="left"
                         android:padding="3dp"
                         android:textColor="@color/dark_gray"
+                        android:text="Reason for report"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textSize="@dimen/mcam_content_inset"/>
+
+                    <RelativeLayout
+                        android:id="@+id/ly_reason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="5dp"
+                        android:paddingLeft="5dp">
+
+                        <TextView
+                            android:id="@+id/tv_reason"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:textColor="@color/dark_gray"
+                            android:hint="@string/select_reason"
+                            android:layout_marginRight="30dp"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="@dimen/evp_text_size_medium"/>
+
+                        <ImageView
+                            android:id="@+id/iv_down_arrow"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:tint="@color/dark_gray"
+                            android:src="@drawable/down_arrow_ico"
+                            android:layout_alignParentRight="true"/>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.7dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/gray" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="left"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_gray"
                         android:text="@string/description"
                         android:fontFamily="@font/nunito_regular"
                         android:textSize="@dimen/mcam_content_inset"/>
@@ -143,50 +148,13 @@
                         android:minHeight="100dp"
                         android:gravity="left"
                         android:padding="3dp"
-                        android:textColorHint="@color/gray"
-                        android:textColor="@color/dark_gray"
-                        android:hint="Enter Reason"
+                        android:hint="@string/enter_description"
                         android:imeOptions="actionDone"
-                        android:maxLength="200"
                         android:background="@drawable/rectangular_border"
+                        android:textColor="@color/dark_gray"
                         android:fontFamily="@font/nunito_regular"
                         android:textSize="@dimen/evp_text_size_medium"/>
 
-                    <LinearLayout
-                        android:id="@+id/ly_note"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:gravity="left"
-                            android:padding="3dp"
-                            android:textColor="@color/dark_gray"
-                            android:text="Note"
-                            android:fontFamily="@font/nunito_regular"
-                            android:textSize="@dimen/mcam_content_inset"/>
-
-
-                        <TextView
-                            android:id="@+id/tv_note"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="30dp"
-                            android:gravity="left"
-                            android:padding="3dp"
-                            android:hint="@string/enter_description"
-                            android:imeOptions="actionDone"
-                            android:background="@drawable/rectangular_border"
-                            android:textColor="@color/dark_gray"
-                            android:fontFamily="@font/nunito_regular"
-                            android:textSize="@dimen/evp_text_size_medium"/>
-
-
-                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -213,6 +181,8 @@
 
                 </android.support.v7.widget.CardView>
 
+
+
             </RelativeLayout>
 
 
@@ -230,6 +200,38 @@
                 android:text="@string/submit"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/btn_submit_booking"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="55dp"
+                android:text="@string/submit"
+                android:gravity="center"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="18sp"
+                android:layout_marginBottom="30dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/bg_button"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/btn_reSubmit"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="55dp"
+                android:text="Resubmit"
+                android:gravity="center"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="18sp"
+                android:layout_marginBottom="40dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/bg_button"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
 
 
         </LinearLayout>

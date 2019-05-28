@@ -50,6 +50,10 @@ public class ExploreGridViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         void onFeedClick(List<Feeds> feed, int index);
     }
 
+    public void isHideFirstIndex(boolean isHide){
+        hideFirstIndex = isHide ;
+    }
+
     public ExploreGridViewAdapter(Context mContext, ExSearchTag exSearchTag, List<Feeds> feedItems,
                                   Listener listener, FeedsListner feedsListner, boolean hideFirstIndex) {
         this.mContext = mContext;

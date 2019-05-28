@@ -3,6 +3,7 @@ package com.mualab.org.user.data.remote;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -215,7 +216,7 @@ public class HttpTask {
             @Override
             public void onResponse(String response) {
                 if (IS_DEBUG_MODE) {
-                    System.out.println(api + "\n" + response);
+                    Log.e("onResponse", api + "\n" + response);
                 }
                 listener.onResponse(response, api);
                 if (progress)

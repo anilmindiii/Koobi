@@ -71,6 +71,7 @@ import com.mualab.org.user.chat.ChatHistoryActivity;
 import com.mualab.org.user.chat.GroupChatActivity;
 import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.chat.model.ChatHistory;
+import com.mualab.org.user.chat.model.Groups;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.SearchBoard.RefineSearchBoard;
@@ -103,7 +104,7 @@ import static com.mualab.org.user.data.local.prefs.Session.isLogout;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat;
-    public TextView tvHeaderTitle, tv_business_count;
+    public TextView tvHeaderTitle, tv_business_count,tv_badge_count;
     public RelativeLayout rootLayout;
     public CardView rlHeader1;
     public RefineSearchBoard item;
@@ -127,6 +128,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private TextView tv_batch_count;
     private HashMap<String, Integer> batchCountMap;
     public static int businessBadge;
+    private DatabaseReference batchCountRef;
 
 
     public void setBgColor(int color) {
@@ -150,7 +152,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (getIntent().getStringExtra("FeedPostActivity") != null) {
             isFromFeedPost = getIntent().getStringExtra("FeedPostActivity");
         }
-
         isLogout = false;
 
         if (user != null) {
@@ -162,7 +163,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Mualab.feedBasicInfo.put("state", "MP");
             Mualab.feedBasicInfo.put("country", "India");
         }
-
+        batchCountRef = FirebaseDatabase.getInstance().getReference().child("socialBookingBadgeCount").child(String.valueOf(Mualab.currentUser.id));
 
         final NoConnectionDialog network = new NoConnectionDialog(MainActivity.this, new NoConnectionDialog.Listner() {
             @Override
@@ -292,6 +293,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         checkPermission();
         getBusinessInvitaionBadgeCount();
+        getbatchCount();
+
         getHistoryList();
     }
 
@@ -483,6 +486,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ivAppIcon = findViewById(R.id.ivAppIcon);
         ivHeaderBack = findViewById(R.id.btnBack);
         tv_business_count = findViewById(R.id.tv_business_count);
+        tv_badge_count = findViewById(R.id.tv_badge_count);
         ivHeaderUser = findViewById(R.id.ivUserProfile);
         ivHeaderUser.setVisibility(View.VISIBLE);
         User user = Mualab.getInstance().getSessionManager().getUser();
@@ -1217,6 +1221,64 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
+
+    private void getbatchCount(){
+        int totalCount = 0;
+        batchCountRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try{
+                    if(dataSnapshot.getValue() != null){
+                        HashMap<String, Object> objectMap = (HashMap<String, Object>) dataSnapshot.getValue();
+
+                        for(String key : objectMap.keySet()){
+                            String value =  String.valueOf(objectMap.get(key));
+                            Log.d("message",value+"");
+                        }
+
+                        String bookingCount =  String.valueOf(objectMap.get("bookingCount"));
+                        String socialCount =  String.valueOf(objectMap.get("socialCount"));
+
+                        if(bookingCount.equals("null")){
+                            bookingCount = "0";
+                        }
+
+                        if(socialCount.equals("null")){
+                            socialCount = "0";
+                        }
+
+                        int bookingCountInt = Integer.parseInt(bookingCount);
+                        int socialCountInt = Integer.parseInt(socialCount);
+                        int sum = bookingCountInt+socialCountInt;
+                        if(sum == 0){
+                            tv_badge_count.setVisibility(View.GONE);
+                        }else{
+                            tv_badge_count.setText(sum+"");
+                            tv_badge_count.setVisibility(View.VISIBLE);
+                        }
+
+
+                       // tv_batch_booking_count.setText(bookingCount+"");
+
+                    }
+                }catch (Exception e){
+                    Log.d("dd",e+"");
+                    //String  bookingCount =  dataSnapshot.getValue(String.class);
+                   // tv_batch_booking_count.setText(bookingCount+"");
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
 
 
 }

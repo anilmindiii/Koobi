@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -54,9 +55,12 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -130,8 +134,8 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     private String TAG = this.getClass().getName();
     ;
     private User user;
-    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2, tv_profile_followers, tv_business_count;
-    private LinearLayout ll_progress, llRating;
+    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2,tv_block_msg, tv_profile_followers, tv_business_count;
+    private LinearLayout ll_progress, llRating,ly_block_view;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
     private RecyclerViewScrollListenerProfile endlesScrollListener;
@@ -160,6 +164,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     NavigationMenuAdapter listAdapter;
     private Bitmap profileImageBitmap;
     private CircleImageView iv_Profile, user_image;
+    private String nodeForBlockUser = "";
+    private int myId ;
+    private DatabaseReference mBlockUser;
 
 
     @Override
@@ -170,6 +177,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         Intent i = getIntent();
         if (i != null) {
             userId = i.getStringExtra("userId");
+
+            myId = Mualab.currentUser.id;
+            if(Integer.parseInt(userId) < myId){
+                nodeForBlockUser = userId + "_" + myId;
+            }else nodeForBlockUser = myId + "_" + userId;
         }
         init();
 
@@ -217,7 +229,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         iv_gride_view = toolbar.findViewById(R.id.iv_gride_view);
         iv_list_view = toolbar.findViewById(R.id.iv_list_view);
         llRating = findViewById(R.id.llRating);
+        ly_block_view = findViewById(R.id.ly_block_view);
         tv_business_count = findViewById(R.id.tv_invite_count);
+
         /*tv_dot1 =  findViewById(R.id.tv_dot1);
         tv_dot2 =  findViewById(R.id.tv_dot2);
 */
@@ -305,6 +319,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         ll_filter.setOnClickListener(this);
 
         tv_no_data_msg = findViewById(R.id.tv_no_data_msg);
+        tv_block_msg = findViewById(R.id.tv_block_msg);
         ll_progress = findViewById(R.id.ll_progress);
 
         WrapContentLinearLayoutManager lm = new WrapContentLinearLayoutManager(UserProfileActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -319,9 +334,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onLoadMore() {
                 if (feedAdapter != null) {
-                    setAdapterLoading(true);
                     ++page;
-                    apiForGetAllFeeds(page, 20, false, "");
+                    setAdapterLoading(true);
+                    apiForGetAllFeeds(page, 20, true, "");
 
 
                 }
@@ -461,6 +476,40 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         arrayList.add("Video");
         addItems();
         apiForGetProfile();
+        mBlockUser = FirebaseDatabase.getInstance().getReference().child("blockUserArtist");
+        mBlockUser.child(nodeForBlockUser).child("blockedBy").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    try{
+                       String blockedId = dataSnapshot.getValue(String.class);
+
+                        if(blockedId.equals(userId) || blockedId.equals("Both")){// case of hide screen
+                            hideShowView(true);
+                        }else  hideShowView(false);
+
+                    }catch (Exception e){ }
+
+                }else {
+                    // case of show screen
+                    hideShowView(false);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void hideShowView(boolean shouldHide){
+        if(shouldHide){
+            ly_block_view.setVisibility(View.VISIBLE);
+        }else {
+            ly_block_view.setVisibility(View.GONE);
+        }
     }
 
     private void setAdapterLoading(boolean isLoad) {
@@ -509,6 +558,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                         if (profileData.isInvitation == 1) {
                             isInvitation = true;
                         } else isInvitation = false;
+                        tv_block_msg.setText(profileData.firstName+" "+profileData.lastName+" has blocked you");
 
                         listAdapter.getisInvitation(isInvitation);
 
@@ -557,11 +607,14 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
     @SuppressLint("SetTextI18n")
     private void setProfileData(UserProfileData profileData) {
+        TextView tv_ProfileNameBlock = findViewById(R.id.tv_ProfileNameBlock);
+        TextView tv_usernameBlock = findViewById(R.id.tv_usernameBlock);
 
         TextView tv_ProfileName = findViewById(R.id.tv_ProfileName);
         TextView tv_username = findViewById(R.id.tv_username);
         TextView tvRatingCount = findViewById(R.id.tvRatingCount);
         final CircleImageView user_image = findViewById(R.id.user_image);
+        TextView tvRatingCountBlock = findViewById(R.id.tvRatingCountBlock);
 
         TextView tv_distance = findViewById(R.id.tv_distance);
         TextView tv_profile_post = findViewById(R.id.tv_profile_post);
@@ -570,6 +623,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         iv_Profile = findViewById(R.id.iv_Profile);
         ImageView ivActive = findViewById(R.id.ivActive);
         RatingBar rating = findViewById(R.id.rating);
+        RatingBar ratingBlock = findViewById(R.id.ratingBlock);
 
         if (profileData.followerStatus.equals("1")) {
             btnFollow.setText("Unfollow");
@@ -580,13 +634,18 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         if (profileData != null) {
             tv_ProfileName.setText(profileData.firstName + " " + profileData.lastName);
+            tv_ProfileNameBlock.setText(profileData.firstName + " " + profileData.lastName);
+
             tv_distance.setText(profileData.radius + " Miles");
             tv_username.setText("@" + profileData.userName);
+            tv_usernameBlock.setText("@" + profileData.userName);
             tv_profile_followers.setText(profileData.followersCount);
             tv_profile_following.setText(profileData.followingCount);
             tv_profile_post.setText(profileData.postCount);
             tvRatingCount.setText("(" + profileData.reviewCount + ")");
+            tvRatingCountBlock.setText("(" + profileData.reviewCount + ")");
             float ratingCount = Float.parseFloat(profileData.ratingCount);
+            ratingBlock.setRating(Float.parseFloat(profileData.ratingCount));
             rating.setRating(ratingCount);
 
             if (!profileData.profileImage.isEmpty()) {
@@ -662,7 +721,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         lastFeedTypeId = id;
     }
 
-    private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, final String searchText) {
+    /*private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, final String searchText) {
         tv_no_data_msg.setVisibility(View.GONE);
         if (ll_progress != null)
             ll_progress.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
@@ -776,7 +835,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             JSONObject jsonObject = array.getJSONObject(i);
                             Feeds feed = gson.fromJson(String.valueOf(jsonObject), Feeds.class);
                             //  feed.taggedImgMap = new HashMap<>();
-                            /*tmp get data and set into actual json format*/
+                            *//*tmp get data and set into actual json format*//*
                             if (feed.userInfo != null && feed.userInfo.size() > 0) {
                                 Feeds.User user = feed.userInfo.get(0);
                                 feed.userName = user.userName;
@@ -903,7 +962,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     tv_no_data_msg.setVisibility(View.VISIBLE);
                 }
 
-               /* if (isGrideView) {
+               *//* if (isGrideView) {
                     rvFeed.setLayoutManager(new GridLayoutManager(UserProfileActivity.this, 3));
                     feedAdapter.isGrideView(true);
                     endlesScrollListener.resetState();
@@ -911,7 +970,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     rvFeed.setLayoutManager(new LinearLayoutManager(UserProfileActivity.this));
                     feedAdapter.isGrideView(false);
                     endlesScrollListener.resetState();
-                }*/
+                }*//*
 
 
                 feedAdapter.notifyDataSetChanged();
@@ -935,7 +994,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             //MyToast.getInstance(mContext).showSmallCustomToast(getString(R.string.alert_something_wenjt_wrong));
         }
 
-    }
+    }*/
 
     private String getEmojis(String commets) {
         String myString = "";
@@ -1861,6 +1920,290 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         }
     };
+
+
+
+    /*...................................................................*/
+
+    private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, String searchText) {
+
+        setFeedLoading(isEnableProgress);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("feedType", feedType);
+        params.put("search", "");
+        params.put("page", String.valueOf(page));
+        params.put("limit", String.valueOf(feedLimit));
+        params.put("type", "");
+        params.put("userId", userId);
+        params.put("loginUserId", String.valueOf(user.id));
+        params.put("viewBy", "");
+        params.put("search", searchText);
+
+
+        Mualab.getInstance().cancelPendingRequests(this.getClass().getName());
+        new HttpTask(new HttpTask.Builder(UserProfileActivity.this,
+                "profileFeed", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                setFeedLoading(false);
+                setAdapterLoading(false);
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+//String message = js.getString("message");
+
+
+                    if (status.equalsIgnoreCase("success")) {
+//removeProgress();
+                        ParseAndUpdateUI(page, response);
+
+                    } else  {
+//rvFeed.setVisibility(View.GONE);
+                        if(feeds.size() == 0){
+                            tv_no_data_msg.setVisibility(View.VISIBLE);
+                        }else  tv_no_data_msg.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+// MyToast.getInstance(mContext).showSmallMessage(getString(R.string.msg_some_thing_went_wrong));
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                setFeedLoading(false);
+                setAdapterLoading(false);
+                if(isPulltoRefrash){
+                    isPulltoRefrash = false;
+//mRefreshLayout.stopRefresh(false, 500);
+                    int prevSize = feeds.size();
+                    feeds.clear();
+                    feedAdapter.notifyItemRangeRemoved(0, prevSize);
+                }
+
+                try {
+                    Helper helper = new Helper();
+                    if (helper.error_Messages(error).contains("Session")) {
+                        Mualab.getInstance().getSessionManager().logout();
+//MyToast.getInstance(BookingActivity.this).showSmallCustomToast(helper.error_Messages(error));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//MyToast.getInstance(mContext).showSmallMessage(getString(R.string.msg_some_thing_went_wrong));
+            }})
+                .setAuthToken(user.authToken)
+                .setParam(params)
+                .setMethod(Request.Method.POST)
+                .setProgress(false)
+                .setBodyContentType(HttpTask.ContentType.X_WWW_FORM_URLENCODED))
+                .execute("profileFeed");
+    }
+
+    private void ParseAndUpdateUI(int page, final String response) {
+        try {
+            JSONObject js = new JSONObject(response);
+            String status = js.getString("status");
+// String message = js.getString("message");
+
+            if (status.equalsIgnoreCase("success")) {
+//rvFeed.setVisibility(View.VISIBLE);
+                JSONArray array = js.getJSONArray("AllFeeds");
+                if (isPulltoRefrash) {
+                    isPulltoRefrash = false;
+//mRefreshLayout.stopRefresh(true, 500);
+                    int prevSize = feeds.size();
+                    feeds.clear();
+                    feedAdapter.notifyItemRangeRemoved(0, prevSize);
+                }
+
+                Gson gson = new Gson();
+                if (array.length() != 0) {
+
+                    if (page == 0) {
+                        feeds.clear();
+                    }
+
+/*if (isGrideView) {
+feeds.clear();
+}*/
+                    int feedNewSize = 0;
+                    int feedOldSize = feeds.size() + 1;
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            JSONObject jsonObject = array.getJSONObject(i);
+                            Feeds feed = gson.fromJson(String.valueOf(jsonObject), Feeds.class);
+// feed.taggedImgMap = new HashMap<>();
+                            /*tmp get data and set into actual json format*/
+                            if (feed.userInfo != null && feed.userInfo.size() > 0) {
+                                Feeds.User user = feed.userInfo.get(0);
+                                feed.userName = user.userName;
+                                feed.fullName = user.firstName + " " + user.lastName;
+                                feed.profileImage = user.profileImage;
+                                feed.userId = user._id;
+                                feed.crd = feed.timeElapsed;
+                            }
+
+                            if (feed.feedData != null && feed.feedData.size() > 0) {
+
+                                feed.feed = new ArrayList<>();
+                                feed.feedThumb = new ArrayList<>();
+
+                                for (Feeds.Feed tmp : feed.feedData) {
+                                    feed.feed.add(tmp.feedPost);
+                                    if (!TextUtils.isEmpty(feed.feedData.get(0).videoThumb))
+                                        feed.feedThumb.add(tmp.feedPost);
+                                }
+
+                                if (feed.feedType.equals("video"))
+                                    feed.videoThumbnail = feed.feedData.get(0).videoThumb;
+                            }
+
+                            JSONArray jsonArray = jsonObject.getJSONArray("peopleTag");
+                            if (jsonArray.length() != 0) {
+
+                                for (int j = 0; j < jsonArray.length(); j++) {
+
+                                    feed.peopleTagList = new ArrayList<>();
+                                    JSONArray arrayJSONArray = jsonArray.getJSONArray(j);
+
+                                    for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                        JSONObject object = arrayJSONArray.getJSONObject(k);
+
+// HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                        String unique_tag_id = object.getString("unique_tag_id");
+                                        float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                        float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                        JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                        TagDetail tag;
+                                        if (tagOjb.has("tabType")) {
+                                            tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                        } else {
+                                            JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                            tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                        }
+//tagDetails.put(tag.title, tag);
+                                        TagToBeTagged tagged = new TagToBeTagged();
+                                        tagged.setUnique_tag_id(unique_tag_id);
+                                        tagged.setX_co_ord(x_axis);
+                                        tagged.setY_co_ord(y_axis);
+//tagged.setTagDetails(tagDetails);
+                                        tagged.setTagDetails(tag);
+
+                                        feed.peopleTagList.add(tagged);
+                                    }
+                                    feed.taggedImgMap.put(j, feed.peopleTagList);
+                                }
+                            }
+
+                            if (jsonObject.has("serviceTag")) {
+                                JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
+                                if (serviceTagArray.length() != 0) {
+
+                                    for (int j = 0; j < serviceTagArray.length(); j++) {
+
+                                        feed.serviceTagList = new ArrayList<>();
+                                        JSONArray arrayJSONArray = serviceTagArray.getJSONArray(j);
+
+                                        for (int k = 0; k < arrayJSONArray.length(); k++) {
+                                            JSONObject object = arrayJSONArray.getJSONObject(k);
+
+//HashMap<String, TagDetail> tagDetails = new HashMap<>();
+
+                                            String unique_tag_id = object.getString("unique_tag_id");
+                                            float x_axis = Float.parseFloat(object.getString("x_axis"));
+                                            float y_axis = Float.parseFloat(object.getString("y_axis"));
+
+                                            JSONObject tagOjb = object.getJSONObject("tagDetails");
+                                            TagDetail tag;
+                                            if (tagOjb.has("tabType")) {
+                                                tag = gson.fromJson(String.valueOf(tagOjb), TagDetail.class);
+                                            } else {
+                                                JSONObject details = tagOjb.getJSONObject(unique_tag_id);
+                                                tag = gson.fromJson(String.valueOf(details), TagDetail.class);
+                                            }
+//tagDetails.put(tag.title, tag);
+                                            TagToBeTagged tagged = new TagToBeTagged();
+                                            tagged.setUnique_tag_id(unique_tag_id);
+                                            tagged.setX_co_ord(x_axis);
+                                            tagged.setY_co_ord(y_axis);
+//tagged.setTagDetails(tagDetails);
+                                            tagged.setTagDetails(tag);
+
+                                            feed.serviceTagList.add(tagged);
+                                        }
+                                        feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
+                                    }
+                                }
+                            }
+
+                            if (isGrideView) {
+                                if (!feed.feedType.equals("text")) {
+                                    ++feedNewSize;
+                                    feeds.add(feed);
+                                }
+                            } else {
+                                ++feedNewSize;
+                                feeds.add(feed);
+                            }
+
+
+                        } catch (JsonParseException e) {
+                            setFeedLoading(false);
+                            tv_no_data_msg.setVisibility(View.VISIBLE);
+                            tv_no_data_msg.setText("Something went wrong!");
+                            e.printStackTrace();
+                        }
+                    }// loop end.
+
+                    feedAdapter.notifyItemRangeInserted(feedOldSize, feedNewSize);
+                } else if (feeds.size() == 0) {
+//rvFeed.setVisibility(View.GONE);
+                    feedAdapter.notifyDataSetChanged();
+                }
+
+/* if (isGrideView) {
+rvFeed.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+feedAdapter.isGrideView(true);
+endlesScrollListener.resetState();
+} else {
+rvFeed.setLayoutManager(new LinearLayoutManager(getActivity()));
+feedAdapter.isGrideView(false);
+endlesScrollListener.resetState();
+}*/
+
+            } else if (status.equals("fail") && feeds.size() == 0) {
+// rvFeed.setVisibility(View.GONE);
+                tv_msg.setVisibility(View.VISIBLE);
+
+                if (isPulltoRefrash) {
+                    isPulltoRefrash = false;
+//mRefreshLayout.stopRefresh(false, 500);
+
+                }
+                feedAdapter.notifyDataSetChanged();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            feedAdapter.notifyDataSetChanged();
+//MyToast.getInstance(mContext).showSmallCustomToast(getString(R.string.alert_something_wenjt_wrong));
+        }
+
+        if(feeds.size() == 0){
+            tv_no_data_msg.setVisibility(View.VISIBLE);
+        }else  tv_no_data_msg.setVisibility(View.GONE);
+
+    }
+
+    private void setFeedLoading(boolean isLoad) {
+        if (ll_progress != null)
+            ll_progress.setVisibility(isLoad ? View.VISIBLE : View.GONE);
+
+    }
 
 
 }

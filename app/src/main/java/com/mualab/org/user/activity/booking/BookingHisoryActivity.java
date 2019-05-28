@@ -268,7 +268,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
                         adapter = new ScheduledAdapter(BookingHisoryActivity.this, tempList, call_status);
                         recycler_view.setAdapter(adapter);
                     } else if (tabSelected.equals("tv_bookingHistory")) {
-                        historyAdapter = new BookingHistoryAdapter(BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
+                        historyAdapter = new BookingHistoryAdapter(recycler_view,BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
                             @Override
                             public void call(int artistId, int bookingId, String comments, float rating,String type) {
                                 bookingReviewRating(artistId, bookingId, comments, rating, type);
@@ -346,7 +346,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
                         adapter = new ScheduledAdapter(BookingHisoryActivity.this, tempList, call_status);
                         recycler_view.setAdapter(adapter);
                     } else if (tabSelected.equals("tv_bookingHistory")) {
-                        historyAdapter = new BookingHistoryAdapter(BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
+                        historyAdapter = new BookingHistoryAdapter(recycler_view,BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
                             @Override
                             public void call(int artistId, int bookingId, String comments, float rating,String type) {
                                 bookingReviewRating(artistId, bookingId, comments, rating, type);
@@ -525,7 +525,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
 
 
                     if (type.equals("Past")) {
-                        historyAdapter = new BookingHistoryAdapter(BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
+                        historyAdapter = new BookingHistoryAdapter(recycler_view,BookingHisoryActivity.this, tempList, new BookingHistoryAdapter.CallApis() {
                             @Override
                             public void call(int artistId, int bookingId, String comments, float rating,String type) {
                                 bookingReviewRating(artistId, bookingId, comments, rating,type);
