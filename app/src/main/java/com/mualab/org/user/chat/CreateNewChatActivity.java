@@ -70,6 +70,7 @@ public class CreateNewChatActivity extends AppCompatActivity implements View.OnC
                 Intent chat_intent = new Intent(CreateNewChatActivity.this, ChatActivity.class);
                 chat_intent.putExtra("opponentChatId", String.valueOf(firebaseUser.uId));
                 startActivity(chat_intent);
+                finish();
             }
         });
         LinearLayoutManager manager = new LinearLayoutManager(this);

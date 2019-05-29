@@ -12,11 +12,15 @@ import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -107,6 +111,8 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
             }
         });
 
+        spaceEditTex(binding.cardNum);
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
@@ -189,6 +195,8 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         }
         return false;
     }
+
+
 
     private boolean payValidations() {
         if (isEmpty(binding.cardNum)) {
@@ -583,5 +591,73 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         dialog.show();
     }
 
+    public void spaceEditTex(EditText editText){
+
+        editText.addTextChangedListener(new TextWatcher() {
+
+            private  final int TOTAL_SYMBOLS = 19; // size of pattern 0000-0000-0000-0000
+            private  final int TOTAL_DIGITS = 16; // max numbers of digits in pattern: 0000 x 4
+            private  final int DIVIDER_MODULO = 5; // means divider position is every 5th symbol beginning with 1
+            private  final int DIVIDER_POSITION = DIVIDER_MODULO - 1; // means divider position is every 4th symbol beginning with 0
+            private  final char DIVIDER = '-';
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // noop
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // noop
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!isInputCorrect(s, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
+                    s.replace(0, s.length(), buildCorrectString(getDigitArray(s, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER));
+                }
+            }
+
+            private boolean isInputCorrect(Editable s, int totalSymbols, int dividerModulo, char divider) {
+                boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
+                for (int i = 0; i < s.length(); i++) { // check that every element is right
+                    if (i > 0 && (i + 1) % dividerModulo == 0) {
+                        isCorrect &= divider == s.charAt(i);
+                    } else {
+                        isCorrect &= Character.isDigit(s.charAt(i));
+                    }
+                }
+                return isCorrect;
+            }
+
+            private String buildCorrectString(char[] digits, int dividerPosition, char divider) {
+                final StringBuilder formatted = new StringBuilder();
+
+                for (int i = 0; i < digits.length; i++) {
+                    if (digits[i] != 0) {
+                        formatted.append(digits[i]);
+                        if ((i > 0) && (i < (digits.length - 1)) && (((i + 1) % dividerPosition) == 0)) {
+                            formatted.append(divider);
+                        }
+                    }
+                }
+
+                return formatted.toString();
+            }
+
+            private char[] getDigitArray(final Editable s, final int size) {
+                char[] digits = new char[size];
+                int index = 0;
+                for (int i = 0; i < s.length() && index < size; i++) {
+                    char current = s.charAt(i);
+                    if (Character.isDigit(current)) {
+                        digits[index] = current;
+                        index++;
+                    }
+                }
+                return digits;
+            }
+        });
+    }
 
 }

@@ -69,6 +69,7 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
     int tabPosition = 0;
     int myId = Mualab.currentUser.id;
     String blockedByUser = "";
+    private  RecyclerView rvTopSearch;
 
     public ExploreTopFragment() {
         // Required empty public constructor
@@ -105,7 +106,7 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
         tv_msg = view.findViewById(R.id.tv_msg);
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, RecyclerView.VERTICAL, false);
-        RecyclerView rvTopSearch = view.findViewById(R.id.rvTopSearch);
+        rvTopSearch = view.findViewById(R.id.rvTopSearch);
         rvTopSearch.setLayoutManager(lm);
         adapter = new SearchAdapter(mContext, list, this);
         rvTopSearch.setAdapter(adapter);
@@ -115,6 +116,9 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
             lm.scrollToPositionWithOffset(0, 0);
             lm.smoothScrollToPosition(rvTopSearch, null, 0);*/
            tabPosition = flags;
+            list.clear();
+            if(adapter!= null)adapter.notifyDataSetChanged();
+
         });
 
         endlesScrollListener = new RecyclerViewScrollListener(lm) {
@@ -231,12 +235,26 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                 showLoading();
                 callSearchAPI(searchKeyWord, 0);
             }else if(isViewCreated && !isFirstTimeVisiable && list!=null){
-                isFirstTimeVisiable = true;
+                isFirstTimeVisiable = false; // this is decide on swipe list should be load or not
                 list.clear();
+                rvTopSearch.scrollToPosition(0);
+                endlesScrollListener.resetState();
+                searchKeyWord = ExplorSearchActivity.searchKeyword;
                 showLoading();
                 callSearchAPI(searchKeyWord, 0);
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        list.clear();
+        adapter.notifyDataSetChanged();
+        endlesScrollListener.resetState();
+        searchKeyWord = ExplorSearchActivity.searchKeyword;
+        showLoading();
+        callSearchAPI(searchKeyWord, 0);
+        super.onResume();
     }
 
     private void callSearchAPI(final String searchKeyWord, int pageNo){

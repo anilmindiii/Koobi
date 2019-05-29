@@ -1791,9 +1791,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         super.onBackPressed();
-        finish();
 
-        startActivity(new Intent(ChatActivity.this, ChatHistoryActivity.class));
+
+       // startActivity(new Intent(ChatActivity.this, ChatHistoryActivity.class));
     }
 
     @Override

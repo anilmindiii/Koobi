@@ -271,7 +271,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     Intent chat_intent = new Intent(context, ChatActivity.class);
                     chat_intent.putExtra("opponentChatId",otherId);
                     context.startActivity(chat_intent);
-                    ((ChatHistoryActivity)context).finish();
+                    //((ChatHistoryActivity)context).finish();
                     break;
             }
         }
@@ -555,7 +555,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     Intent chat_intent = new Intent(context, GroupChatActivity.class);
                     chat_intent.putExtra("groupId",chatHistory.reciverId);
                     context.startActivity(chat_intent);
-                    ((ChatHistoryActivity)context).finish();
+                   // ((ChatHistoryActivity)context).finish();
                     break;
             }
         }

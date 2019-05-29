@@ -1493,9 +1493,9 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         });
 
         super.onBackPressed();
-        finish();
+       // finish();
 
-        startActivity(new Intent(GroupChatActivity.this,ChatHistoryActivity.class));
+      //  startActivity(new Intent(GroupChatActivity.this,ChatHistoryActivity.class));
     }
 
     @Override

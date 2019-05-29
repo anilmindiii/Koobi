@@ -84,6 +84,8 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
     private long mLastClickTime = 0;
     private boolean isFavFilter = false, isReadFilter;
     private ArrayList<String> arrayList;
+    private long listSize;
+    private  RecyclerView rvChatHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,14 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
         groupRef = FirebaseDatabase.getInstance().getReference().child("group");
         mGroupReqRef =  FirebaseDatabase.getInstance().getReference().child("group_request").child(myId);
 
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listSize = dataSnapshot.getChildrenCount(); }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
 
         mGroupReqRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -153,22 +162,19 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
         ImageView ivChatReq = findViewById(R.id.ivChatReq);
         ic_add_chat.setVisibility(View.VISIBLE);
         ivChatReq.setVisibility(View.GONE);
-        RecyclerView rvChatHistory = findViewById(R.id.rvChatHistory);
+        rvChatHistory = findViewById(R.id.rvChatHistory);
         rvChatHistory.setAdapter(historyAdapter);
-        historyAdapter.notifyDataSetChanged();
+        rvChatHistory.setVisibility(View.GONE);
 
         searchview = findViewById(R.id.searchview);
         KeyboardUtil.hideKeyboard(searchview, ChatHistoryActivity.this);
+
         searchview.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -329,23 +335,33 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void shorting() {
-        Collections.sort(chatHistories, new Comparator<ChatHistory>() {
-            @Override
-            public int compare(ChatHistory a1, ChatHistory a2) {
-                if (a1.timestamp == null || a2.timestamp == null) {
-                    return -1;
-                } else {
-                    Long long1 = Long.parseLong(String.valueOf(a1.timestamp));
-                    Long long2 = Long.parseLong(String.valueOf(a2.timestamp));
-                    return long2.compareTo(long1);
+
+        if(listSize == chatHistories.size()){
+            Collections.sort(chatHistories, new Comparator<ChatHistory>() {
+                @Override
+                public int compare(ChatHistory a1, ChatHistory a2) {
+                    if (a1.timestamp == null || a2.timestamp == null) {
+                        return -1;
+                    } else {
+                        Long long1 = Long.parseLong(String.valueOf(a1.timestamp));
+                        Long long2 = Long.parseLong(String.valueOf(a2.timestamp));
+                        return long2.compareTo(long1);
+                    }
                 }
-            }
-        });
+            });
+            historyAdapter.notifyDataSetChanged();
 
-        //   historyAdapter.setTyping(false);
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Do something after 100ms
+                    rvChatHistory.setVisibility(View.VISIBLE);
+                }
+            }, 100);
 
+        }
         progress_bar.setVisibility(View.GONE);
-        historyAdapter.notifyDataSetChanged();
     }
 
     private void getOtherUserDetail(String userId) {
@@ -604,6 +620,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
         databaseReference.orderByKey().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 String key = dataSnapshot.getKey();
                 try {
                     //  if (!key.contains("group_")){

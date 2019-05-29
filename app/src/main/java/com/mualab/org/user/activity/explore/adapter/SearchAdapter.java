@@ -49,11 +49,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Context mContext;
     private List<ExSearchTag> feedItems;
     private Listener listener;
-    private int tabPos;
-
-    public void setTabPosition(int tabPos){
-        this.tabPos = tabPos;
-    }
 
     public interface Listener{
         void onItemClick(ExSearchTag searchTag, int index);
@@ -120,15 +115,14 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         h.tvHeader.setText(searchTag.title);
         h.tvDesc.setText(searchTag.desc);
 
-        if(tabPos == 0 || tabPos == 1){
+        if(searchTag.type == 0 || searchTag.type == 1){
             h.btnFollow.setVisibility(View.VISIBLE);
         }else h.btnFollow.setVisibility(View.GONE);
 
         if (searchTag.id == Mualab.currentUser.id) {
             h.btnFollow.setVisibility(View.GONE);
         } else {
-            h.btnFollow.setVisibility(View.VISIBLE);
-            if (searchTag.followingStatus == 1) {
+            if (searchTag.followerStatus == 1) {
                 h.btnFollow.setBackgroundResource(R.drawable.btn_bg_blue_broder);
                 h.btnFollow.setTextColor(ContextCompat.getColor(mContext, R.color.black));
                 h.btnFollow.setText(R.string.following);
@@ -229,10 +223,10 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     //String message = js.getString("message");
 
                     if (status.equalsIgnoreCase("success")) {
-                        if (feeds.followingStatus == 0) {
-                            feeds.followingStatus = 1;
-                        } else if (feeds.followingStatus == 1) {
-                            feeds.followingStatus = 0;
+                        if (feeds.followerStatus == 0) {
+                            feeds.followerStatus = 1;
+                        } else if (feeds.followerStatus == 1) {
+                            feeds.followerStatus = 0;
                         }
                     }
                     notifyItemChanged(position);
