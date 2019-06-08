@@ -4,17 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,7 +21,6 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
@@ -54,20 +48,16 @@ import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.Helper;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -280,6 +270,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         if (callType.equals("Out Call")) {
             isOutCallSelected = true;
             chbOutcall.setChecked(true);
+            ly_outcall.setVisibility(View.VISIBLE);
             checkbox_img.setImageResource(R.drawable.active_check_box_ico);
         }
 
@@ -474,6 +465,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     staff = 0;
                     startTime = "";
                     apiForserviceStaff(String.valueOf(childId));
+                    setTodaysDay(dayId);
                 }
                 //     apiForGetSlots();
                 break;
@@ -576,6 +568,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     sDay = String.valueOf(day.getDay());
                 }
                 selectedDate = day.getYear() + "-" + sMonth + "-" + sDay;
+
+                setTodaysDay(dayId);
 
 
                 if (viewCalendar.isSelectedDay(day)) {
@@ -826,6 +820,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         Gson gson = new Gson();
                         services = gson.fromJson(response, Services.class);
                         busineshoursList.addAll(services.artistDetail.busineshours);
+                        viewCalendar.setDayToGray(busineshoursList);
 
                         if (isEditService) {
                             for (int i = 0; i < services.artistServices.size(); i++) {
@@ -864,26 +859,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         }
                         tvArtistName.setText(services.artistDetail.userName + "");
 
-                        String from = "";
-                        String end = "";
-
-                        for (int i = 0; i < services.artistDetail.busineshours.size(); i++) {
-                            if (services.artistDetail.busineshours.get(i).day == dayId) {
-                                from = services.artistDetail.busineshours.get(i).startTime + " - " + services.artistDetail.busineshours.get(i).endTime;
-                                if (!from.equals("")) {
-                                    if (end.equals("")) {
-                                        end = from;
-                                        from = "";
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!from.equals(""))
-                            tvbizDate.setText(end + " & " + from);
-                        else if (end.equals("")) {
-                            tvbizDate.setText("Close");
-                        } else tvbizDate.setText(end);
+                        setTodaysDay(dayId);
 
                         /*.......................................................................................................................*/
 
@@ -977,10 +953,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                                             } else if (artistServicesBean.subServies.get(childPos).artistservices.get(i).bookingType.equals("Outcall")) {
                                                 if (childId == (artistServicesBean.subServies.get(childPos).artistservices.get(i)._id)) {
                                                     artistServicesBean.subServies.get(childPos).artistservices.get(i).isSelected = true;
-
                                                     totalTime = (getMinutes(artistServicesBean.subServies.get(childPos).artistservices.get(i).completionTime) + getMinutes(preprationTime));
-
-
                                                 }
                                                 outCallList.add(artistServicesBean.subServies.get(childPos).artistservices.get(i));
                                             }
@@ -1221,6 +1194,34 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         task.execute(this.getClass().getName());
     }
 
+    private void setTodaysDay(int dayId) {
+        String from = "";
+        String end = "";
+
+        for (int i = 0; i < services.artistDetail.busineshours.size(); i++) {
+            if (services.artistDetail.busineshours.get(i).day == dayId) {
+                from = services.artistDetail.busineshours.get(i).startTime + " - " + services.artistDetail.busineshours.get(i).endTime;
+                if (!from.equals("")) {
+                    if (end.equals("")) {
+                        end = from;
+                        from = "";
+                    }
+                }
+            }
+        }
+
+        String dayName = MyFlexibleCalendar.getDayById(dayId);
+        if (getCurrentDate().equals(selectedDate)) {
+            dayName = "Today";
+        }
+
+        if (!from.equals(""))
+            tvbizDate.setText(dayName +" : "+end + " & " + from);
+        else if (end.equals("")) {
+            tvbizDate.setText("Today : Close");
+        } else tvbizDate.setText(dayName +" : "+ end);
+    }
+
     private void apiForserviceStaff(final String artistServiceId) {
 
         Progress.show(BookingActivity.this);
@@ -1307,7 +1308,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                             }
                             //staff = 0;
                         } else {
-                            if (staffInfoBeanList.size() < 0)
+                            if (staffInfoBeanList.size() > 0)
                                 staffInfoBeanList.get(0).isSelected = true;
                         }
 

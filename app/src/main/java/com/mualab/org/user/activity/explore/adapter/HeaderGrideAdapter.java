@@ -60,8 +60,8 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 final Feeds feeds = feedItems.get(position);
                 if (feeds.feedType.equals("image")) {
                     Picasso.with(mContext).load(feeds.feedData.get(position).feedPost)
-                            .resize(200, 200)
-                            .centerCrop().placeholder(R.drawable.gallery_placeholder)
+                           // .resize(200, 200)
+                            .placeholder(R.drawable.gallery_placeholder)
                             .into(headerHolder.imageViewHeader);
                 }
 

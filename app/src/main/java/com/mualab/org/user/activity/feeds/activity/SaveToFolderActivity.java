@@ -48,6 +48,7 @@ public class SaveToFolderActivity extends AppCompatActivity {
     private int pos = 0;
     private boolean fromSlider;
     private ImageView btnAdd;
+    private TextView tvNoCardAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,8 @@ public class SaveToFolderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_save_to_folder);
 
         if (getIntent().getStringExtra("from") != null) {
-            if (getIntent().getStringExtra("from").equals("slider")) fromSlider = true;
+            if (getIntent().getStringExtra("from").equals("slider"))
+                fromSlider = true;
         } else {
             feedId = getIntent().getIntExtra("feedId", feedId);
             pos = getIntent().getIntExtra("pos", 0);
@@ -64,6 +66,7 @@ public class SaveToFolderActivity extends AppCompatActivity {
         recycler_view = findViewById(R.id.recycler_view);
         btnSave = findViewById(R.id.btnSave);
         btnAdd = findViewById(R.id.ic_add_chat);
+        tvNoCardAdd = findViewById(R.id.tvNoCardAdd);
         btnAdd.setVisibility(View.VISIBLE);
 
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
@@ -82,8 +85,34 @@ public class SaveToFolderActivity extends AppCompatActivity {
         adapter = new FolderItemAdapter(btnSave,fromSlider, this, folderList, new FolderItemAdapter.clickListner() {
             @Override
             public void getClick(FolderInfo.DataBean dataBean, String Tag, int pos) {
-                if (fromSlider) {
+                if (Tag.equals("OnClickCell")) {
                     // slider click
+                    if(!fromSlider){
+                        if (dataBean._id != 0) {
+                            if(folderList.get(pos).isSelected){
+                                for (FolderInfo.DataBean bean : folderList) {
+                                    bean.isSelected = false;
+                                }
+                                folderList.get(pos).isSelected = false;
+                                btnSave.setVisibility(View.GONE);
+                            }else {
+                                for (FolderInfo.DataBean bean : folderList) {
+                                    bean.isSelected = false;
+                                }
+                                folderList.get(pos).isSelected = true;
+                                btnSave.setVisibility(View.VISIBLE);
+                            }
+
+
+                            adapter.notifyDataSetChanged();
+
+
+                            btnSave.setOnClickListener(v -> {
+                                saveToFolder(String.valueOf(dataBean._id));
+                            });
+                        }
+                        return;
+                    }
                     Intent intent = new Intent(SaveToFolderActivity.this, FolderFeedsActivity.class);
                     intent.putExtra("folderId", dataBean._id);
                     intent.putExtra("folderName", dataBean.folderName);
@@ -93,8 +122,6 @@ public class SaveToFolderActivity extends AppCompatActivity {
                         addFolDialog(true, dataBean);
                     } else {
                         if (dataBean._id != 0) {
-
-
                             if(folderList.get(pos).isSelected){
                                 for (FolderInfo.DataBean bean : folderList) {
                                     bean.isSelected = false;
@@ -221,6 +248,10 @@ public class SaveToFolderActivity extends AppCompatActivity {
                     } else {
                         // goto 3rd screen for register
                     }
+
+                    if(folderList.size()==0){
+                        tvNoCardAdd.setVisibility(View.VISIBLE);
+                    }else tvNoCardAdd.setVisibility(View.GONE);
 
                 } catch (Exception e) {
                     e.printStackTrace();

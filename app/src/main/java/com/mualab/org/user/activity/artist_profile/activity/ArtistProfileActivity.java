@@ -1005,6 +1005,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 if (lastFeedTypeId != R.id.ly_feeds) {
                     page = 0;
                     feeds.clear();
+                    endlesScrollListener.resetState();
                     feedType = "";
                     CURRENT_FEED_STATE = Constant.FEED_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
@@ -1018,6 +1019,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 if (lastFeedTypeId != R.id.ly_images) {
                     page = 0;
                     feeds.clear();
+                    endlesScrollListener.resetState();
                     feedType = "image";
                     CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
@@ -1032,6 +1034,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 if (lastFeedTypeId != R.id.ly_videos) {
                     page = 0;
                     feeds.clear();
+                    endlesScrollListener.resetState();
                     feedType = "video";
                     CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);

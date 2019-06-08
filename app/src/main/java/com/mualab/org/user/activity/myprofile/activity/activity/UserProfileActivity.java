@@ -1311,7 +1311,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
                             page = 0;
                             tvFilter.setText(R.string.all);
-                            ed_search.setText("");
+                           /// ed_search.setText("");
                             feeds.clear();
                             endlesScrollListener.resetState();
                             feedType = "";
@@ -1326,7 +1326,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             endlesScrollListener.resetState();
                             page = 0;
                             tvFilter.setText(R.string.photo);
-                            ed_search.setText("");
+                          //  ed_search.setText("");
                             feeds.clear();
 
                             feedType = "image";
@@ -1340,7 +1340,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             endlesScrollListener.resetState();
                             page = 0;
                             tvFilter.setText(R.string.video);
-                            ed_search.setText("");
+                           // ed_search.setText("");
                             // popupWindow.dismiss();
                             feeds.clear();
                             feedType = "video";
@@ -1435,7 +1435,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             e.printStackTrace();
         }
     }
-
 
     private void apifortokenUpdate() {
         Session session = Mualab.getInstance().getSessionManager();

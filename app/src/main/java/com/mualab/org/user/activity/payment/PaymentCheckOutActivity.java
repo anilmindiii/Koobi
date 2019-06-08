@@ -72,7 +72,7 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
     private long mLastClickTime = 0;
     private String amount;
 
-    PaymentCheckOutActivity  activity;
+    PaymentCheckOutActivity activity;
     private StripeSaveCardResponce.DataBean card;
 
     @Override
@@ -90,8 +90,8 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
             binding.textMaount.setVisibility(View.GONE);
             binding.tvAmount.setVisibility(View.GONE);
 
-        }else {
-            bookingId = getIntent().getIntExtra("bookingId",0);
+        } else {
+            bookingId = getIntent().getIntExtra("bookingId", 0);
             amount = getIntent().getStringExtra("amount");
             binding.btnSubmit.setVisibility(View.VISIBLE);
             binding.btnSaveCard.setVisibility(View.GONE);
@@ -111,22 +111,25 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
             }
         });
 
-        spaceEditTex(binding.cardNum);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
 
-        if (from.equals("profile")){
+
+        spaceEditTex(binding.cardNum);
+
+        if (from.equals("profile") || from.equals("BookingConfirmActivity")) {
             tvHeaderTitle.setText(getString(R.string.add_debit_credit_card));
-        }else if(from.equals("details")){
+
+        } else if (from.equals("details")) {
             tvHeaderTitle.setText(getString(R.string.card_details));
             card = getIntent().getParcelableExtra("card");
-            binding.cardNum.setText("XXXX XXXX XXXX "+card.getLast4());
+            binding.cardNum.setText("XXXX XXXX XXXX " + card.getLast4());
             binding.cardNum.setEnabled(false);
 
-            binding.tvDate.setText(card.getExp_month()+"/"+card.getExp_year());
+            binding.tvDate.setText(card.getExp_month() + "/" + card.getExp_year());
             binding.tvDate.setEnabled(false);
 
             binding.edCvv.setText("****");
@@ -134,8 +137,7 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
 
             binding.btnSaveCard.setText(getString(R.string.remove_card));
 
-        }
-        else tvHeaderTitle.setText(getString(R.string.payment_checkout));
+        } else tvHeaderTitle.setText(getString(R.string.payment_checkout));
 
 
         binding.tvDate.setOnClickListener(new View.OnClickListener() {
@@ -148,23 +150,20 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(payValidations()){
-                   // mis-clicking prevention, using threshold of 5000 ms
-                   if (SystemClock.elapsedRealtime() - mLastClickTime < 5000){
-                       return;
-                   }
-                   mLastClickTime = SystemClock.elapsedRealtime();
+                if (payValidations()) {
+                    // mis-clicking prevention, using threshold of 5000 ms
+                    if (SystemClock.elapsedRealtime() - mLastClickTime < 5000) {
+                        return;
+                    }
+                    mLastClickTime = SystemClock.elapsedRealtime();
 
 
-                       String cardNumber = binding.cardNum.getText().toString().trim();
-                       if(bookingId != 0)
-                           saveCardAndPay(cardNumber, month1, year1, binding.edCvv.getText().toString().trim());
+                    String cardNumber = binding.cardNum.getText().toString().trim();
+                    if (bookingId != 0)
+                        saveCardAndPay(cardNumber, month1, year1, binding.edCvv.getText().toString().trim());
 
 
-
-
-
-               }
+                }
             }
         });
 
@@ -172,16 +171,15 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(View v) {
                 String btnName = binding.btnSaveCard.getText().toString().trim();
-                if(btnName.equals("Remove Card")){
+                if (btnName.equals("Remove Card")) {
                     confirmDialog(card.getId());
 
-                }else {
-                    if(payValidations()){
+                } else {
+                    if (payValidations()) {
                         String cardNumber = binding.cardNum.getText().toString().trim();
                         createStripeToken(cardNumber, month1, year1, binding.edCvv.getText().toString().trim());
                     }
                 }
-
 
 
             }
@@ -197,7 +195,6 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
     }
 
 
-
     private boolean payValidations() {
         if (isEmpty(binding.cardNum)) {
             MyToast.getInstance(PaymentCheckOutActivity.this).showDasuAlert(getString(R.string.please_enter_card_number));
@@ -208,12 +205,10 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         } else if (isEmpty(binding.edCvv)) {
             MyToast.getInstance(PaymentCheckOutActivity.this).showDasuAlert(getString(R.string.please_enter_cvv));
             return false;
-        }
-        else if(binding.edCvv.getText().length() != 3){
+        } else if (binding.edCvv.getText().length() != 3) {
             MyToast.getInstance(PaymentCheckOutActivity.this).showDasuAlert(getString(R.string.please_enter_valid_cvv));
             return false;
-        }
-        else return true;
+        } else return true;
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -269,9 +264,9 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
                         Progress.hide(PaymentCheckOutActivity.this);
                         if (token != null /*&& binding.cbSaveCard.isChecked()*/) {
                             if (binding.cbSaveCard.isChecked()) {
-                                    createStripeToken(cardNumber, month1,
-                                            year1, binding.edCvv.getText().toString().trim());
-                                    // saveCreditCard(token.getId());
+                                createStripeToken(cardNumber, month1,
+                                        year1, binding.edCvv.getText().toString().trim());
+                                // saveCreditCard(token.getId());
                             }
                             makePayment(token.getId());
 
@@ -288,47 +283,48 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
 
         Progress.show(PaymentCheckOutActivity.this);
 
-            new AsyncTask<Void, Void, com.stripe.model.Token>() {
-                @Override
-                protected com.stripe.model.Token doInBackground(Void... voids) {
-                    com.stripe.Stripe.apiKey = "sk_test_8yF1axC0w9jPs6rlmAK3LQh1";
-                    com.stripe.model.Token token = null;
-                    Map<String, Object> tokenParams = new HashMap<String, Object>();
-                    Map<String, Object> cardParams = new HashMap<String, Object>();
-                    cardParams.put("number", cardNumber);
-                    cardParams.put("exp_month", month1);
-                    cardParams.put("exp_year", year1);
-                    cardParams.put("cvc", cvv);
-                    tokenParams.put("card", cardParams);
+        new AsyncTask<Void, Void, com.stripe.model.Token>() {
+            @Override
+            protected com.stripe.model.Token doInBackground(Void... voids) {
+                com.stripe.Stripe.apiKey = "sk_test_8yF1axC0w9jPs6rlmAK3LQh1";
+                com.stripe.model.Token token = null;
+                Map<String, Object> tokenParams = new HashMap<String, Object>();
+                Map<String, Object> cardParams = new HashMap<String, Object>();
+                cardParams.put("number", cardNumber);
+                cardParams.put("exp_month", month1);
+                cardParams.put("exp_year", year1);
+                cardParams.put("cvc", cvv);
+                tokenParams.put("card", cardParams);
 
-                    try {
-                        token = com.stripe.model.Token.create(tokenParams);
+                try {
+                    token = com.stripe.model.Token.create(tokenParams);
 
-                    } catch (final StripeException e) {
-                        Progress.hide(PaymentCheckOutActivity.this);
-                        activity.runOnUiThread(new Runnable() {
-                            public void run() {
-                                MyToast.getInstance(activity).showDasuAlert(e.getLocalizedMessage());
-                            }
-                        });
-                    }
-                    return token;
-                }
-
-                @Override
-                protected void onPostExecute(final com.stripe.model.Token token) {
-                    super.onPostExecute(token);
-                    runOnUiThread(new Runnable() {
-                        @Override
+                } catch (final StripeException e) {
+                    Progress.hide(PaymentCheckOutActivity.this);
+                    activity.runOnUiThread(new Runnable() {
                         public void run() {
-                            Progress.hide(PaymentCheckOutActivity.this);
-                            if (token != null) {
-                                saveCreditCard(token.getId());
-                            }
+                            MyToast.getInstance(activity).showDasuAlert(e.getLocalizedMessage());
                         }
                     });
                 }
-            }.execute();
+                return token;
+            }
+
+            @Override
+            protected void onPostExecute(final com.stripe.model.Token token) {
+                super.onPostExecute(token);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Progress.hide(PaymentCheckOutActivity.this);
+                        if (token != null) {
+                            saveCreditCard(token.getId());
+                            setResult(Constant.REQUEST_Select_Service, getIntent().putExtra("cardId", token.getCard().getId()));
+                        }
+                    }
+                });
+            }
+        }.execute();
 
     }
 
@@ -355,7 +351,8 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
                         public void run() {
                             MyToast.getInstance(activity).showDasuAlert(e.getLocalizedMessage());
                         }
-                    });                }
+                    });
+                }
                 return customer;
             }
 
@@ -364,7 +361,7 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
                 super.onPostExecute(customer);
                 Progress.hide(PaymentCheckOutActivity.this);
                 if (customer != null) {
-                    if (from.equals("profile")){
+                    if (from.equals("profile") || from.equals("BookingConfirmActivity")) {
                         onBackPressed();
                     }
                     // Toast.makeText(CreditCardActivity.this, "Your card is saved successfully.", Toast.LENGTH_SHORT).show();
@@ -394,7 +391,7 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
         monthPicker.setWrapSelectorWheel(false);
-        monthPicker.setValue(month+1);
+        monthPicker.setValue(month + 1);
         monthPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
 
@@ -435,7 +432,7 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         }
     }
 
-        //server api for sending token for payment
+    //server api for sending token for payment
     private void makePayment(final String token) {
         Progress.show(PaymentCheckOutActivity.this);
         Session session = Mualab.getInstance().getSessionManager();
@@ -538,7 +535,6 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
     }
 
 
-
     private void dialogNew() {
         SweetAlertDialog dialog = new SweetAlertDialog(PaymentCheckOutActivity.this, SweetAlertDialog.SUCCESS_TYPE);
 
@@ -548,8 +544,8 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(SweetAlertDialog sDialog) {
                 sDialog.dismissWithAnimation();
-               setResult(RESULT_OK);
-               finish();
+                setResult(RESULT_OK);
+                finish();
             }
         });
 
@@ -591,15 +587,15 @@ public class PaymentCheckOutActivity extends AppCompatActivity implements View.O
         dialog.show();
     }
 
-    public void spaceEditTex(EditText editText){
+    public void spaceEditTex(EditText editText) {
 
         editText.addTextChangedListener(new TextWatcher() {
 
-            private  final int TOTAL_SYMBOLS = 19; // size of pattern 0000-0000-0000-0000
-            private  final int TOTAL_DIGITS = 16; // max numbers of digits in pattern: 0000 x 4
-            private  final int DIVIDER_MODULO = 5; // means divider position is every 5th symbol beginning with 1
-            private  final int DIVIDER_POSITION = DIVIDER_MODULO - 1; // means divider position is every 4th symbol beginning with 0
-            private  final char DIVIDER = '-';
+            private final int TOTAL_SYMBOLS = 19; // size of pattern 0000-0000-0000-0000
+            private final int TOTAL_DIGITS = 16; // max numbers of digits in pattern: 0000 x 4
+            private final int DIVIDER_MODULO = 5; // means divider position is every 5th symbol beginning with 1
+            private final int DIVIDER_POSITION = DIVIDER_MODULO - 1; // means divider position is every 4th symbol beginning with 0
+            private final char DIVIDER = '-';
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

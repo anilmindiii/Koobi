@@ -65,14 +65,14 @@
 
         <TextView
             android:id="@+id/tvNoCardAdd"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="right"
             android:gravity="center"
-            android:text="@string/no_saved_cards"
+            android:text="@string/no_folder_added"
             android:textColor="@color/text_color"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:visibility="gone" />
 
 

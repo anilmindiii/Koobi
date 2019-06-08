@@ -820,8 +820,9 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                                 imgCustomer.setImageBitmap(userBitmap);
 
                             rangeSeekBar.setVisibility(View.VISIBLE);
-                            if (artistBitmap != null)
+                            if (artistBitmap != null){
                                 rangeSeekBar.getLeftSeekBar().setIndicatorBitmap(artistBitmap);
+                            }else rangeSeekBar.getLeftSeekBar().setIndicatorBitmap(userBitmap);
                             rangeSeekBarTransparent.setVisibility(View.GONE);
 
                             if (historyInfo.data.bookStatus.equals("3")) {
@@ -832,8 +833,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                                 tvStatus.setText("On the way");
                                 tvStatus.setTextColor(ContextCompat.getColor(TrackingActivity.this, R.color.main_orange_color));
                             }
-
-
                         }
 
                         // rangeSeekBar.setValue(Float.parseFloat(roundValue), totalDistance);
@@ -842,8 +841,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                             String roundValue2 = String.format("%.2f", distance2);
                             tvDistance.setText(roundValue2 + " Miles");
                         }
-
-
 
                     } else {
                         MyToast.getInstance(TrackingActivity.this).showDasuAlert(message);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
@@ -70,7 +71,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
     private TextView tv_artist_name, tv_address, booking_status, tv_payment_method, tv_new_amount, tv_amount,
             tv_voucher_code, tv_discounted_price, tv_call_type, tv_pay;
     private FrameLayout ly_amount;
-    private RelativeLayout ly_voucher_code, ly_map_direction, ly_cancel_booking, ly_give_review;
+    private RelativeLayout ly_voucher_code, ly_map_direction, ly_cancel_booking, ly_give_review,ly_call;
     private BookingListInfo historyInfo;
     private int bookingId, serviceId, subServiceId, artistServiceId, artistId;
     private boolean isOutCallType;
@@ -114,6 +115,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         tv_pay = findViewById(R.id.tv_pay);
         ly_give_review = findViewById(R.id.ly_give_review);
         tv_txt_id = findViewById(R.id.tv_txt_id);
+        ly_call = findViewById(R.id.ly_call);
         tv_txt_status = findViewById(R.id.tv_txt_status);
         tvDone = findViewById(R.id.tvDone);
         tvDone.setVisibility(View.VISIBLE);
@@ -209,6 +211,18 @@ public class BookingDetailsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ArtistProfileActivity.class);
             intent.putExtra("artistId", String.valueOf(historyInfo.data.artistDetail.get(0)._id));
             startActivity(intent);
+        });
+
+        ly_call.setOnClickListener(v->{
+            try {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:"+historyInfo.data.artistDetail.get(0).countryCode+
+                        " "+historyInfo.data.artistDetail.get(0).contactNo));
+                startActivity(intent);
+            }catch (Exception e){
+
+            }
+
         });
 
     }

@@ -28,6 +28,7 @@ import com.mualab.org.user.activity.myprofile.activity.activity.EditProfileActiv
 import com.mualab.org.user.activity.myprofile.activity.model.NavigationItem;
 import com.mualab.org.user.activity.payment.AllCardActivity;
 import com.mualab.org.user.activity.searchBoard.fragment.SearchBoardFragment;
+import com.mualab.org.user.activity.settings.SettingsActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatHistoryActivity;
 import com.mualab.org.user.data.local.prefs.Session;
@@ -177,7 +178,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<NavigationMenuAd
 
                     case 6:
                         sSelect = item.itemName;
-                        MyToast.getInstance(context).showDasuAlert("Under development");
+                        context.startActivity(new Intent(context, SettingsActivity.class));
                         break;
 
                     case 7:
@@ -240,7 +241,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<NavigationMenuAd
 
                     case 7:
                         sSelect = item.itemName;
-                        MyToast.getInstance(context).showDasuAlert("Under development");
+                        context.startActivity(new Intent(context, SettingsActivity.class));
                         break;
 
                     case 8:

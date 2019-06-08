@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -18,12 +19,19 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.Views.calender.data.CalendarAdapter;
 import com.mualab.org.user.Views.calender.data.Day;
 import com.mualab.org.user.Views.calender.data.Event;
+import com.mualab.org.user.activity.artist_profile.model.Services;
 import com.mualab.org.user.activity.booking.BookingActivity;
+import com.mualab.org.user.activity.booking.WorkingHourActivity;
+import com.mualab.org.user.activity.booking.adapter.WorkingHoursAdapter;
+import com.mualab.org.user.activity.booking.customSeekBar.Utils;
 import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.Locale;
 
 
 public class MyFlexibleCalendar extends MyUICalendar {
@@ -33,10 +41,95 @@ public class MyFlexibleCalendar extends MyUICalendar {
     private CalendarAdapter mAdapter;
     private CalendarListener mListener;
     private int mInitHeight = 0;
+    ArrayList<Services.ArtistDetailBean.BusineshoursBean> daysList;
     private Handler mHandler = new Handler();
     private boolean mIsWaitingForUpdate = false;
+    private ArrayList<Day> tempDaysArray;
+    private int mCurrentWeekIndex, childId;
+    private boolean isFrist;
 
-    private int mCurrentWeekIndex,childId;
+
+    public void setDayToGray(ArrayList<Services.ArtistDetailBean.BusineshoursBean> days) {
+        this.daysList = days;
+        tempDaysArray = new ArrayList<>();
+
+        Day day = new Day();
+        day.dayId = 0;
+        day.dayName = "Mon";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        day = new Day();
+        day.dayId = 1;
+        day.dayName = "Tue";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        day = new Day();
+        day.dayId = 2;
+        day.dayName = "Wed";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        day = new Day();
+        day.dayId = 3;
+        day.dayName = "Thu";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        day = new Day();
+        day.dayId = 4;
+        day.dayName = "Fri";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        day = new Day();
+        day.dayId = 5;
+        day.dayName = "Sat";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        day = new Day();
+        day.dayId = 6;
+        day.dayName = "Sun";
+        day.isAvailable = false;
+        tempDaysArray.add(day);
+
+        for (int d = 0; d < daysList.size(); d++) {
+            switch (daysList.get(d).day) {
+                case 0:
+                    tempDaysArray.get(0).isAvailable = true;
+                    break;
+
+                case 1:
+                    tempDaysArray.get(1).isAvailable = true;
+                    break;
+
+                case 2:
+                    tempDaysArray.get(2).isAvailable = true;
+                    break;
+
+                case 3:
+                    tempDaysArray.get(3).isAvailable = true;
+                    break;
+
+                case 4:
+                    tempDaysArray.get(4).isAvailable = true;
+                    break;
+
+                case 5:
+                    tempDaysArray.get(5).isAvailable = true;
+                    break;
+
+                case 6:
+                    tempDaysArray.get(6).isAvailable = true;
+                    break;
+            }
+
+        }
+
+        redraw();
+    }
 
     public MyFlexibleCalendar(Context context) {
         super(context);
@@ -87,7 +180,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
         mBtnNextWeek.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextMonth();
+                nextWeek();
             }
         });
 
@@ -97,7 +190,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
             public void onClick(View v) {
                 if (getState() == STATE_COLLAPSED) {
                     expand(500);
-                }else {
+                } else {
                     collapse(500);
                 }
             }
@@ -108,14 +201,13 @@ public class MyFlexibleCalendar extends MyUICalendar {
             public void onClick(View v) {
                 if (getState() == STATE_COLLAPSED) {
                     expand(500);
-                }else {
+                } else {
                     collapse(500);
                 }
             }
         });
 
     }
-
 
 
     @Override
@@ -160,42 +252,65 @@ public class MyFlexibleCalendar extends MyUICalendar {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy");
                 dateFormat.setTimeZone(mAdapter.getCalendar().getTimeZone());
 
+                String input = day.getDay() + "/" + (day.getMonth() + 1) + "/" + day.getYear();
+                String dayaName = Helper.formateDateFromstring("dd/MM/yyyy", "EEE", input);
+                Log.d("name", dayaName);
                 // set today's item
                 if (isToady(day)) {
-
                     mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
-                    //txtDay.setBackground(getTodayItemBackgroundDrawable());
+                    txtDay.setBackground(getTodayItemBackgroundDrawable());
+                    txtDay.setTextColor(getTodayItemTextColor());
 
-                    if (isFirstimeLoad){
+                    if (isFirstimeLoad) {
+//AppLogger.e("PrintStatus", "1 "+dayaName);
                         txtDay.setBackground(getSelectedItemBackgroundDrawable());
-                        txtDay.setTextColor(getSelectedItemTextColor());
-                    } else{
-                        txtDay.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimary ));
-                    }
 
+                        if (tempDaysArray != null) {
+                            for (int d = 0; d < tempDaysArray.size(); d++) {
+                                if (!tempDaysArray.get(d).isAvailable) {
+                                    if (tempDaysArray.get(d).dayName.equals(dayaName)) {
+                                        txtDay.setBackground(getSelectedItemBackgroundUnservice());
+                                        txtDay.setTextColor(getSelectedItemTextColor());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    } else txtDay.setBackground(getTodayItemBackgroundDrawable());
+
+                } else {
+                    if (tempDaysArray != null)
+                        for (int d = 0; d < tempDaysArray.size(); d++) {
+                            if (!tempDaysArray.get(d).isAvailable) {
+                                if (tempDaysArray.get(d).dayName.equals(dayaName)) {
+                                    txtDay.setBackground(getSelectedItemBackgroundUnservice());
+                                    txtDay.setTextColor(getSelectedItemTextColor());
+                                }
+                            }
+                        }
                 }
-
                 // set the selected item
                 if (isSelectedDay(day)) {
-                    if (!isFirstimeLoad){
+                    if (!isFirstimeLoad) {
                         Calendar todayCal = Calendar.getInstance();
-                        int cYear  = todayCal.get(Calendar.YEAR);
-                        int cMonth  = todayCal.get(Calendar.MONTH)+1;
-                        int cDay  = todayCal.get(Calendar.DAY_OF_MONTH);
+                        int cYear = todayCal.get(Calendar.YEAR);
+                        int cMonth = todayCal.get(Calendar.MONTH) + 1;
+                        int cDay = todayCal.get(Calendar.DAY_OF_MONTH);
 
                         int year = day.getYear();
-                        int month =  day.getMonth()+1;
-                        int dayOfMonth =  day.getDay();
+                        int month = day.getMonth() + 1;
+                        int dayOfMonth = day.getDay();
 
-                        if (year>=cYear && month>=cMonth){
-                            if (year==cYear && month==cMonth && dayOfMonth<cDay){
-                              //  MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");
-                            }else {
+                        if (year >= cYear && month >= cMonth) {
+                            if (year == cYear && month == cMonth && dayOfMonth < cDay) {
+                                //  MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");
+                            } else {
                                 mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
                                 txtDay.setBackground(getSelectedItemBackgroundDrawable());
                                 txtDay.setTextColor(getSelectedItemTextColor());
                             }
-                        }else {
+                        } else {
                             //MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");
                         }
 
@@ -242,7 +357,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
                 View view = mInflater.inflate(R.layout.layout_day_of_week, null);
                 TextView txtDayOfWeek = view.findViewById(R.id.txt_day_of_week);
                 txtDayOfWeek.setText(dayOfWeekIds[(i + getFirstDayOfWeek()) % 7]);
-                txtDayOfWeek.setTextColor(ContextCompat.getColor(getContext(),R.color.black));
+                txtDayOfWeek.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
 
 
                 //ViewGroup.LayoutParams.WRAP_CONTENT
@@ -303,22 +418,22 @@ public class MyFlexibleCalendar extends MyUICalendar {
         }
     }*/
 
-    public void setToday(boolean isTodayClick){
+    public void setToday(boolean isTodayClick) {
         this.isTodayClick = isTodayClick;
     }
 
     private int getSuitableRowIndex() {
-        if (isTodayClick){
+        if (isTodayClick) {
             isTodayClick = false;
             if (getTodayItemPosition() != -1) {
                 View view = mAdapter.getView(getTodayItemPosition());
                 TableRow row = (TableRow) view.getParent();
 
                 return mTableBody.indexOfChild(row);
-            }else {
+            } else {
                 return 0;
             }
-        }else{
+        } else {
             if (getSelectedItemPosition() != -1) {
                 View view = mAdapter.getView(getSelectedItemPosition());
                 TableRow row = (TableRow) view.getParent();
@@ -337,20 +452,20 @@ public class MyFlexibleCalendar extends MyUICalendar {
 
     }
 
-    public int isServiceSelected(int childId){
+    public int isServiceSelected(int childId) {
         this.childId = childId;
         return childId;
     }
 
     public void onItemClicked(View view, Day day) {
-        if(isServiceSelected(childId)  == 0){
+        if (isServiceSelected(childId) == 0) {
             MyToast.getInstance(mContext).showDasuAlert("Please select service");
 
             return;
         }
 
-        select(day,true);
-        isFirstimeLoad  = false;
+        select(day, true);
+        isFirstimeLoad = false;
         //  Day day1 = getSelectedDay();
 
         Calendar cal = mAdapter.getCalendar();
@@ -378,7 +493,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
         if (mListener != null) {
             mListener.onItemClick(view);
         }
-       collapse(500);
+        collapse(500);
     }
 
     // public methods
@@ -618,7 +733,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
         setSelectedItem(new Day(day.getYear(), day.getMonth(), day.getDay()));
         redraw();
 
-        if(isRunApi){
+        if (isRunApi) {
             if (mListener != null) {
                 mListener.onDaySelect();
             }
@@ -656,4 +771,41 @@ public class MyFlexibleCalendar extends MyUICalendar {
         // triggered when the week position are changed.
         void onWeekChange(int position);
     }
+
+
+    public static String getDayById(int dayId) {
+        String day = "";
+        switch (dayId) {
+            case 6:
+                day = "Sunday";
+                break;
+
+            case 0:
+                day = "Monday";
+                break;
+
+            case 1:
+                day = "Tuesday";
+                break;
+
+            case 2:
+                day = "Wednesday";
+                break;
+
+            case 3:
+                day = "Thursday";
+                break;
+
+            case 4:
+                day = "Friday";
+                break;
+
+            case 5:
+                day = "Saturday";
+                break;
+
+        }
+        return day;
+    }
+
 }

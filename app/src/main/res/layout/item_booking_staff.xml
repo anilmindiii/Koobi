@@ -6,15 +6,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/iv_profileImage"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/default_placeholder"
-        android:background="@drawable/gradient_circle_img"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/transparent" />
+    <RelativeLayout
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/tv_bg_color"
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/circle_blue_solid_background"/>
+
+        <TextView
+            android:id="@+id/tv_bg_color_grey"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/circle_selected_bg_grey" />
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profileImage"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/default_placeholder"
+            />
+
+
+    </RelativeLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +57,7 @@
             style="@style/TextView"
             android:fontFamily="@font/nunito_regular"
             android:maxLines="1"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="@string/app_name"
             android:textColor="@color/black" />
 
@@ -44,7 +70,7 @@
             style="@style/TextView"
             android:fontFamily="@font/nunito_regular"
             android:maxLines="1"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:text="£ 20"
             android:textColor="@color/gray" />
 
@@ -57,7 +83,7 @@
             style="@style/TextView"
             android:fontFamily="@font/nunito_regular"
             android:maxLines="1"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:text="30 min"
             android:textColor="@color/gray" />
 

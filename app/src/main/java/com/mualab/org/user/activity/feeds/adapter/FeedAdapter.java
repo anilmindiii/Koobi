@@ -95,6 +95,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Activity activity;
     public boolean isFromSingleActivity = false;
     public boolean isFromFolderActivity = false;
+    private TextView tvNoRecord;
 
 
     public void showHideLoading(boolean b) {
@@ -117,7 +118,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemRangeRemoved(0, size);
     }
 
-
+    // adapter for no recordFound message
+    public FeedAdapter(TextView tvNoRecord,Context mContext, String userType, List<Feeds> feedItems, Listener listener) {
+        this.tvNoRecord = tvNoRecord;
+        this.mContext = mContext;
+        this.feedItems = feedItems;
+        this.listener = listener;
+        this.userType = userType;
+        activity = (Activity) mContext;
+    }
 
     public FeedAdapter(Context mContext, String userType, List<Feeds> feedItems, Listener listener) {
         this.mContext = mContext;
@@ -1355,6 +1364,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                                     if (status.equalsIgnoreCase("success")) {
                                         feedItems.remove(position);
+                                        if(feedItems.size() == 0){
+                                            if(tvNoRecord != null)
+                                                tvNoRecord.setVisibility(View.VISIBLE);
+                                        }
                                     }
                                     notifyDataSetChanged();
                                 } catch (JSONException e) {

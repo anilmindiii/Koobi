@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,7 +16,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -23,9 +27,6 @@ import com.google.gson.Gson;
 import com.mualab.org.user.R;
 
 import com.mualab.org.user.Views.SweetAlert.SweetAlertDialog;
-import com.mualab.org.user.activity.booking.adapter.BookingHistoryDetailsAdapter;
-import com.mualab.org.user.activity.booking.model.BookingListInfo;
-import com.mualab.org.user.activity.main.MainActivity;
 import com.mualab.org.user.activity.payment.adapter.CardAdapter;
 import com.mualab.org.user.activity.payment.model.StripeSaveCardResponce;
 import com.mualab.org.user.application.Mualab;
@@ -48,6 +49,7 @@ import com.stripe.model.ExternalAccountCollection;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -192,6 +194,16 @@ public class AllCardActivity extends AppCompatActivity implements View.OnClickLi
                                 public void getCardData(StripeSaveCardResponce.DataBean dataBean) {
                                     token = dataBean.getId();
                                 }
+
+                                @Override
+                                public void getCardDataForDetele(StripeSaveCardResponce.DataBean dataBean, List<StripeSaveCardResponce.DataBean> dataList, int pos) {
+                                    confirmDialog(dataBean.getId(),dataList,pos);
+                                }
+
+                                @Override
+                                public void makeDefaultcard(StripeSaveCardResponce.DataBean dataBean) {
+                                    makeDefaultcardApi(dataBean.getId());
+                                }
                             });
 
 
@@ -321,5 +333,151 @@ public class AllCardActivity extends AppCompatActivity implements View.OnClickLi
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+    }
+
+    // Remove card case
+    private void confirmDialog(final String cardId, List<StripeSaveCardResponce.DataBean> dataList, int pos) {
+        Session session = new Session(AllCardActivity.this);
+        User user = session.getUser();
+        final Dialog dialog = new Dialog(AllCardActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_delete_chat);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        TextView tv_delete_alert = dialog.findViewById(R.id.tv_delete_alert);
+        tv_delete_alert.setText("Are you sure you want to delete this card?");
+        TextView title = dialog.findViewById(R.id.tv_title);
+        title.setText("Alert !");
+        dialog.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                removedSaveCardApi(cardId);
+
+                if(dataList.size()>1){
+                    if(user.cardId.equals(cardId)){
+                        if(dataList.size() == (pos+1)){ //case of last index
+                            makeDefaultcardApi(dataList.get(pos-1).getId());
+                        }else makeDefaultcardApi(dataList.get(pos+1).getId());
+
+                    }
+
+
+                }
+            }
+        });
+
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    //""""""""""  Remove Saved credit card """"""""""""//
+    @SuppressLint("StaticFieldLeak")
+    private void removedSaveCardApi(final String cardId) {
+        Progress.show(AllCardActivity.this);
+        new AsyncTask<Void, Void, Customer>() {
+            @Override
+            protected Customer doInBackground(Void... voids) {
+                Stripe.apiKey = "sk_test_8yF1axC0w9jPs6rlmAK3LQh1";
+
+                Customer customer = null;
+                try {
+                    String custId = Mualab.currentUser.customerId;
+                    customer = Customer.retrieve(custId);
+                    customer.getSources().retrieve(cardId).delete();
+                } catch (StripeException e) {
+                    e.printStackTrace();
+                    Progress.hide(AllCardActivity.this);
+                    MyToast.getInstance(AllCardActivity.this).showDasuAlert(e.getLocalizedMessage());
+                }
+                return customer;
+            }
+
+            @Override
+            protected void onPostExecute(Customer customer) {
+                super.onPostExecute(customer);
+                Progress.hide(AllCardActivity.this);
+                if (customer != null) {
+                    showCreditCardInfo();
+
+                }
+            }
+        }.execute();
+    }
+
+    // make default card
+    private void makeDefaultcardApi(String cardId) {
+        Session session = Mualab.getInstance().getSessionManager();
+        final User user = session.getUser();
+
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(AllCardActivity.this, new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        makeDefaultcardApi(cardId);
+                    }
+                }
+            }).show();
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("cardId", cardId);
+
+        HttpTask task = new HttpTask(new HttpTask.Builder(AllCardActivity.this, "updateRecord", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+
+                    if (status.equalsIgnoreCase("success")) {
+                        user.cardId = cardId;
+                        session.createSession(user);
+
+                    } else {
+                        //MyToast.getInstance(mContext).showDasuAlert(message);
+                    }
+                    //  showToast(message);
+                } catch (Exception e) {
+                    //Progress.hide(mContext);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                try {
+                    Helper helper = new Helper();
+                    if (helper.error_Messages(error).contains("Session")) {
+                        Mualab.getInstance().getSessionManager().logout();
+                        // MyToast.getInstance(BookingActivity.this).showDasuAlert(helper.error_Messages(error));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        })
+                .setAuthToken(user.authToken)
+                .setProgress(false)
+                .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
+        //.setBody(params, "application/x-www-form-urlencoded"));
+
+        task.execute(this.getClass().getName());
     }
 }

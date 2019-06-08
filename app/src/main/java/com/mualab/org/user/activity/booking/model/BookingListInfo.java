@@ -75,6 +75,7 @@ public class BookingListInfo implements Serializable {
             public int _id;
             public String userName;
             public String profileImage;
+            public String countryCode;
             public String contactNo;
             public String ratingCount;
 

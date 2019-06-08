@@ -48,7 +48,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -286,7 +286,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         rvFeed.setLayoutManager(lm);
         rvFeed.setHasFixedSize(true);
 
-        feedAdapter = new FeedAdapter(mContext,"", feeds, this);
+        feedAdapter = new FeedAdapter(tv_no_data_msg,mContext,"", feeds, this);
         endlesScrollListener = new RecyclerViewScrollListener(lm) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {

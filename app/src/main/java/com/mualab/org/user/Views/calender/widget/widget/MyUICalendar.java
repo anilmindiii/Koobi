@@ -78,6 +78,9 @@ public abstract class MyUICalendar extends LinearLayout {
     private Drawable mSelectedItemBackgroundDrawable =
             getResources().getDrawable(R.drawable.circle_green_solid_background);
 
+    private Drawable mSelectedItemBackgroundUnService =
+            getResources().getDrawable(R.drawable.chat_options_circle);
+
 
     private Drawable mButtonLeftDrawable =
             getResources().getDrawable(R.drawable.white_back_ico);
@@ -331,6 +334,10 @@ public abstract class MyUICalendar extends LinearLayout {
 
     public Drawable getSelectedItemBackgroundDrawable() {
         return mSelectedItemBackgroundDrawable;
+    }
+
+    public Drawable getSelectedItemBackgroundUnservice() {
+        return mSelectedItemBackgroundUnService;
     }
 
     public void setSelectedItemBackgroundDrawable(Drawable selectedItemBackground) {

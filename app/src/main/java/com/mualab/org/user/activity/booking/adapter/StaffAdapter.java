@@ -66,16 +66,20 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder>{
         }else holder.tv_time_duration.setText(hour +" hr "+min+" min");
 
         if(staffInfoBeanList.get(position).bookingType.equals("Incall")){
-            holder.tv_price.setText("£" + bean.inCallPrice+"");
-        }else {
             holder.tv_price.setText("£" + bean.outCallPrice+"");
+        }else {
+            holder.tv_price.setText("£" + bean.inCallPrice+"");
         }
 
         holder.tv_user_name.setText(bean.staffName);
 
         if(!bean.isSelected){
+            holder.tv_bg_color.setVisibility(View.GONE);
+            holder.tv_bg_color_grey.setVisibility(View.VISIBLE);
             holder.tv_user_name.setTextColor(ContextCompat.getColor(mContext,R.color.black));
         }else {
+            holder.tv_bg_color.setVisibility(View.VISIBLE);
+            holder.tv_bg_color_grey.setVisibility(View.GONE);
             holder.tv_user_name.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimary));
         }
     }
@@ -87,7 +91,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder>{
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView iv_profileImage;
-        TextView tv_user_name,tv_price,tv_time_duration;
+        TextView tv_user_name,tv_price,tv_time_duration,tv_bg_color,tv_bg_color_grey;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -96,6 +100,8 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder>{
             tv_user_name = itemView.findViewById(R.id.tv_user_name);
             tv_price = itemView.findViewById(R.id.tv_price);
             tv_time_duration = itemView.findViewById(R.id.tv_time_duration);
+            tv_bg_color = itemView.findViewById(R.id.tv_bg_color);
+            tv_bg_color_grey = itemView.findViewById(R.id.tv_bg_color_grey);
 
             itemView.setOnClickListener(this);
         }

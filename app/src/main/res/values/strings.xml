@@ -529,6 +529,11 @@
     <string name="edit_comment">Edit Comment</string>
     <string name="share_post">Share Post</string>
     <string name="add_friends">Add friends</string>
+    <string name="termsnpolicy"><![CDATA[Term & Policy]]></string>
+    <string name="help_support"><![CDATA[Help & Support]]></string>
+    <string name="about__us">About Us</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="no_folder_added">No Folder Added</string>
 
 
 </resources>

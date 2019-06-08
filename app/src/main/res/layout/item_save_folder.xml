@@ -68,6 +68,7 @@
                 android:layout_marginRight="35dp"
                 android:background="@null"
                 android:gravity="center|left"
+                android:maxLines="1"
                 android:text="Folder Name"
                 android:ellipsize="end"
                 android:fontFamily="@font/nunito_regular"

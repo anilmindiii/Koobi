@@ -152,22 +152,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 h.ivProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        if (searchTag.userType.equals("user")) {
-                            Intent intent = new Intent(mContext, UserProfileActivity.class);
-                            intent.putExtra("userId", String.valueOf(searchTag.id));
-                            mContext.startActivity(intent);
-                        }else if (searchTag.userType.equals("artist") && searchTag.id== Mualab.currentUser.id){
-                            Intent intent = new Intent(mContext, UserProfileActivity.class);
-                            intent.putExtra("userId", String.valueOf(searchTag.id));
-                            mContext.startActivity(intent);
-                        }
-                        else {
-                            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
-                            intent.putExtra("artistId", String.valueOf(searchTag.id));
-                            mContext.startActivity(intent);
-                        }
-
+                        imageClick(searchTag);
                     }
                 });
 
@@ -205,10 +190,31 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             int pos = getAdapterPosition();
             if(feedItems.size()>pos){
                 ExSearchTag searchTag = feedItems.get(pos);
+                if(searchTag.type ==  1){
+                    imageClick(searchTag);
+                    return;
+                }
                 listener.onItemClick(searchTag, pos);
             }
         }
     }
+
+    private void imageClick(ExSearchTag searchTag) {
+        if (searchTag.userType.equals("user")) {
+            Intent intent = new Intent(mContext, UserProfileActivity.class);
+            intent.putExtra("userId", String.valueOf(searchTag.id));
+            mContext.startActivity(intent);
+        } else if (searchTag.userType.equals("artist") && searchTag.id == Mualab.currentUser.id) {
+            Intent intent = new Intent(mContext, UserProfileActivity.class);
+            intent.putExtra("userId", String.valueOf(searchTag.id));
+            mContext.startActivity(intent);
+        } else {
+            Intent intent = new Intent(mContext, ArtistProfileActivity.class);
+            intent.putExtra("artistId", String.valueOf(searchTag.id));
+            mContext.startActivity(intent);
+        }
+    }
+
     private void apiForFollowUnFollow(final ExSearchTag feeds, final int position) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", "" + Mualab.currentUser.id);

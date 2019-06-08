@@ -71,8 +71,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp" />
 
-
-
     </com.mualab.org.user.Views.refreshviews.RjRefreshLayout>
 
     <TextView

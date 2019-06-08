@@ -50,5 +50,7 @@ public class User implements Serializable{
   public String deviceToken;
   public String deviceType;
 
+  public String cardId;
   public String customerId;
+  public int notificationStatus;
 }

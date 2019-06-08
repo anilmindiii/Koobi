@@ -44,28 +44,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.ablanco.zoomy.Zoomy;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.tag_module.callback.RemoveDuplicateTagListener;
 import com.mualab.org.user.activity.tag_module.models.TagViewBean;
 import com.viven.imagezoom.ImageZoomHelper;
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class InstaTag extends RelativeLayout {
-
     private final ArrayList<TagViewBean> mTagList = new ArrayList<>();
     private int mPosX;
     private int mPosY;
@@ -192,8 +185,9 @@ public class InstaTag extends RelativeLayout {
     private final Runnable mSetRootHeightWidth = new Runnable() {
         @Override
         public void run() {
-            int tempH = mTagImageView.getHeight();
             int tempW = mTagImageView.getWidth();
+            int tempH = (tempW*3/4); //mTagImageView.getHeight();
+
             if (tempH != 0 && tempW != 0) {
                 mRootHeight = tempH;
                 mRootWidth = tempW;

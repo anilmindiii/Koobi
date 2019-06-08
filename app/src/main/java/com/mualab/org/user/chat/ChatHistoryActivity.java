@@ -294,7 +294,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                                     }
 
 
-                                    /*...........................................*/
+                                    /*...........................................................................*/
 
                                     FirebaseDatabase.getInstance().getReference().child(broadcast).child(key).
                                             child("member").child(myId).addListenerForSingleValueEvent

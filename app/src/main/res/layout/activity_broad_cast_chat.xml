@@ -43,9 +43,11 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/btnBack"
                 android:src="@drawable/koobi_round_ico"
-                android:tint="@color/black"
+                android:background="@drawable/gradient_circle_img"
                 app:civ_border_color="@color/transparent"
-                app:civ_border_width="2dp" />
+                app:civ_border_width="1.5dp" />
+
+
 
             <LinearLayout
                 android:id="@+id/ly_group_info"

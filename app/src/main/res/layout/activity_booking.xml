@@ -115,22 +115,13 @@
                     android:layout_gravity="center"
                     android:src="@drawable/calendar_new_ico" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/nunito_regular"
-                    android:maxLines="1"
-                    android:text="Today : "
-                    android:textColor="@color/text_color"
-                    android:textSize="9sp" />
 
                 <TextView
                     android:id="@+id/tvbizDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
+                    android:layout_marginLeft="4dp"
                     android:fontFamily="@font/nunito_regular"
                     android:maxLines="1"
                     android:textColor="@color/text_color"
@@ -148,7 +139,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:clickable="false"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:visibility="gone">
 
             <CheckBox
                 android:id="@+id/chbOutcall"

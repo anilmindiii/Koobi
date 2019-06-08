@@ -128,8 +128,8 @@
 
                         <RelativeLayout
                             android:id="@+id/lyProfilePic"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
                             android:layout_centerInParent="true">
 
                             <RelativeLayout
@@ -139,8 +139,8 @@
 
                                 <de.hdodenhof.circleimageview.CircleImageView
                                     android:id="@+id/iv_Profile"
-                                    android:layout_width="70dp"
-                                    android:layout_height="70dp"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
                                     android:layout_centerInParent="true"
                                     android:src="@drawable/default_placeholder"
                                     app:civ_border_width="0dp" />

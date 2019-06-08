@@ -104,7 +104,7 @@
 
                 <include
                     android:id="@+id/main_layout_header"
-                    android:layout_height="240dp"
+                    android:layout_height="275dp"
                     android:layout_width="match_parent"
                     android:layout_marginRight="4dp"
                     android:layout_marginLeft="4dp"

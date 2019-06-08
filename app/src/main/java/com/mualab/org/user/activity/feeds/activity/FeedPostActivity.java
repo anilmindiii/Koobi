@@ -171,11 +171,8 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
 
         listOfValues = new ArrayList<>();
 
-        if(feedType == Constant.IMAGE_STATE){
-            rl_placeholder.setVisibility(View.GONE);
-        }else if(feedType == Constant.VIDEO_STATE){
-            rl_placeholder.setVisibility(View.VISIBLE);
-        }
+        if(feedType == Constant.IMAGE_STATE) rl_placeholder.setVisibility(View.GONE);
+        else if(feedType == Constant.VIDEO_STATE) rl_placeholder.setVisibility(View.VISIBLE);
 
         viewDidLoad();
 

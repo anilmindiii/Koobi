@@ -8,8 +8,8 @@
     android:background="@android:color/transparent">
 
 <RelativeLayout
-    android:layout_width="50dp"
-    android:layout_height="50dp">
+    android:layout_width="60dp"
+    android:layout_height="60dp">
 
     <ImageView
         android:id="@+id/iv_outer"
@@ -21,8 +21,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/marker_image"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/default_placeholder"
         app:civ_border_color="@color/white"

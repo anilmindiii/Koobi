@@ -2,8 +2,11 @@ package com.mualab.org.user.activity.booking;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
@@ -13,25 +16,35 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.Views.SweetAlert.SweetAlertDialog;
+import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.authentication.AddAddressActivity;
 import com.mualab.org.user.activity.booking.adapter.ConfirmServiceAdapter;
 import com.mualab.org.user.activity.booking.model.BookingConfirmInfo;
 import com.mualab.org.user.activity.booking.model.VoucherInfo;
 import com.mualab.org.user.activity.main.MainActivity;
+import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
+import com.mualab.org.user.activity.payment.AllCardActivity;
+import com.mualab.org.user.activity.payment.PaymentCheckOutActivity;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
@@ -83,10 +96,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private Double commisiion = 0.0;
     private int payOption = 0,bookingSetting = 0;
     private int card = 1,cash = 2, both = 3;private long mLastClickTime = 0;
-
-
-
-
+    private Session session;
     //private SoftKeyboard softKeyboard;
 
     @Override
@@ -122,6 +132,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        session = new Session(this);
 
         bookingList = new ArrayList<>();
         adapter = new ConfirmServiceAdapter(this, bookingList, new ConfirmServiceAdapter.getValue() {
@@ -287,7 +299,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                confirmBooking();
+
+                String cardId = session.getUser().cardId;
+                if(paymentType.equals("1") && TextUtils.isEmpty(cardId)){
+                    confirmDialog();
+                }else {
+                    confirmBooking();
+                }
+
+
+
             }
         });
 
@@ -352,6 +373,15 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 }
             }
         }
+
+        if(requestCode ==  Constant.REQUEST_Select_Service){
+            // here you get token card id and save it to session
+           User user =  session.getUser();
+           user.cardId = data.getStringExtra("cardId");
+           session.createSession(user);
+
+            makeDefaultcard(user.cardId);
+        }
     }
 
     @Override
@@ -397,6 +427,12 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         BookingConfirmInfo confirmInfo = gson.fromJson(response, BookingConfirmInfo.class);
                         bookingList.addAll(confirmInfo.data);
+
+                        // save cardId and customerId
+
+                        user.cardId = confirmInfo.userData.cardId;
+                        user.customerId = confirmInfo.userData.customerId;
+                        session.createSession(user);
 
                         if (isOutCallSelected) {
                             tv_address.setText(Mualab.currentUser.address + "");
@@ -725,35 +761,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     String bookingId = js.getString("bookingId");
 
                     if (status.equals("success")) {
-                        SweetAlertDialog dialog = new SweetAlertDialog(BookingConfirmActivity.this, SweetAlertDialog.SUCCESS_TYPE);
 
-                        dialog.setTitleText("Congratulation!");
-                        if(bookingSetting == 1){
-                            dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. check my bookings to review status.");
+                        if(paymentType.equals("1") && bookingSetting != 1){
+                            // hit payment api then go to sweet dialog
+                            apiForPayment(bookingId);
                         }else {
-                            dialog.setContentText("Your booking has been made with "+ bookingList.get(0).artistName +" check my bookings to review status.");
+                            sweetAlertConfirmation(bookingId);
                         }
-                        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
-                                Intent showLogin = new Intent(BookingConfirmActivity.this, MainActivity.class);
-                                showLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                showLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(showLogin);
 
-                                showLogin = new Intent(BookingConfirmActivity.this, BookingDetailsActivity.class);
-                                showLogin.putExtra("bookingId", Integer.parseInt(bookingId));
-                                showLogin.putExtra("shouldPopupOpen", false);
-                                startActivity(showLogin);
-                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                            }
-                        });
 
-                        dialog.setCancelable(false);
-                        dialog.setCanceledOnTouchOutside(false);
-                        dialog.show();
                     } else {
                         MyToast.getInstance(BookingConfirmActivity.this).showDasuAlert(message);
                     }
@@ -785,6 +802,37 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 //.setBodyJson(paramsobj, HttpTask.ContentType.APPLICATION_JSON)
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
         task.execute(this.getClass().getName());
+    }
+
+    private void sweetAlertConfirmation(String bookingId) {
+        SweetAlertDialog dialog = new SweetAlertDialog(BookingConfirmActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+        dialog.setTitleText("Congratulation!");
+        if(bookingSetting == 1){
+            dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. check my bookings to review status.");
+        }else {
+            dialog.setContentText("Your booking has been made with "+ bookingList.get(0).artistName +" check my bookings to review status.");
+        }
+        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+                Intent showLogin = new Intent(BookingConfirmActivity.this, MainActivity.class);
+                showLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                showLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(showLogin);
+
+                showLogin = new Intent(BookingConfirmActivity.this, BookingDetailsActivity.class);
+                showLogin.putExtra("bookingId", Integer.parseInt(bookingId));
+                showLogin.putExtra("shouldPopupOpen", false);
+                startActivity(showLogin);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+            }
+        });
+
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     private int getDayFromDate(String date) {
@@ -1033,6 +1081,151 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 .setAuthToken(user.authToken)
                 .setProgress(true)
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
+        task.execute(this.getClass().getName());
+    }
+
+    // payment solutions
+    // Remove card case
+    private void confirmDialog() {
+        final Dialog dialog = new Dialog(BookingConfirmActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_delete_chat);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        TextView tv_delete_alert = dialog.findViewById(R.id.tv_delete_alert);
+        tv_delete_alert.setText("First you need to add your card for online payment");
+        TextView title = dialog.findViewById(R.id.tv_title);
+        title.setText("Alert !");
+
+        Button btn_yes =  dialog.findViewById(R.id.btn_yes);
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+        btn_yes.setText("Add Card");
+        btn_no.setText("Cancel");
+        btn_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                // going gor token ie card id
+                Intent intent = new Intent(BookingConfirmActivity.this, PaymentCheckOutActivity.class);
+                intent.putExtra("from","BookingConfirmActivity");
+                startActivityForResult(intent,Constant.REQUEST_Select_Service);
+            }
+        });
+
+
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void apiForPayment(String bookingId) {
+        String cardId = session.getUser().cardId;
+        String customerId = session.getUser().customerId;
+
+        final Map<String, String> params = new HashMap<>();
+        params.put("sourceType","card");
+        params.put("token", cardId);
+        params.put("customerId", customerId);
+        params.put("id", bookingId);
+
+
+        new HttpTask(new HttpTask.Builder(BookingConfirmActivity.this, "cardPayment", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+
+                        sweetAlertConfirmation(bookingId);
+
+                    } else {
+                        MyToast.getInstance(BookingConfirmActivity.this).showDasuAlert(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+            }
+        }).setBody(params, HttpTask.ContentType.APPLICATION_JSON)
+                .setMethod(Request.Method.POST)
+                .setProgress(true))
+                .execute("FeedAdapter");
+    }
+
+    // make default card
+    private void makeDefaultcard(String cardId) {
+        Session session = Mualab.getInstance().getSessionManager();
+        final User user = session.getUser();
+
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(BookingConfirmActivity.this, new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        makeDefaultcard(cardId);
+                    }
+                }
+            }).show();
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("cardId", cardId);
+
+        HttpTask task = new HttpTask(new HttpTask.Builder(BookingConfirmActivity.this, "updateRecord", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                try {
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+
+                    if (status.equalsIgnoreCase("success")) {
+
+                    } else {
+                        //MyToast.getInstance(BookingConfirmActivity.this).showDasuAlert(message);
+                    }
+                    //  showToast(message);
+                } catch (Exception e) {
+                    Progress.hide(BookingConfirmActivity.this);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                try {
+                    Helper helper = new Helper();
+                    if (helper.error_Messages(error).contains("Session")) {
+                        Mualab.getInstance().getSessionManager().logout();
+                        // MyToast.getInstance(BookingActivity.this).showDasuAlert(helper.error_Messages(error));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        })
+                .setAuthToken(user.authToken)
+                .setProgress(false)
+                .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
+        //.setBody(params, "application/x-www-form-urlencoded"));
+
         task.execute(this.getClass().getName());
     }
 }

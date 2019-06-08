@@ -650,7 +650,6 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                     }).show();
                 }else {
                     isFromGallery = false;
-
                     KeyboardUtil.hideKeyboard(et_for_sendTxt,GroupChatActivity.this);
 
                     if (Build.VERSION.SDK_INT >= 23) {

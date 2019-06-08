@@ -67,7 +67,7 @@
 
                 android:textColorHint="@color/gray"
 
-                android:textColor="@color/gray"
+                android:textColor="@color/black"
 
                 android:imeOptions="actionNext"
                 android:background="@drawable/underline_gray"
@@ -87,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@color/gray"
+                android:textColor="@color/black"
                 android:textColorHint="@color/gray"
                 android:lines="1"
                 android:maxLength="1"
@@ -119,7 +119,7 @@
 
 
 
-                android:textColor="@color/gray"
+                android:textColor="@color/black"
                 android:textColorHint="@color/gray"
 
                 android:inputType="number"
@@ -146,7 +146,7 @@
                 android:lines="1"
                 android:textCursorDrawable="@drawable/cursor"
 
-                android:textColor="@color/gray"
+                android:textColor="@color/black"
                 android:textColorHint="@color/gray"
 
                 android:maxLength="1"

@@ -60,7 +60,7 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
     public static String TAG = SearchFeedFragment.class.getName();
 
     private Context mContext;
-    private TextView tv_msg;
+    private TextView tv_msg,title;
     private ProgressBar progress_bar;
     private LinearLayout ll_progress;
     private RecyclerView rvFeed;
@@ -91,11 +91,15 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         feeds = new ArrayList<>();
+
         if (getArguments() != null) {
             //fragCount = getArguments().getInt("fragCount");
             exSearchTag = (ExSearchTag) getArguments().getSerializable("searchKey");
+
+
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -106,7 +110,9 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_feed, container, false);
+        View view = inflater.inflate(R.layout.fragment_search_feed, container, false);
+        title = view.findViewById(R.id.title);
+        return view;
     }
 
     private void initView(View view){
@@ -126,6 +132,10 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
         rvFeed.setItemAnimator(null);
         rvFeed.setLayoutManager(wgm);
         rvFeed.setHasFixedSize(true);
+
+        if(exSearchTag.type == 0){
+            title.setText("Service Tags");
+        }
 
        /* Drawable divider = ContextCompat.getDrawable(mContext, R.drawable.divider_transprant);
         rvFeed.addItemDecoration(new GridDividerItemDecoration(divider, divider, mNoOfColumns));*/

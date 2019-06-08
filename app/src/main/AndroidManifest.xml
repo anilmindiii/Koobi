@@ -467,11 +467,19 @@
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <activity android:name=".activity.artist_profile.activity.ReportUserActivity"
+        <activity
+            android:name=".activity.artist_profile.activity.ReportUserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/StatusBarBlack"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.settings.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.settings.ChangePasswordActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

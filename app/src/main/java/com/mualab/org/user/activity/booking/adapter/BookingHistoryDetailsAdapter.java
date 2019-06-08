@@ -166,7 +166,13 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
 
     @Override
     public int getItemCount() {
-        return bookingListInfo.data.bookingInfo.size();
+        try {
+            return bookingListInfo.data.bookingInfo.size();
+        }catch (Exception e){
+
+        }
+        return 0;
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

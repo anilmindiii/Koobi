@@ -260,7 +260,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     endlesScrollListener.resetState();
                     feeds.clear();
                     page = 0;
-                    apiForGetAllFeeds(0, 20, true);
+                    apiForGetAllFeeds(0, 50, true);
                 });
         rcv_service.setAdapter(exploreServiceAdapter);
 
@@ -330,7 +330,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 feeds.clear();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(0, 20, true);
+                apiForGetAllFeeds(0, 50, true);
                 break;
 
             case R.id.lyRefineLocation:
@@ -374,7 +374,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 feeds.clear();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(0, 20, true);
+                apiForGetAllFeeds(0, 50, true);
                 break;
 
             case R.id.tv_reset:
@@ -418,7 +418,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
 
                 page = 0;
                 feeds.clear();
-                apiForGetAllFeeds(0, 20, true);
+                apiForGetAllFeeds(0, 50, true);
                 break;
         }
     }
@@ -495,7 +495,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
             @Override
             public void onLoadMore() {
                 if (feedAdapter != null) {
-                    apiForGetAllFeeds(++page, 20, false);
+                    apiForGetAllFeeds(++page, 50, false);
 
 
                 }
@@ -525,7 +525,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         feedType = "image";
         feedAdapter.notifyItemRangeRemoved(0, prevSize);
         showLoading();
-        apiForGetAllFeeds(0, 20, true);
+        apiForGetAllFeeds(0, 50, true);
 
     }
 
@@ -819,7 +819,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     main_layout_header.setVisibility(View.VISIBLE);
                     if (!feeds.get(0).feedData.get(0).feedPost.equals("")) {
                         Picasso.with(mContext).load(feeds.get(0).feedData.get(0).feedPost)
-                                .resize(200, 200).centerCrop()
                                 .placeholder(R.color.gray2)
                                 .into(imageViewHeader);
                     }

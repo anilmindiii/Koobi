@@ -629,6 +629,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/ly_call"
             android:layout_toRightOf="@+id/ly_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

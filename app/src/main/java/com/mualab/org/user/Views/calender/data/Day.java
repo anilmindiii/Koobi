@@ -2,6 +2,13 @@ package com.mualab.org.user.Views.calender.data;
 
 public class Day {
 	
+	public int dayId;
+	public String dayName;
+	public boolean isAvailable;
+
+	public Day() {
+	}
+
 	private int mYear;
 	private int mMonth;
 	private int mDay;

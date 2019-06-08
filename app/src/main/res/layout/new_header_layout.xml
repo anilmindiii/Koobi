@@ -134,12 +134,11 @@
 
         <ImageView
             android:id="@+id/ic_add_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="1dp"
-            android:padding="11dp"
+            android:layout_marginRight="7dp"
             android:tint="@color/gray5"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_ico_add_new_chat" />

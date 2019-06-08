@@ -75,7 +75,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName + "");
         }
 
-        holder.rlServices.setOnClickListener(new View.OnClickListener() {
+       /* holder.rlServices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tagToBookService(bean.bookingInfo.get(0).artistServiceId, String.valueOf(bean.artistDetail.get(0)._id),
@@ -89,7 +89,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
                 tagToBookService(bean.bookingInfo.get(1).artistServiceId, String.valueOf(bean.artistDetail.get(0)._id),
                         bean.bookingInfo.get(1).serviceId, bean.bookingInfo.get(1).subServiceId);
             }
-        });
+        });*/
 
         holder.artist_total_Rating.setIsIndicator(true);
 
