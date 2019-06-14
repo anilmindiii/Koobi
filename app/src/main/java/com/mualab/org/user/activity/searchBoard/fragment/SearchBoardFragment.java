@@ -369,6 +369,8 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                     apiForGetFavArtist(0, false);
                 else
                     apiForGetArtist(0, false);
+
+                listAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -510,13 +512,13 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
         if (item != null) {
             if (item.serviceType != null)
                 if (item.serviceType.equals("1")) {
-                    searchBoard.isOutCallSelected = true;
+                   // searchBoard.isOutCallSelected = true;
                     intent.putExtra("callType", "Out Call");
                 }
             intent.putExtra("bookingDate", item.date);
         }
 
-        intent.putExtra("incallStaff", searchBoard.isOutCallSelected);
+        //intent.putExtra("incallStaff", searchBoard.isOutCallSelected);
         intent.putExtra("outcallStaff", searchBoard.isOutCallSelected);
 
         startActivity(intent);
@@ -709,7 +711,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             params.put("sortType", sortType);
             params.put("text", searchKeyword);
             params.put("userId", String.valueOf(Mualab.currentUser.id));
-            // params.put("appType", "user");
+            //params.put("appType", "user");
 
         } catch (Exception e) {
 
@@ -747,8 +749,8 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                             progress_bar.setVisibility(View.GONE);
                             tv_msg.setVisibility(View.VISIBLE);
                             tv_msg.setText(R.string.no_artist_found);
-
-
+                            artistsList.clear();
+                            mapArtistList.clear();
                         } else {
                             tv_msg.setVisibility(View.GONE);
                         }
@@ -798,7 +800,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                         artistsList.addAll(values);
 
                     } else if (status.equals("fail")) {
-                        progress_bar.setVisibility(View.GONE);
+                      //  progress_bar.setVisibility(View.GONE);
                         //tv_msg.setVisibility(View.VISIBLE);
                         //tv_msg.setText(R.string.no_artist_found);
 
@@ -994,6 +996,8 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                             artistsList.clear();
                             Collection<ArtistsSearchBoard> values = mapArtistList.values();
                             artistsList.addAll(values);
+                        }else {
+                            artistsList.clear();
                         }
                     } else if (status.equals("fail")) {
                         progress_bar.setVisibility(View.GONE);
@@ -1197,6 +1201,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
             String add = obj.getAddressLine(0);
             add = add + "," + obj.getAdminArea();
             tv_location.setText(add);
+            Mualab.currentLocation.CurrrentAddress = add;
 
             if (!isFilterNChngLocaApply){
                 if (isFavClick)

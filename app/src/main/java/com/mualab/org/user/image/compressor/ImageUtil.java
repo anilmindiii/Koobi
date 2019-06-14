@@ -3,6 +3,7 @@ package com.mualab.org.user.image.compressor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ThumbnailUtils;
 import android.support.media.ExifInterface;
 
 import java.io.File;
@@ -38,21 +39,23 @@ public class ImageUtil {
         return new File(destinationPath);
     }
 
+
     static Bitmap decodeSampledBitmapFromFile(File imageFile, int reqWidth, int reqHeight) throws IOException {
-        // First decode with inJustDecodeBounds=true to check dimensions
+// First decode with inJustDecodeBounds=true to check dimensions
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
-        // Calculate inSampleSize
+// Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
-        // Decode bitmap with inSampleSize set
+// Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
 
         Bitmap scaledBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
-        //check the rotation of the image and display it properly
+
+//check the rotation of the image and display it properly
         ExifInterface exif;
         exif = new ExifInterface(imageFile.getAbsolutePath());
         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
@@ -64,8 +67,34 @@ public class ImageUtil {
         } else if (orientation == 8) {
             matrix.postRotate(270);
         }
-        scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+// scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        scaledBitmap = cropCenter(scaledBitmap, reqWidth, reqHeight);
+        scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, reqWidth, reqHeight, matrix, true);
+/*if (scaledBitmap.getWidth() >= scaledBitmap.getHeight()){
+scaledBitmap = Bitmap.createBitmap(
+scaledBitmap,
+scaledBitmap.getWidth()/2 - scaledBitmap.getHeight()/2,
+0,
+reqWidth,
+reqHeight
+);
+
+}else{
+scaledBitmap = Bitmap.createBitmap(
+scaledBitmap,
+0,
+scaledBitmap.getHeight()/2 - scaledBitmap.getWidth()/2,
+reqWidth,
+reqHeight
+);
+}*/
+
         return scaledBitmap;
+    }
+
+    public static Bitmap cropCenter(Bitmap bmp, int reqWidth, int reqHeight) {
+// int dimension = Math.min(bmp.getWidth(), bmp.getHeight());
+        return ThumbnailUtils.extractThumbnail(bmp, reqWidth, reqHeight);
     }
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {

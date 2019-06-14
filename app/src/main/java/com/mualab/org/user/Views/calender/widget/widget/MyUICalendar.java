@@ -68,8 +68,8 @@ public abstract class MyUICalendar extends LinearLayout {
 
     private int mTextColor = Color.BLACK;
     private int mPrimaryColor = Color.BLACK;
-    private int mTodayItemTextColor = Color.GRAY;
-    private int mSelectedItemTextColor = Color.GREEN;
+    private int mTodayItemTextColor = Color.WHITE;
+    private int mSelectedItemTextColor = Color.WHITE;
 
     // private Drawable mTodayItemBackgroundDrawable = getResources().getDrawable(R.drawable.circle_black_stroke_background);
     private Drawable mTodayItemBackgroundDrawable =
@@ -80,6 +80,9 @@ public abstract class MyUICalendar extends LinearLayout {
 
     private Drawable mSelectedItemBackgroundUnService =
             getResources().getDrawable(R.drawable.chat_options_circle);
+
+    private Drawable mSelectedItemBackgroundOrangeUnService =
+            getResources().getDrawable(R.drawable.circle_orange_background);
 
 
     private Drawable mButtonLeftDrawable =
@@ -334,6 +337,10 @@ public abstract class MyUICalendar extends LinearLayout {
 
     public Drawable getSelectedItemBackgroundDrawable() {
         return mSelectedItemBackgroundDrawable;
+    }
+
+    public Drawable getSelectedItemBackgroundOrangeUnService() {
+        return mSelectedItemBackgroundOrangeUnService;
     }
 
     public Drawable getSelectedItemBackgroundUnservice() {

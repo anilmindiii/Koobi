@@ -29,7 +29,7 @@
     <dimen name="shadow_width">2.5dp</dimen>
 
 
-
+    <dimen name="_220sdp">220.00dp</dimen>
     <dimen name="mcam_toolbar_elevation">4dp</dimen>
     <dimen name="mcam_content_inset_less">12dp</dimen>
     <dimen name="mcam_content_inset">16dp</dimen>

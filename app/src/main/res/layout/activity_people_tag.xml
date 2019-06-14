@@ -23,8 +23,9 @@
                 android:layout_height="30dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="2dp"
+                android:padding="5dp"
                 android:tint="@color/gray"
-                android:layout_marginLeft="5dp"
                 android:src="@drawable/white_back_ico" />
 
             <TextView
@@ -35,7 +36,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/nunito_bold"
                 android:gravity="center"
-                android:maxWidth="250dp"
+                android:maxWidth="@dimen/_220sdp"
                 android:maxLines="1"
                 android:textColor="@color/text_color"
                 android:textSize="18sp" />
@@ -48,7 +49,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/nunito_bold"
                 android:gravity="center"
-                android:maxWidth="250dp"
+                android:maxWidth="@dimen/_220sdp"
                 android:text="@string/tag_people"
                 android:maxLines="1"
                 android:textColor="@color/text_color"
@@ -111,7 +112,8 @@
                     android:layout_height="30dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="2dp"
+                    android:padding="5dp"
                     android:tint="@color/gray"
                     android:src="@drawable/white_back_ico" />
 
@@ -123,7 +125,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/nunito_bold"
                     android:gravity="center"
-                    android:maxWidth="250dp"
+                    android:maxWidth="@dimen/_220sdp"
                     android:maxLines="1"
                     android:text="@string/tag_people"
                     android:textColor="@color/text_color"
@@ -183,31 +185,20 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/nunito_bold"
                 android:padding="5dp"
-                android:text="Cancel"
-                android:textColor="@color/colorAccent"
+                android:text="@string/cancel"
+                android:textColor="@color/red"
                 android:textSize="16sp" />
 
         </LinearLayout>
 
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_some_one_to_be_tagged"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="@color/white"
             android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:gravity="center"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/nunito_regular"
-            android:textColor="@color/black"
-            android:visibility="gone" />
-
 
     </LinearLayout>
 
@@ -215,19 +206,19 @@
     <RelativeLayout
         android:id="@+id/rlViewPager"
         android:layout_width="wrap_content"
-        android:layout_height="275dp">
+        android:layout_height="wrap_content">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
+            android:layout_below="@+id/viewpager"
             android:id="@+id/ll_Dot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal" />
@@ -241,27 +232,28 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical" />
 
-
-
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rycTags"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="4dp"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rycTags"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tvTxt"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="4dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:visibility="visible" />
+
         <TextView
+            android:id="@+id/tvTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

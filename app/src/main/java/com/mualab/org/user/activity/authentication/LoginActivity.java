@@ -370,7 +370,11 @@ public class LoginActivity extends AppCompatActivity {
     private void writeNewUser(User user) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser firebaseUser = new FirebaseUser();
-        firebaseUser.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        if(user.notificationStatus==1){// 1 , On 0: Off
+            firebaseUser.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        }else firebaseUser.firebaseToken = "";
+
+
 
         firebaseUser.isOnline = 1;
         firebaseUser.lastActivity = ServerValue.TIMESTAMP;

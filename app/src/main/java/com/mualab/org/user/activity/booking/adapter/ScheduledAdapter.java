@@ -75,6 +75,8 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
             holder.tvServices.setText(bean.bookingInfo.get(0).subServiceName+"");
         }
 
+
+
        /* holder.rlServices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

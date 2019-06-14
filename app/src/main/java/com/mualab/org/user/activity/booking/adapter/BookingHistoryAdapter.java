@@ -72,7 +72,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         if (bean.bookingInfo.size() > 0) {
             holder.tvServices.setText(bean.bookingInfo.get(0).subServiceName + "");
-            holder.tvArtistName.setText(bean.bookingInfo.get(0).staffName + "");
+            holder.tvArtistName.setText(bean.artistDetail.get(0).userName+"");
         }
 
        /* holder.rlServices.setOnClickListener(new View.OnClickListener() {

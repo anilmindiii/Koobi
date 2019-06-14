@@ -3,6 +3,7 @@ package com.mualab.org.user.activity.tag_module.adapters;
 import android.content.Context;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +94,8 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final ExSearchTag searchTag = mSomeOneList.get(position);
         final Holder h = ((Holder) holder);
 
+        h.btnFollow.setVisibility(View.GONE);
+
         if (searchTag.imageUrl != null && !searchTag.imageUrl.isEmpty()) {
             Picasso.with(mContext).load(searchTag.imageUrl).
                     placeholder(R.drawable.default_placeholder).fit().into(h.ivProfile);
@@ -107,12 +110,14 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private CircleImageView ivProfile;
         private TextView tvHeader;
         private TextView tvDesc;
+        private AppCompatButton btnFollow;
 
         private Holder(View itemView) {
             super(itemView);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvHeader = itemView.findViewById(R.id.tvHeader);
             tvDesc = itemView.findViewById(R.id.tvDesc);
+            btnFollow = itemView.findViewById(R.id.btnFollow);
             itemView.setOnClickListener(this);
         }
 

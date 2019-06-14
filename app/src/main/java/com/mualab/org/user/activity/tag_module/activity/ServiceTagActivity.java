@@ -46,6 +46,7 @@ import com.mualab.org.user.data.model.User;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.ScreenUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -181,7 +182,7 @@ public class ServiceTagActivity extends BaseActivity implements View.OnClickList
         viewPagerAdapter = new ViewPagerAdapterForTag(this, images, taggedArrayList);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(startIndex);
-
+        viewPager.setLayoutParams(ScreenUtils.resizeRelativeViewRatio(this));
         //  viewPager.setOffscreenPageLimit(10);
 
         if (images.size() > 1) {

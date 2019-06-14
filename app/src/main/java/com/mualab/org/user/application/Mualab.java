@@ -2,6 +2,7 @@ package com.mualab.org.user.application;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
@@ -10,8 +11,10 @@ import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -63,7 +66,7 @@ public class Mualab extends Application  implements LifecycleObserver {
     private Session session;
     private RequestQueue mRequestQueue;
     public Timer myTimer;
-
+    private Activity activeActivity;
     //service tag
     private SharedPreferences mSharedPreferences;
     private static final String SHARED_PREF_NAME = "koobi_tag_preferences";
@@ -105,6 +108,7 @@ public class Mualab extends Application  implements LifecycleObserver {
 
         // register observer
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        setupActivityListener();
     }
 
 
@@ -241,5 +245,46 @@ public class Mualab extends Application  implements LifecycleObserver {
         }
         return "";
     }
+
+    private void setupActivityListener() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                activeActivity = activity;
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                activeActivity = null;
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+            }
+        });
+    }
+
+    public Activity getActiveActivity() {
+        return activeActivity;
+    }
+
 
 }

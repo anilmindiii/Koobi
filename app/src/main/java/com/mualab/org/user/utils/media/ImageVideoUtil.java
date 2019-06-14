@@ -269,4 +269,23 @@ public class ImageVideoUtil {
         return bitmap;
     }
 
+    public static File bitmapToFile(Context context, Bitmap bitmap, String name) {
+        File filesDir = context.getFilesDir();
+        File imageFile = new File(filesDir, name + ".jpg");
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+
+            return imageFile;
+        } catch (Exception e) {
+            //AppLogger.e(context.getClass().getSimpleName(), "Error writing bitmap :- " + e);
+        }
+
+        return imageFile;
+    }
+
 }

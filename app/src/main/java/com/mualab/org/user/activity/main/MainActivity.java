@@ -2,7 +2,10 @@ package com.mualab.org.user.activity.main;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.daasuu.ahp.AnimateHorizontalProgressBar;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -129,6 +133,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HashMap<String, Integer> batchCountMap;
     public static int businessBadge;
     private DatabaseReference batchCountRef;
+    private AnimateHorizontalProgressBar horizontalProgressBar;
 
 
     public void setBgColor(int color) {
@@ -472,6 +477,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void initView() {
 
+        horizontalProgressBar = findViewById(R.id.animate_progress_bar);
+        horizontalProgressBar.setMax(100);
+        horizontalProgressBar.setVisibility(View.GONE);
+
         //  liveUserList = new ArrayList<>();
         ibtnLeaderBoard = findViewById(R.id.ibtnLeaderBoard);
         ibtnFeed = findViewById(R.id.ibtnFeed);
@@ -619,7 +628,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ibtnChat.setVisibility(View.GONE);
                     ivAppIcon.setVisibility(View.VISIBLE);
                     tvHeaderTitle.setVisibility(View.GONE);
-
+                    getBusinessInvitaionBadgeCount();
                     replaceFragment(SearchBoardFragment.newInstance(item, locationData), false);
                     rlHeader1.setVisibility(View.VISIBLE);
                 }
@@ -638,9 +647,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ivAppIcon.setVisibility(View.VISIBLE);
                     ivHeaderBack.setVisibility(View.GONE);
                     session.saveFilter(null);
+
                     locationData = null;
                     item = null;
-
+                    getBusinessInvitaionBadgeCount();
                     replaceFragment(FeedsFragment.newInstance(1), false);
                     rlHeader1.setVisibility(View.VISIBLE);
                     //replaceFragment(NotificationFragment.newInstance("", ""), false);
@@ -662,7 +672,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     session.saveFilter(null);
                     locationData = null;
                     item = null;
-
+                    getBusinessInvitaionBadgeCount();
                     Intent in = new Intent(MainActivity.this, GalleryActivity.class);
                     startActivityForResult(in, 734);
 
@@ -679,7 +689,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     SearchBoardFragment.isFavClick = false;
                     tvHeaderTitle.setText(R.string.title_explore);
                     ibtnSearch.setImageResource(R.drawable.active_search_ico);
-                    ivHeaderUser.setVisibility(View.VISIBLE);
+                    ivHeaderUser.setVisibility(View.GONE);
                     tvHeaderTitle.setVisibility(View.VISIBLE);
                     ibtnChat.setVisibility(View.VISIBLE);
                     ivAppIcon.setVisibility(View.GONE);
@@ -687,6 +697,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     locationData = null;
                     item = null;
                     rlHeader1.setVisibility(View.GONE);
+                    getBusinessInvitaionBadgeCount();
                     replaceFragment(ExploreFragmentNew.newInstance(), false);
 
                 }
@@ -709,7 +720,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     item = null;
                     rlHeader1.setVisibility(View.VISIBLE);
                     // replaceFragment(new NotificationFragment(), false);
-
+                    getBusinessInvitaionBadgeCount();
                     replaceFragment(NotificationFragment.newInstance("", ""), false);
                     rlHeader1.setVisibility(View.VISIBLE);
                 }
@@ -1069,6 +1080,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        registerReceiver(receiver, new IntentFilter(Constant.INTENT_FILTER_BIZ_PROFILE_ACTIVITY));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -1088,6 +1100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (mFusedLocationClient == null)
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        unregisterReceiver(receiver);
     }
 
     @NonNull
@@ -1190,25 +1203,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
                     try {
-                        businessBadge = dataSnapshot.getValue(Integer.class);
+                        Object objectMap = dataSnapshot.getValue();
+                        String value = String.valueOf(objectMap);
+
+                        businessBadge = Integer.parseInt(value);
+                        CountClick.getmCountClick().onCountChange(businessBadge);
                         if (ivHeaderUser.getVisibility() == View.VISIBLE) {
                             if (businessBadge > 0) {
                                 tv_business_count.setVisibility(View.VISIBLE);
                                 tv_business_count.setText(businessBadge + "");
-                                CountClick.getmCountClick().onCountChange(businessBadge);
+
 
                             } else tv_business_count.setVisibility(View.GONE);
-                        }
+                        }else tv_business_count.setVisibility(View.GONE);
                     } catch (Exception e) {
-                        String Badge = dataSnapshot.getValue(String.class);
-                        businessBadge = Integer.parseInt(Badge);
-                        if (ivHeaderUser.getVisibility() == View.VISIBLE) {
-                            if (businessBadge > 0) {
-                                tv_business_count.setVisibility(View.VISIBLE);
-                                tv_business_count.setText(businessBadge + "");
-                                CountClick.getmCountClick().onCountChange(businessBadge);
-                            } else tv_business_count.setVisibility(View.GONE);
-                        }
+
                     }
 
                 }
@@ -1276,10 +1285,57 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             }
         });
-
-
     }
 
+/*............................................................................*/
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if (intent.hasExtra("status")) {
+                    String status = intent.getStringExtra("status");
+                    int progress = intent.getIntExtra("progress", 0);
+
+                    switch (status) {
+                        case "uploading":
+                            horizontalProgressBar.setVisibility(View.VISIBLE);
+                            horizontalProgressBar.setProgress(progress);
+                            break;
+
+                        case "uploaded fail":
+                            horizontalProgressBar.setVisibility(View.GONE);
+                            MyToast.getInstance(getActivity()).showDasuAlert("Video Uploading failed");
+                            break;
+
+                        case "uploaded success":
+                        default:
+                            horizontalProgressBar.setVisibility(View.GONE);
+                            FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                            List<Fragment> fragments = fragmentManager.getFragments();
+                            if(fragments != null){
+                                for(Fragment fragment : fragments){
+                                    if(fragment != null && fragment.isVisible()){
+                                        if (fragment instanceof FeedsFragment){
+                                            FeedsFragment feedsFragment = (FeedsFragment) fragment;
+                                            feedsFragment.endlesScrollListener.resetState();
+                                            feedsFragment.isPulltoRefrash = true;
+                                            feedsFragment.apiForGetAllFeeds(0, 10, false,"");
+
+                                        }
+                                    }
+
+                                }
+                            }
+
+
+                            break;
+                    }
+                }
+            }
+        }
+    };
 }
 

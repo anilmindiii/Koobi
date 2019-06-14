@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
@@ -37,6 +40,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
      //1 , On 0: Off
     Session session;
     private RelativeLayout ly_reset_password;
+    private DatabaseReference mUserRef;
+    private String myId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +52,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         tvHeaderTitle.setText(getString(R.string.setting));
 
-        session = new Session(this);
+        myId = String.valueOf(Mualab.currentUser.id);
 
-        if(session.getUser().notificationStatus == 0){
+        session = new Session(this);
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("users").child(myId).child("firebaseToken");
+
+        if(session.getUser().notificationStatus == 1){
             iv_toggle_btn.setImageResource(R.drawable.ic_switch_on);
         }else  iv_toggle_btn.setImageResource(R.drawable.ic_switch_off);
 
@@ -65,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         ly_reset_password.setOnClickListener(this::onClick);
     }
 
-    private void apiforUpdateNotification(int NotifyStatus) {
+    private void apiforUpdateNotification(int NotifyStatus,String firebaseToken) {
         Session session = Mualab.getInstance().getSessionManager();
         final User user = session.getUser();
 
@@ -75,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 public void onNetworkChange(Dialog dialog, boolean isConnected) {
                     if (isConnected) {
                         dialog.dismiss();
-                        apiforUpdateNotification(NotifyStatus);
+                        apiforUpdateNotification(NotifyStatus,firebaseToken);
                     }
                 }
             }).show();
@@ -83,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         Map<String, String> params = new HashMap<>();
         params.put("notificationStatus", String.valueOf(NotifyStatus));
+        params.put("firebaseToken", firebaseToken);
 
         HttpTask task = new HttpTask(new HttpTask.Builder(SettingsActivity.this, "updateRecord", new HttpResponceListner.Listener() {
             @Override
@@ -96,17 +105,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         Gson gson = new Gson();
                         JSONObject userObj = js.getJSONObject("user");
                         User u = gson.fromJson(String.valueOf(userObj), User.class);
-
-
                         user.notificationStatus = u.notificationStatus ;
-
-
-                       // session.createSession(user);
-
+                        // session.createSession(user);
                     } else {
                         MyToast.getInstance(SettingsActivity.this).showDasuAlert(message);
                     }
-                    //  showToast(message);
+                    //showToast(message);
                 } catch (Exception e) {
                     Progress.hide(SettingsActivity.this);
                     e.printStackTrace();
@@ -142,15 +146,17 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.iv_toggle_btn:
                 User user = session.getUser();
                 if(session.getUser().notificationStatus == 1){
-                    apiforUpdateNotification(0);
-                }else apiforUpdateNotification(1);
+                    apiforUpdateNotification(0,"");
+                }else apiforUpdateNotification(1,FirebaseInstanceId.getInstance().getToken());
 
-                if(session.getUser().notificationStatus == 1){
+                if(session.getUser().notificationStatus == 0){
                     iv_toggle_btn.setImageResource(R.drawable.ic_switch_on);
-                    user.notificationStatus = 0;
+                    user.notificationStatus = 1;
+                    mUserRef.setValue(FirebaseInstanceId.getInstance().getToken());
                 }else {
                     iv_toggle_btn.setImageResource(R.drawable.ic_switch_off);
-                    user.notificationStatus = 1;
+                    user.notificationStatus = 0;
+                    mUserRef.setValue("");
 
                 }
                 session.createSession(user);

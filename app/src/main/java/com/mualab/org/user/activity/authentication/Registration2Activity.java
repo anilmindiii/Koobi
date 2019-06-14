@@ -534,7 +534,10 @@ public class Registration2Activity extends AppCompatActivity implements View.OnC
                 //Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
                 Uri imageUri = ImagePicker.getImageURIFromResult(this, requestCode, resultCode, data);
                 if (imageUri != null) {
-                    CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.OVAL).setAspectRatio(400, 400).start(this);
+                   // CropImage.activity(imageUri).setCropShape(CropImageView.CropShape.OVAL).setAspectRatio(400, 400).start(this);
+
+                    CropImage.activity(imageUri).setCropShape(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? CropImageView.CropShape.RECTANGLE : CropImageView.CropShape.OVAL).setAspectRatio(400, 400).start(this);
+
                 } else {
                     showToast(getString(R.string.msg_some_thing_went_wrong));
                 }

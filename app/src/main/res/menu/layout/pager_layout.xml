@@ -24,10 +24,10 @@
         app:carrotLeftColor="@color/dark_grey"
         app:carrotRightColor="@color/dark_grey"
         app:carrotTopColor="@color/dark_grey"
-        app:hideAnimation="@anim/bounce_up"
         app:instaTextColor="@android:color/white"
         app:showAllCarrots="false"
-        app:showAnimation="@anim/bounce_down"
+        app:hideAnimation="@anim/fade_out"
+        app:showAnimation="@anim/fade_in"
         tools:ignore="UnusedAttribute" />
 
     <RelativeLayout

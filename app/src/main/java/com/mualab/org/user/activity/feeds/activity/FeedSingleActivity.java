@@ -435,7 +435,11 @@ public class FeedSingleActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onLikeListClick(Feeds feed) {
-        replaceFragment(SingleFeedLikeFragment.newInstance(feed._id, Mualab.currentUser.id), true);
+        Intent intent = new Intent(this, LikeFeedActivity.class);
+        intent.putExtra("feedId", feed._id);
+        intent.putExtra("userId", Mualab.currentUser.userId);
+        startActivity(intent);
+      //  replaceFragment(SingleFeedLikeFragment.newInstance(feed._id, Mualab.currentUser.id), true);
 
 
     }

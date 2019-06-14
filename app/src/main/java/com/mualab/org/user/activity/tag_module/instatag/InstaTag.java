@@ -16,11 +16,7 @@
 
 package com.mualab.org.user.activity.tag_module.instatag;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -44,8 +40,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -53,12 +51,14 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.tag_module.callback.RemoveDuplicateTagListener;
 import com.mualab.org.user.activity.tag_module.models.TagViewBean;
+import com.mualab.org.user.utils.ArrowView;
 import com.viven.imagezoom.ImageZoomHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class InstaTag extends RelativeLayout {
+
     private final ArrayList<TagViewBean> mTagList = new ArrayList<>();
     private int mPosX;
     private int mPosY;
@@ -76,21 +76,6 @@ public class InstaTag extends RelativeLayout {
     private Drawable mCarrotLeftDrawable;
     private Drawable mCarrotRightDrawable;
     private Drawable mCarrotBottomDrawable;
-    ImageZoomHelper imageZoomHelper;
-
-   /* @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        int tempH = mTagImageView.getHeight();
-        int tempW = mTagImageView.getWidth();
-        if (tempH!=0 && tempW!=0){
-            mRootHeight =tempH;
-            mRootWidth = tempW;
-        }
-
-        Log.e("StepWH", mRootWidth+" "+mRootHeight);
-
-    }*/
 
     private final TagGestureListener mTagGestureListener = new TagGestureListener() {
         @Override
@@ -110,8 +95,8 @@ public class InstaTag extends RelativeLayout {
                     float y = (e.getY() * 100) / mRootHeight;  //top
                     //float y = (e.getY() * 100) / (mRootHeight*4/3);  //top
 
-                    Log.e("Step1 X,Y - ", e.getX() + "," + e.getY() + " = " + mRootWidth + " " + mRootHeight);
-                    Log.e("Step1 X,Y - ", x + "," + y);
+                    // AppLogger.e("Step1 X,Y - ", e.getX() + "," + e.getY() + " = " + mRootWidth + " " + mRootHeight);
+                    // AppLogger.e("Step1 X,Y - ", x + "," + y);
 
                     switch (e.getAction()) {
                         case MotionEvent.ACTION_DOWN:
@@ -186,20 +171,27 @@ public class InstaTag extends RelativeLayout {
         @Override
         public void run() {
             int tempW = mTagImageView.getWidth();
-            int tempH = (tempW*3/4); //mTagImageView.getHeight();
-
+            int tempH = mTagImageView.getHeight();
+            //int tempH = tempW * 3 / 4;
             if (tempH != 0 && tempW != 0) {
                 mRootHeight = tempH;
                 mRootWidth = tempW;
-            }
 
-            Log.e("StepWH", mRootWidth + " " + mRootHeight);
+                //mTagImageView.measure(mRootWidth, mRootHeight);
+
+                //mTagImageView.setLayoutParams();
+
+                //int width = ScreenUtils.getScreenWidth(context);
+                //int height = width*3/4;
+            }
+            // AppLogger.e("StepWH", mRootWidth + " " + mRootHeight);
+            // AppLogger.e("StepWH", tempW + " " + tempH);
         }
     };
     private boolean isShowPeopleTag = false;
     private boolean mIsRootIsInTouch = true;
-    //private Animation mShowAnimation;
-    //private Animation mHideAnimation;
+    private Animation mShowAnimation;
+    private Animation mHideAnimation;
     private GestureDetector mGestureDetector;
     private final OnTouchListener mTagOnTouchListener = new OnTouchListener() {
         @Override
@@ -248,6 +240,7 @@ public class InstaTag extends RelativeLayout {
         if (inflater != null) {
             inflater.inflate(R.layout.tag_root, this);
         }
+
         mRoot = findViewById(R.id.tag_root);
         mTagImageView = findViewById(R.id.tag_image_view);
 
@@ -277,19 +270,7 @@ public class InstaTag extends RelativeLayout {
         setLayoutParamsToBeSetForRootLayout(mContext);
         mRoot.post(mSetRootHeightWidth);
         mTagImageView.setOnTouchListener(mTagOnTouchListener);
-
-        /*Zoomy.Builder builde1r = new Zoomy.Builder((Activity) mContext).target(mTagImageView);
-        builde1r.register();*/
-
-         imageZoomHelper = new ImageZoomHelper((Activity) mContext);
-
-        ImageZoomHelper.setViewZoomable(findViewById(R.id.tag_image_view));
         mGestureDetector = new GestureDetector(mRoot.getContext(), mTagGestureListener);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return  super.dispatchTouchEvent(ev);
     }
 
     private void initView(AttributeSet attrs, Context context) {
@@ -339,162 +320,14 @@ public class InstaTag extends RelativeLayout {
             mCarrotBottomBackGroundColor = overrideDefaultColor;
         }
 
-      /*  mHideAnimation = AnimationUtils.loadAnimation(context, obtainStyledAttributes.
+        mHideAnimation = AnimationUtils.loadAnimation(context, obtainStyledAttributes.
                 getResourceId(R.styleable.InstaTag_hideAnimation, R.anim.fade_out));  //zoom_out
 
         mShowAnimation = AnimationUtils.loadAnimation(context, obtainStyledAttributes.
-                getResourceId(R.styleable.InstaTag_showAnimation, R.anim.fade_in));  //zoom_in*/
+                getResourceId(R.styleable.InstaTag_showAnimation, R.anim.fade_in));  //zoom_in
 
         initViewWithId(context, obtainStyledAttributes);
         obtainStyledAttributes.recycle();
-    }
-
-    private void setCarrotVisibility(View tagView, String carrotType) {
-        if (!showAllCarrots) {
-            switch (carrotType) {
-                case Constants.CARROT_TOP:
-                    tagView.findViewById(R.id.carrot_top).setVisibility(View.VISIBLE);
-
-                    tagView.findViewById(R.id.carrot_left).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_right).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_bottom).setVisibility(View.INVISIBLE);
-                    break;
-                case Constants.CARROT_LEFT:
-                    tagView.findViewById(R.id.carrot_left).setVisibility(View.VISIBLE);
-
-                    tagView.findViewById(R.id.carrot_top).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_right).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_bottom).setVisibility(View.INVISIBLE);
-                    break;
-                case Constants.CARROT_RIGHT:
-                    tagView.findViewById(R.id.carrot_right).setVisibility(View.VISIBLE);
-
-                    tagView.findViewById(R.id.carrot_top).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_left).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_bottom).setVisibility(View.INVISIBLE);
-                    break;
-                case Constants.CARROT_BOTTOM:
-                    tagView.findViewById(R.id.carrot_bottom).setVisibility(View.VISIBLE);
-
-                    tagView.findViewById(R.id.carrot_top).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_left).setVisibility(View.INVISIBLE);
-                    tagView.findViewById(R.id.carrot_right).setVisibility(View.INVISIBLE);
-                    break;
-            }
-        }
-    }
-
-    private void actionTagMove(View tagView, int pointerCount, int X, int Y) {
-        int width = tagView.getWidth();
-        int height = tagView.getHeight();
-        int x = (int) tagView.getX();
-        int y = (int) tagView.getY();
-
-        if (x <= width && y <= height) {
-            carrotType(Constants.CARROT_TOP, tagView, pointerCount, X, x, Y, y);
-        } else if (x + width >= mRootWidth && y + height >= mRootHeight) {
-            carrotType(Constants.CARROT_BOTTOM, tagView, pointerCount, X, x, Y, y);
-        } else if (x - width <= 0 && y + height >= mRootHeight) {
-            carrotType(Constants.CARROT_BOTTOM, tagView, pointerCount, X, x, Y, y);
-        } else if (x + width >= mRootWidth && y <= height / 2) {
-            carrotType(Constants.CARROT_TOP, tagView, pointerCount, X, x, Y, y);
-        } else if (x <= 0 && y > height && y + height < mRootHeight) {
-            carrotType(Constants.CARROT_LEFT, tagView, pointerCount, X, x, Y, y);
-        } else if (x > width && x + width < mRootWidth && y - height <= 0) {
-            carrotType(Constants.CARROT_TOP, tagView, pointerCount, X, x, Y, y);
-        } else if (x + width >= mRootWidth && y > height && y + height < mRootHeight) {
-            carrotType(Constants.CARROT_RIGHT, tagView, pointerCount, X, x, Y, y);
-        } else if (x > width && x + width < mRootWidth && y + height >= mRootHeight) {
-            carrotType(Constants.CARROT_BOTTOM, tagView, pointerCount, X, x, Y, y);
-        } else {
-            carrotType(Constants.CARROT_TOP, tagView, pointerCount, X, x, Y, y);
-        }
-    }
-
-    private void carrotType(String carrotType,
-                            View tagView,
-                            int pointerCount, int X, int posX, int Y, int posY) {
-        switch (carrotType) {
-            case Constants.CARROT_TOP:
-                setCarrotVisibility(tagView, Constants.CARROT_TOP);
-                setLayoutParamsForTagView(Constants.CARROT_TOP,
-                        pointerCount, X, posX, Y, posY, tagView);
-                break;
-            case Constants.CARROT_LEFT:
-                setCarrotVisibility(tagView, Constants.CARROT_LEFT);
-                setLayoutParamsForTagView(Constants.CARROT_LEFT,
-                        pointerCount, X, posX, Y, posY, tagView);
-                break;
-            case Constants.CARROT_RIGHT:
-                setCarrotVisibility(tagView, Constants.CARROT_RIGHT);
-                setLayoutParamsForTagView(Constants.CARROT_RIGHT,
-                        pointerCount, X, posX, Y, posY, tagView);
-                break;
-            case Constants.CARROT_BOTTOM:
-                setCarrotVisibility(tagView, Constants.CARROT_BOTTOM);
-                setLayoutParamsForTagView(Constants.CARROT_BOTTOM,
-                        pointerCount, X, posX, Y, posY, tagView);
-                break;
-        }
-    }
-
-    private void setLayoutParamsForTagView(String carrotType,
-                                           int pointerCount, int X, int posX, int Y, int posY,
-                                           View tagView) {
-        int left = X - posX;
-        int top = Y - posY;
-
-        if (left < 0) {
-            left = 0;
-        } else if (left + tagView.getWidth() > mRootWidth) {
-            left = mRootWidth - tagView.getWidth();
-        }
-
-        if (top < 0) {
-            top = 0;
-        } else if (top + tagView.getHeight() > mRootHeight) {
-            top = mRootHeight - tagView.getHeight();
-        }
-
-        LayoutParams tagViewLayoutParams =
-                (LayoutParams) tagView.getLayoutParams();
-        if (pointerCount == 1) {
-            switch (carrotType) {
-                case Constants.CARROT_TOP:
-                case Constants.CARROT_LEFT:
-                case Constants.CARROT_RIGHT:
-                case Constants.CARROT_BOTTOM:
-                    tagViewLayoutParams.setMargins(left, top, 0, 0);
-                    tagView.setLayoutParams(tagViewLayoutParams);
-                    break;
-            }
-        }
-    }
-
-    private void setColorForTag(View tagView) {
-        ((TextView) tagView.findViewById(R.id.tag_text_view)).setTextColor(mTagTextColor);
-
-        if (mCarrotTopDrawable == null) {
-            setColor((tagView.findViewById(R.id.carrot_top)).
-                    getBackground(), mCarrotTopBackGroundColor);
-        }
-        if (mCarrotLeftDrawable == null) {
-            setColor((tagView.findViewById(R.id.carrot_left)).
-                    getBackground(), mCarrotLeftBackGroundColor);
-        }
-        if (mCarrotRightDrawable == null) {
-            setColor((tagView.findViewById(R.id.carrot_right)).
-                    getBackground(), mCarrotRightBackGroundColor);
-        }
-        if (mCarrotBottomDrawable == null) {
-            setColor((tagView.findViewById(R.id.carrot_bottom)).
-                    getBackground(), mCarrotBottomBackGroundColor);
-        }
-
-        if (mTagTextDrawable == null) {
-            setColor((tagView.findViewById(R.id.tag_text_container)).
-                    getBackground(), mTagBackgroundColor);
-        }
     }
 
     private void hideRemoveButtonFromAllTagView() {
@@ -587,27 +420,6 @@ public class InstaTag extends RelativeLayout {
         mRoot.setLayoutParams(params);
     }
 
-    /*private int getXWhileAddingTag(Double x) {
-        int a = (int) Math.round(x);
-        int a2 = (mRootWidth * a) / 100;
-        // a2 = a2+32;
-        double temp = ((a2 * 7.8) / 100);
-        temp = a2 + temp;
-        a2 = (int) Math.round(temp);
-        return a2;
-    }
-
-    private int getYWhileAddingTag(Double y) {
-        int b = (int) Math.round(y);
-        int b2 = (mRootHeight * b) / 100;
-        //   b2 = b2-18;
-        double temp = ((b2 * 7.9) / 100);
-        temp = b2 - temp;
-        b2 = (int) Math.round(temp);
-        return b2;
-    }*/
-
-
     /*Tag Plot Start here*/
     public synchronized void addTag(float x, float y, String tagText, final TagDetail tag /*,HashMap<String,TagDetail> tagDetails*/) {
         if (tag.tabType.equalsIgnoreCase("people"))
@@ -635,59 +447,79 @@ public class InstaTag extends RelativeLayout {
             this.tagMap.put(tag.title, tag);
         }
 
-
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-        final View tagView = layoutInflater.
+        View tagView = layoutInflater.
                 inflate(R.layout.view_for_people_tag, mRoot, false);
-        final TextView tagTextView = tagView.findViewById(R.id.tag_text_view);
-        final LinearLayout textContainer = tagView.findViewById(R.id.tag_text_container);
+        TextView tagTextView = tagView.findViewById(R.id.tag_text_view);
+        FrameLayout flTag = tagView.findViewById(R.id.flTag);
+
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
+        carrot_top.setColor(getResources().getColor(R.color.dark_transperant2));
+        carrot_bottom.setColor(getResources().getColor(R.color.dark_transperant2));
 
         tagTextView.setText(tagText);
-        //setColorForTag(tagView);
 
-        //Todo hs
-        /*layoutParams.setMargins(x - tagTextView.length() * 8,
-                y - tagTextView.length() * 2, 0, 0);
-        tagView.setLayoutParams(layoutParams);*/
-
-        textContainer.measure(0, 0);
-        int w = textContainer.getMeasuredWidth();
-        int h = textContainer.getMeasuredHeight();
-
-        float left = (mRootWidth * x) / 100;
-        // int hei = (mRootHeight*4/3);
-        float top = (mRootHeight * y) / 100;
-
-        Log.e("Step3 X,Y - ", x + "," + y + " = " + mRootWidth + " " + mRootHeight);
-        Log.e("Step3 X,Y - ", left + "," + top);
+        flTag.measure(0, 0);
+        int w = flTag.getMeasuredWidth();
+        int h = flTag.getMeasuredHeight();
 
        /* if(x < 10 && y < 10){ //for left top
-            Log.e("Step", "Left Top");
+            // AppLogger.e("Step", "Left Top");
             updateLeftTopTagUI(tagView, left, top, w, h);
         }else */
 
+        float left, top;
         if (x > 90 && y < 10) {  //for right top 1
-            Log.e("Step", "Top Right");
+            if (y < 1) y = 1;
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "Top Right");
             updateTopRightPeopleTagUI(tagView, left, top, w, h);
         } else if (x < 10 && y > 90) { //for bottom left 1
-            Log.e("Step", "bottom Left");
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "bottom Left");
             updateBottomLeftPeopleTagUI(tagView, left, top, w, h);
         } else if (x > 90 && y > 90) { //for bottom right 1
-            Log.e("Step", "bottom Right");
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "bottom Right");
             updateBottomRightPeopleTagUI(tagView, left, top, w, h);
         } else if (x < 10) { //for left
-            Log.e("Step", "Left");
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "Left");
             updateLeftPeopleTagUI(tagView, left, top, w, h);
         } else if (x > 90) {  //for right
-            Log.e("Step", "Right");
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "Right");
             updateRightPeopleTagUI(tagView, left, top, w, h);
-        } else if (y > 90) { //for bottom
-            Log.e("Step", "Bottom");
+        } else if (y > 90) {//for bottom
+            if (y > 100) y = 100;
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "Bottom");
             updateBottomPeopleTagUI(tagView, left, top, w, h);
         } else {  //for top
-            Log.e("Step", "Center or top");
+            if (y < 1) y = 1;  //set top y max is 1
+            left = (mRootWidth * x) / 100;
+            top = (mRootHeight * y) / 100;
+
+            // AppLogger.e("Step", "Center or top");
             updatePeopleTagUI(tagView, left, top, w, h);
         }
+
+
+        // AppLogger.e("Step3 X,Y - ", x + "," + y + " = " + mRootWidth + " " + mRootHeight);
+        // AppLogger.e("Step3 X,Y - ", left + "," + top);
 
 
        /* mPosX = (int)x - layoutParams.leftMargin;
@@ -744,19 +576,12 @@ public class InstaTag extends RelativeLayout {
         tagView.setOnClickListener(v -> {
             if (listener != null) listener.onTagCliked(tag);
         });
-
-        //if(listener!=null) listener.onTagCliked(tag);
-        //  }
-        /* else {
-            if (isAddingTag){
-                //      Toast.makeText(mContext, "This user is already tagged", Toast.LENGTH_SHORT).show();
-            }
-        }*/
     }
 
     private void updateTopRightPeopleTagUI(View tagView, float left, float top, int w, int h) {
-        LinearLayout carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_top.getLayoutParams();
+        lllp.rightMargin = 5;
         lllp.gravity = Gravity.END;
         carrot_top.setLayoutParams(lllp);
 
@@ -767,15 +592,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        //int l1 = w;
+        /*int l1 = w + w / 2 - 10;
+        int h1 = (h / 2) - 15;*/
 
-        int l1 = w + w / 2 - 10;
-        int h1 = (h / 2) - 15;
+        int l1 = w;
+        int h1 = 0;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -788,8 +612,9 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateRightPeopleTagUI(View tagView, float left, float top, int w, int h) {
-        LinearLayout carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_top.getLayoutParams();
+        lllp.rightMargin = 5;
         lllp.gravity = Gravity.END;
         carrot_top.setLayoutParams(lllp);
 
@@ -800,13 +625,13 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w + w / 2 - 10;
-        int h1 = (h / 2) - 15;
+        /*int l1 = w + w / 2 - 10;
+        int h1 = (h / 2) - 15;*/
+        int l1 = w;
+        int h1 = 0;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -819,8 +644,9 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateLeftPeopleTagUI(View tagView, float left, float top, int w, int h) {
-        LinearLayout carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_top.getLayoutParams();
+        lllp.leftMargin = 5;
         lllp.gravity = Gravity.START;
         carrot_top.setLayoutParams(lllp);
 
@@ -831,13 +657,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w / 2 + 15;
-        int h1 = (h / 2) - 15;
+       /* int l1 = w / 2 + 15;
+        int h1 = (h / 2) - 15;*/
+
+        int l1 = w / 6;
+        int h1 = 0;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -850,11 +677,12 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateBottomRightPeopleTagUI(View tagView, float left, float top, int w, int h) {
-        tagView.findViewById(R.id.carrot_top).setVisibility(INVISIBLE);
+        tagView.findViewById(R.id.carrot_top).setVisibility(GONE);
         tagView.findViewById(R.id.carrot_bottom).setVisibility(VISIBLE);
 
-        LinearLayout carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
+        ArrowView carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_bottom.getLayoutParams();
+        lllp.rightMargin = 5;
         lllp.gravity = Gravity.END;
         carrot_bottom.setLayoutParams(lllp);
 
@@ -864,13 +692,14 @@ public class InstaTag extends RelativeLayout {
 
         tagView.setX(left);
         tagView.setY(top);
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w + w / 2 - 10;
-        int h1 = h * 2;
+
+        /*int l1 = w + w / 2 - 10;
+        int h1 = h * 2;*/
+        int l1 = w;
+        int h1 = h;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -883,11 +712,12 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateBottomLeftPeopleTagUI(View tagView, float left, float top, int w, int h) {
-        tagView.findViewById(R.id.carrot_top).setVisibility(INVISIBLE);
+        tagView.findViewById(R.id.carrot_top).setVisibility(GONE);
         tagView.findViewById(R.id.carrot_bottom).setVisibility(VISIBLE);
 
-        LinearLayout carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
+        ArrowView carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_bottom.getLayoutParams();
+        lllp.leftMargin = 5;
         lllp.gravity = Gravity.START;
         carrot_bottom.setLayoutParams(lllp);
 
@@ -898,14 +728,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
+        /*int l1 = w / 2 + 15;
+        int h1 = h * 2;*/
 
-        int l1 = w / 2 + 15;
-        int h1 = h * 2;
+        int l1 = w / 6;
+        int h1 = h;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -918,7 +748,7 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateBottomPeopleTagUI(View tagView, float left, float top, int w, int h) {
-        tagView.findViewById(R.id.carrot_top).setVisibility(INVISIBLE);
+        tagView.findViewById(R.id.carrot_top).setVisibility(GONE);
         tagView.findViewById(R.id.carrot_bottom).setVisibility(VISIBLE);
 
         LayoutParams layoutParams = new LayoutParams(
@@ -929,12 +759,13 @@ public class InstaTag extends RelativeLayout {
         tagView.setY(top);
 
         /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w;
-        int h1 = h * 2;
+        int h1 = h * 2;*/
+
+        int l1 = w / 2;
+        int h1 = h;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -954,13 +785,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w;
-        int h1 = (h / 2) - 15;
+       /* int l1 = w;
+        int h1 = (h / 2) - 15;*/
 
-        layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        int l1 = w / 2;
+        int h1 = 0;
+
+        layoutParams.setMargins(-l1, h1, 0, 0);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -992,20 +824,24 @@ public class InstaTag extends RelativeLayout {
 
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
-        final View tagView = layoutInflater.
+        View tagView = layoutInflater.
                 inflate(R.layout.view_for_service_tag, mRoot, false);
-        final TextView tagTextView = tagView.findViewById(R.id.tag_text_view);
-        final TextView tagPrice = tagView.findViewById(R.id.tv_price);
-        final LinearLayout textContainer = tagView.findViewById(R.id.tag_text_container);
+        TextView tagTextView = tagView.findViewById(R.id.tag_text_view);
+        TextView tagPrice = tagView.findViewById(R.id.tv_price);
+        FrameLayout flTag = tagView.findViewById(R.id.flTag);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
+        carrot_top.setColor(getResources().getColor(R.color.white));
+        carrot_bottom.setColor(getResources().getColor(R.color.white));
 
         tagTextView.setText(tagText);
         tagPrice.setText(getContext().getString(R.string.pond_symbol).concat(tag.incallPrice.equals("0.0") || tag.incallPrice.isEmpty() ? tag.outcallPrice : tag.incallPrice));
         //setColorForTag(tagView);
 
         //Todo hs
-        textContainer.measure(0, 0);
-        int w = textContainer.getMeasuredWidth();
-        int h = textContainer.getMeasuredHeight();
+        flTag.measure(0, 0);
+        int w = flTag.getMeasuredWidth();
+        int h = flTag.getMeasuredHeight();
 
         float left, top;
 
@@ -1014,39 +850,39 @@ public class InstaTag extends RelativeLayout {
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "Top Right");
+            // AppLogger.e("Step", "Top Right");
             updateTopRightServiceTagUI(tagView, left, top, w, h); //ok
         } else if (x < 20 && y > 80) { //for bottom left 1
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "bottom Left");
+            // AppLogger.e("Step", "bottom Left");
             updateBottomLeftServiceTagUI(tagView, left, top, w, h);
         } else if (x > 80 && y > 80) { //for bottom right 1
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "bottom Right");
+            // AppLogger.e("Step", "bottom Right");
             updateBottomRightServiceTagUI(tagView, left, top, w, h); //ok
         } else if (x < 20) { //for left
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "Left");
+            // AppLogger.e("Step", "Left");
             updateLeftServiceTagUI(tagView, left, top, w, h);
         } else if (x > 80) {  //for right
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "Right");
+            // AppLogger.e("Step", "Right");
             updateRightServiceTagUI(tagView, left, top, w, h, x);
-        } else if (y > 80) { //for top
+        } else if (y > 80) { //for bottom
             if (y > 100) y = 100;  //set top y max is 100
 
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "Bottom");
+            // AppLogger.e("Step", "Bottom");
             updateBottomServiceTagUI(tagView, left, top, w, h);
         } else {  //for top
             if (y < 1) y = 1;  //set top y max is 1
@@ -1054,20 +890,20 @@ public class InstaTag extends RelativeLayout {
             left = (mRootWidth * x) / 100;
             top = (mRootHeight * y) / 100;
 
-            Log.e("Step", "Center or top");
+            // AppLogger.e("Step", "Center or top");
             updateServiceTagUI(tagView, left, top, w, h);  //ok
         }
-        Log.e("Step3 S X,Y - ", x + "," + y + " = " + mRootWidth + " " + mRootHeight);
-        Log.e("Step3 S X,Y - ", left + "," + top);
+        // AppLogger.e("Step3 S X,Y - ", x + "," + y + " = " + mRootWidth + " " + mRootHeight);
+        // AppLogger.e("Step3 S X,Y - ", left + "," + top);
 
 
-        textContainer.setOnClickListener(v -> {
+        flTag.setOnClickListener(v -> {
             if (listener != null) listener.onTagCliked(tag);
         });
     }
 
     private void updateTopRightServiceTagUI(View tagView, float left, float top, int w, int h) {
-        LinearLayout carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_top.getLayoutParams();
         lllp.gravity = Gravity.END;
         carrot_top.setLayoutParams(lllp);
@@ -1079,15 +915,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        //int l1 = w;
-//w+w/2-10
-        int l1 = w + 30;
-        int h1 = (h / 2) - 20;
+        /*int l1 = w + 30;
+        int h1 = (h / 2) - 20;*/
+
+        int l1 = w;
+        int h1 = 0;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1100,7 +935,7 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateRightServiceTagUI(View tagView, float left, float top, int w, int h, float x) {
-        LinearLayout carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_top.getLayoutParams();
         lllp.gravity = Gravity.END;
         carrot_top.setLayoutParams(lllp);
@@ -1112,20 +947,20 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        // int l1 = w + w / 2 - 10;
-        int l1;
+        /*int l1;
 
         if (x > 90) {
             l1 = w + 30;
         } else {
             l1 = w;
         }
-        int h1 = (h / 2) - 15;
+        int h1 = (h / 2) - 15;*/
+
+        int l1 = w;
+        int h1 = 0;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1138,7 +973,7 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateLeftServiceTagUI(View tagView, float left, float top, int w, int h) {
-        LinearLayout carrot_top = tagView.findViewById(R.id.carrot_top);
+        ArrowView carrot_top = tagView.findViewById(R.id.carrot_top);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_top.getLayoutParams();
         lllp.gravity = Gravity.START;
         carrot_top.setLayoutParams(lllp);
@@ -1150,15 +985,15 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        //int l1 = w/2+15;
-        int l1 = 60;
-        int h1 = (h / 2) - 20;
-        Log.e("What - ", -l1 + "," + -h1);
+        /*int l1 = 60;
+        int h1 = (h / 2) - 20;*/
+
+        int l1 = 15;
+        int h1 = 0;
+        // AppLogger.e("What - ", -l1 + "," + -h1);
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1171,10 +1006,10 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateBottomRightServiceTagUI(View tagView, float left, float top, int w, int h) {
-        tagView.findViewById(R.id.carrot_top).setVisibility(INVISIBLE);
+        tagView.findViewById(R.id.carrot_top).setVisibility(GONE);
         tagView.findViewById(R.id.carrot_bottom).setVisibility(VISIBLE);
 
-        LinearLayout carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
+        ArrowView carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_bottom.getLayoutParams();
         lllp.gravity = Gravity.END;
         carrot_bottom.setLayoutParams(lllp);
@@ -1185,14 +1020,15 @@ public class InstaTag extends RelativeLayout {
 
         tagView.setX(left);
         tagView.setY(top);
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        //w+w/2-10
-        int l1 = w + 30;
-        int h1 = h * 2 - 40;
+
+        /*int l1 = w + 30;
+        int h1 = h * 2 - 40;*/
+
+        int l1 = w;
+        int h1 = h;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1205,11 +1041,12 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateBottomLeftServiceTagUI(View tagView, float left, float top, int w, int h) {
-        tagView.findViewById(R.id.carrot_top).setVisibility(INVISIBLE);
+        tagView.findViewById(R.id.carrot_top).setVisibility(GONE);
         tagView.findViewById(R.id.carrot_bottom).setVisibility(VISIBLE);
 
-        LinearLayout carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
+        ArrowView carrot_bottom = tagView.findViewById(R.id.carrot_bottom);
         LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) carrot_bottom.getLayoutParams();
+        lllp.leftMargin = 5;
         lllp.gravity = Gravity.START;
         carrot_bottom.setLayoutParams(lllp);
 
@@ -1220,14 +1057,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
+        /*int l1 = 60;
+        int h1 = h * 2 - 40;*/
 
-        int l1 = 60;
-        int h1 = h * 2 - 40;
+        int l1 = 15;
+        int h1 = h;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1240,7 +1077,7 @@ public class InstaTag extends RelativeLayout {
     }
 
     private void updateBottomServiceTagUI(View tagView, float left, float top, int w, int h) {
-        tagView.findViewById(R.id.carrot_top).setVisibility(INVISIBLE);
+        tagView.findViewById(R.id.carrot_top).setVisibility(GONE);
         tagView.findViewById(R.id.carrot_bottom).setVisibility(VISIBLE);
 
         LayoutParams layoutParams = new LayoutParams(
@@ -1250,13 +1087,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w - w / 3 + 10;
-        int h1 = h * 2 - 40;
+        /*int l1 = w - w / 3 + 10;
+        int h1 = h * 2 - 40;*/
+
+        int l1 = w / 2;
+        int h1 = h;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1276,13 +1114,14 @@ public class InstaTag extends RelativeLayout {
         tagView.setX(left);
         tagView.setY(top);
 
-        /*int l1 = w;
-        int h1 = (h * 2)+12;*/
-        int l1 = w - w / 3 + 10;
-        int h1 = 10;
+        /*int l1 = w - w / 3 + 10;
+        int h1 = 10;*/
+
+        int l1 = w / 2;
+        int h1 = 0;
 
         layoutParams.setMargins(-l1, -h1, 0, 0);
-        Log.e("Step3 S left,top - ", -l1 + "," + -h1);
+        // AppLogger.e("Step3 S left,top - ", -l1 + "," + -h1);
         tagView.setLayoutParams(layoutParams);
 
         TagViewBean tagViewBean = new TagViewBean();
@@ -1306,7 +1145,7 @@ public class InstaTag extends RelativeLayout {
                /* double x = getXWhileAddingTag(tagToBeTagged.getX_co_ord());
                 double y = getYWhileAddingTag(tagToBeTagged.getY_co_ord());*/
 
-                    // Log.e("Step","x==" + x + "  " + "y==" + y);
+                    // // AppLogger.e("Step","x==" + x + "  " + "y==" + y);
 
                 /*addTag(getXWhileAddingTag(tagToBeTagged.getX_co_ord()), getYWhileAddingTag(tagToBeTagged.getY_co_ord()),
                         tagToBeTagged.getUnique_tag_id(), tagToBeTagged.getTagDetails().get(tagToBeTagged.getUnique_tag_id()));*/
@@ -1325,7 +1164,7 @@ public class InstaTag extends RelativeLayout {
                /* double x = getXWhileAddingTag(tagToBeTagged.getX_co_ord());
                 double y = getYWhileAddingTag(tagToBeTagged.getY_co_ord());*/
 
-                    // Log.e("Step","x==" + x + "  " + "y==" + y);
+                    // // AppLogger.e("Step","x==" + x + "  " + "y==" + y);
 
                 /*addTag(getXWhileAddingTag(tagToBeTagged.getX_co_ord()), getYWhileAddingTag(tagToBeTagged.getY_co_ord()),
                         tagToBeTagged.getUnique_tag_id(), tagToBeTagged.getTagDetails().get(tagToBeTagged.getUnique_tag_id()));*/
@@ -1341,6 +1180,10 @@ public class InstaTag extends RelativeLayout {
 
     public TagImageView getTagImageView() {
         return mTagImageView;
+    }
+
+    public View getParentView() {
+        return mRoot;
     }
 
     public ArrayList<TagToBeTagged> getListOfTagsToBeTagged() {
@@ -1391,7 +1234,7 @@ public class InstaTag extends RelativeLayout {
         if (!mTagList.isEmpty()) {
             for (TagViewBean tagViewBean : mTagList) {
                 tagViewBean.view.setVisibility(VISIBLE);
-                tagViewBean.view.startAnimation(AnimationUtils.loadAnimation(mContext,R.anim.fade_in));
+                tagViewBean.view.startAnimation(mShowAnimation);
             }
             if (type.equalsIgnoreCase("people")) this.isShowPeopleTag = true;
             else this.isShowServiceTag = true;
@@ -1401,7 +1244,7 @@ public class InstaTag extends RelativeLayout {
     public synchronized void hideTags(String type) {
         if (!mTagList.isEmpty()) {
             for (TagViewBean tagViewBean : mTagList) {
-                tagViewBean.view.startAnimation(AnimationUtils.loadAnimation(mContext,R.anim.fade_out));
+                tagViewBean.view.startAnimation(mHideAnimation);
                 tagViewBean.view.setVisibility(GONE);
             }
             if (type.equalsIgnoreCase("people")) this.isShowPeopleTag = false;
@@ -1437,54 +1280,6 @@ public class InstaTag extends RelativeLayout {
         }
     }
 
-    public void animateLike() {
-        try {
-            mRoot.addView(mLikeImage);
-        } catch (Exception ignored) {
-            // Illegal Exception is being thrown here while adding mLikeImage
-        }
-        mLikeImage.setVisibility(View.VISIBLE);
-        mLikeImage.setScaleY(0f);
-        mLikeImage.setScaleX(0f);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        ObjectAnimator likeScaleUpYAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, ImageView.SCALE_Y, 0f, 1f);
-        likeScaleUpYAnimator.setDuration(400);
-        likeScaleUpYAnimator.setInterpolator(new OvershootInterpolator());
-
-        ObjectAnimator likeScaleUpXAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, ImageView.SCALE_X, 0f, 1f);
-        likeScaleUpXAnimator.setDuration(400);
-        likeScaleUpXAnimator.setInterpolator(new OvershootInterpolator());
-
-        ObjectAnimator likeScaleDownYAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, ImageView.SCALE_Y, 1f, 0f);
-        likeScaleDownYAnimator.setDuration(100);
-
-        ObjectAnimator likeScaleDownXAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, ImageView.SCALE_X, 1f, 0f);
-        likeScaleDownXAnimator.setDuration(100);
-
-        animatorSet.playTogether(likeScaleUpXAnimator,
-                likeScaleUpYAnimator);
-
-        animatorSet.play(likeScaleDownXAnimator).
-                with(likeScaleDownYAnimator).
-                after(800);
-
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mLikeImage.setVisibility(View.GONE);
-                mRoot.removeView(mLikeImage);
-            }
-        });
-
-        animatorSet.start();
-    }
-
     public int getRootWidth() {
         return mRootWidth;
     }
@@ -1513,18 +1308,6 @@ public class InstaTag extends RelativeLayout {
         return showAllCarrots;
     }
 
-    public void setLikeResource(@DrawableRes int resource) {
-        mLikeImage.setImageResource(resource);
-    }
-
-    public void setLikeDrawable(Drawable drawable) {
-        mLikeImage.setImageDrawable(drawable);
-    }
-
-    public void setLikeColor(@ColorInt int color) {
-        mLikeImage.setColorFilter(color);
-    }
-
     public interface Listener {
         void onTagCliked(TagDetail tagDetail);
 
@@ -1543,7 +1326,6 @@ public class InstaTag extends RelativeLayout {
 
     public interface TaggedImageEvent {
 
-        //Todo hs
         void singleTapConfirmedAndRootIsInTouch(float x, float y);
 
         boolean onDoubleTap(MotionEvent e);

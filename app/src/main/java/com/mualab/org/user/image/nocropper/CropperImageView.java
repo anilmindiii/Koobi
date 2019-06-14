@@ -21,6 +21,7 @@ import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
 
 import com.mualab.org.user.R;
+import com.mualab.org.user.utils.ScreenUtils;
 
 
 /**
@@ -688,14 +689,18 @@ public class CropperImageView extends ImageView {
 
         isCropping = true;
         try {
-            Bitmap bitmap = getCroppedBitmap();
+            Bitmap tmp = getCroppedBitmap();
+            assert tmp != null;
+            int width = tmp.getWidth();
+            int height = ScreenUtils.getRatioHeight(width);
+            Bitmap finalBitmap = Bitmap.createScaledBitmap(tmp, width, height, false);
+
             isCropping = false;
-            return bitmap;
+            return finalBitmap;
         } catch (OutOfMemoryError e) {
             isCropping = false;
             throw e;
         }
-
     }
 
     private Bitmap getCroppedBitmap() throws OutOfMemoryError {

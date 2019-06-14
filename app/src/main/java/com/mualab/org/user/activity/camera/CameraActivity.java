@@ -100,6 +100,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private Button btnTakePhoto;
     private ImageButton  btnFlashLight;
     ImageView btnCameraMode;
+    RelativeLayout ly_CameraMode;
     private RelativeLayout add_to_story;
     //private Chronometer mChronometer;
 
@@ -262,6 +263,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         //rvFilters = findViewById(R.id.rvFilters);
         btnTakePhoto = findViewById(R.id.btnTakePhoto);
         btnCameraMode = findViewById(R.id.btnCameraMode);
+        ly_CameraMode = findViewById(R.id.ly_CameraMode);
         img_gallery = findViewById(R.id.img_gallery);
         //ivBack = findViewById(R.id.ivBack);
 
@@ -326,7 +328,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 }else if(currentState == STATE_TAKE_VIDEO){
                     img_gallery.setVisibility(View.GONE);
                     if(isStartRecord){
-                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video);
+                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active_story);
                         if(countDownTimer!=null) countDownTimer.onFinish();
                     }else {
                         btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active_story);
@@ -406,6 +408,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 onBackPressed();
                 ly_report.setVisibility(View.GONE);
                 img_gallery.setVisibility(View.VISIBLE);
+
+                ly_CameraMode.setVisibility(View.VISIBLE);
+                btnCameraMode.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.switchCamera:
@@ -489,6 +494,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             currentState = STATE_TAKE_PHOTO;
             btnTakePhoto.setText("");
             updateState(currentState);
+            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_rec);
             //btnTakePhoto.setOnTouchListener(null);
             btnTakePhoto.setOnClickListener(this);
             cameraView.setSessionType(SessionType.PICTURE);
@@ -502,6 +508,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         if(resultCode == Activity.RESULT_OK && requestCode == Constant.POST_FEED_DATA){
             finish();
             img_gallery.setVisibility(View.VISIBLE);
+
+            ly_CameraMode.setVisibility(View.VISIBLE);
+            btnCameraMode.setVisibility(View.VISIBLE);
         } else if (resultCode == RESULT_OK) {
 
             if(requestCode == Constant.GETVIDEOS){
@@ -584,6 +593,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 if (file != null) {
                     isStartRecord = true;
                     // btnCameraMode.setVisibility(View.GONE);
+                    ly_CameraMode.setVisibility(View.GONE);
                     btnCameraMode.setVisibility(View.GONE);
                     //mChronometer.setBase(SystemClock.elapsedRealtime());
                     photoPath = new File(file.getPath(), "tmp.mp4");
@@ -606,11 +616,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void onBackPressed() {
         if (currentState == STATE_SETUP_PHOTO) {
             btnTakePhoto.setEnabled(true);
+            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_rec);
             vUpperPanel.showNext();
             vLowerPanel.showNext();
             updateState(STATE_TAKE_PHOTO);
             cameraView.start();
             img_gallery.setVisibility(View.VISIBLE);
+            ly_CameraMode.setVisibility(View.VISIBLE);
+            btnCameraMode.setVisibility(View.VISIBLE);
         } else if (currentState == STATE_SETUP_VIDEO) {
             vUpperPanel.showNext();
             vLowerPanel.showNext();

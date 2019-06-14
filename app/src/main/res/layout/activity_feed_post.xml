@@ -57,10 +57,10 @@
                         android:id="@+id/rl_placeholder"
                         android:layout_width="110dp"
                         android:layout_height="110dp"
-                        android:background="@color/transparent"
+                        android:background="@color/fullTransprent"
                         android:visibility="gone">
 
-                        <com.github.siyamed.shapeimageview.RoundedImageView
+                        <ImageView
                             android:id="@+id/iv_isVideo"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -68,10 +68,6 @@
                             android:src="@drawable/play_bg_icon"
                             android:transitionName="profile"
                             android:layout_centerInParent="true"
-                            app:siBorderColor="@color/colorPrimary"
-                            app:siBorderWidth="1dp"
-                            app:siRadius="3dp"
-                            android:padding="5dp"
                             tools:ignore="UnusedAttribute" />
 
 

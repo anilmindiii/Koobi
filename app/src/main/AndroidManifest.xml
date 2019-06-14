@@ -141,6 +141,13 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".activity.feeds.service.UploadImageService"
+            android:exported="true" />
+        <service
+            android:name=".activity.feeds.service.UploadVideoService"
+            android:exported="true" />
+
         <activity
             android:name=".activity.feeds.activity.FeedSingleActivity"
             android:theme="@style/StatusBarBlack" />

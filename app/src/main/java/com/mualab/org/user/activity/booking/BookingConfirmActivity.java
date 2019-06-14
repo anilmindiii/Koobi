@@ -94,8 +94,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private TextView tv_call_type;
     private String radius = "", artistLat = "0.0", artistLng = "0.0";
     private Double commisiion = 0.0;
-    private int payOption = 0,bookingSetting = 0;
-    private int card = 1,cash = 2, both = 3;private long mLastClickTime = 0;
+    private int payOption = 0, bookingSetting = 0;
+    private int card = 1, cash = 2;
+    private long mLastClickTime = 0;
     private Session session;
     //private SoftKeyboard softKeyboard;
 
@@ -184,8 +185,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (getIntent().getStringExtra("artistId") != null) {
             artistId = getIntent().getStringExtra("artistId");
             isBankAdded = getIntent().getBooleanExtra("isBankAdded", false);
-            payOption = getIntent().getIntExtra("payOption",0);
-            bookingSetting = getIntent().getIntExtra("bookingSetting",0);
+            payOption = getIntent().getIntExtra("payOption", 0);
+            bookingSetting = getIntent().getIntExtra("bookingSetting", 0);
 
             radius = getIntent().getStringExtra("radius");
             artistLat = getIntent().getStringExtra("artistLat");
@@ -210,15 +211,18 @@ public class BookingConfirmActivity extends AppCompatActivity {
         }
 
         //1 : card , 2 : cash , 3 both
-        if(payOption == card){
+        if (payOption == card) {
+            paymentType = "1";
             rb_online.setVisibility(View.VISIBLE);
             rb_case.setVisibility(View.GONE);
             rb_online.setChecked(true);
-        }else if(payOption == cash){
+        } else if (payOption == cash) {
+            paymentType = "2";
             rb_case.setChecked(true);
             rb_case.setVisibility(View.VISIBLE);
             rb_online.setVisibility(View.GONE);
-        }else {
+        } else {
+            paymentType = "2";
             rb_case.setChecked(true);
             rb_online.setVisibility(View.VISIBLE);
             rb_case.setVisibility(View.VISIBLE);
@@ -295,18 +299,17 @@ public class BookingConfirmActivity extends AppCompatActivity {
         btn_confirm_booking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 3000){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 3000) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
 
                 String cardId = session.getUser().cardId;
-                if(paymentType.equals("1") && TextUtils.isEmpty(cardId)){
+                if (paymentType.equals("1") && TextUtils.isEmpty(cardId)) {
                     confirmDialog();
-                }else {
+                } else {
                     confirmBooking();
                 }
-
 
 
             }
@@ -374,11 +377,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
             }
         }
 
-        if(requestCode ==  Constant.REQUEST_Select_Service){
+        if (requestCode == Constant.REQUEST_Select_Service) {
             // here you get token card id and save it to session
-           User user =  session.getUser();
-           user.cardId = data.getStringExtra("cardId");
-           session.createSession(user);
+            User user = session.getUser();
+            user.cardId = data.getStringExtra("cardId");
+            session.createSession(user);
 
             makeDefaultcard(user.cardId);
         }
@@ -722,9 +725,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
         params.put("latitude", artistLat);
         params.put("longitude", artistLng);
 
-        if (bookingList.size() != 0){
+        if (bookingList.size() != 0) {
             params.put("bookingSetting", String.valueOf(bookingList.get(0).bookingSetting));
-        }else   params.put("bookingSetting", String.valueOf(0));
+        } else params.put("bookingSetting", String.valueOf(0));
 
         if (voucher != null) {
             params.put("voucher", voucher.toString());
@@ -762,13 +765,12 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                     if (status.equals("success")) {
 
-                        if(paymentType.equals("1") && bookingSetting != 1){
+                        if ((paymentType.equals("1")) && (bookingSetting != 1)) {
                             // hit payment api then go to sweet dialog
                             apiForPayment(bookingId);
-                        }else {
+                        } else {
                             sweetAlertConfirmation(bookingId);
                         }
-
 
 
                     } else {
@@ -807,10 +809,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private void sweetAlertConfirmation(String bookingId) {
         SweetAlertDialog dialog = new SweetAlertDialog(BookingConfirmActivity.this, SweetAlertDialog.SUCCESS_TYPE);
         dialog.setTitleText("Congratulation!");
-        if(bookingSetting == 1){
+        if (bookingSetting == 1) {
             dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. check my bookings to review status.");
-        }else {
-            dialog.setContentText("Your booking has been made with "+ bookingList.get(0).artistName +" check my bookings to review status.");
+        } else {
+            dialog.setContentText("Your booking has been made with " + bookingList.get(0).artistName + " check my bookings to review status.");
         }
         dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
@@ -924,7 +926,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     };
 
     private void dialogNew() {
-        final AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext())
+        final AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext(), R.style.MyDialogTheme)
                 .setTitle("Alert")
                 .setMessage("Booking session has been expired. Please try again.")
                 .setCancelable(false)
@@ -948,11 +950,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
             alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
 
-       try {
-           alertDialog.show();
-       }catch (Exception e){
+        try {
+            alertDialog.show();
+        } catch (Exception e) {
 
-       }
+        }
 
     }
 
@@ -1101,7 +1103,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         TextView title = dialog.findViewById(R.id.tv_title);
         title.setText("Alert !");
 
-        Button btn_yes =  dialog.findViewById(R.id.btn_yes);
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
         Button btn_no = dialog.findViewById(R.id.btn_no);
         btn_yes.setText("Add Card");
         btn_no.setText("Cancel");
@@ -1111,8 +1113,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 dialog.cancel();
                 // going gor token ie card id
                 Intent intent = new Intent(BookingConfirmActivity.this, PaymentCheckOutActivity.class);
-                intent.putExtra("from","BookingConfirmActivity");
-                startActivityForResult(intent,Constant.REQUEST_Select_Service);
+                intent.putExtra("from", "BookingConfirmActivity");
+                startActivityForResult(intent, Constant.REQUEST_Select_Service);
             }
         });
 
@@ -1132,7 +1134,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         String customerId = session.getUser().customerId;
 
         final Map<String, String> params = new HashMap<>();
-        params.put("sourceType","card");
+        params.put("sourceType", "card");
         params.put("token", cardId);
         params.put("customerId", customerId);
         params.put("id", bookingId);
@@ -1150,7 +1152,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         sweetAlertConfirmation(bookingId);
 
                     } else {
-                        MyToast.getInstance(BookingConfirmActivity.this).showDasuAlert(message);
+                        errorBooking(message);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1164,6 +1166,21 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 .setMethod(Request.Method.POST)
                 .setProgress(true))
                 .execute("FeedAdapter");
+    }
+
+    public void errorBooking(String msg) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("Ok", (dialog, which) -> {
+            dialog.cancel();
+            setResult(-3);
+            finish();
+        });
+
+
+        alertDialog.show();
     }
 
     // make default card

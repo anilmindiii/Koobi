@@ -262,30 +262,25 @@ public class MyFlexibleCalendar extends MyUICalendar {
                     txtDay.setTextColor(getTodayItemTextColor());
 
                     if (isFirstimeLoad) {
-//AppLogger.e("PrintStatus", "1 "+dayaName);
-                        txtDay.setBackground(getSelectedItemBackgroundDrawable());
-
-                        if (tempDaysArray != null) {
-                            for (int d = 0; d < tempDaysArray.size(); d++) {
-                                if (!tempDaysArray.get(d).isAvailable) {
-                                    if (tempDaysArray.get(d).dayName.equals(dayaName)) {
-                                        txtDay.setBackground(getSelectedItemBackgroundUnservice());
-                                        txtDay.setTextColor(getSelectedItemTextColor());
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                    } else txtDay.setBackground(getTodayItemBackgroundDrawable());
+                        txtDay.setTextColor(getResources().getColor(R.color.white));
+                        txtDay.setBackground(getSelectedItemBackgroundOrangeUnService());
+                    } else{
+                        txtDay.setBackgroundColor(getResources().getColor(R.color.white));
+                        txtDay.setTextColor(getResources().getColor(R.color.colorOrange));
+                    }
 
                 } else {
                     if (tempDaysArray != null)
                         for (int d = 0; d < tempDaysArray.size(); d++) {
                             if (!tempDaysArray.get(d).isAvailable) {
                                 if (tempDaysArray.get(d).dayName.equals(dayaName)) {
-                                    txtDay.setBackground(getSelectedItemBackgroundUnservice());
-                                    txtDay.setTextColor(getSelectedItemTextColor());
+                                    if (isToady(day)){
+                                        txtDay.setBackground(getSelectedItemBackgroundOrangeUnService());
+                                        txtDay.setTextColor(getSelectedItemTextColor());
+                                    }else{
+                                        txtDay.setBackground(getSelectedItemBackgroundUnservice());
+                                        txtDay.setTextColor(getSelectedItemTextColor());
+                                    }
                                 }
                             }
                         }
@@ -307,8 +302,13 @@ public class MyFlexibleCalendar extends MyUICalendar {
                                 //  MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");
                             } else {
                                 mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
-                                txtDay.setBackground(getSelectedItemBackgroundDrawable());
-                                txtDay.setTextColor(getSelectedItemTextColor());
+                                if (isToady(day)){
+                                    txtDay.setBackground(getSelectedItemBackgroundOrangeUnService());
+                                    txtDay.setTextColor(getSelectedItemTextColor());
+                                }else{
+                                    txtDay.setBackgroundDrawable(getSelectedItemBackgroundDrawable());
+                                    txtDay.setTextColor(getSelectedItemTextColor());
+                                }
                             }
                         } else {
                             //MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");

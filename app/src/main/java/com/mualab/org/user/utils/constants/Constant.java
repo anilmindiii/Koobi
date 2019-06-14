@@ -5,6 +5,7 @@ package com.mualab.org.user.utils.constants;
  */
 
 public class Constant {
+    public static final String INTENT_FILTER_BIZ_PROFILE_ACTIVITY = "intent_filter_biz_profile_activity";
     public static final String FILE_PROVIDER_AUTHORITY = "com.app.mualab.fileprovider";
     // key for run time permissions
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -82,4 +83,13 @@ public class Constant {
     public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
     public static final String RESULT_DATA_KEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
+
+    public static String adds(int count, String value){
+        if(count == 0 | count == 1){
+            return value;
+        }else {
+            return value +"s";
+        }
+
+    }
 }

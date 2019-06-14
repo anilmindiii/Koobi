@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.model.Services;
@@ -55,6 +56,9 @@ public class InvitationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
         initView();
+
+        FirebaseDatabase.getInstance().getReference().child("socialBookingBadgeCount")
+                .child(Mualab.currentUser.id+"").child("businessInvitationCount").setValue(0);
     }
 
     private void initView() {

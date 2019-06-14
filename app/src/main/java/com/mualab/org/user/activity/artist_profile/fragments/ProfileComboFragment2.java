@@ -15,6 +15,7 @@ import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivit
 import com.mualab.org.user.activity.artist_profile.activity.FollowersActivity;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.base.BaseFragment;
+import com.mualab.org.user.utils.constants.Constant;
 
 import java.io.Serializable;
 
@@ -27,19 +28,12 @@ public class ProfileComboFragment2 extends BaseFragment implements View.OnClickL
 
 
     public static ProfileComboFragment2 newInstance(UserProfileData profileData) {
-
         Bundle args = new Bundle();
-
         ProfileComboFragment2 fragment = new ProfileComboFragment2();
         fragment.setArguments(args);
         args.putSerializable("profileData",profileData);
         return fragment;
     }
-
-
-
-
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,15 +50,26 @@ public class ProfileComboFragment2 extends BaseFragment implements View.OnClickL
         }
 
         TextView tv_profile_followers = view.findViewById(R.id.tv_profile_followers);
+        TextView tv_profile_followers_txt = view.findViewById(R.id.tv_profile_followers_txt);
+
         TextView tv_profile_following = view.findViewById(R.id.tv_profile_following);
+        TextView tv_profile_following_txt = view.findViewById(R.id.tv_profile_following_txt);
+
         TextView tv_profile_post = view.findViewById(R.id.tv_profile_post);
+        TextView tv_profile_post_txt = view.findViewById(R.id.tv_profile_post_txt);
 
         if(getArguments() != null){
             profileData = (UserProfileData) getArguments().getSerializable("profileData");
 
             tv_profile_followers.setText(profileData.followersCount+"");
+            tv_profile_followers_txt.setText(Constant.adds(Integer.parseInt(profileData.followersCount),"Follower"));
+
             tv_profile_following.setText(profileData.followingCount+"");
+            //tv_profile_following_txt.setText(Constant.adds(Integer.parseInt(profileData.followingCount),"Following"));
+
             tv_profile_post.setText(profileData.postCount+"");
+            tv_profile_post_txt.setText(Constant.adds(Integer.parseInt(profileData.postCount),"Post"));
+
         }
 
         view.findViewById(R.id.llFollowers).setOnClickListener(this);

@@ -278,7 +278,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             tv_dobDate.setText(user.dob);
             if (user.dob.contains("/")) {
                 String[] s = user.dob.split("/");
-                monthShow = (Integer.parseInt(s[1])-1);
+                monthShow = (Integer.parseInt(s[1]) - 1);
                 dayShow = Integer.parseInt(s[0]);
                 yearShow = Integer.parseInt(s[2]);
             }
@@ -381,8 +381,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
 
             case R.id.btnContinue1:
-
-
                 if (checkNotempty(ed_firstName)
                         && checkNotempty(ed_lastName)
                         && checkNotempty(edEmail) && checkNotempty(edPhoneNumber)
@@ -392,11 +390,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     String countrycode = tvCountryCode.getText().toString().trim();
                     if (!user.contactNo.equals(nu) || !user.countryCode.equals(countrycode)) {
                         apiCallForDataVerify();
-
                     } else if (verify.equals("no")) {
-
                         apiCallForDataVerify();
-
                     } else {
                         int selectedId = radioGroup.getCheckedRadioButtonId();
                         RadioButton radioSexButton = findViewById(selectedId);
@@ -437,8 +432,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.rl_dob:
 
-
-             /*   String[] s = user.dob.split("-");
+                /*   String[] s = user.dob.split("-");
                 dayShow = Integer.parseInt(s[1]);
                 monthShow = Integer.parseInt(s[0]);
                 yearShow = Integer.parseInt(s[2]);*/
@@ -674,8 +668,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private void writeNewUser(User user) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser firebaseUser = new FirebaseUser();
-        firebaseUser.firebaseToken = FirebaseInstanceId.getInstance().getToken();
-        ;
+        if(user.notificationStatus == 1){
+            firebaseUser.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        }else  firebaseUser.firebaseToken = "" +
+                "";
+
         firebaseUser.isOnline = 1;
         firebaseUser.lastActivity = ServerValue.TIMESTAMP;
         if (user.profileImage.isEmpty())

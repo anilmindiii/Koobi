@@ -134,7 +134,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     private String TAG = this.getClass().getName();
     ;
     private User user;
-    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2,tv_block_msg, tv_profile_followers, tv_business_count;
+    private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2,tv_block_msg, tv_profile_followers,tv_profile_followers_txt, tv_business_count;
     private LinearLayout ll_progress, llRating,ly_block_view;
     private RecyclerView rvFeed;
     private RjRefreshLayout mRefreshLayout;
@@ -201,6 +201,10 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             tv_business_count.setVisibility(View.VISIBLE);
                             tv_business_count.setText(count + "");
                         } else tv_business_count.setVisibility(View.GONE);
+
+                        if(count == 0){
+                            tv_business_count.setVisibility(View.GONE);
+                        }
 
             }
         });
@@ -354,6 +358,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             public void onRefresh() {
                 endlesScrollListener.resetState();
                 isPulltoRefrash = true;
+                page = 0;
                 apiForGetAllFeeds(0, 20, false, "");
 
             }
@@ -397,6 +402,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
+                page = 0;
                 feeds.clear();
                 endlesScrollListener.resetState();
                 Mualab.getInstance().cancelPendingRequests("artistProfileApi");
@@ -618,8 +624,10 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         TextView tv_distance = findViewById(R.id.tv_distance);
         TextView tv_profile_post = findViewById(R.id.tv_profile_post);
+        TextView tv_profile_post_txt = findViewById(R.id.tv_profile_post_txt);
         TextView tv_profile_following = findViewById(R.id.tv_profile_following);
         tv_profile_followers = findViewById(R.id.tv_profile_followers);
+        tv_profile_followers_txt = findViewById(R.id.tv_profile_followers_txt);
         iv_Profile = findViewById(R.id.iv_Profile);
         ImageView ivActive = findViewById(R.id.ivActive);
         RatingBar rating = findViewById(R.id.rating);
@@ -640,8 +648,10 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             tv_username.setText("@" + profileData.userName);
             tv_usernameBlock.setText("@" + profileData.userName);
             tv_profile_followers.setText(profileData.followersCount);
+            tv_profile_followers_txt.setText(Constant.adds(Integer.parseInt(profileData.followersCount),"Follower"));
             tv_profile_following.setText(profileData.followingCount);
             tv_profile_post.setText(profileData.postCount);
+            tv_profile_post_txt.setText(Constant.adds(Integer.parseInt(profileData.postCount),"Post"));
             tvRatingCount.setText("(" + profileData.reviewCount + ")");
             tvRatingCountBlock.setText("(" + profileData.reviewCount + ")");
             float ratingCount = Float.parseFloat(profileData.ratingCount);
@@ -1930,7 +1940,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         Map<String, String> params = new HashMap<>();
         params.put("feedType", feedType);
-        params.put("search", "");
         params.put("page", String.valueOf(page));
         params.put("limit", String.valueOf(feedLimit));
         params.put("type", "");
@@ -1947,6 +1956,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             public void onResponse(String response, String apiName) {
                 setFeedLoading(false);
                 setAdapterLoading(false);
+                mRefreshLayout.stopRefresh(false, 500);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -1975,7 +1985,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                 setAdapterLoading(false);
                 if(isPulltoRefrash){
                     isPulltoRefrash = false;
-//mRefreshLayout.stopRefresh(false, 500);
+mRefreshLayout.stopRefresh(false, 500);
                     int prevSize = feeds.size();
                     feeds.clear();
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
@@ -2180,7 +2190,7 @@ endlesScrollListener.resetState();
 
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
-//mRefreshLayout.stopRefresh(false, 500);
+mRefreshLayout.stopRefresh(false, 500);
 
                 }
                 feedAdapter.notifyDataSetChanged();

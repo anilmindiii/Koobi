@@ -447,7 +447,7 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
                     StoriesActivity.this.mediaPlayer = mediaPlayer;
                     progress_bar.setVisibility(View.GONE);
                     try {
-                        storyStatusView.setDynamicStoryDuration(mediaPlayer.getDuration());
+                        storyStatusView.setDynamicStoryDuration((mediaPlayer.getDuration()-50));
                     }catch (Exception e){
                         storyStatusView.setDynamicStoryDuration(30);
                     }

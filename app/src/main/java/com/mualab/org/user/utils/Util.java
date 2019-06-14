@@ -180,7 +180,7 @@ public class Util {
 
             DatabaseReference mDatabase  = FirebaseDatabase.getInstance().getReference();
             FirebaseUser firebaseUser = new FirebaseUser();
-            firebaseUser.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+
             if (status.equals("online"))
                 firebaseUser.isOnline = 1;
             else
@@ -194,6 +194,9 @@ public class Util {
 
             firebaseUser.userName = user.userName;
             firebaseUser.uId = user.id;
+            if(user.notificationStatus == 1){
+                firebaseUser.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+            }else firebaseUser.firebaseToken = "";
             firebaseUser.authToken = user.authToken;
             firebaseUser.userType = user.userType;
             mDatabase.child("users").child(String.valueOf(user.id)).setValue(firebaseUser);

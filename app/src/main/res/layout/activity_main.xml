@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/rootLayout"
     tools:context=".activity.main.MainActivity">
@@ -21,6 +22,15 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/topLayout1"
         android:layout_above="@+id/bottomMenuLayout"/>
+
+    <com.daasuu.ahp.AnimateHorizontalProgressBar
+        android:id="@+id/animate_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_above="@+id/container"
+        android:visibility="gone"
+        app:ahp_backgroundColor="@color/white"
+        app:ahp_progressColor="@color/colorAccent" />
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/lyCoordinatorLayout"

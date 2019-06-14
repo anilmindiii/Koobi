@@ -7,4 +7,5 @@ package com.mualab.org.user.data.model;
 public class Location {
     public double lat;
     public double lng;
+    public String CurrrentAddress;
 }

@@ -55,6 +55,7 @@ import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.listener.OnDoubleTapListener;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.ScreenUtils;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 
@@ -221,7 +222,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             h.tvPostTime.setText(feeds.crd);
             h.tvUserLocation.setText(TextUtils.isEmpty(feeds.location) ? "N/A" : feeds.location);
             h.tv_like_count.setText(String.valueOf(feeds.likeCount));
+            h.tv_like_txt.setText(Constant.adds(feeds.likeCount,"Like"));
             h.tv_comments_count.setText(String.valueOf(feeds.commentCount));
+            h.tv_comments_txt.setText(Constant.adds(feeds.commentCount,"Comment"));
             h.likeIcon.setChecked(feeds.isLike == 1);
             h.tv_text.setText(feeds.caption);
 
@@ -301,6 +304,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }));
 
                 imageHolder.weakRefViewPager.get().setAdapter(imageHolder.weakRefAdapter.get());
+                imageHolder.weakRefViewPager.get().setLayoutParams(ScreenUtils.resizeRelativeViewRatio(mContext));
 
                 if (feeds.feed.size() > 1) {
                     addBottomDots(imageHolder.ll_Dot, feeds.feed.size(), 0);
@@ -551,6 +555,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setupFeedVideoClickableViews(final FeedVideoHolder videoHolder) {
+        videoHolder.rl_imageView.setLayoutParams(ScreenUtils.resizeLinearViewRatio(mContext));
         videoHolder.tv_text.setHashtagColor(ContextCompat.getColor(mContext, R.color.text_color));
         videoHolder.tv_text.setMentionColor(ContextCompat.getColor(mContext, R.color.text_color));
         videoHolder.tv_text.setOnHyperlinkClickListener(new Function2<SocialView, CharSequence, Unit>() {
@@ -1012,7 +1017,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         protected ImageView ivProfile, ivComments, iv_menu; //btnLike
         protected LinearLayout ly_like_count, ly_comments, main_layout,header;
         protected TextView tvUserName, tvUserLocation, tvPostTime,tv_delete;
-        protected TextView tv_like_count, tv_comments_count;
+        protected TextView tv_like_count,tv_like_txt, tv_comments_count,tv_comments_txt;
         protected SocialTextView tv_text;
         protected AppCompatButton btnFollow;
         protected RelativeLayout ly_report, rl_imageView;
@@ -1034,7 +1039,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvUserLocation = itemView.findViewById(R.id.tv_location);
             tvPostTime = itemView.findViewById(R.id.tv_post_time);
             tv_like_count = itemView.findViewById(R.id.tv_like_count);
+            tv_like_txt = itemView.findViewById(R.id.tv_like_txt);
             tv_comments_count = itemView.findViewById(R.id.tv_comments_count);
+            tv_comments_txt = itemView.findViewById(R.id.tv_comments_txt);
             ly_like_count = itemView.findViewById(R.id.ly_like_count);
             ly_comments = itemView.findViewById(R.id.ly_comments);
             ivLike = itemView.findViewById(R.id.ivLike);

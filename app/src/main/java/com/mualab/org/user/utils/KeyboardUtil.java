@@ -13,8 +13,13 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 public class KeyboardUtil {
 
     public static void hideKeyboard(View view, Context context) {
-        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }catch (Exception e){
+
+        }
+
     }
 
     public static void showKeyboard(View view, Context context){

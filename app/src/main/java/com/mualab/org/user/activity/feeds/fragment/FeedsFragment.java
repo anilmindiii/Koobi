@@ -144,7 +144,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     private TextView tv_msg,tv_no_data_msg;
     private LinearLayout ll_header;
     private RjRefreshLayout mRefreshLayout;
-    private boolean isPulltoRefrash = false;
+    public boolean isPulltoRefrash = false;
 
     private Bitmap thumbImage = null;
     private ViewPagerAdapter.LongPressListner longPressListner;
@@ -156,7 +156,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     private FeedAdapter feedAdapter;
     private RecyclerView rvFeed;
     private List<Feeds> feeds;
-    private RecyclerViewScrollListener endlesScrollListener;
+    public RecyclerViewScrollListener endlesScrollListener;
 
     /*required variables*/
     private String feedType = "feeds";
@@ -538,7 +538,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         lastFeedTypeId = id;
     }
 
-    private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress,
+    public void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress,
                                    final String searchText) {
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(mContext, new NoConnectionDialog.Listner() {

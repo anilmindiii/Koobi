@@ -57,6 +57,7 @@ import com.mualab.org.user.activity.feeds.adapter.LiveUserAdapter;
 import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
 import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.chat.model.Chat;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.remote.HttpResponceListner;
@@ -65,6 +66,7 @@ import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.listener.FeedsListner;
 import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
+import com.mualab.org.user.utils.CommonUtils;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.ScreenUtils;
 import com.mualab.org.user.utils.WrapContentGridLayoutManager;
@@ -78,12 +80,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 import static com.mualab.org.user.utils.constants.Constant.PLACE_AUTOCOMPLETE_REQUEST_CODE;
+
+/*  catMap.clear();
+          dataBeans.clear();*/
 
 public class ExploreFragmentNew extends BaseFragment implements View.OnClickListener,
         ExploreGridViewAdapter.Listener, LiveUserAdapter.Listner {
@@ -97,13 +104,15 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     HeaderGrideAdapter feedAdapter;
     private RecyclerView rvFeed;
     private List<Feeds> feeds;
+    private LinkedHashMap<Integer,Feeds> mapFeeds;
     private BottomSheetBehavior bottomSheetBehavior;
     private String feedType = "image";
     private boolean isPulltoRefrash;
     private FeedsListner feedsListner;
     private RecyclerView rcv_service;
     private ExploreServiceAdapter exploreServiceAdapter;
-    private ArrayList<ExploreCategoryInfo.DataBean> dataBeans;
+    private ArrayList<ExploreCategoryInfo.DataBean> dataBeans,tempServiceCatList;
+    private LinkedHashMap<String,ExploreCategoryInfo.DataBean> catMap;
     private ImageView ivFilter;
     private int page = 0;
     private RelativeLayout bottomSheetLayout, rlSelectradiusSeekbar, rlSelectLocation;
@@ -162,6 +171,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         feeds = new ArrayList<>();
+        mapFeeds = new LinkedHashMap<>();
 
     }
 
@@ -205,6 +215,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         nested_scroll_view = view.findViewById(R.id.nested_scroll_view);
 
         dataBeans = new ArrayList<>();
+        tempServiceCatList = new ArrayList<>();
+        catMap = new LinkedHashMap<>();
+
         exploreServiceAdapter = new ExploreServiceAdapter(mContext, dataBeans,
                 () -> {
                     categoryIds = "";
@@ -258,9 +271,10 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     tv_service_category.setText(CategoryName);
 
                     endlesScrollListener.resetState();
+                    mapFeeds.clear();
                     feeds.clear();
                     page = 0;
-                    apiForGetAllFeeds(0, 50, true);
+                    apiForGetAllFeeds(1, 20, true);
                 });
         rcv_service.setAdapter(exploreServiceAdapter);
 
@@ -272,9 +286,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         btn_apply_filter.setOnClickListener(this);
         main_layout_header.setOnClickListener(this);
 
-        tv_refine_loc.setText(Mualab.currentUser.address);
-        lat = Mualab.currentUser.latitude;
-        lng = Mualab.currentUser.longitude;
+        tv_refine_loc.setText(Mualab.currentLocation.CurrrentAddress);
+        lat = String.valueOf(Mualab.currentLocation.lat);
+        lng = String.valueOf(Mualab.currentLocation.lng);
 
         seekBarLocation.with(mContext)
                 .max(20)
@@ -328,9 +342,10 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 bottomSheetLayout.setVisibility(View.GONE);
                 page = 0;
                 feeds.clear();
+                mapFeeds.clear();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(0, 50, true);
+                apiForGetAllFeeds(1, 20, true);
                 break;
 
             case R.id.lyRefineLocation:
@@ -372,12 +387,18 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 bottomSheetLayout.setVisibility(View.GONE);
                 page = 0;
                 feeds.clear();
+                mapFeeds.clear();
+                endlesScrollListener.resetState();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(0, 50, true);
+
+                apiForGetAllFeeds(1, 20, true);
                 break;
 
             case R.id.tv_reset:
+                catMap.clear();
+                dataBeans.clear();
+
                 categoryIds = "";
                 CategoryName = "";
                 tv_service_category.setText("");
@@ -399,9 +420,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 }
 
                 // feedAdapter.isHideFirstIndex(false);
-                tv_refine_loc.setText(Mualab.currentUser.address);
-                lat = Mualab.currentUser.latitude;
-                lng = Mualab.currentUser.longitude;
+                tv_refine_loc.setText(Mualab.currentLocation.CurrrentAddress);
+                lat = String.valueOf(Mualab.currentLocation.lat);
+                lng = String.valueOf(Mualab.currentLocation.lng);
 
                 rating.setRating(0);
 
@@ -418,7 +439,9 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
 
                 page = 0;
                 feeds.clear();
-                apiForGetAllFeeds(0, 50, true);
+                mapFeeds.clear();
+                endlesScrollListener.resetState();
+                GetAllServiceCategory(true);
                 break;
         }
     }
@@ -486,6 +509,8 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         rvFeed.setLayoutManager(manager);
         rvFeed.setAdapter(feedAdapter);
 
+
+
         /////////
 
        /* feedAdapter = new ExploreGridViewAdapter(mContext, new ExSearchTag(), feeds, this,
@@ -495,23 +520,24 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
             @Override
             public void onLoadMore() {
                 if (feedAdapter != null) {
-                    apiForGetAllFeeds(++page, 50, false);
+                    apiForGetAllFeeds(++page, 20, false);
 
 
                 }
             }
         };
-
-
         rvFeed.setAdapter(feedAdapter);
+        rvFeed.addOnScrollListener(endlesScrollListener);
+
+
 
         final CircleHeaderView header = new CircleHeaderView(getContext());
-
-        if (feeds != null && feeds.size() == 0) {
-            updateViewType();
-        } else feedAdapter.notifyDataSetChanged();
-
         GetAllServiceCategory(true);
+        /*if (feeds != null && feeds.size() == 0) {
+            updateViewType();
+        } else feedAdapter.notifyDataSetChanged();*/
+
+
         ivFilter.setOnClickListener(this);
     }
 
@@ -522,10 +548,11 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         int prevSize = feeds.size();
 
         feeds.clear();
+        mapFeeds.clear();
         feedType = "image";
         feedAdapter.notifyItemRangeRemoved(0, prevSize);
         showLoading();
-        apiForGetAllFeeds(0, 50, true);
+        apiForGetAllFeeds(1, 20, true);
 
     }
 
@@ -554,6 +581,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
             @Override
             public void onResponse(String response, String apiName) {
                 dataBeans.clear();
+                tempServiceCatList.clear();
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -562,8 +590,13 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                         Gson gson = new Gson();
                         ExploreCategoryInfo categoryInfo = gson.fromJson(response, ExploreCategoryInfo.class);
 
-                        dataBeans.addAll(categoryInfo.data);
+
+                        tempServiceCatList.addAll(categoryInfo.data);
                         exploreServiceAdapter.notifyDataSetChanged();
+
+                        if (feeds != null && feeds.size() == 0) {
+                            updateViewType();
+                        } else feedAdapter.notifyDataSetChanged();
 
                     } else {
                         // goto 3rd screen for register
@@ -629,14 +662,21 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
             public void onResponse(String response, String apiName) {
                 if (ll_progress != null) ll_progress.setVisibility(View.GONE);
                 //if (feedAdapter != null)  feedAdapter.showHideLoading(false);
-                try {
+                try { //{"status":"success","message":"successfully","total":0}
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
                     String message = js.getString("message");
-
+                    int total = js.getInt("total");
+                    exploreServiceAdapter.notifyDataSetChanged();
                     if (status.equalsIgnoreCase("success")) {
-                        //removeProgress();
-                        ParseAndUpdateUI(response);
+
+                            if(total == 0){
+                                main_layout_header.setVisibility(View.GONE);
+                                tv_msg.setVisibility(View.VISIBLE);
+                                tv_msg.setText(getString(R.string.no_data_found));
+                            }else ParseAndUpdateUI(total,response);
+
+
                     } else MyToast.getInstance(mContext).showSmallMessage(message);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -652,6 +692,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     //mRefreshLayout.stopRefresh(false, 500);
                     int prevSize = feeds.size();
                     feeds.clear();
+                    mapFeeds.clear();
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
                 }
                 //MyToast.getInstance(mContext).showSmallMessage(getString(R.string.msg_some_thing_went_wrong));
@@ -666,7 +707,10 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         ll_progress.setVisibility(isEnableProgress ? View.VISIBLE : View.GONE);
     }
 
-    private void ParseAndUpdateUI(final String response) {
+    private void ParseAndUpdateUI(int total, final String response) {
+        if(total == feeds.size()){
+            return;
+        }
 
         try {
             JSONObject js = new JSONObject(response);
@@ -681,10 +725,12 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     //mRefreshLayout.stopRefresh(true, 500);
                     int prevSize = feeds.size();
                     feeds.clear();
+                    mapFeeds.clear();
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
                 }
 
                 Gson gson = new Gson();
+
                 for (int i = 0; i < array.length(); i++) {
 
                     try {
@@ -777,6 +823,17 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                                             JSONObject details = tagOjb.getJSONObject(unique_tag_id);
                                             tag = gson.fromJson(String.valueOf(details), TagDetail.class);
                                         }
+
+                                        for(int t=0;t<tempServiceCatList.size();t++){
+                                            if(tag.categoryId.equals(String.valueOf(tempServiceCatList.get(t)._id))){
+                                                catMap.put(tag.categoryId,tempServiceCatList.get(t));
+                                                dataBeans.clear();
+                                                Collection<ExploreCategoryInfo.DataBean> values = catMap.values();
+                                                dataBeans.addAll(values);
+                                            }
+                                        }
+
+
 //tagDetails.put(tag.title, tag);
                                         TagToBeTagged tagged = new TagToBeTagged();
                                         tagged.setUnique_tag_id(unique_tag_id);
@@ -790,10 +847,14 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                                     feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
                                 }
                             }
+                            exploreServiceAdapter.notifyDataSetChanged();
                         }
 
-
+                       /* mapFeeds.put(feed._id,feed);
+                        feeds.clear();
+                        Collection<Feeds> values = mapFeeds.values();*/
                         feeds.add(feed);
+
                         if (feeds.size() != 0) {
                             feeds.get(0).isShow = true;
                         }

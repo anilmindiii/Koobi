@@ -707,6 +707,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
 
+        //case card expaire
+        if(resultCode == -3 && requestCode == Constant.REQUEST_Select_Service){
+            finish();
+        }
+
         // Case of edit service
         if (resultCode == -2) {
             if (requestCode == Constant.REQUEST_Select_Service) {

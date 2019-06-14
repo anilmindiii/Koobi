@@ -67,9 +67,11 @@ import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
+import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
+import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
 import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
 import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
@@ -258,7 +260,6 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
 
         feedAdapter = new ArtistFeedAdapter(ArtistProfileActivity.this, feeds, this);
 
-        feedAdapter.setHasStableIds(true);
         endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
             public void onLoadMore() {
@@ -281,6 +282,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
             public void onRefresh() {
                 endlesScrollListener.resetState();
                 isPulltoRefrash = true;
+                page = 0;
                 apiForGetAllFeeds(0, 20, false, "");
             }
 
@@ -882,7 +884,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                             feedType = "";
                             CURRENT_FEED_STATE = Constant.FEED_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 20, true, "");
+                            apiForGetAllFeeds(page, 20, true, "");
 
                             popupWindow.dismiss();
                             break;
@@ -895,7 +897,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                             feedType = "image";
                             CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 20, true, "");
+                            apiForGetAllFeeds(page, 20, true, "");
                             popupWindow.dismiss();
                             break;
 
@@ -908,7 +910,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                             feedType = "video";
                             CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                            apiForGetAllFeeds(0, 20, true, "");
+                            apiForGetAllFeeds(page, 20, true, "");
                             break;
 
                     }
@@ -1009,7 +1011,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                     feedType = "";
                     CURRENT_FEED_STATE = Constant.FEED_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 20, true, "");
+                    apiForGetAllFeeds(page, 20, true, "");
                 }
                 break;
 
@@ -1023,7 +1025,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                     feedType = "image";
                     CURRENT_FEED_STATE = Constant.IMAGE_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 20, true, "");
+                    apiForGetAllFeeds(page, 20, true, "");
                 }
 
                 break;
@@ -1038,7 +1040,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                     feedType = "video";
                     CURRENT_FEED_STATE = Constant.VIDEO_STATE;
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
-                    apiForGetAllFeeds(0, 20, true, "");
+                    apiForGetAllFeeds(page, 20, true, "");
                 }
                 break;
         }
@@ -1157,6 +1159,8 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                         feeds.clear();
                     }
                     tv_no_data_msg.setVisibility(View.GONE);
+                    int feedNewSize = 0;
+                    int feedOldSize = feeds.size() + 1;
                     for (int i = 0; i < array.length(); i++) {
 
                         try {
@@ -1281,9 +1285,12 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                             // FirebaseCrash.log(e.getLocalizedMessage());
                         }
                     } // loop end.
+
+                    feedAdapter.notifyItemRangeInserted(feedOldSize, feedNewSize);
                 } else if (feeds.size() == 0) {
                    // rvFeed.setVisibility(View.GONE);
                     tv_no_data_msg.setVisibility(View.VISIBLE);
+                    feedAdapter.notifyDataSetChanged();
                 }
 
             /*    if (isGrideView) {
@@ -1297,7 +1304,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 }*/
 
 
-                feedAdapter.notifyDataSetChanged();
+
 
             } else if (status.equals("fail") && feeds.size() == 0) {
                // rvFeed.setVisibility(View.GONE);
@@ -1497,7 +1504,11 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onLikeListClick(Feeds feed) {
-        addFragment(LikeFragment.newInstance(feed._id, user.id), true);
+        //addFragment(LikeFragment.newInstance(feed._id, user.id), true);
+        Intent intent = new Intent(this, LikeFeedActivity.class);
+        intent.putExtra("feedId", feed._id);
+        intent.putExtra("userId", Mualab.currentUser.userId);
+        startActivity(intent);
     }
 
     @Override
@@ -1857,30 +1868,29 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
 
 
     /*...................................................................*/
-
     private void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress, String searchText) {
 
         setFeedLoading(isEnableProgress);
 
         Map<String, String> params = new HashMap<>();
         params.put("feedType", feedType);
-        params.put("search", "");
         params.put("page", String.valueOf(page));
         params.put("limit", String.valueOf(feedLimit));
         params.put("type", "");
         params.put("userId", artistId);
-        params.put("viewBy", "user");
         params.put("loginUserId", String.valueOf(user.id));
+        params.put("viewBy", "");
         params.put("search", searchText);
-        // params.put("appType", "user");
 
 
         Mualab.getInstance().cancelPendingRequests(this.getClass().getName());
-        new HttpTask(new HttpTask.Builder(ArtistProfileActivity.this, "profileFeed", new HttpResponceListner.Listener() {
+        new HttpTask(new HttpTask.Builder(ArtistProfileActivity.this,
+                "profileFeed", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
                 setFeedLoading(false);
                 setAdapterLoading(false);
+                mRefreshLayout.stopRefresh(false, 500);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -1909,7 +1919,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 setAdapterLoading(false);
                 if(isPulltoRefrash){
                     isPulltoRefrash = false;
-//mRefreshLayout.stopRefresh(false, 500);
+                    mRefreshLayout.stopRefresh(false, 500);
                     int prevSize = feeds.size();
                     feeds.clear();
                     feedAdapter.notifyItemRangeRemoved(0, prevSize);
@@ -1961,6 +1971,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
 /*if (isGrideView) {
 feeds.clear();
 }*/
+
                     int feedNewSize = 0;
                     int feedOldSize = feeds.size() + 1;
                     for (int i = 0; i < array.length(); i++) {
@@ -2114,7 +2125,7 @@ endlesScrollListener.resetState();
 
                 if (isPulltoRefrash) {
                     isPulltoRefrash = false;
-//mRefreshLayout.stopRefresh(false, 500);
+                    mRefreshLayout.stopRefresh(false, 500);
 
                 }
                 feedAdapter.notifyDataSetChanged();

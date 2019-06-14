@@ -44,6 +44,28 @@ import java.util.Map;
 
 public class Helper {
 
+    public static void parseErrorWithoutMsg(Context context, ANError anError) {
+        if (anError.getErrorBody() != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(anError.getErrorBody());
+                String status = jsonObject.getString("status");
+                String message = "";
+                if (jsonObject.has("message")) message = jsonObject.getString("message");
+
+                if (message.equals("Invalid Auth Token")) {
+                    Mualab.getInstance().getSessionManager().logout();                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (anError.getErrorDetail() != null && anError.getErrorDetail().equalsIgnoreCase("connectionError")) {
+            try {
+                new ServerErrorDialog(context).show();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
     public static void parseError(Context context, ANError anError) {
         if (anError.getErrorBody() != null) {
             try {

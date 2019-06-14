@@ -17,7 +17,7 @@ public class MediaUri implements Serializable{
     public int mediaType;
     public boolean isFromGallery;
     public File videoFile;
-    public List<String> uriList = new ArrayList<>();
+    public ArrayList<String> uriList = new ArrayList<>();
 
     public void addUri(String uri){
         /*if(uriList==null)

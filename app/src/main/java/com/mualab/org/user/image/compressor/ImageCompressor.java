@@ -3,6 +3,8 @@ package com.mualab.org.user.image.compressor;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.mualab.org.user.utils.ScreenUtils;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -20,8 +22,10 @@ public class ImageCompressor {
     private Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
     private int quality = 80;
     private String destinationDirectoryPath;
+    Context context;
 
     public ImageCompressor(Context context) {
+        this.context = context;
         destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
     }
 
@@ -55,6 +59,8 @@ public class ImageCompressor {
     }
 
     public File compressToFile(File imageFile, String compressedFileName) throws IOException {
+        maxWidth = ScreenUtils.getScreenWidth(context);
+        maxHeight = ScreenUtils.getRatioHeight(maxWidth);
         return ImageUtil.compressImage(imageFile, maxWidth, maxHeight, compressFormat, quality,
                 destinationDirectoryPath + File.separator + compressedFileName);
     }

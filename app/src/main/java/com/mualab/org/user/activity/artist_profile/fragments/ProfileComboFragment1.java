@@ -19,6 +19,7 @@ import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.base.BaseFragment;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.utils.constants.Constant;
 
 
 public class ProfileComboFragment1 extends BaseFragment implements View.OnClickListener {
@@ -52,13 +53,20 @@ public class ProfileComboFragment1 extends BaseFragment implements View.OnClickL
         }
 
         TextView tvServiceCount = view.findViewById(R.id.tvServiceCount);
+        TextView tvServiceCount_txt = view.findViewById(R.id.tvServiceCount_txt);
+
         TextView tvCertificateCount = view.findViewById(R.id.tvCertificateCount);
+        TextView tvCertificateCount_txt = view.findViewById(R.id.tvCertificateCount_txt);
 
         if(getArguments() != null){
             profileData = (UserProfileData) getArguments().getSerializable("profileData");
 
             tvServiceCount.setText(profileData.serviceCount+"");
+            tvServiceCount_txt.setText(Constant.adds(Integer.parseInt(profileData.serviceCount),"Service"));
+
             tvCertificateCount.setText(profileData.certificateCount+"");
+            tvCertificateCount_txt.setText(Constant.adds(Integer.parseInt(profileData.certificateCount),"Qualification"));
+
         }
 
         view.findViewById(R.id.llServices).setOnClickListener(this);

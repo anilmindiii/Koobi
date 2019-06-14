@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -58,9 +59,13 @@ import com.hendraanggrian.socialview.SocialView;
 import com.hendraanggrian.widget.FilteredAdapter;
 import com.hendraanggrian.widget.SocialAutoCompleteTextView;
 import com.mualab.org.user.R;
+import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.UserSuggessionAdapter;
+import com.mualab.org.user.activity.feeds.service.UploadImageService;
+import com.mualab.org.user.activity.feeds.service.UploadVideoService;
 import com.mualab.org.user.activity.main.MainActivity;
+import com.mualab.org.user.activity.payment.AllCardActivity;
 import com.mualab.org.user.activity.tag_module.activity.PeopleTagActivity;
 import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
 import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
@@ -72,6 +77,7 @@ import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.data.remote.UploadImage;
 import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.KeyboardUtil;
@@ -100,7 +106,7 @@ import java.util.regex.Pattern;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
-public class FeedPostActivity extends AppCompatActivity implements View.OnClickListener {
+public class FeedPostActivity extends BaseActivity implements View.OnClickListener {
 
     public static String TAG = FeedPostActivity.class.getName();
 
@@ -570,7 +576,12 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
     private void feedPostPrerareData() {
 
         findViewById(R.id.tv_post).setEnabled(false);
-        KeyboardUtil.hideKeyboard(Objects.requireNonNull(getCurrentFocus()), this);
+        try{
+            KeyboardUtil.hideKeyboard(Objects.requireNonNull(getCurrentFocus()), this);
+        }catch (Exception e){
+
+        }
+
 
         if (address == null || TextUtils.isEmpty(address.latitude)) {
             findViewById(R.id.tv_post).setEnabled(true);
@@ -591,7 +602,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                 }
 
             } else if (feedType == Constant.VIDEO_STATE) {
-                showProgressBar();
+                /*showProgressBar();
                 //String uri = mediaUri.uriList.get(0);
                 if (mUploadUri == null) {
                     mDeleteCompressedMedia = true;
@@ -599,16 +610,26 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                     uploadVideo(videoThumb);
                 } else {
                     uploadVideo(videoThumb);
+                }*/
+
+                if (mUploadUri == null) {
+                    mDeleteCompressedMedia = true;
+//saveTempAndCompress(uri);
+                    doPostVideoFeed(videoThumb);
+                } else {
+                    doPostVideoFeed(videoThumb);
                 }
-                //sendToBackGroundService();
+
             } else if (feedType == Constant.IMAGE_STATE) {
-                showProgressBar();
+                /*showProgressBar();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         apiCallForUploadImages();
                     }
-                }).start();
+                }).start();*/
+
+                doPostImageFeed();
             }
 
         } else {
@@ -779,7 +800,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
                 .postImage(null, null);
     }
 
-    private Map<String, String> prepareCommonPostData() {
+    private HashMap<String, String> prepareCommonPostData() {
         //address = TextUtils.isEmpty(address) ? "" : address;
         String feedTypetxt = "";
         if (feedType == Constant.TEXT_STATE)
@@ -789,7 +810,7 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
         else if (feedType == Constant.VIDEO_STATE)
             feedTypetxt = "video";
 
-        Map<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("feedType", feedTypetxt);
 
 
@@ -1179,5 +1200,87 @@ public class FeedPostActivity extends AppCompatActivity implements View.OnClickL
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
+    }
+
+    private void doPostImageFeed() {
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(getActivity(), new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        doPostImageFeed();
+                    }
+                }
+            }).show();
+            btn_post.setEnabled(true);
+
+        }
+
+
+
+        HashMap<String, String> header = new HashMap<>();
+        header.put("authToken", Mualab.getInstance().getSessionManager().getUser().authToken);
+
+        HashMap<String, String> params = prepareCommonPostData();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("header", header);
+        bundle.putSerializable("params", params);
+        bundle.putSerializable("uris", mediaUri.uriList);
+
+        MyToast.getInstance(getActivity()).showSmallMessage("Uploading start...");
+
+        Intent intent = new Intent(getActivity(), UploadImageService.class);
+        intent.putExtra("payload", bundle);
+        startService(intent);
+        btn_post.setEnabled(true);
+    }
+
+    private void doPostVideoFeed(Bitmap videoThumb) {
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(getActivity(), new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        doPostVideoFeed(videoThumb);
+                    }
+                }
+            }).show();
+            btn_post.setEnabled(true);
+            return;
+        }
+
+        HashMap<String, String> header = new HashMap<>();
+        header.put("authToken", Mualab.getInstance().getSessionManager().getUser().authToken);
+
+        HashMap<String, String> params = prepareCommonPostData();
+
+        String uri = mediaUri.uri;
+        if (mediaUri.videoFile != null)
+// tempFile = mediaUri.videoFile;
+            tempFile = new File(mediaUri.uri);
+        else {
+            String path = ImageVideoUtil.generatePath(Uri.parse(uri), this);
+            tempFile = new File(path);
+        }
+        File videoThumbFile = ImageVideoUtil.bitmapToFile(getActivity(), videoThumb, "videoThumb");
+
+
+        HashMap<String, File> files = new HashMap<>();
+        files.put("feed", tempFile);
+        files.put("videoThumb", videoThumbFile);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("header", header);
+        bundle.putSerializable("params", params);
+        bundle.putSerializable("files", files);
+
+        MyToast.getInstance(getActivity()).showSmallMessage("Uploading start...");
+        Intent intent = new Intent(getActivity(), UploadVideoService.class);
+        intent.putExtra("payload", bundle);
+        startService(intent);
+        btn_post.setEnabled(true);
     }
 }

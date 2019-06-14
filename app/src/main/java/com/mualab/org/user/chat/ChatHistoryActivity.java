@@ -79,7 +79,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
     private DatabaseReference databaseReference, isOppTypingRef, blockUsersRef, chatRefMuteUser,
             mFirebaseOtherUserRef, groupRef,mGroupReqRef;
     private Thread thread, blockThread;
-    private String myId, filterType = "";
+    private String myId = "", filterType = "";
     private ImageView ic_add_chat, ivFavChat, ivChatFilter;
     private long mLastClickTime = 0;
     private boolean isFavFilter = false, isReadFilter;
@@ -91,7 +91,13 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_history);
-        myId = String.valueOf(Mualab.currentUser.id);
+
+        try {
+            myId = String.valueOf(Mualab.currentUser.id);
+        }catch (Exception e){
+
+        }
+
         // final String myChild = Mualab.currentUser.id+"_"+myUid;
 
         DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();

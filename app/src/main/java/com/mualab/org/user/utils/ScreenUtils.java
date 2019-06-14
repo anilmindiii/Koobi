@@ -6,11 +6,14 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by dharmraj on 27/11/17.
@@ -23,6 +26,10 @@ public class ScreenUtils {
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int dp2px(Context context, float dpValue) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.getResources().getDisplayMetrics());
     }
 
     public static int getScreenHeight(Context c) {
@@ -48,6 +55,8 @@ public class ScreenUtils {
 
         return screenWidth;
     }
+
+
 
     public static boolean isAndroid5() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
@@ -114,6 +123,22 @@ public class ScreenUtils {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         return (int) (dpWidth / 180);
+    }
+
+    public static RelativeLayout.LayoutParams resizeRelativeViewRatio(Context context) {
+        int mRootWidth = ScreenUtils.getScreenWidth(context);
+        int mRootHeight = mRootWidth * 3 / 4;
+        return new RelativeLayout.LayoutParams(mRootWidth, mRootHeight);
+    }
+
+    public static LinearLayout.LayoutParams resizeLinearViewRatio(Context context) {
+        int mRootWidth = ScreenUtils.getScreenWidth(context);
+        int mRootHeight = mRootWidth * 3 / 4;
+        return new LinearLayout.LayoutParams(mRootWidth, mRootHeight);
+    }
+
+    public static int getRatioHeight(int maxWidth) {
+        return maxWidth * 3 / 4;
     }
 
 }

@@ -151,7 +151,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
                     trackArtist.bookingDate = historyInfo.data.bookingInfo.get(0).bookingDate;
                     trackArtist.startTime = historyInfo.data.bookingInfo.get(0).startTime;
                     trackArtist.artistServiceName = historyInfo.data.bookingInfo.get(0).artistServiceName;
-                    trackArtist.contactNo = historyInfo.data.artistDetail.get(0).contactNo;
+                    trackArtist.contactNo = historyInfo.data.artistDetail.get(0).countryCode +" "+ historyInfo.data.artistDetail.get(0).contactNo;
                     trackArtist.ratingCount = historyInfo.data.artistDetail.get(0).ratingCount;
 
                     if (historyInfo.data.bookingInfo.get(0).staffImage.equals("")) {
@@ -414,7 +414,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         }
 
 
-        if (historyInfo.data.discountPrice.equals("")) {
+        if (historyInfo.data.discountPrice.equals("") | historyInfo.data.discountPrice.equals("0")) {
             ly_amount.setVisibility(View.GONE);
             String roundValue = String.format("%.2f", Double.parseDouble(historyInfo.data.totalPrice));
             tv_new_amount.setText("£" + roundValue + "");

@@ -168,7 +168,12 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
 
 
                 mediaUri.addUri(String.valueOf(mediaUri.videoFile));
-                mediaUri.mediaType = Constant.VIDEO_STATE;
+                try {
+                    mediaUri.mediaType = Constant.VIDEO_STATE;
+                }catch (Exception e){
+
+                }
+
 
                 thumbImage = ThumbnailUtils.createVideoThumbnail(mediaUri.videoFile.getPath(),
                         MediaStore.Images.Thumbnails.MINI_KIND);

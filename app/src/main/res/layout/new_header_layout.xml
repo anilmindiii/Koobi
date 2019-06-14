@@ -136,12 +136,15 @@
             android:id="@+id/ic_add_chat"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="7dp"
-            android:tint="@color/gray5"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/actionBarItemBackground"
+            android:padding="4dp"
+            android:tint="@color/gray"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_ico_add_new_chat" />
+            app:srcCompat="@drawable/ic_ico_add_new_chat"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/ivChat2"

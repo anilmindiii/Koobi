@@ -189,7 +189,7 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
         viewPagerAdapter = new ViewPagerAdapterForTag(this, images, taggedArrayList);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(startIndex);
-
+        viewPager.setLayoutParams(ScreenUtils.resizeRelativeViewRatio(this));
         //  viewPager.setOffscreenPageLimit(10);
 
         if (images.size() > 1) {
@@ -497,16 +497,17 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
 
             View itemView = mLayoutInflater.inflate(R.layout.viewpager_taging_layout, container, false);
             final ProgressBar progress_bar = itemView.findViewById(R.id.progress_bar);
-            //     final ImageView photoView = itemView.findViewById(R.id.photo_view);
+// final ImageView photoView = itemView.findViewById(R.id.photo_view);
             final InstaTag mInstaTag = itemView.findViewById(R.id.insta_tag);
 
-           /* mInstaTag.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            mInstaTag.setRootWidth(mInstaTag.getMeasuredWidth());
-            mInstaTag.setRootHeight(mInstaTag.getMeasuredHeight());*/
+/* mInstaTag.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+mInstaTag.setRootWidth(mInstaTag.getMeasuredWidth());
+mInstaTag.setRootHeight(mInstaTag.getMeasuredHeight());*/
 
-            if (isFullImage) {
-                mInstaTag.getTagImageView().setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else mInstaTag.getTagImageView().setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mInstaTag.getTagImageView().setScaleType(ImageView.ScaleType.CENTER_CROP);
+/*if (isFullImage) {
+mInstaTag.getTagImageView().setScaleType(ImageView.ScaleType.CENTER_CROP);
+} else mInstaTag.getTagImageView().setScaleType(ImageView.ScaleType.FIT_CENTER);*/
 
             mInstaTag.setImageToBeTaggedEvent(taggedImageEvent);
 
@@ -517,12 +518,12 @@ public class PeopleTagActivity extends BaseActivity implements View.OnClickListe
             container.addView(itemView);
 
             tagListAdapter.setCustomListener(this);
-/*
-            Picasso.with(context).load(imagesList.get(position)).resize(widthPixels,
-                    320).centerInside().
-                    into(mInstaTag.getTagImageView());*/
 
-            //Glide.with(context).load(imagesList.get(position)).placeholder(R.drawable.ic_gallery_placeholder).into(mInstaTag.getTagImageView());
+/*Picasso.with(context).load(imagesList.get(position)).resize(widthPixels,
+320).centerInside().
+into(mInstaTag.getTagImageView());*/
+
+//Glide.with(context).load(imagesList.get(position)).placeholder(R.drawable.ic_gallery_placeholder).into(mInstaTag.getTagImageView());
 
             Glide.with(context).load(imagesList.get(position)).
                     placeholder(R.drawable.gallery_placeholder).into(mInstaTag.getTagImageView());

@@ -20,80 +20,72 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/carrot_left"
-            android:layout_width="22dp"
-            android:layout_height="20dp"
-            android:background="@drawable/tag_shape_carrot_left"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="invisible" />
+        <!--android:layout_marginBottom="-2.5dp"-->
+        <!--<LinearLayout
+        android:id="@+id/carrot_top"
+        android:layout_width="@dimen/dp22"
+        android:layout_height="@dimen/dp20"
+        android:layout_gravity="center"
+        android:background="@drawable/tag_shape_carrot_top"
+        android:gravity="end"
+        android:orientation="horizontal" />-->
 
-        <LinearLayout
+        <com.mualab.org.user.utils.ArrowView
+            android:id="@+id/carrot_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:layout_marginBottom="-0.1px"
+            android:rotation="180" />
 
-            <!--android:layout_marginBottom="-2.5dp"-->
-            <LinearLayout
-                android:id="@+id/carrot_top"
-                android:layout_width="@dimen/dp22"
-                android:layout_height="@dimen/dp20"
-                android:layout_gravity="center"
-                android:background="@drawable/tag_shape_carrot_top"
-                android:gravity="end"
-                android:orientation="horizontal" />
+        <LinearLayout
+            android:id="@+id/tag_text_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tag_shape_tag_text"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp">
 
-            <LinearLayout
-                android:id="@+id/tag_text_container"
+            <!--android:paddingStart="5dp"
+            android:paddingTop="2.5dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp"-->
+
+            <TextView
+                android:id="@+id/tag_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/tag_shape_tag_text"
+                android:fontFamily="@font/nunito_bold"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="2.5dp"
-                android:paddingBottom="5dp">
-
-                <TextView
-                    android:id="@+id/tag_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nunito_bold"
-                    android:gravity="center"
-                    android:text="Tagging"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <!--android:layout_marginTop="-2.5dp"-->
-            <LinearLayout
-                android:id="@+id/carrot_bottom"
-                android:layout_width="@dimen/dp22"
-                android:layout_height="@dimen/dp20"
-                android:layout_gravity="center"
-                android:background="@drawable/tag_shape_carrot_bottom"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="invisible" />
+                android:text="Tagging"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/carrot_right"
-            android:layout_width="@dimen/dp22"
-            android:layout_height="@dimen/dp20"
-            android:background="@drawable/tag_shape_carrot_right"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="invisible" />
+        <!--android:layout_marginTop="-2.5dp"-->
+        <!-- <LinearLayout
+        android:id="@+id/carrot_bottom"
+        android:layout_width="@dimen/dp22"
+        android:layout_height="@dimen/dp20"
+        android:layout_gravity="center"
+        android:background="@drawable/tag_shape_carrot_bottom"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="invisible" />-->
+
+        <com.mualab.org.user.utils.ArrowView
+            android:id="@+id/carrot_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="-0.1px"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -103,7 +95,6 @@
         android:layout_height="16dp"
         android:layout_gravity="center_vertical|end"
         android:layout_marginEnd="@dimen/dp12"
-        android:layout_marginRight="@dimen/dp12"
         android:layout_marginBottom="@dimen/dp12"
         android:background="@drawable/cancel_ico"
         android:padding="2dp"

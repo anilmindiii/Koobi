@@ -301,6 +301,7 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                                             searchTag.type = 0;
                                             searchTag.title = searchTag.uniTxt;
                                             searchTag.desc = searchTag.postCount+" post";
+
                                             break;
 
                                         case "people":
@@ -327,9 +328,18 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                                             searchTag.title = searchTag.uniTxt;
                                             searchTag.desc = "0 Public post";
                                             break;
+
+
+
                                     }
 
-                                    list.add(searchTag);
+                                    if(exSearchType.equals("top")){
+                                        if(!searchTag.postCount.equals("0"))
+                                            list.add(searchTag);
+                                    }else  list.add(searchTag);
+
+
+
                                 }
 
                             }
