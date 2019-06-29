@@ -206,7 +206,7 @@
                 android:maxLines="1"
                 android:maxWidth="225dp"
                 android:padding="2dp"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/text_color"
                 android:textSize="12sp" />
 
 

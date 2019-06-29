@@ -225,7 +225,7 @@ public class WorkingHourActivity extends AppCompatActivity {
     }
 
 
-    private String getDayById(int dayId){
+    public static String getDayById(int dayId){
         String day = "";
         switch (dayId){
             case 6:

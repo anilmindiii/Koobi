@@ -19,11 +19,16 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -63,12 +68,17 @@ import com.mualab.org.user.activity.businessInvitaion.activity.InvitationActivit
 import com.mualab.org.user.activity.explore.ExploreFragmentNew;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.fragment.FeedsFragment;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.gellery.GalleryActivity;
 import com.mualab.org.user.activity.main.listner.CountClick;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
+import com.mualab.org.user.activity.myprofile.activity.adapter.NavigationMenuAdapter;
+import com.mualab.org.user.activity.myprofile.activity.model.NavigationItem;
+import com.mualab.org.user.activity.notification.NotificationActivity;
 import com.mualab.org.user.activity.notification.fragment.NotificationFragment;
 import com.mualab.org.user.activity.searchBoard.fragment.SearchBoardFragment;
 import com.mualab.org.user.activity.story.StoriesActivity;
+import com.mualab.org.user.activity.userProfile.UserProfile;
 import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.chat.ChatActivity;
 import com.mualab.org.user.chat.ChatHistoryActivity;
@@ -107,8 +117,8 @@ import static com.mualab.org.user.data.local.prefs.Session.isLogout;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat;
-    public TextView tvHeaderTitle, tv_business_count,tv_badge_count;
+    public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat,btnNevMenu,ivnotification;
+    public TextView tvHeaderTitle, tv_business_count, tv_badge_count;
     public RelativeLayout rootLayout;
     public CardView rlHeader1;
     public RefineSearchBoard item;
@@ -134,6 +144,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static int businessBadge;
     private DatabaseReference batchCountRef;
     private AnimateHorizontalProgressBar horizontalProgressBar;
+    NavigationMenuAdapter listAdapter;
+    private DrawerLayout drawer;
+    private List<NavigationItem> navigationItems;
+    private getIsInvitaion isInvitaion;
 
 
     public void setBgColor(int color) {
@@ -284,7 +298,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 clickedId = 2;
                 tvHeaderTitle.setText(getString(R.string.app_name));
                 ibtnFeed.setImageResource(R.drawable.active_feeds_ico);
-                ivHeaderUser.setVisibility(View.VISIBLE);
+                ivHeaderUser.setVisibility(View.GONE);
                 ibtnChat.setVisibility(View.VISIBLE);
                 tvHeaderTitle.setVisibility(View.GONE);
                 ivAppIcon.setVisibility(View.VISIBLE);
@@ -301,6 +315,66 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         getbatchCount();
 
         getHistoryList();
+
+
+        // NaviGatioion Drower
+        navigationItems = new ArrayList<>();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+
+        final User user = Mualab.getInstance().getSessionManager().getUser();
+        ImageView user_image = findViewById(R.id.user_image);
+        TextView user_name = findViewById(R.id.user_name);
+        user_name.setText(user.userName);
+
+        if (!TextUtils.isEmpty(user.profileImage))
+            Picasso.with(this).load(user.profileImage).placeholder(R.drawable.default_placeholder).
+                    fit().into(user_image);
+
+        // navigationView.setNavigationItemSelectedListener(this);
+        // drawer.setScrimColor(getResources().getColor(android.R.color.transparent));
+        navigationView.setItemIconTintList(null);
+
+        drawer = findViewById(R.id.drawer_layout);
+        RecyclerView rycslidermenu = findViewById(R.id.rycslidermenu);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rycslidermenu.setLayoutManager(layoutManager);
+        listAdapter = new NavigationMenuAdapter(this,
+                navigationItems, drawer, new NavigationMenuAdapter.Listener() {
+            @Override
+            public void OnClick(int pos) {
+
+            }
+        });
+        addItems(false);
+        rycslidermenu.setAdapter(listAdapter);
+
+        final RelativeLayout rlContent = findViewById(R.id.rootLayout);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                // mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+                float slideX = drawerView.getWidth() * slideOffset;
+                rlContent.setTranslationX(-slideX);
+
+                final User user = Mualab.getInstance().getSessionManager().getUser();
+                if (!TextUtils.isEmpty(user.profileImage))
+                    Picasso.with(MainActivity.this).load(user.profileImage).placeholder(R.drawable.default_placeholder).
+                            fit().into(user_image);
+            }
+        });
+
+        btnNevMenu.setOnClickListener(v -> {
+            if (drawer.isDrawerOpen(GravityCompat.END)) {
+                drawer.closeDrawer(GravityCompat.END);
+            } else {
+                drawer.openDrawer(GravityCompat.END);
+            }
+        });
     }
 
 
@@ -497,7 +571,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         tv_business_count = findViewById(R.id.tv_business_count);
         tv_badge_count = findViewById(R.id.tv_badge_count);
         ivHeaderUser = findViewById(R.id.ivUserProfile);
-        ivHeaderUser.setVisibility(View.VISIBLE);
+        ivnotification = findViewById(R.id.ivnotification);
+        btnNevMenu = findViewById(R.id.btnNevMenu);
+        ivHeaderUser.setVisibility(View.GONE);
         User user = Mualab.getInstance().getSessionManager().getUser();
 
         if (!user.profileImage.isEmpty()) {
@@ -518,9 +594,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ibtnChat.setOnClickListener(this);
         ivAppIcon.setOnClickListener(this);
         ivHeaderUser.setOnClickListener(this);
+        ivnotification.setOnClickListener(this);
+        rlHeader1.setOnClickListener(this);
         ibtnLeaderBoard.setImageResource(R.drawable.active_leaderbord_ico);
         ibtnLeaderBoard.callOnClick();
         ivHeaderBack.setVisibility(View.GONE);
+
+        isInvitaion = new getIsInvitaion() {
+            @Override
+            public void getInvitationAvail(boolean isInvitation) {
+                addItems(isInvitation);
+                listAdapter.getisInvitation(isInvitation);
+            }
+        };
     }
 
     public void openNewStoryActivity() {
@@ -599,6 +685,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mLastClickTime = SystemClock.elapsedRealtime();
         switch (v.getId()) {
 
+            case R.id.ivnotification:
+                Intent intent_notify = new Intent(MainActivity.this, NotificationActivity.class);
+                startActivity(intent_notify);
+                break;
+
+
+            case R.id.topLayout1:
+                MyClickOnPostMenu.getMentIntance().setMenuClick();
+                break;
 
             case R.id.ivChat:
                 Intent intent_chat = new Intent(MainActivity.this, ChatHistoryActivity.class);
@@ -623,14 +718,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     tvHeaderTitle.setText(getString(R.string.title_searchboard));
                     ibtnLeaderBoard.setImageResource(R.drawable.active_leaderbord_ico);
                     ivHeaderBack.setVisibility(View.GONE);
-                    ivHeaderUser.setVisibility(View.VISIBLE);
-
+                    ivnotification.setVisibility(View.VISIBLE);
+                    //tv_badge_count.setVisibility(View.VISIBLE);
+                    getbatchCount();
                     ibtnChat.setVisibility(View.GONE);
                     ivAppIcon.setVisibility(View.VISIBLE);
                     tvHeaderTitle.setVisibility(View.GONE);
+                    btnNevMenu.setVisibility(View.GONE);
+                    ivHeaderUser.setVisibility(View.GONE);
                     getBusinessInvitaionBadgeCount();
                     replaceFragment(SearchBoardFragment.newInstance(item, locationData), false);
                     rlHeader1.setVisibility(View.VISIBLE);
+
+                    getHistoryList();
                 }
                 break;
 
@@ -640,12 +740,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     clickedId = 2;
                     tvHeaderTitle.setText(getString(R.string.app_name));
                     ibtnFeed.setImageResource(R.drawable.active_feeds_ico);
-                    ivHeaderUser.setVisibility(View.GONE);
+                    ivnotification.setVisibility(View.VISIBLE);
+                    //tv_badge_count.setVisibility(View.GONE);
+                    getbatchCount();
                     SearchBoardFragment.isFavClick = false;
                     ibtnChat.setVisibility(View.VISIBLE);
                     tvHeaderTitle.setVisibility(View.GONE);
                     ivAppIcon.setVisibility(View.VISIBLE);
                     ivHeaderBack.setVisibility(View.GONE);
+                    btnNevMenu.setVisibility(View.GONE);
                     session.saveFilter(null);
 
                     locationData = null;
@@ -654,7 +757,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     replaceFragment(FeedsFragment.newInstance(1), false);
                     rlHeader1.setVisibility(View.VISIBLE);
                     //replaceFragment(NotificationFragment.newInstance("", ""), false);
-
+                    getHistoryList();
                 }
                 break;
 
@@ -665,10 +768,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     SearchBoardFragment.isFavClick = false;
                     ibtnAddFeed.setImageResource(R.drawable.active_add_ico);
                     tvHeaderTitle.setText(R.string.title_explore);
-                    ivHeaderUser.setVisibility(View.GONE);
+                    ivnotification.setVisibility(View.GONE);
+                    tv_badge_count.setVisibility(View.GONE);
                     tvHeaderTitle.setVisibility(View.VISIBLE);
                     ibtnChat.setVisibility(View.VISIBLE);
                     ivAppIcon.setVisibility(View.GONE);
+                    btnNevMenu.setVisibility(View.GONE);
                     session.saveFilter(null);
                     locationData = null;
                     item = null;
@@ -689,7 +794,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     SearchBoardFragment.isFavClick = false;
                     tvHeaderTitle.setText(R.string.title_explore);
                     ibtnSearch.setImageResource(R.drawable.active_search_ico);
-                    ivHeaderUser.setVisibility(View.GONE);
+                    ivnotification.setVisibility(View.GONE);
+                    tv_badge_count.setVisibility(View.GONE);
                     tvHeaderTitle.setVisibility(View.VISIBLE);
                     ibtnChat.setVisibility(View.VISIBLE);
                     ivAppIcon.setVisibility(View.GONE);
@@ -697,6 +803,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     locationData = null;
                     item = null;
                     rlHeader1.setVisibility(View.GONE);
+                    btnNevMenu.setVisibility(View.GONE);
                     getBusinessInvitaionBadgeCount();
                     replaceFragment(ExploreFragmentNew.newInstance(), false);
 
@@ -708,12 +815,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     setInactiveTab();
                     clickedId = 5;
                     SearchBoardFragment.isFavClick = false;
-                    tvHeaderTitle.setText(getString(R.string.title_searchboard));
-                    ibtnNotification.setImageResource(R.drawable.active_notifications_ico);
-                    tvHeaderTitle.setText(R.string.title_notification);
-                    ivHeaderUser.setVisibility(View.VISIBLE);
+
+                    ibtnNotification.setImageResource(R.drawable.active_profile_ico);
+                    tvHeaderTitle.setText(R.string.profile);
+                    ivnotification.setVisibility(View.VISIBLE);
+                   // tv_badge_count.setVisibility(View.VISIBLE);
+                    getbatchCount();
                     tvHeaderTitle.setVisibility(View.VISIBLE);
-                    ibtnChat.setVisibility(View.VISIBLE);
+                    btnNevMenu.setVisibility(View.VISIBLE);
+                    ibtnChat.setVisibility(View.GONE);
                     ivAppIcon.setVisibility(View.GONE);
                     session.saveFilter(null);
                     locationData = null;
@@ -721,15 +831,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     rlHeader1.setVisibility(View.VISIBLE);
                     // replaceFragment(new NotificationFragment(), false);
                     getBusinessInvitaionBadgeCount();
-                    replaceFragment(NotificationFragment.newInstance("", ""), false);
+                    replaceFragment(UserProfile.newInstance(isInvitaion, ""), false);
                     rlHeader1.setVisibility(View.VISIBLE);
+                    getHistoryList();
+
+
+
                 }
                 break;
         }
     }
 
     public void getDeviceLocation() {
-
         if (Build.VERSION.SDK_INT >= 23) {
 
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -774,7 +887,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ibtnFeed.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_feeds_ico));
         ibtnAddFeed.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_add_ico));
         ibtnSearch.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_search_ico));
-        ibtnNotification.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_notifications_ico));
+        ibtnNotification.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_profile_ico));
 
     }
 
@@ -1189,7 +1302,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 if (unReadCount == 0) {
                     tv_batch_count.setVisibility(View.GONE);
-                } else tv_batch_count.setVisibility(View.VISIBLE);
+                } else {
+                    if(clickedId == 5){
+                        tv_batch_count.setVisibility(View.GONE);
+                    }else tv_batch_count.setVisibility(View.VISIBLE);}
+
             }
         } else tv_batch_count.setVisibility(View.GONE);
 
@@ -1208,14 +1325,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                         businessBadge = Integer.parseInt(value);
                         CountClick.getmCountClick().onCountChange(businessBadge);
-                        if (ivHeaderUser.getVisibility() == View.VISIBLE) {
-                            if (businessBadge > 0) {
-                                tv_business_count.setVisibility(View.VISIBLE);
-                                tv_business_count.setText(businessBadge + "");
-
-
-                            } else tv_business_count.setVisibility(View.GONE);
-                        }else tv_business_count.setVisibility(View.GONE);
+                        if (businessBadge > 0) {
+                            tv_business_count.setVisibility(View.VISIBLE);
+                            tv_business_count.setText(businessBadge + "");
+                        } else tv_business_count.setVisibility(View.GONE);
                     } catch (Exception e) {
 
                     }
@@ -1231,49 +1344,49 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private void getbatchCount(){
+    private void getbatchCount() {
         int totalCount = 0;
         batchCountRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try{
-                    if(dataSnapshot.getValue() != null){
+                try {
+                    if (dataSnapshot.getValue() != null) {
                         HashMap<String, Object> objectMap = (HashMap<String, Object>) dataSnapshot.getValue();
 
-                        for(String key : objectMap.keySet()){
-                            String value =  String.valueOf(objectMap.get(key));
-                            Log.d("message",value+"");
+                        for (String key : objectMap.keySet()) {
+                            String value = String.valueOf(objectMap.get(key));
+                            Log.d("message", value + "");
                         }
 
-                        String bookingCount =  String.valueOf(objectMap.get("bookingCount"));
-                        String socialCount =  String.valueOf(objectMap.get("socialCount"));
+                        String bookingCount = String.valueOf(objectMap.get("bookingCount"));
+                        String socialCount = String.valueOf(objectMap.get("socialCount"));
 
-                        if(bookingCount.equals("null")){
+                        if (bookingCount.equals("null")) {
                             bookingCount = "0";
                         }
 
-                        if(socialCount.equals("null")){
+                        if (socialCount.equals("null")) {
                             socialCount = "0";
                         }
 
                         int bookingCountInt = Integer.parseInt(bookingCount);
                         int socialCountInt = Integer.parseInt(socialCount);
-                        int sum = bookingCountInt+socialCountInt;
-                        if(sum == 0){
+                        int sum = bookingCountInt + socialCountInt;
+                        if (sum == 0) {
                             tv_badge_count.setVisibility(View.GONE);
-                        }else{
-                            tv_badge_count.setText(sum+"");
+                        } else {
+                            tv_badge_count.setText(sum + "");
                             tv_badge_count.setVisibility(View.VISIBLE);
                         }
 
 
-                       // tv_batch_booking_count.setText(bookingCount+"");
+                        // tv_batch_booking_count.setText(bookingCount+"");
 
                     }
-                }catch (Exception e){
-                    Log.d("dd",e+"");
+                } catch (Exception e) {
+                    Log.d("dd", e + "");
                     //String  bookingCount =  dataSnapshot.getValue(String.class);
-                   // tv_batch_booking_count.setText(bookingCount+"");
+                    // tv_batch_booking_count.setText(bookingCount+"");
 
 
                 }
@@ -1287,7 +1400,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
-/*............................................................................*/
+    /*............................................................................*/
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -1315,14 +1428,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             horizontalProgressBar.setVisibility(View.GONE);
                             FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
                             List<Fragment> fragments = fragmentManager.getFragments();
-                            if(fragments != null){
-                                for(Fragment fragment : fragments){
-                                    if(fragment != null && fragment.isVisible()){
-                                        if (fragment instanceof FeedsFragment){
+                            if (fragments != null) {
+                                for (Fragment fragment : fragments) {
+                                    if (fragment != null && fragment.isVisible()) {
+                                        if (fragment instanceof FeedsFragment) {
                                             FeedsFragment feedsFragment = (FeedsFragment) fragment;
                                             feedsFragment.endlesScrollListener.resetState();
                                             feedsFragment.isPulltoRefrash = true;
-                                            feedsFragment.apiForGetAllFeeds(0, 10, false,"");
+                                            feedsFragment.apiForGetAllFeeds(0, 10, false, "");
 
                                         }
                                     }
@@ -1337,5 +1450,134 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
     };
+
+    private void addItems(boolean isInvitation) {
+        navigationItems.clear();
+        NavigationItem item;
+
+        if (!isInvitation) {
+            for (int i = 0; i < 9; i++) {
+                item = new NavigationItem();
+                switch (i) {
+                    case 0:
+                        item.itemName = getString(R.string.edit_profile);
+                        item.itemImg = R.drawable.profile_ico;
+
+                        break;
+                    case 1:
+                        item.itemName = getString(R.string.inbox);
+                        item.itemImg = R.drawable.chat_ico;
+
+                        break;
+
+                    case 2:
+                        item.itemName = getString(R.string.title_booking);
+                        item.itemImg = R.drawable.booking_ico;
+                        break;
+
+                    case 3:
+                        item.itemName = getString(R.string.payment_info);
+                        item.itemImg = R.drawable.payment_history_ico;
+                        break;
+
+                    case 4:
+                        item.itemName = getString(R.string.rate_this_app);
+                        item.itemImg = R.drawable.rating_star_ico;
+                        break;
+
+                    case 5:
+                        item.itemName = getString(R.string.my_foldera);
+                        item.itemImg = R.drawable.folder_ico;
+                        break;
+
+                    case 6:
+                        item.itemName = getString(R.string.setting);
+                        item.itemImg = R.drawable.settings_ico;
+                        break;
+
+                    case 7:
+                        item.itemName = getString(R.string.about_us);
+                        item.itemImg = R.drawable.slider_about_us_ico;
+                        break;
+
+                    case 8:
+                        item.itemName = getString(R.string.log_out);
+                        item.itemImg = R.drawable.logout_ico;
+                        break;
+
+                }
+                navigationItems.add(item);
+            }
+
+        } else {
+            for (int i = 0; i < 10; i++) {
+                item = new NavigationItem();
+                switch (i) {
+                    case 0:
+                        item.itemName = getString(R.string.edit_profile);
+                        item.itemImg = R.drawable.profile_ico;
+
+                        break;
+                    case 1:
+                        item.itemName = getString(R.string.inbox);
+                        item.itemImg = R.drawable.chat_ico;
+
+                        break;
+
+                    case 2:
+                        item.itemName = getString(R.string.title_booking);
+                        item.itemImg = R.drawable.booking_ico;
+                        break;
+
+                    case 3:
+                        item.itemName = getString(R.string.payment_info);
+                        item.itemImg = R.drawable.payment_history_ico;
+                        break;
+
+                    case 4:
+                        item.itemName = getString(R.string.business_invitation);
+                        item.itemImg = R.drawable.id_card_ico;
+                        break;
+
+                    case 5:
+                        item.itemName = getString(R.string.rate_this_app);
+                        item.itemImg = R.drawable.rating_star_ico;
+                        break;
+
+                    case 6:
+                        item.itemName = getString(R.string.my_foldera);
+                        item.itemImg = R.drawable.folder_ico;
+                        break;
+
+
+                    case 7:
+                        item.itemName = getString(R.string.setting);
+                        item.itemImg = R.drawable.settings_ico;
+                        break;
+
+                    case 8:
+                        item.itemName = getString(R.string.about_us);
+                        item.itemImg = R.drawable.slider_about_us_ico;
+                        break;
+
+                    case 9:
+                        item.itemName = getString(R.string.log_out);
+                        item.itemImg = R.drawable.logout_ico;
+                        break;
+
+                }
+                navigationItems.add(item);
+            }
+        }
+
+        listAdapter.notifyDataSetChanged();
+    }
+
+
+
+    public interface getIsInvitaion{
+        void getInvitationAvail(boolean isInvitation);
+    }
+
 }
 

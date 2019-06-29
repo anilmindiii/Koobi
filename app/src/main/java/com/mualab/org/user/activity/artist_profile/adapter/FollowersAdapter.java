@@ -4,6 +4,7 @@ package com.mualab.org.user.activity.artist_profile.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.gmail.samehadar.iosdialog.CamomileSpinner;
+import com.gmail.samehadar.iosdialog.utils.DialogUtils;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.artist_profile.model.Followers;
@@ -118,16 +121,25 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         holder.tvFollowerName.setText(item.userName);
 
         if (isFollowers){
-            if (item.followerStatus.equals("1")){
-                holder.btnFollow.setText("Unfollow");
-            }else {
-                holder.btnFollow.setText("Follow");
+            if (item.followerStatus.equals("1")) {
+                holder.btnFollow.setBackgroundResource(R.drawable.btn_bg_blue_broder);
+                holder.btnFollow.setTextColor(ContextCompat.getColor(context, R.color.black));
+                holder.btnFollow.setText(R.string.following);
+            } else {
+                holder.btnFollow.setBackgroundResource(R.drawable.button_effect_invert);
+                holder.btnFollow.setTextColor(ContextCompat.getColor(context, R.color.white));
+                holder.btnFollow.setText(R.string.follow);
             }
+
         }else {
-            if (item.followerStatus.equals("1")){
-                holder.btnFollow.setText("Unfollow");
-            }else {
-                holder.btnFollow.setText("Follow");
+            if (item.followerStatus.equals("1")) {
+                holder.btnFollow.setBackgroundResource(R.drawable.btn_bg_blue_broder);
+                holder.btnFollow.setTextColor(ContextCompat.getColor(context, R.color.black));
+                holder.btnFollow.setText(R.string.following);
+            } else {
+                holder.btnFollow.setBackgroundResource(R.drawable.button_effect_invert);
+                holder.btnFollow.setTextColor(ContextCompat.getColor(context, R.color.white));
+                holder.btnFollow.setText(R.string.follow);
             }
         }
 
@@ -149,6 +161,14 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 apiForgetUserIdFromUserName(item.userName);
             }
         });
+
+        holder.btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Followers followers = followersList.get(position);
+                apiForGetFollowUnFollow(followers,holder);
+            }
+        });
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
@@ -156,30 +176,39 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView tvFollowerName;
         ImageView ivProfile;
         AppCompatButton btnFollow;
+        private CamomileSpinner spinner3;
+
         private ViewHolder(View itemView)
         {
             super(itemView);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvFollowerName = itemView.findViewById(R.id.tvFollowerName);
             btnFollow = itemView.findViewById(R.id.btnFollow);
+            spinner3 = itemView.findViewById(R.id.spinner3);
 
-            btnFollow.setOnClickListener(this);
+            //btnFollow.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()){
-                case R.id.btnFollow:
-                    Followers followers = followersList.get(getAdapterPosition());
-                    apiForGetFollowUnFollow(followers);
-                    break;
             }
 
         }
     }
 
-    private void apiForGetFollowUnFollow(final Followers followers){
+    private void apiForGetFollowUnFollow(final Followers followers, ViewHolder h){
+
+        h.spinner3.setVisibility(View.VISIBLE);
+        h.spinner3.start();
+        h.spinner3.recreateWithParams(
+                context,
+                DialogUtils.getColor(context, R.color.gray2),
+                50,
+                true
+        );
+
         Session session = Mualab.getInstance().getSessionManager();
         final User user = session.getUser();
 
@@ -189,7 +218,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onNetworkChange(Dialog dialog, boolean isConnected) {
                     if(isConnected){
                         dialog.dismiss();
-                        apiForGetFollowUnFollow(followers);
+                        apiForGetFollowUnFollow(followers, h);
                     }
                 }
             }).show();
@@ -211,6 +240,9 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         HttpTask task = new HttpTask(new HttpTask.Builder(context, "followFollowing", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
+
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -236,6 +268,8 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             @Override
             public void ErrorListener(VolleyError error) {
                 try{
+                    h.spinner3.stop();
+                    h.spinner3.setVisibility(View.GONE);
                     Helper helper = new Helper();
                     if (helper.error_Messages(error).contains("Session")){
                         Mualab.getInstance().getSessionManager().logout();

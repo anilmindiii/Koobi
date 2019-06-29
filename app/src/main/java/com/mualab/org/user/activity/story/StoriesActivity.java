@@ -12,11 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -322,17 +324,21 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Alert");
         alertDialog.setMessage(msg);
-        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+        alertDialog.setPositiveButton("Ok", (dialog, which) -> {
             dialog.cancel();
             doDeleteStory();
         });
 
-        alertDialog.setNegativeButton("No", (dialog, which) -> {
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             storyStatusView.resume();
             videoView.resume();
             dialog.cancel();
         });
-        alertDialog.show();
+
+        AlertDialog a= alertDialog.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
     }
 
 
@@ -552,15 +558,19 @@ public class StoriesActivity extends SwipeBackActivity implements StoryStatusVie
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Alert");
         alertDialog.setMessage(msg);
-        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+        alertDialog.setPositiveButton("Ok", (dialog, which) -> {
             dialog.cancel();
            // doDeleteComment(commetsPos);
         });
 
-        alertDialog.setNegativeButton("No", (dialog, which) -> {
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
         });
-        alertDialog.show();
+
+        AlertDialog a= alertDialog.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
     }
 
 

@@ -21,6 +21,7 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v13.view.inputmethod.InputContentInfoCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -1559,7 +1560,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Alert");
         alertDialog.setMessage(msg);
-        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+        alertDialog.setPositiveButton("Ok", (dialog, which) -> {
             dialog.cancel();
             groupChatRef.child(refKey).removeValue();
 
@@ -1581,9 +1582,12 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        alertDialog.setNegativeButton("No", (dialog, which) -> {
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
         });
-        alertDialog.show();
+        AlertDialog a= alertDialog.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
     }
 }

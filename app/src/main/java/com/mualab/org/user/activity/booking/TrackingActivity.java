@@ -164,11 +164,11 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    imgSheetUpDown.setRotation(270);
+                    imgSheetUpDown.setRotation(90);
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    imgSheetUpDown.setRotation(90);
+                    imgSheetUpDown.setRotation(270);
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    imgSheetUpDown.setRotation(90);
+                    imgSheetUpDown.setRotation(270);
                 }
             }
 
@@ -177,6 +177,15 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+        imgSheetUpDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }else bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            }
+        });
 
         findViewById(R.id.btnBack).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -774,8 +783,11 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                         startPoint.setLongitude(finalPosition.longitude);
 
                         Location endPoint = new Location("locationA");
-                        endPoint.setLatitude(Double.parseDouble(trackUser.latitude));
-                        endPoint.setLongitude(Double.parseDouble(trackUser.longitude));
+                        if(!trackUser.latitude.equals("") && !trackUser.longitude.equals("")){
+                            endPoint.setLatitude(Double.parseDouble(trackUser.latitude));
+                            endPoint.setLongitude(Double.parseDouble(trackUser.longitude));
+                        }
+
 
                         double distance = startPoint.distanceTo(endPoint);
                         String roundValue = String.format("%.2f", distance);

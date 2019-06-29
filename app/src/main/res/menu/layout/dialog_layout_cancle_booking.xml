@@ -66,17 +66,6 @@
                 android:layout_marginBottom="10dp"
                 >
 
-                <android.support.v7.widget.AppCompatButton
-                    style="@style/My_Button_Small.Invert"
-                    android:id="@+id/btnYes"
-                    android:layout_width="80dp"
-                    android:layout_height="28dp"
-                    android:text="@string/yes"
-                    android:layout_gravity="center_vertical"
-                    android:padding="2dp"
-                    android:layout_alignParentLeft="true"
-                    android:textSize="12sp"
-                    />
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btnNo"
@@ -87,8 +76,21 @@
                     android:layout_gravity="center_vertical"
                     android:padding="2dp"
                     android:textSize="12sp"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
                     />
+
+                <android.support.v7.widget.AppCompatButton
+                    style="@style/My_Button_Small.Invert"
+                    android:id="@+id/btnYes"
+                    android:layout_width="80dp"
+                    android:layout_height="28dp"
+                    android:text="@string/yes"
+                    android:layout_gravity="center_vertical"
+                    android:padding="2dp"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"
+                    />
+
 
             </RelativeLayout>
 

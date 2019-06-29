@@ -13,14 +13,15 @@
         android:textColor="@color/colorPrimary"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
+        android:visibility="gone"
         android:layout_marginLeft="16dp"
-        android:text="Public Posts"/>
+        android:text="Public Posts"
+        />
 
     <com.mualab.org.user.Views.refreshviews.RjRefreshLayout
         android:id="@+id/mSwipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
         android:background="@null">
 
         <android.support.v7.widget.RecyclerView
@@ -30,6 +31,13 @@
             tools:listitem="@layout/adapter_explore_gridview"/>
 
     </com.mualab.org.user.Views.refreshviews.RjRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 
     <include layout="@layout/layout_inner_loader"

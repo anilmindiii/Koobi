@@ -111,6 +111,7 @@ dependencies {
 
     //Horizontal progress bar
     implementation 'com.daasuu:animateHorizontalProgressBar:0.2.4'
+    implementation 'com.gmail.samehadar:iosdialog:1.0'
 
 }
 

@@ -325,7 +325,7 @@
 
             <TextView
                 android:id="@+id/btn_submit"
-                android:layout_width="150dp"
+                android:layout_width="120dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="55dp"
@@ -340,8 +340,8 @@
 
             <TextView
                 android:id="@+id/btn_submit_booking"
-                android:layout_width="150dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="55dp"
                 android:text="@string/submit"
@@ -356,8 +356,8 @@
 
             <TextView
                 android:id="@+id/btn_reSubmit"
-                android:layout_width="150dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="55dp"
                 android:text="Resubmit"

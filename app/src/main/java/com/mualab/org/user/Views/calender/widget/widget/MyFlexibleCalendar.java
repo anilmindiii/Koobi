@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 
 import com.mualab.org.user.R;
+import com.mualab.org.user.Views.calender.CalendarHelper;
 import com.mualab.org.user.Views.calender.data.CalendarAdapter;
 import com.mualab.org.user.Views.calender.data.Day;
 import com.mualab.org.user.Views.calender.data.Event;
@@ -27,6 +28,7 @@ import com.mualab.org.user.activity.booking.customSeekBar.Utils;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.utils.Helper;
 import com.mualab.org.user.utils.Util;
+import com.mualab.org.user.utils.constants.Constant;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -233,6 +235,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
 
     @Override
     protected void redraw() {
+
         // redraw all views of week
         TableRow rowWeek = (TableRow) mTableHead.getChildAt(0);
         if (rowWeek != null) {
@@ -256,8 +259,10 @@ public class MyFlexibleCalendar extends MyUICalendar {
                 String dayaName = Helper.formateDateFromstring("dd/MM/yyyy", "EEE", input);
                 Log.d("name", dayaName);
                 // set today's item
+
                 if (isToady(day)) {
-                    mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
+                    mTxtTitle.setText(day.getDay() +" "+ dateFormat.format(mAdapter.getCalendar().getTime()));
+
                     txtDay.setBackground(getTodayItemBackgroundDrawable());
                     txtDay.setTextColor(getTodayItemTextColor());
 
@@ -301,7 +306,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
                             if (year == cYear && month == cMonth && dayOfMonth < cDay) {
                                 //  MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");
                             } else {
-                                mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
+                                mTxtTitle.setText(dayOfMonth + " " +dateFormat.format(mAdapter.getCalendar().getTime()));
                                 if (isToady(day)){
                                     txtDay.setBackground(getSelectedItemBackgroundOrangeUnService());
                                     txtDay.setTextColor(getSelectedItemTextColor());
@@ -314,13 +319,15 @@ public class MyFlexibleCalendar extends MyUICalendar {
                             //MyToast.getInstance(mContext).showDasuAlert("You can't select previous date");
                         }
 
-                        mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
+                        //mTxtTitle.setText(dateFormat.format(mAdapter.getCalendar().getTime()));
                         //txtDay.setBackground(getSelectedItemBackgroundDrawable());
                         //txtDay.setTextColor(getSelectedItemTextColor());
                     }
                 }
             }
         }
+
+
     }
 
     @Override
@@ -353,11 +360,13 @@ public class MyFlexibleCalendar extends MyUICalendar {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
 
+
+
             for (int i = 0; i < 7; i++) {
                 View view = mInflater.inflate(R.layout.layout_day_of_week, null);
                 TextView txtDayOfWeek = view.findViewById(R.id.txt_day_of_week);
+                txtDayOfWeek.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                 txtDayOfWeek.setText(dayOfWeekIds[(i + getFirstDayOfWeek()) % 7]);
-                txtDayOfWeek.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
 
 
                 //ViewGroup.LayoutParams.WRAP_CONTENT

@@ -1,37 +1,19 @@
 package com.mualab.org.user.activity.explore.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-
 import com.mualab.org.user.R;
-import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
-import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
-import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
-import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.listener.FeedsListner;
 import com.squareup.picasso.Picasso;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
-/**
- **/
 
 public class ExploreGridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

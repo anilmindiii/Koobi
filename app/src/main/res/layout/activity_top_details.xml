@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.explore.TopDetailsActivity">
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvFeed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="false"
+        android:paddingBottom="10dp"
+        android:clipToPadding="false"
+        android:layout_marginRight="-3dp"
+        android:layout_marginTop="48dp"
+        tools:listitem="@layout/adapter_explore_gridview"/>
+
+
+    <TextView
+        android:id="@+id/tv_msg_noRecord"
+        style="@style/TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_res_found"
+        android:layout_centerInParent="true"
+        android:textColor="@color/text_color"
+        android:layout_below="@+id/ll_loadingBox"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_inner_loader"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:id="@+id/ll_loadingBox"
+        android:gravity="center"/>
+
+    <include
+        android:id="@+id/topLayout"
+        layout="@layout/new_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_alignParentTop="true" />
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"/>
+
+</RelativeLayout>

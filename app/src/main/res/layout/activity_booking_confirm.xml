@@ -21,8 +21,8 @@
         android:id="@+id/main_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="50dp"
         android:layout_marginTop="?actionBarSize"
+
         android:scrollbars="none">
 
         <LinearLayout
@@ -30,6 +30,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:paddingBottom="55dp"
             android:orientation="vertical">
 
             <TextView
@@ -422,6 +423,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="10dp"
+        android:background="@color/fullTransprent"
         android:gravity="center"
         android:weightSum="2">
 

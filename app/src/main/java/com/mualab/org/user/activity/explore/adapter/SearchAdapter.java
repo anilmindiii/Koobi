@@ -1,5 +1,6 @@
 package com.mualab.org.user.activity.explore.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -11,12 +12,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.gmail.samehadar.iosdialog.CamomileSpinner;
+import com.gmail.samehadar.iosdialog.utils.DialogUtils;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
+import com.mualab.org.user.activity.booking.BookingActivity;
+import com.mualab.org.user.activity.explore.TopDetailsActivity;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
@@ -25,6 +31,9 @@ import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.dialogs.NoConnectionDialog;
+import com.mualab.org.user.dialogs.Progress;
+import com.mualab.org.user.utils.ConnectionDetector;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -50,7 +59,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<ExSearchTag> feedItems;
     private Listener listener;
 
-    public interface Listener{
+    public interface Listener {
         void onItemClick(ExSearchTag searchTag, int index);
     }
 
@@ -60,11 +69,11 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.listener = listener;
     }
 
-    public void showHideLoading(boolean bool){
+    public void showHideLoading(boolean bool) {
         showLoader = bool;
     }
 
-    public void clear(){
+    public void clear() {
         final int size = feedItems.size();
         feedItems.clear();
         notifyItemRangeRemoved(0, size);
@@ -87,7 +96,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
         ExSearchTag feed = feedItems.get(position);
-        return feed==null?VIEW_TYPE_LOADING: FEED_TYPE;
+        return feed == null ? VIEW_TYPE_LOADING : FEED_TYPE;
     }
 
     @Override
@@ -108,16 +117,25 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-
         final ExSearchTag searchTag = feedItems.get(position);
         final Holder h = ((Holder) holder);
         h.tvDesc.setVisibility(View.VISIBLE);
         h.tvHeader.setText(searchTag.title);
         h.tvDesc.setText(searchTag.desc);
 
-        if(searchTag.type == 0 || searchTag.type == 1){
+        if (searchTag.type == 0) {
+            h.btnBook.setVisibility(View.VISIBLE);
+            h.btnFollow.setVisibility(View.GONE);
+        } else {
+            h.btnBook.setVisibility(View.GONE);
+        }
+
+        if (searchTag.type == 1) {
+            h.btnBook.setVisibility(View.GONE);
             h.btnFollow.setVisibility(View.VISIBLE);
-        }else h.btnFollow.setVisibility(View.GONE);
+        } else {
+            h.btnFollow.setVisibility(View.GONE);
+        }
 
         if (searchTag.id == Mualab.currentUser.id) {
             h.btnFollow.setVisibility(View.GONE);
@@ -133,21 +151,23 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         }
 
-        h.btnFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ExSearchTag searchTag = feedItems.get(position);
-                apiForFollowUnFollow(searchTag, position);
-            }
+        h.btnBook.setOnClickListener(v -> {
+            apiForGetLatestService(String.valueOf(searchTag.id));
         });
 
-        switch (searchTag.type){
+
+        h.btnFollow.setOnClickListener(v -> {
+            ExSearchTag searchTag1 = feedItems.get(position);
+            apiForFollowUnFollow(searchTag1, position, h);
+        });
+
+        switch (searchTag.type) {
             case 0:
             case 1:
-                if(!TextUtils.isEmpty(searchTag.imageUrl)){
+                if (!TextUtils.isEmpty(searchTag.imageUrl)) {
                     Picasso.with(mContext).load(searchTag.imageUrl).placeholder(R.drawable.default_placeholder).fit().into(h.ivProfile);
-                }else Picasso.with(mContext).load(R.drawable.default_placeholder).into(h.ivProfile);
+                } else
+                    Picasso.with(mContext).load(R.drawable.default_placeholder).into(h.ivProfile);
 
                 h.ivProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -163,18 +183,19 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 break;
 
             case 4:
-                h.tvDesc.setVisibility(View.GONE);
+                // h.tvDesc.setVisibility(View.GONE);
                 Picasso.with(mContext).load(R.drawable.ic_location_tag).placeholder(R.drawable.ic_location_tag).fit().into(h.ivProfile);
                 break;
         }
     }
 
-    private class Holder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView ivProfile;
         private TextView tvHeader;
         private TextView tvDesc;
-        protected AppCompatButton btnFollow;
+        protected AppCompatButton btnFollow, btnBook;
+        private CamomileSpinner spinner3;
 
         private Holder(View itemView) {
             super(itemView);
@@ -182,20 +203,28 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             tvHeader = itemView.findViewById(R.id.tvHeader);
             tvDesc = itemView.findViewById(R.id.tvDesc);
             btnFollow = itemView.findViewById(R.id.btnFollow);
+            btnBook = itemView.findViewById(R.id.btnBook);
+            spinner3 = itemView.findViewById(R.id.spinner3);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int pos = getAdapterPosition();
-            if(feedItems.size()>pos){
-                ExSearchTag searchTag = feedItems.get(pos);
-                if(searchTag.type ==  1){
-                    imageClick(searchTag);
-                    return;
+            if (pos != -1)
+                if (feedItems.size() > pos) {
+                    ExSearchTag searchTag = feedItems.get(pos);
+                    if(searchTag.type == 0){
+                        Intent intent = new Intent(mContext, TopDetailsActivity.class);
+                        intent.putExtra("exSearchTag",searchTag);
+                        mContext.startActivity(intent);
+                        return;
+                    }else if (searchTag.type == 1) {
+                        imageClick(searchTag);
+                        return;
+                    }
+                    listener.onItemClick(searchTag, pos);
                 }
-                listener.onItemClick(searchTag, pos);
-            }
         }
     }
 
@@ -215,7 +244,17 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private void apiForFollowUnFollow(final ExSearchTag feeds, final int position) {
+    private void apiForFollowUnFollow(final ExSearchTag feeds, final int position, Holder h) {
+        h.spinner3.setVisibility(View.VISIBLE);
+        h.spinner3.start();
+        h.spinner3.recreateWithParams(
+                mContext,
+                DialogUtils.getColor(mContext, R.color.gray2),
+                50,
+                true
+        );
+
+
         Map<String, String> map = new HashMap<>();
         map.put("userId", "" + Mualab.currentUser.id);
         map.put("followerId", "" + feeds.id);
@@ -223,6 +262,8 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         new HttpTask(new HttpTask.Builder(mContext, "followFollowing", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -245,7 +286,95 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void ErrorListener(VolleyError error) {
                 notifyItemChanged(position);
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
             }
         }).setParam(map)).execute("followFollowing");
+    }
+
+    private synchronized void apiForGetLatestService(final String artistId) {
+        Progress.show(mContext);
+        if (!ConnectionDetector.isConnected()) {
+            new NoConnectionDialog(mContext, new NoConnectionDialog.Listner() {
+                @Override
+                public void onNetworkChange(Dialog dialog, boolean isConnected) {
+                    if (isConnected) {
+                        dialog.dismiss();
+                        apiForGetLatestService(artistId);
+                    }
+                }
+            }).show();
+        }
+
+        Map<String, String> params = new HashMap<>();
+        try {
+            params.put("userId", String.valueOf(Mualab.currentUser.id));
+            params.put("artistId", artistId);
+        } catch (Exception e) {
+
+        }
+        HttpTask task = new HttpTask(new HttpTask.Builder(mContext, "getMostBookedService", new HttpResponceListner.Listener() {
+            @Override
+            public void onResponse(String response, String apiName) {
+                Progress.hide(mContext);
+                try {
+
+
+                    JSONObject js = new JSONObject(response);
+                    String status = js.getString("status");
+                    String message = js.getString("message");
+                    if (status.equalsIgnoreCase("success")) {
+
+                        JSONObject object = js.getJSONObject("artistServices");
+                        int _id = object.getInt("_id");
+                        int serviceId = object.getInt("serviceId");
+                        int subserviceId = object.getInt("subserviceId");
+                        int bookingCount = object.getInt("bookingCount");
+
+                        Intent intent = new Intent(mContext, BookingActivity.class);
+                        intent.putExtra("_id", _id);
+                        intent.putExtra("artistId", artistId);
+                        intent.putExtra("callType", "In Call");
+
+                        intent.putExtra("mainServiceName", "");
+                        intent.putExtra("subServiceName", "yes");
+
+                        intent.putExtra("serviceId", serviceId);
+                        intent.putExtra("subServiceId", subserviceId);
+
+                        intent.putExtra("isEditService", true);
+                        intent.putExtra("isFromSearchBoard", true);
+
+
+                      /*  if (item != null) {
+                            if (item.serviceType != null)
+                                if (item.serviceType.equals("1")) {
+                                    //searchBoard.isOutCallSelected = true;
+                                    intent.putExtra("callType", "Out Call");
+                                }
+                        }*/
+
+
+                        mContext.startActivity(intent);
+
+                    } else if (status.equals("fail")) {
+
+                    }
+
+                    //  showToast(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void ErrorListener(VolleyError error) {
+                Progress.hide(mContext);
+            }
+        })
+                .setAuthToken(Mualab.currentUser.authToken)
+                .setProgress(false)
+                .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
+        task.execute("getMostBookedService");
     }
 }

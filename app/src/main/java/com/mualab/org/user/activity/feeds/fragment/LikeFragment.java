@@ -111,7 +111,7 @@ public class LikeFragment extends Fragment {
             ibtnChat = activity.findViewById(R.id.ivChat);
             ivAppIcon = activity.findViewById(R.id.ivAppIcon);
             ivUserProfile = activity.findViewById(R.id.ivUserProfile);
-            tvHeaderTitle.setVisibility(View.VISIBLE);
+            tvHeaderTitle.setVisibility(View.GONE);
             ivHeaderBack.setVisibility(View.VISIBLE);
             ivAppIcon.setVisibility(View.GONE);
             ibtnChat.setVisibility(View.GONE);
@@ -194,7 +194,7 @@ public class LikeFragment extends Fragment {
             ivHeaderBack.setVisibility(View.GONE);
             ivAppIcon.setVisibility(View.VISIBLE);
             ibtnChat.setVisibility(View.VISIBLE);
-            ivUserProfile.setVisibility(View.VISIBLE);
+            //ivUserProfile.setVisibility(View.VISIBLE);
         }
         ibtnChat = null;
         ivHeaderBack = null;

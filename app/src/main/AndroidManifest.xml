@@ -140,7 +140,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".activity.feeds.service.UploadImageService"
             android:exported="true" />
@@ -486,7 +485,16 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.settings.ChangePasswordActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.notification.NotificationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
+        <activity
+            android:name=".activity.explore.TopDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarBlack" />
 
     </application>
 

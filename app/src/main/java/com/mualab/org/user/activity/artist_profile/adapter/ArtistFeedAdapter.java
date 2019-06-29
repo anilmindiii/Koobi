@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +48,7 @@ import com.mualab.org.user.activity.feeds.activity.ReportActivity;
 import com.mualab.org.user.activity.feeds.activity.SaveToFolderActivity;
 import com.mualab.org.user.activity.feeds.adapter.LoadingViewHolder;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.feeds.listener.SaveToFolderListner;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.application.Mualab;
@@ -213,6 +215,16 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (!isGrideView)
             if (holder instanceof Holder) {
                 final Holder h = (Holder) holder;
+
+                MyClickOnPostMenu.getMentIntance().setListnerMenu(new MyClickOnPostMenu.GetMenuClick() {
+                    @Override
+                    public void getMenuClick() {
+                        hide_menu_cellFeed(null);
+                        hide_menu_Text(null);
+                        hide_menu_Video(null);
+                    }
+                });
+
                 if (!TextUtils.isEmpty(feeds.profileImage)) {
                     Picasso.with(mContext).load(feeds.profileImage).fit().into(h.ivProfile);
                 } else Picasso.with(mContext).load(R.drawable.celbackgroung).into(h.ivProfile);
@@ -594,7 +606,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 feed.ispopupOpen = false;
             }
             notifyDataSetChanged();
-            holder.ly_share.setVisibility(View.GONE);
+           // holder.ly_share.setVisibility(View.GONE);
         }catch (Exception e){
 
         }
@@ -788,7 +800,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 feed.ispopupOpen = false;
             }
             notifyDataSetChanged();
-            videoHolder.ly_share.setVisibility(View.GONE);
+            //videoHolder.ly_share.setVisibility(View.GONE);
         }catch (Exception e){
 
         }
@@ -980,7 +992,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 feed.ispopupOpen = false;
             }
             notifyDataSetChanged();
-            cellFeedViewHolder.ly_share.setVisibility(View.GONE);
+            //cellFeedViewHolder.ly_share.setVisibility(View.GONE);
         }catch (Exception e){
 
         }
@@ -1412,10 +1424,10 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void apiForDeletePost(final Feeds feeds, final int position) {
-        new AlertDialog.Builder(mContext)
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.delete_post))
                 .setMessage("Are you sure you want to delete this post?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Progress.show(mContext);
                         Map<String, String> map = new HashMap<>();
@@ -1456,8 +1468,12 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 .execute("deletePostApi");
                     }
                 })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog a= alertDialog.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(mContext,R.color.red));
 
 
     }

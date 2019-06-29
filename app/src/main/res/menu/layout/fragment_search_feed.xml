@@ -14,7 +14,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="16dp"
-        android:text="Service Tags"/>
+        android:text="Service Tags"
+        />
 
     <views.refreshview.RjRefreshLayout
         android:id="@+id/mSwipeRefreshLayout"

@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.Views.refreshviews.CircleHeaderView;
 import com.mualab.org.user.Views.refreshviews.OnRefreshListener;
 import com.mualab.org.user.Views.refreshviews.RjRefreshLayout;
+import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.explore.adapter.ExploreGridViewAdapter;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
@@ -447,9 +450,26 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
 
     @Override
     public void onFeedClick(List<Feeds> feed, int index) {
-        Intent intent1 = new Intent(mContext, FeedSingleActivity.class);
+        /*Intent intent1 = new Intent(mContext, FeedSingleActivity.class);
         intent1.putExtra("feedId", feed.get(index)._id + "");
         intent1.putExtra("userType", feed.get(index).userInfo.get(0).userType);
-        mContext.startActivity(intent1);
+        mContext.startActivity(intent1);*/
+
+        addFragment(GrideToListFragment.newInstance(feed,index), true);    }
+
+    public void addFragment(Fragment fragment, boolean addToBackStack) {
+        String backStackName = fragment.getClass().getName();
+        FragmentManager fragmentManager = getFragmentManager();
+        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
+        if (!fragmentPopped) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_in, 0, 0);
+           /* transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right,
+                    R.anim.slide_in_from_right, R.anim.slide_out_to_left);*/
+            transaction.add(R.id.container , fragment, backStackName);
+            if (addToBackStack)
+                transaction.addToBackStack(backStackName);
+            transaction.commit();
+        }
     }
 }

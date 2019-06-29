@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    xmlns:camomile="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="60dp"
+    android:orientation="horizontal"
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
@@ -29,52 +30,95 @@
         android:id="@+id/ll_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="55dp"
         android:layout_marginRight="75dp"
         android:gravity="center_vertical"
-        android:layout_centerVertical="true"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvHeader"
+            style="@style/TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextView"
-            android:textSize="14sp"
             android:maxLines="1"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvDesc"
+            style="@style/TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextView"
-            android:textColor="@color/gray"
             android:layout_marginTop="3dp"
-            android:textSize="12sp"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/light_gray_shadow"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="52dp"
-        android:layout_alignParentBottom="true" />
+        android:background="@color/light_gray_shadow" />
+
+
+    <RelativeLayout
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnFollow"
+                style="@style/My_Button_Small.Invert"
+                android:layout_width="80dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="@string/text_follow"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+        <com.gmail.samehadar.iosdialog.CamomileSpinner
+            android:id="@+id/spinner3"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="18dp"
+            android:visibility="gone"
+            camomile:duration="120" />
+
+    </RelativeLayout>
+
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btnFollow"
+        android:id="@+id/btnBook"
         style="@style/My_Button_Small.Invert"
-        android:layout_width="wrap_content"
-        android:minWidth="60dp"
-        android:layout_height="22dp"
-        android:text="@string/text_follow"
-        android:fontFamily="@font/nunito_regular"
-        android:layout_marginRight="2dp"
+        android:layout_width="62dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:textSize="10sp"
-        />
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="@font/nunito_regular"
+        android:gravity="center"
+        android:text="@string/btn_book"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

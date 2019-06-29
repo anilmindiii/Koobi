@@ -5,11 +5,8 @@ import android.support.v13.view.inputmethod.InputContentInfoCompat;
 
 public class CustomeClick {
 
-    /*...............................................*/
-
     private static CustomeClick mInctance;
     private ExploreSearchListener mListner;
-
 
     public static CustomeClick getmInctance() {
         if (mInctance == null) {
@@ -17,7 +14,6 @@ public class CustomeClick {
         }
         return mInctance;
     }
-
 
     public void setListner(ExploreSearchListener mListner) {
         this.mListner = mListner;

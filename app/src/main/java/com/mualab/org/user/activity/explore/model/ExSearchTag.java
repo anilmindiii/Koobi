@@ -18,6 +18,7 @@ public class ExSearchTag implements Serializable{
     public String desc;
     public String userType;
     public int followerStatus;
+    public int count;
     public boolean isCheck;
 
     @SerializedName("profileImage")

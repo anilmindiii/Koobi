@@ -89,8 +89,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="-3dp"
                 android:layout_marginTop="5dp">
 
                 <android.support.v7.widget.RecyclerView
@@ -98,45 +97,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
+                    android:paddingBottom="10dp"
+                    android:clipToPadding="false"
                     tools:listitem="@layout/adapter_explore_gridview"/>
-
-
-
-                <include
-                    android:id="@+id/main_layout_header"
-                    android:layout_height="275dp"
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    layout="@layout/adapter_explore_header"
-                    android:visibility="gone"/>
-
-                <!-- <LinearLayout
-                     android:id="@+id/ll_progress"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="center_horizontal"
-                     android:layout_marginTop="70dp"
-                     android:orientation="vertical"
-                     android:gravity="center">
-
-                     <ProgressBar
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:progressTintMode="multiply"
-                         android:progressTint="@color/colorPrimary"
-                         tools:ignore="UnusedAttribute" />
-
-                     <TextView
-                         android:id="@+id/tv_msg"
-                         style="@style/TextView"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:layout_gravity="center"
-                         android:text="@string/loading"
-                         android:textColor="@color/text_color" />
-                 </LinearLayout>-->
 
             </RelativeLayout>
         </LinearLayout>

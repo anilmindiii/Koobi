@@ -323,13 +323,14 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:overScrollMode="never"
+            android:paddingBottom="60dp"
+            android:clipToPadding="false"
             android:scrollbars="none">
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="50dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -560,7 +561,7 @@
     android:layout_width="match_parent"
     android:layout_height="55dp"
     android:layout_alignParentBottom="true"
-    android:background="@color/white">
+    android:background="@color/fullTransprent">
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnCOnfirmBooking"

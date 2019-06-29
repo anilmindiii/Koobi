@@ -322,7 +322,7 @@ public class RemoveBroadcastMemberActivity extends AppCompatActivity implements 
             int result = (totalSize-selectedSize);
 
             if(result < 2){
-                MyToast.getInstance(RemoveBroadcastMemberActivity.this).showDasuAlert("Atleast 2 members must be selected");
+                MyToast.getInstance(RemoveBroadcastMemberActivity.this).showDasuAlert("A broadcast group must have more than one recipient.");
                 return;
             }
 

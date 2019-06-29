@@ -53,11 +53,10 @@
             android:layout_marginBottom="50dp"
             android:orientation="vertical">
 
-            <com.github.siyamed.shapeimageview.CircularImageView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:tint="@color/gray"
                 android:src="@drawable/user_group_ico" />
 
             <TextView
@@ -218,7 +217,7 @@
 
             <TextView
                 android:id="@+id/btn_submit"
-                android:layout_width="150dp"
+                android:layout_width="120dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="55dp"

@@ -47,6 +47,7 @@
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/dp25"
         android:background="@drawable/ic_info"
+        android:tint="@color/red"
         tools:ignore="ContentDescription" />
 
     <ImageView

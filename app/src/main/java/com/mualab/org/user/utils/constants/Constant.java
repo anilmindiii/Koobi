@@ -27,6 +27,7 @@ public class Constant {
     public static final int ADD_STORY = 465;
     public static final int CLEAR = 468;
     public static final int MY_PERMISSIONS_REQUEST_CONTACT = 109;
+    public static final String TIMESTAMP_FORMAT_DAY = "EEEE";
 
     public static final String EXTRA_VIDEO_PATH = "EXTRA_VIDEO_PATH";
     public static final String VIDEO_TOTAL_DURATION = "VIDEO_TOTAL_DURATION";
@@ -76,6 +77,7 @@ public class Constant {
     public static final int TEXT_STATE = 0, IMAGE_STATE = 1, VIDEO_STATE = 2, FEED_STATE = 3;
     public static final String IS_TYPING = "isTyping";
     public static final int FEED_FRAGMENT = 1038;
+    public static final int FEEDLIMIT = 30;
     /*Geo coder */
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;

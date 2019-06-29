@@ -26,6 +26,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v13.view.inputmethod.InputContentInfoCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -1858,7 +1859,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Alert");
         alertDialog.setMessage(msg);
-        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+        alertDialog.setPositiveButton("Ok", (dialog, which) -> {
             dialog.cancel();
             deletedKeyMap.put(refKey,refKey);
             myChatRef.child(refKey).removeValue();
@@ -1871,10 +1872,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        alertDialog.setNegativeButton("No", (dialog, which) -> {
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
         });
-        alertDialog.show();
+        AlertDialog a= alertDialog.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
     }
 
 }

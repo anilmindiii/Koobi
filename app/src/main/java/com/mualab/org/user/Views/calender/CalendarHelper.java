@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by dharmraj on 30/12/17.
@@ -70,6 +71,10 @@ public class CalendarHelper {
             return true;
         }
         return false;
+    }
+
+    public static String getTimestamp(String format) {
+        return new SimpleDateFormat(format, Locale.US).format(new Date());
     }
 
     public static boolean isSameDay(Calendar calendar, Calendar calendar2) {

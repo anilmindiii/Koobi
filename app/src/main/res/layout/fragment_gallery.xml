@@ -61,8 +61,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="?selectableItemBackground"
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="@font/nunito_regular"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/nunito_bold"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
                 android:maxLines="1"
@@ -70,9 +70,6 @@
                 android:text="@string/next"/>
 
         </RelativeLayout>
-
-
-
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"

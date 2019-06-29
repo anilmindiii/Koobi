@@ -76,7 +76,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
     private int bookingId, serviceId, subServiceId, artistServiceId, artistId;
     private boolean isOutCallType;
     private RelativeLayout ly_txt_Id, ly_txt_status;
-    private TextView tv_txt_id, tv_txt_status,tvDone;
+    private TextView tv_txt_id, tv_txt_status,tvDone,tv_tx_id_text;
     private boolean shouldPopupOpen;
 
     @Override
@@ -105,6 +105,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         tv_payment_method = findViewById(R.id.tv_payment_method);
         tv_new_amount = findViewById(R.id.tv_new_amount);
         tv_amount = findViewById(R.id.tv_amount);
+        tv_tx_id_text = findViewById(R.id.tv_tx_id_text);
         ly_amount = findViewById(R.id.ly_amount);
         ly_voucher_code = findViewById(R.id.ly_voucher_code);
         ly_map_direction = findViewById(R.id.ly_map_direction);
@@ -131,7 +132,6 @@ public class BookingDetailsActivity extends AppCompatActivity {
         ly_map_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<TrackInfo> mapBeanArrayList = new ArrayList<>();
                 if (historyInfo.data != null) {
                     TrackInfo trackUser = new TrackInfo();
                     trackUser.address = historyInfo.data.location;
@@ -268,7 +268,44 @@ public class BookingDetailsActivity extends AppCompatActivity {
                     if (status.equals("success")) {
                         Gson gson = new Gson();
                         historyInfo = gson.fromJson(response, BookingListInfo.class);
-                        adapter = new BookingHistoryDetailsAdapter(BookingDetailsActivity.this, historyInfo);
+                        adapter = new BookingHistoryDetailsAdapter(BookingDetailsActivity.this, historyInfo, new BookingHistoryDetailsAdapter.getBookingInfo() {
+                            @Override
+                            public void bookInfo(int pos) {
+                                if (historyInfo.data != null) {
+                                    TrackInfo trackUser = new TrackInfo();
+                                    trackUser.address = historyInfo.data.location;
+                                    trackUser.latitude = historyInfo.data.latitude;
+                                    trackUser.longitude = historyInfo.data.longitude;
+
+                                    if (historyInfo.data.userDetail.get(pos).profileImage.equals("")) {
+                                        trackUser.profileImage = "https://image.shutterstock.com/image-vector/male-default-placeholder-avatar-profile-260nw-387516193.jpg";
+
+                                    } else trackUser.profileImage = historyInfo.data.userDetail.get(pos).profileImage;
+
+                                    TrackInfo trackArtist = new TrackInfo();
+                                    trackArtist.address = "";
+                                    trackArtist.latitude = historyInfo.data.bookingInfo.get(pos).trackingLatitude;
+                                    trackArtist.longitude = historyInfo.data.bookingInfo.get(pos).trackingLongitude;
+                                    trackArtist.staffName = historyInfo.data.bookingInfo.get(pos).staffName;
+                                    trackArtist.bookingDate = historyInfo.data.bookingInfo.get(pos).bookingDate;
+                                    trackArtist.startTime = historyInfo.data.bookingInfo.get(pos).startTime;
+                                    trackArtist.artistServiceName = historyInfo.data.bookingInfo.get(pos).artistServiceName;
+                                    trackArtist.contactNo = historyInfo.data.artistDetail.get(pos).countryCode +" "+ historyInfo.data.artistDetail.get(pos).contactNo;
+                                    trackArtist.ratingCount = historyInfo.data.artistDetail.get(pos).ratingCount;
+
+                                    if (historyInfo.data.bookingInfo.get(pos).staffImage.equals("")) {
+                                        trackArtist.profileImage = "https://image.shutterstock.com/image-vector/male-default-placeholder-avatar-profile-260nw-387516193.jpg";
+                                    } else
+                                        trackArtist.profileImage = historyInfo.data.bookingInfo.get(pos).staffImage;
+
+                                    Intent intent = new Intent(BookingDetailsActivity.this, TrackingActivity.class);
+                                    intent.putExtra("trackUser", trackUser);
+                                    intent.putExtra("trackArtist", trackArtist);
+                                    intent.putExtra("bookingId", bookingId);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
                         rcv_service.setAdapter(adapter);
 
                         //get key
@@ -360,7 +397,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
             ly_map_direction.setVisibility(View.GONE);
             ly_give_review.setVisibility(View.VISIBLE);
         } else if (historyInfo.data.bookStatus.equals("5")) {
-            ly_map_direction.setVisibility(View.VISIBLE);
+            ly_map_direction.setVisibility(View.GONE);
             ly_cancel_booking.setVisibility(View.GONE);
             booking_status.setText("In progress");
             ly_give_review.setVisibility(View.GONE);
@@ -372,7 +409,13 @@ public class BookingDetailsActivity extends AppCompatActivity {
                 tv_txt_status.setText("Pending");
                 tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_orange_color));
                 tv_txt_id.setText("NA");
-            } else {
+            }else if (historyInfo.data.paymentStatus == 3) {
+                tv_tx_id_text.setText("Refund Id");
+                tv_txt_status.setText("Refund");
+                tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_orange_color));
+                tv_txt_id.setText(historyInfo.data.transjectionId);
+            }
+            else {
                 tv_txt_status.setText("Completed");
                 tv_txt_status.setTextColor(ContextCompat.getColor(BookingDetailsActivity.this, R.color.main_green_color));
                 tv_txt_id.setText(historyInfo.data.transjectionId);

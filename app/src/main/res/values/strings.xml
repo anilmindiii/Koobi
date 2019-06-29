@@ -534,6 +534,7 @@
     <string name="about__us">About Us</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="no_folder_added">No Folder Added</string>
+    <string name="create">Create</string>
 
 
 </resources>

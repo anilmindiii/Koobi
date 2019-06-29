@@ -122,7 +122,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/llGroupInfo"
-        android:layout_above="@+id/btnCreate"
+        android:clipToPadding="false"
+        android:paddingBottom="55dp"
         android:layout_margin="5dp">
 
     </android.support.v7.widget.RecyclerView>
@@ -152,8 +153,8 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnCreate"
-        android:layout_width="190dp"
-        android:layout_height="34dp"
+        android:layout_width="120dp"
+        android:layout_height="35dp"
         android:layout_margin="10dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
@@ -162,6 +163,6 @@
         android:textSize="16sp"
         android:fontFamily="@font/nunito_semibold"
         android:background="@drawable/button_effect_invert"
-        android:text="@string/create_group" />
+        android:text="@string/create" />
 
 </RelativeLayout>

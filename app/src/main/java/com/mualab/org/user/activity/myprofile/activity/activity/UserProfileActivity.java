@@ -132,7 +132,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         ArtistFeedAdapter.Listener, NavigationMenuAdapter.Listener {
     private DrawerLayout drawer;
     private String TAG = this.getClass().getName();
-    ;
     private User user;
     private TextView tvImages, tvVideos, tvFeeds, tv_msg, tv_no_data_msg, tv_dot1, tv_dot2,tv_block_msg, tv_profile_followers,tv_profile_followers_txt, tv_business_count;
     private LinearLayout ll_progress, llRating,ly_block_view;

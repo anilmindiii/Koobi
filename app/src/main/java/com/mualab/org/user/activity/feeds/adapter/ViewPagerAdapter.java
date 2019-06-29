@@ -176,14 +176,6 @@ listner.onSingleTap();*/
                 .tapListener(new TapListener() {
                     @Override
                     public void onTap(View v) {
-                        if (listner != null)
-                            listner.onSingleTap();
-                    }
-                })
-                .longPressListener(new LongPressListener() {
-                    @Override
-                    public void onLongPress(View v) {
-// View view = container.getRootView();
                         ViewPager viewPager = (ViewPager) container;
                         View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
 
@@ -193,6 +185,16 @@ listner.onSingleTap();*/
                         if (mInstaTag != null) {
                             showHideTag(mInstaTag, viewPager.getCurrentItem());
                         }
+
+                        if (listner != null)
+                            listner.onSingleTap();
+                    }
+                })
+                .longPressListener(new LongPressListener() {
+                    @Override
+                    public void onLongPress(View v) {
+// View view = container.getRootView();
+
                     }
                 }).doubleTapListener(new DoubleTapListener() {
                     @Override

@@ -59,8 +59,7 @@ public class BookingHisoryActivity extends AppCompatActivity {
     ArrayList<BookingHistoryInfo.DataBean> dataBean;
     private ScheduledAdapter adapter;
     private BookingHistoryAdapter historyAdapter;
-    private TextView tv_bookingHistory, tv_booking_scheduled, tv_msg;
-    private View iv_bookingHistory, iv_booking_scheduled;
+    private TextView tv_bookingHistory, tv_booking_scheduled,tv_bookingCancelled, tv_msg;
     private String type = "";
     private TextView tvFilter;
     private String tabSelected = "tv_booking_scheduled";
@@ -73,11 +72,18 @@ public class BookingHisoryActivity extends AppCompatActivity {
     EditText ed_search;
     LinearLayout ll_progress;
     String call_status = "";
+    View bottom_line_upcoming,bottom_line_completed,bottom_line_cancelled;
+    private RelativeLayout rl_cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_hisory);
+
+         bottom_line_upcoming = findViewById(R.id.bottom_line_upcoming);
+         bottom_line_completed = findViewById(R.id.bottom_line_completed);
+         bottom_line_cancelled = findViewById(R.id.bottom_line_cancelled);
+        rl_cancel = findViewById(R.id.rl_cancel);
 
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         tvHeaderTitle.setText(getString(R.string.my_booking));
@@ -94,9 +100,8 @@ public class BookingHisoryActivity extends AppCompatActivity {
         tv_msg = findViewById(R.id.tv_msg);
         tv_bookingHistory = findViewById(R.id.tv_bookingHistory);
         tv_booking_scheduled = findViewById(R.id.tv_booking_scheduled);
+        tv_bookingCancelled = findViewById(R.id.tv_bookingCancelled);
 
-        iv_bookingHistory = findViewById(R.id.iv_bookingHistory);
-        iv_booking_scheduled = findViewById(R.id.iv_booking_scheduled);
         ly_main = findViewById(R.id.ly_main);
         ll_filter = findViewById(R.id.ll_filter);
         tvFilter = findViewById(R.id.tvFilter);
@@ -149,14 +154,39 @@ public class BookingHisoryActivity extends AppCompatActivity {
         });
 
 
+
+
+        tv_booking_scheduled.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottom_line_completed.setVisibility(View.GONE);
+                bottom_line_cancelled.setVisibility(View.GONE);
+                bottom_line_upcoming.setVisibility(View.VISIBLE);
+
+                tv_bookingCancelled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.gray));
+                tv_bookingHistory.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.gray));
+                tv_booking_scheduled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.colorPrimary));
+                type = "";
+
+                tabSelected = "tv_booking_scheduled";
+                dataBean.clear();
+
+                bookingHistory(type, "");
+                ed_search.setText("");
+                KeyboardUtil.hideKeyboard(v, BookingHisoryActivity.this);
+            }
+        });
+
         tv_bookingHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iv_bookingHistory.setVisibility(View.GONE);
-                iv_booking_scheduled.setVisibility(View.VISIBLE);
+                bottom_line_cancelled.setVisibility(View.GONE);
+                bottom_line_completed.setVisibility(View.VISIBLE);
+                bottom_line_upcoming.setVisibility(View.GONE);
 
                 tv_bookingHistory.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.colorPrimary));
                 tv_booking_scheduled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.gray));
+                tv_bookingCancelled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.gray));
                 type = "Past";
                 tabSelected = "tv_bookingHistory";
 
@@ -175,25 +205,21 @@ public class BookingHisoryActivity extends AppCompatActivity {
             }
         });
 
-        tv_booking_scheduled.setOnClickListener(new View.OnClickListener() {
+        rl_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iv_bookingHistory.setVisibility(View.VISIBLE);
-                iv_booking_scheduled.setVisibility(View.GONE);
+                bottom_line_completed.setVisibility(View.GONE);
+                bottom_line_upcoming.setVisibility(View.GONE);
+                bottom_line_cancelled.setVisibility(View.VISIBLE);
 
+                tv_bookingCancelled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.colorPrimary));
                 tv_bookingHistory.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.gray));
-                tv_booking_scheduled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.colorPrimary));
-                type = "";
+                tv_booking_scheduled.setTextColor(ContextCompat.getColor(BookingHisoryActivity.this, R.color.gray));
+
+                type = "Cancelled Booking";
 
                 tabSelected = "tv_booking_scheduled";
                 dataBean.clear();
-
-               /* tv_all_type.setText("All");
-                tv_in_type.setText("In Call");
-                tv_out_type.setText("Out Call");
-
-                tv_in_type.setVisibility(View.GONE);
-                tv_out_type.setVisibility(View.GONE);*/
 
                 bookingHistory(type, "");
                 ed_search.setText("");
@@ -533,6 +559,9 @@ public class BookingHisoryActivity extends AppCompatActivity {
                         });
                         recycler_view.setAdapter(historyAdapter);
                     } else if (type.equals("")) {
+                        adapter = new ScheduledAdapter(BookingHisoryActivity.this, tempList, call_status);
+                        recycler_view.setAdapter(adapter);
+                    }else if(type.equals("Cancelled Booking")){
                         adapter = new ScheduledAdapter(BookingHisoryActivity.this, tempList, call_status);
                         recycler_view.setAdapter(adapter);
                     }

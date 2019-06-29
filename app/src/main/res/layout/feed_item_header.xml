@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:camomile="http://schemas.android.com/tools"
     android:id="@+id/header"
+    android:background="@color/white"
     android:gravity="center_vertical">
 
     <RelativeLayout
@@ -40,7 +41,6 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/btnFollow"
             android:layout_toRightOf="@+id/iv_user_image"
             android:orientation="vertical">
 
@@ -83,19 +83,46 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnFollow"
-            style="@style/My_Button_Small.Invert"
-            android:layout_width="wrap_content"
-            android:minWidth="60dp"
-            android:layout_height="22dp"
-            android:text="@string/text_follow"
-            android:fontFamily="@font/nunito_regular"
-            android:layout_marginRight="2dp"
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textSize="10sp"
-            />
+            android:layout_centerVertical="true">
+
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnFollow"
+                    style="@style/My_Button_Small.Invert"
+                    android:layout_width="80dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="@string/text_follow"
+                    android:textSize="10sp" />
+
+            </RelativeLayout>
+
+            <com.gmail.samehadar.iosdialog.CamomileSpinner
+                android:id="@+id/spinner3"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="18dp"
+                android:visibility="gone"
+                camomile:duration="120" />
+
+        </RelativeLayout>
+
+
+
+
+
 
 
     </RelativeLayout>

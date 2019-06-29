@@ -30,7 +30,7 @@ public class ReportChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report_chat);
 
         groupId = getIntent().getStringExtra("groupId");
-        groups = (Groups) getIntent().getSerializableExtra("groups");
+        groups =  getIntent().getParcelableExtra("groups");
 
         ed_reason = findViewById(R.id.ed_reason);
         ed_description = findViewById(R.id.ed_description);

@@ -141,7 +141,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<NavigationMenuAd
                     case 0:
                         sSelect = item.itemName;
                         context.startActivity(new Intent(context, EditProfileActivity.class));
-                        context.finish();
+                       // context.finish();
                         break;
 
                     case 1:
@@ -198,7 +198,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<NavigationMenuAd
                     case 0:
                         sSelect = item.itemName;
                         context.startActivity(new Intent(context, EditProfileActivity.class));
-                        context.finish();
+                       // context.finish();
                         break;
 
                     case 1:

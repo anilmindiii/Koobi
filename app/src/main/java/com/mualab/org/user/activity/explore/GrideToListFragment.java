@@ -87,7 +87,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         View view =  inflater.inflate(R.layout.fragment_gride_to_list, container, false);
 
         ivUserProfile = getActivity().findViewById(R.id.ivUserProfile);
-        btnBack = getActivity().findViewById(R.id.btnBack);
+
         rlHeader1 = getActivity().findViewById(R.id.topLayout1);
         ImageView ivChat = getActivity().findViewById(R.id.ivChat);
         ivChat.setVisibility(View.GONE);
@@ -96,15 +96,26 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         tv_batch_count.setVisibility(View.GONE);
 
         ivUserProfile.setVisibility(View.GONE);
-        btnBack.setVisibility(View.VISIBLE);
-        rlHeader1.setVisibility(View.VISIBLE);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
+      //  if(rlHeader1 != null)
+
+
+        if(rlHeader1 != null){  //  this is the case where we come from explore
+            rlHeader1.setVisibility(View.VISIBLE);
+
+            btnBack = getActivity().findViewById(R.id.btnBack);
+            btnBack.setVisibility(View.VISIBLE);
+            btnBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().onBackPressed();
+                }
+            });
+        }else {
+            TextView tvHeaderTitle = getActivity().findViewById(R.id.tvHeaderTitle);
+            tvHeaderTitle.setText("Post");
+        }
+
 
         initView(view);
         return view;
@@ -112,8 +123,11 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onDestroy() {
-        ivUserProfile.setVisibility(View.VISIBLE);
-        btnBack.setVisibility(View.GONE);
+        if(rlHeader1 != null){
+            //ivUserProfile.setVisibility(View.VISIBLE);
+            btnBack.setVisibility(View.GONE);
+        }
+
        // rlHeader1.setVisibility(View.GONE);
         super.onDestroy();
     }
@@ -146,9 +160,11 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
         rvFeed.scrollToPosition(index);
         rvFeed.addOnScrollListener(endlesScrollListener);
 
-        mRefreshLayout =  view.findViewById(R.id.mSwipeRefreshLayout);
+
         final CircleHeaderView header = new CircleHeaderView(getContext());
-        mRefreshLayout.addHeader(header);
+       /*
+        mRefreshLayout =  view.findViewById(R.id.mSwipeRefreshLayout);
+       mRefreshLayout.addHeader(header);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -161,7 +177,7 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
             public void onLoadMore() {
               //  Log.e(TAG, "onLoadMore: ");
             }
-        });
+        });*/
     }
 
     @Override
@@ -173,7 +189,14 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onDetach() {
-        rlHeader1.setVisibility(View.GONE);
+        if(rlHeader1 != null){
+            rlHeader1.setVisibility(View.GONE);
+        }else {
+            TextView tvHeaderTitle = getActivity().findViewById(R.id.tvHeaderTitle);
+            tvHeaderTitle.setText(feedItems.get(index).userName);
+
+        }
+
         super.onDetach();
     }
 

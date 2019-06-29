@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -14,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
+import com.mualab.org.user.Views.calender.CalendarHelper;
 import com.mualab.org.user.Views.calender.data.CalendarAdapter;
 import com.mualab.org.user.Views.calender.data.Day;
 import com.mualab.org.user.Views.calender.widget.widget.MyFlexibleCalendar;
@@ -93,7 +97,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private TimeSlotAdapter timeSlotAdapter;
     private ArrayList<TimeSlotInfo> timeSlotList;
     private String businessType = "", preprationTime = "";
-
     private String selectedDate, sMonth = "", sDay, currentTime, lat = "", lng = "", startTime = "", bookingId = "", tempMainService = "";
     private MyFlexibleCalendar viewCalendar;
     private boolean isTodayClicked = false;
@@ -111,7 +114,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private CalendarAdapter adapter;
     private boolean isFromSearchBoard, isFromServiceTag, isToastShow;
     private String bookingDate;
-
     private BottomSheetDialog mBizTypeDialog;
     private BottomSheetDialog mCatTypeDialog;
 
@@ -275,6 +277,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         viewCalendar = findViewById(R.id.calendar);
+        viewCalendar.setFirstDayOfWeek(CalendarHelper.getTimestamp(Constant.TIMESTAMP_FORMAT_DAY));
 
         // init calendar
         Calendar cal = Calendar.getInstance();
@@ -308,7 +311,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     viewCalendar.expand(500);
                 }
         }
-        viewCalendar.expand(500);
+        viewCalendar.collapse(500);
 
 
         apiForGetAllServices();
@@ -434,6 +437,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.btnToday:
                 viewCalendar.setToday(true);
+                String currentData = CalendarHelper.getTimestamp(Constant.TIMESTAMP_FORMAT_DAY);
+                viewCalendar.setFirstDayOfWeek(currentData);
+
                 viewCalendar.collapse(500);
                 selectedDate = getCurrentDate();
                 viewCalendar.isFirstimeLoad = true;
@@ -542,6 +548,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         viewCalendar.setCalendarListener(new MyFlexibleCalendar.CalendarListener() {
             @Override
             public void onDaySelect() {
+
                 Day day = viewCalendar.getSelectedDay();
                 viewCalendar.isFirstimeLoad = false;
                 Log.i(getClass().getName(), "Selected Day: "
@@ -571,6 +578,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                 setTodaysDay(dayId);
 
+                viewCalendar.setFirstDayOfWeek(dayId);
+                //viewCalendar.setFirstDayOfWeek(WorkingHourActivity.getDayById(dayId));
 
                 if (viewCalendar.isSelectedDay(day)) {
                     Calendar todayCal = Calendar.getInstance();
@@ -604,9 +613,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onItemClick(View v) {
                 viewCalendar.isFirstimeLoad = false;
+
                 Day day = viewCalendar.getSelectedDay();
                 Log.i(getClass().getName(), "The Day of Clicked View: "
                         + day.getYear() + "/" + (day.getMonth() + 1) + "/" + day.getDay());
+
+
+
 
             }
 
@@ -658,7 +671,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         builder = new AlertDialog.Builder(BookingActivity.this);
         builder.setTitle("Alert")
                 .setMessage("Are you sure you want to permanently remove all selected services?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with Apis
 
@@ -666,12 +679,17 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         apiForRemoveAllBooking();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                })
-                .show();
+                });
+
+        AlertDialog a= builder.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
+
     }
 
     @Override

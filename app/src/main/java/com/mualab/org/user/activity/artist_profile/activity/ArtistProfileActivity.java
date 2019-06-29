@@ -70,7 +70,6 @@ import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
-import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
 import com.mualab.org.user.activity.tag_module.instatag.InstaTag;

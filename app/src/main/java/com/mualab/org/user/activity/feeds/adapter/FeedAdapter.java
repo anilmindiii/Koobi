@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +34,8 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.gmail.samehadar.iosdialog.CamomileSpinner;
+import com.gmail.samehadar.iosdialog.utils.DialogUtils;
 import com.hendraanggrian.socialview.SocialView;
 import com.hendraanggrian.widget.SocialTextView;
 import com.mualab.org.user.R;
@@ -40,15 +43,15 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.explore.SearchFeedActivity;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
-import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.ReportActivity;
 import com.mualab.org.user.activity.feeds.activity.SaveToFolderActivity;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.feeds.listener.OnImageSwipeListener;
 import com.mualab.org.user.activity.feeds.listener.SaveToFolderListner;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.application.Mualab;
+import com.mualab.org.user.chat.listner.CustomeClick;
 import com.mualab.org.user.data.feeds.Feeds;
-import com.mualab.org.user.data.remote.API;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
@@ -146,11 +149,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 FeedTextHolder textHolder = new FeedTextHolder(view);
                 setupTextFeedClickableViews(textHolder);
                 return textHolder;
+
             case IMAGE_TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_image_item_layout, parent, false);
                 CellFeedViewHolder cellFeedViewHolder = new CellFeedViewHolder(view);
                 setupClickableViews(cellFeedViewHolder);
                 return cellFeedViewHolder;
+
             case VIDEO_TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_video_item_layout, parent, false);
                 FeedVideoHolder feedViepoHolder = new FeedVideoHolder(view);
@@ -202,6 +207,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (holder instanceof Holder) {
             Holder h = (Holder) holder;
+
+            MyClickOnPostMenu.getMentIntance().setListnerMenu(new MyClickOnPostMenu.GetMenuClick() {
+                @Override
+                public void getMenuClick() {
+                    hideMenu(null);
+                    hide_menuCellFeed(null);
+                    hide_menuVideo(null);
+                }
+            });
+
+
             if (!TextUtils.isEmpty(feeds.profileImage)) {
                 Picasso.with(mContext).load(feeds.profileImage).placeholder(R.drawable.default_placeholder).fit().into(h.ivProfile);
             } else Picasso.with(mContext).load(R.drawable.default_placeholder).into(h.ivProfile);
@@ -250,7 +266,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             if (activity != null) {
                 String activityName = activity.getClass().toString();
-                if (activityName.equals("class com.mualab.org.user.activity.feeds.activity.FeedSingleActivity")) {
+                if (activityName.equals("class com.mualab.org.user.activity.feeds.activity.FeedSingleActivity")
+                        | activityName.equals("class com.mualab.org.user.activity.explore.SearchFeedActivity")
+                | activityName.equals("class com.mualab.org.user.activity.feeds.activity.FolderFeedsActivity")) {
                     if (feeds.userId == Mualab.currentUser.id) {
                         h.btnFollow.setVisibility(View.GONE);
                     } else {
@@ -511,7 +529,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 // holder.btnFollow.setEnabled(false);
                 int adapterPosition = holder.getAdapterPosition();
                 Feeds feed = feedItems.get(adapterPosition);
-                followUnfollow(feed, adapterPosition);
+                if (holder instanceof Holder){
+                    Holder h = (Holder) holder;
+                    followUnfollow(feed, adapterPosition,h);
+                }
+
             }
         });
 
@@ -547,7 +569,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 feed1.ispopupOpen = false;
             }
             notifyDataSetChanged();
-            holder.ly_report.setVisibility(View.GONE);
+            //holder.ly_report.setVisibility(View.GONE);
         } catch (Exception e) {
 
         }
@@ -713,7 +735,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         videoHolder.btnFollow.setOnClickListener(v -> {
             int adapterPosition = videoHolder.getAdapterPosition();
             Feeds feed = feedItems.get(adapterPosition);
-            followUnfollow(feed, adapterPosition);
+            if (videoHolder instanceof Holder){
+                Holder h = (Holder) videoHolder;
+                followUnfollow(feed, adapterPosition,h);
+            }
         });
 
         videoHolder.ivProfile.setOnClickListener(v -> {
@@ -745,7 +770,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 feed.ispopupOpen = false;
             }
             notifyDataSetChanged();
-            videoHolder.ly_report.setVisibility(View.GONE);
+            //videoHolder.ly_report.setVisibility(View.GONE);
         } catch (Exception e) {
 
         }
@@ -920,7 +945,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //cellFeedViewHolder.btnFollow.setEnabled(false);
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
                 Feeds feed = feedItems.get(adapterPosition);
-                followUnfollow(feed, adapterPosition);
+
+                if (cellFeedViewHolder instanceof Holder){
+                    Holder h = (Holder) cellFeedViewHolder;
+                    followUnfollow(feed, adapterPosition,h);
+                }
             }
         });
 
@@ -956,7 +985,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 feed.ispopupOpen = false;
             }
             notifyDataSetChanged();
-            cellFeedViewHolder.ly_report.setVisibility(View.GONE);
+            //cellFeedViewHolder.ly_report.setVisibility(View.GONE);
         } catch (Exception e) {
 
         }
@@ -1024,10 +1053,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         protected TextView tv_report, tv_share_post;
         protected View view_divider;
         protected ImageView iv_save_to_folder;
+        private CamomileSpinner spinner3;
 
         public Holder(View itemView) {
             super(itemView);
+
+
             /*Common ui*/
+            spinner3 = itemView.findViewById(R.id.spinner3);
             ivProfile = itemView.findViewById(R.id.iv_user_image);
             tv_share_post = itemView.findViewById(R.id.tv_share_post);
             ly_report = itemView.findViewById(R.id.ly_report);
@@ -1057,6 +1090,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class FeedTextHolder extends Holder {
+
         private FeedTextHolder(View itemView) {
             super(itemView);
         }
@@ -1064,11 +1098,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class FeedVideoHolder extends Holder {
         public ImageView ivFeedCenter;
+        private CamomileSpinner spinner3;
 
         private FeedVideoHolder(View itemView) {
             super(itemView);
 
             ivFeedCenter = itemView.findViewById(R.id.ivFeedCenter);
+            spinner3 = itemView.findViewById(R.id.spinner3);
         }
     }
 
@@ -1079,6 +1115,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private WeakReference<ViewPager> weakRefViewPager;
         private WeakReference<ViewPagerAdapter> weakRefAdapter;
         private OnImageSwipeListener onImageSwipeListener = null;
+        private CamomileSpinner spinner3;
 
         public void setSwipeListner(OnImageSwipeListener onImageSwipeListener) {
             this.onImageSwipeListener = onImageSwipeListener;
@@ -1087,6 +1124,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private CellFeedViewHolder(View itemView) {
             super(itemView);
 
+            spinner3 = itemView.findViewById(R.id.spinner3);
             ll_Dot = itemView.findViewById(R.id.ll_Dot);
             rl_imageView = itemView.findViewById(R.id.rl_imageView);
             weakRefViewPager = new WeakReference<>((ViewPager) itemView.findViewById(R.id.viewpager));
@@ -1165,7 +1203,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private void followUnfollow(final Feeds feeds, final int position) {
+    private void followUnfollow(final Feeds feeds, final int position, Holder h) {
+
+        h.spinner3.setVisibility(View.VISIBLE);
+        h.spinner3.start();
+        h.spinner3.recreateWithParams(
+                mContext,
+                DialogUtils.getColor(mContext, R.color.gray2),
+                50,
+                true
+        );
 
         if (feeds.followingStatus == 1) {
           /*  new UnfollowDialog(mContext, feeds, new UnfollowDialog.UnfollowListner() {
@@ -1176,9 +1223,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });*/
 
-            apiForFollowUnFollow(feeds, position);
+            apiForFollowUnFollow(feeds, position,h);
 
-        } else apiForFollowUnFollow(feeds, position);
+        } else apiForFollowUnFollow(feeds, position,h);
 
     }
 
@@ -1238,7 +1285,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private void apiForFollowUnFollow(final Feeds feeds, final int position) {
+    private void apiForFollowUnFollow(final Feeds feeds, final int position, Holder h) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", "" + Mualab.currentUser.id);
         map.put("followerId", "" + feeds.userId);
@@ -1246,6 +1293,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         new HttpTask(new HttpTask.Builder(mContext, "followFollowing", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -1267,6 +1316,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             @Override
             public void ErrorListener(VolleyError error) {
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
                 notifyItemChanged(position);
             }
         }).setParam(map)).execute("followFollowing");
@@ -1349,10 +1400,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void apiForDeletePost(final Feeds feeds, final int position) {
-        new AlertDialog.Builder(mContext)
+        AlertDialog.Builder builder =  new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.delete_post))
                 .setMessage("Are you sure you want to delete this post?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Progress.show(mContext);
                         Map<String, String> map = new HashMap<>();
@@ -1397,9 +1448,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 .execute("deletePostApi");
                     }
                 })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
+                .setNegativeButton("Cancel", null);
 
+        AlertDialog a= builder.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(mContext,R.color.red));
 
     }
 

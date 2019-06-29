@@ -32,10 +32,17 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
 
     Context mContext;
     BookingListInfo bookingListInfo;
+    getBookingInfo bookingInfoListner;
 
-    public BookingHistoryDetailsAdapter(Context mContext, BookingListInfo bookingListInfo) {
+    public BookingHistoryDetailsAdapter(Context mContext, BookingListInfo bookingListInfo
+            , getBookingInfo bookingInfoListner) {
         this.mContext = mContext;
         this.bookingListInfo = bookingListInfo;
+        this.bookingInfoListner = bookingInfoListner;
+    }
+
+    public interface getBookingInfo{
+        public void bookInfo(int pos);
     }
 
     @NonNull
@@ -57,6 +64,15 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
             holder.iv_profile.setImageResource(R.drawable.default_placeholder);
         }
 
+
+        if(bookingListInfo.data.bookingType == 2){
+            if(bean.status == 0 || bean.status == 3 ){
+                holder.ivLocation.setVisibility(View.GONE);
+            }else holder.ivLocation.setVisibility(View.VISIBLE);
+        }
+
+
+
         holder.iv_profile.setOnClickListener(v->{
             Intent intent = new Intent(mContext, ArtistProfileActivity.class);
             intent.putExtra("artistId", String.valueOf(bean.staffId));
@@ -77,6 +93,12 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
         }
 
 
+        holder.ivLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bookingInfoListner.bookInfo( position);
+            }
+        });
 
         holder.iv_report_service.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +199,7 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name,tv_service_name,tv_date_time,tv_edit,tv_delete,tv_price,tvStatus;
-        ImageView iv_profile,iv_service_arrow,iv_price_arrow,iv_time_date_arrow,iv_report_service;
+        ImageView iv_profile,iv_service_arrow,iv_price_arrow,iv_time_date_arrow,iv_report_service,ivLocation;
         LinearLayout rlStatus;
 
         public ViewHolder(View itemView) {
@@ -195,6 +217,7 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
             iv_price_arrow = itemView.findViewById(R.id.iv_price_arrow);
             iv_time_date_arrow = itemView.findViewById(R.id.iv_time_date_arrow);
             iv_report_service = itemView.findViewById(R.id.iv_report_service);
+            ivLocation = itemView.findViewById(R.id.ivLocation);
 
             tvStatus = itemView.findViewById(R.id.tvStatus);
             rlStatus = itemView.findViewById(R.id.rlStatus);

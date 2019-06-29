@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/dp5"
     android:background="@color/white">
@@ -93,6 +94,18 @@
             android:layout_marginTop="10dp"
             android:background="@color/gray2"
             />
+
+        <ImageView
+            android:id="@+id/ivLocation"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_cola_img"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_map_svg"
+            tools:ignore="ContentDescription" />
 
 
     </RelativeLayout>

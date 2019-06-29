@@ -266,6 +266,40 @@ public abstract class MyUICalendar extends LinearLayout {
         reload();
     }
 
+    public void setFirstDayOfWeek(String dayOfWeek) {
+        switch (dayOfWeek.toUpperCase()) {
+            case "SUNDAY":
+                setFirstDayOfWeek(SUNDAY);
+                break;
+
+            case "MONDAY":
+                setFirstDayOfWeek(MONDAY);
+                break;
+
+            case "TUESDAY":
+                setFirstDayOfWeek(TUESDAY);
+                break;
+
+            case "WEDNESDAY":
+                setFirstDayOfWeek(WEDNESDAY);
+                break;
+
+            case "THURSDAY":
+                setFirstDayOfWeek(THURSDAY);
+                break;
+
+            case "FRIDAY":
+                setFirstDayOfWeek(FRIDAY);
+                break;
+
+            case "SATURDAY":
+                setFirstDayOfWeek(SATURDAY);
+                break;
+
+
+        }
+    }
+
     public int getState() {
         return mState;
     }

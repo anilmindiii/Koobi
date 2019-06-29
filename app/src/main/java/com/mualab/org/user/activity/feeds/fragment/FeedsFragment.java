@@ -66,6 +66,7 @@ import com.mualab.org.user.activity.camera.CameraActivity;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedPostActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
+import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.FeedAdapter;
 import com.mualab.org.user.activity.feeds.adapter.HashtagAdapter;
@@ -74,6 +75,7 @@ import com.mualab.org.user.activity.feeds.adapter.UserSuggessionAdapter;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerFeedAdapter;
 import com.mualab.org.user.activity.feeds.enums.PermissionType;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.gellery.GalleryActivity;
 import com.mualab.org.user.activity.story.StoriesActivity;
 import com.mualab.org.user.activity.story.camera.util.ImageUtil;
@@ -176,6 +178,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     private ImageView[] dots;
 
 
+
     public FeedsFragment() {
         // Required empty public constructor
     }
@@ -271,6 +274,14 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         appbar = view.findViewById(R.id.appbar);
         ImageView ivUserProfile = getActivity().findViewById(R.id.ivUserProfile);
         ivUserProfile.setVisibility(View.GONE);
+
+        appbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyClickOnPostMenu.getMentIntance().setMenuClick();
+
+            }
+        });
 
         addRemoveHeader();
         liveUserAdapter = new LiveUserAdapter(mContext, liveUserList, this);
@@ -825,9 +836,14 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
     @Override
     public void onLikeListClick(Feeds feed) {
-        if (baseListner != null) {
+      /*  if (baseListner != null) {
             baseListner.addFragment(LikeFragment.newInstance(feed._id, Mualab.currentUser.id), true);
-        }
+        }*/
+
+        Intent intent = new Intent(mContext, LikeFeedActivity.class);
+        intent.putExtra("feedId", feed._id);
+        intent.putExtra("userId", Mualab.currentUser.userId);
+        startActivity(intent);
     }
 
     @Override

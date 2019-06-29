@@ -137,7 +137,8 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
             holder.tv_status.setText(R.string.confirm);
             holder.tv_status.setTextColor(ContextCompat.getColor(mContext,R.color.main_green_color));
         }else if(bean.bookStatus.equals("2")){
-            holder.tv_status.setText("Cancelled");
+            //holder.tv_status.setText("Cancelled");
+            holder.tv_status.setText("");
             holder.tv_status.setTextColor(ContextCompat.getColor(mContext,R.color.red));
         }
         else if(bean.bookStatus.equals("3")){

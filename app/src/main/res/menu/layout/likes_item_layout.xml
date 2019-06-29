@@ -44,8 +44,8 @@
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_follow"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_width="80"
+                android:layout_height="24dp"
                 style="@style/My_Button.Invert"
                 android:textSize="14sp"
                 android:textAllCaps="false"

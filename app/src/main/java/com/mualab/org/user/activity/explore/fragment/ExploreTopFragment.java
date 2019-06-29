@@ -37,6 +37,7 @@ import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.listener.RecyclerViewScrollListener;
 import com.mualab.org.user.listener.SearchViewListner;
 import com.mualab.org.user.utils.KeyboardUtil;
+import com.mualab.org.user.utils.constants.Constant;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -262,7 +263,10 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
         Map<String, String> params = new HashMap<>();
         params.put("userId", ""+ Mualab.currentUser.id);
         params.put("type", exSearchType);
-        params.put("page", ""+pageNo);
+        if(exSearchType.equals("place")){
+            params.put("page", ""+ (pageNo+1));
+        }else params.put("page", ""+pageNo);
+
         params.put("limit", "20");
         params.put("search", searchKeyWord);
         //String tag = TAG + exSearchType;
@@ -300,20 +304,23 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                                         case "top":
                                             searchTag.type = 0;
                                             searchTag.title = searchTag.uniTxt;
-                                            searchTag.desc = searchTag.postCount+" post";
+                                            //searchTag.desc = searchTag.postCount+" post";
+                                            searchTag.desc = searchTag.postCount +" "+Constant.adds(Integer.parseInt(searchTag.postCount),"post");
 
                                             break;
 
                                         case "people":
                                             searchTag.type = 1;
                                             searchTag.title = searchTag.uniTxt;
-                                            searchTag.desc = searchTag.postCount+" post";
+                                            //searchTag.desc = searchTag.postCount+" post";
+                                            searchTag.desc =  searchTag.postCount +" "+Constant.adds(Integer.parseInt(searchTag.postCount),"post");
                                             break;
 
                                         case "hasTag":
                                             searchTag.type = 2;
                                             searchTag.title = "#"+searchTag.tag;
-                                            searchTag.desc = searchTag.postCount+" public post";
+                                           // searchTag.desc = searchTag.postCount+" public post";
+                                            searchTag.desc =  searchTag.postCount +" "+Constant.adds(Integer.parseInt(searchTag.postCount),"public post");
                                             break;
 
                                   /*  case "serviceTag":
@@ -326,7 +333,10 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                                         case "place":
                                             searchTag.type = 4;
                                             searchTag.title = searchTag.uniTxt;
-                                            searchTag.desc = "0 Public post";
+                                            //searchTag.desc = String.valueOf(searchTag.count) +" public post";
+                                            searchTag.desc =  searchTag.count +" "+Constant.adds(searchTag.count,"public post");
+
+
                                             break;
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -269,15 +271,18 @@ public class CommentsActivity extends AppCompatActivity {
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Alert");
         alertDialog.setMessage(msg);
-        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+        alertDialog.setPositiveButton("Ok", (dialog, which) -> {
             dialog.cancel();
             doDeleteComment(commetsPos);
         });
 
-        alertDialog.setNegativeButton("No", (dialog, which) -> {
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
         });
-        alertDialog.show();
+        AlertDialog a= alertDialog.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
     }
 
     // check permission or Get image from camera or gallery

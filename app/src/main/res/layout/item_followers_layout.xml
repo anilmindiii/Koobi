@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
+    xmlns:camomile="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/white"
     android:layout_marginTop="5dp"
@@ -40,23 +41,45 @@
             android:layout_toRightOf="@+id/ivProfile"
             />
 
-
-
-        <android.support.v7.widget.AppCompatButton
-            style="@style/My_Button_Small.Invert"
+        <RelativeLayout
             android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:id="@+id/btnFollow"
-            android:text="@string/follow"
-            android:gravity="center"
-            android:padding="2dp"
-            android:fontFamily="@font/nunito_regular"
-            android:visibility="visible"
-            android:textSize="14sp"
-            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            />
+            android:layout_centerVertical="true">
+
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnFollow"
+                    style="@style/My_Button_Small.Invert"
+                    android:layout_width="80dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="2dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="@string/text_follow"
+                    android:textSize="10sp" />
+
+            </RelativeLayout>
+
+            <com.gmail.samehadar.iosdialog.CamomileSpinner
+                android:id="@+id/spinner3"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="18dp"
+                android:visibility="gone"
+                camomile:duration="120" />
+
+        </RelativeLayout>
+
+
+
+
 
     </RelativeLayout>
 

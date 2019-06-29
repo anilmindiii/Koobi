@@ -484,7 +484,7 @@ public class AddMemberToBrodcastActivity extends AppCompatActivity implements Vi
     private void addMembers() {
         if (selectedMemberList.size() != 0) {
             if (selectedMemberList.size() == 1) {
-                MyToast.getInstance(AddMemberToBrodcastActivity.this).showDasuAlert("Please select atleast 2 member");
+                MyToast.getInstance(AddMemberToBrodcastActivity.this).showDasuAlert("A broadcast group must have more than one recipient.");
                 return;
             }
 

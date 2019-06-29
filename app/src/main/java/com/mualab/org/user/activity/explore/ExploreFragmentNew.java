@@ -70,6 +70,7 @@ import com.mualab.org.user.utils.CommonUtils;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.ScreenUtils;
 import com.mualab.org.user.utils.WrapContentGridLayoutManager;
+import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
@@ -105,7 +106,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     private RecyclerView rvFeed;
     private List<Feeds> feeds;
     private LinkedHashMap<Integer,Feeds> mapFeeds;
-    private BottomSheetBehavior bottomSheetBehavior;
     private String feedType = "image";
     private boolean isPulltoRefrash;
     private FeedsListner feedsListner;
@@ -126,8 +126,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     private int lastCategoryPos = 0;
     private ServiceCategoryFilterAdapter categoryFilterAdapter;
     private RecyclerViewScrollListenerProfile endlesScrollListener;
-    private ImageView imageViewHeader;
-    private CardView main_layout_header;
 
     public ExploreFragmentNew() {
     }
@@ -192,8 +190,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         rcv_service = view.findViewById(R.id.rcv_service);
         ivFilter = view.findViewById(R.id.ivFilter);
         bottomSheetLayout = view.findViewById(R.id.bottomSheetLayout);
-        imageViewHeader = view.findViewById(R.id.imageView);
-        main_layout_header = view.findViewById(R.id.main_layout_header);
 
         view.findViewById(R.id.ed_search).setOnClickListener(this);
 
@@ -274,7 +270,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     mapFeeds.clear();
                     feeds.clear();
                     page = 0;
-                    apiForGetAllFeeds(1, 20, true);
+                    apiForGetAllFeeds(1, Constant.FEEDLIMIT, true);
                 });
         rcv_service.setAdapter(exploreServiceAdapter);
 
@@ -284,7 +280,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         lyArtistService.setOnClickListener(this);
         lyRefineLocation.setOnClickListener(this);
         btn_apply_filter.setOnClickListener(this);
-        main_layout_header.setOnClickListener(this);
 
         tv_refine_loc.setText(Mualab.currentLocation.CurrrentAddress);
         lat = String.valueOf(Mualab.currentLocation.lat);
@@ -345,7 +340,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 mapFeeds.clear();
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
-                apiForGetAllFeeds(1, 20, true);
+                apiForGetAllFeeds(1, Constant.FEEDLIMIT, true);
                 break;
 
             case R.id.lyRefineLocation:
@@ -368,10 +363,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 serviceCategoryDialog();
                 break;
 
-            case R.id.main_layout_header:
-                addFragment(GrideToListFragment.newInstance(feeds, 0), true);
-                break;
-
             case R.id.lyArtistService:
                 if (categoryIds.equals("")) {
                     MyToast.getInstance(mContext).showDasuAlert("Please select service category");
@@ -392,7 +383,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                 if (categoryFilterAdapter != null)
                     rcv_service.scrollToPosition(categoryFilterAdapter.getLastPos());
 
-                apiForGetAllFeeds(1, 20, true);
+                apiForGetAllFeeds(1, Constant.FEEDLIMIT, true);
                 break;
 
             case R.id.tv_reset:
@@ -499,13 +490,13 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         /////////////////
         feedAdapter = new HeaderGrideAdapter(mContext, new ExSearchTag(), feeds, this,
                 feedsListner, true);
-        GridLayoutManager manager = new GridLayoutManager(mContext, 3);
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        GridLayoutManager manager = new GridLayoutManager(mContext, 2);
+       /* manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 return feedAdapter.isHeader(position) ? manager.getSpanCount() : 1;
             }
-        });
+        });*/
         rvFeed.setLayoutManager(manager);
         rvFeed.setAdapter(feedAdapter);
 
@@ -520,7 +511,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
             @Override
             public void onLoadMore() {
                 if (feedAdapter != null) {
-                    apiForGetAllFeeds(++page, 20, false);
+                    apiForGetAllFeeds(++page, Constant.FEEDLIMIT, false);
 
 
                 }
@@ -552,7 +543,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         feedType = "image";
         feedAdapter.notifyItemRangeRemoved(0, prevSize);
         showLoading();
-        apiForGetAllFeeds(1, 20, true);
+        apiForGetAllFeeds(1, Constant.FEEDLIMIT, true);
 
     }
 
@@ -669,14 +660,13 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     int total = js.getInt("total");
                     exploreServiceAdapter.notifyDataSetChanged();
                     if (status.equalsIgnoreCase("success")) {
-
-                            if(total == 0){
-                                main_layout_header.setVisibility(View.GONE);
+                        if(total == 0){
                                 tv_msg.setVisibility(View.VISIBLE);
                                 tv_msg.setText(getString(R.string.no_data_found));
+                            feeds.clear();
+                            mapFeeds.clear();
+                            feedAdapter.notifyDataSetChanged();
                             }else ParseAndUpdateUI(total,response);
-
-
                     } else MyToast.getInstance(mContext).showSmallMessage(message);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -833,7 +823,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                                             }
                                         }
 
-
 //tagDetails.put(tag.title, tag);
                                         TagToBeTagged tagged = new TagToBeTagged();
                                         tagged.setUnique_tag_id(unique_tag_id);
@@ -843,11 +832,26 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                                         tagged.setTagDetails(tag);
 
                                         feed.serviceTagList.add(tagged);
+
+                                        /*if(feed.serviceTagList.size() != 1){
+                                                feeds.add(feed);
+                                        }*/
+
+                                        //feeds.add(feed);
                                     }
                                     feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
                                 }
                             }
                             exploreServiceAdapter.notifyDataSetChanged();
+
+                           /* for(int p=0;p<feed.serviceTagList.size();p++){
+                                TagToBeTagged tg = feed.serviceTagList.get(p);
+                                feed.serviceTagList.clear();
+                                feed.serviceTagList.add(0,tg);
+
+                                feeds.add(feed);
+                            }
+*/
                         }
 
                        /* mapFeeds.put(feed._id,feed);
@@ -874,20 +878,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                     tv_msg.setVisibility(View.GONE);
 
                 }
-
-                if (feeds.size() == 1) {
-                    rvFeed.setVisibility(View.GONE);
-                    main_layout_header.setVisibility(View.VISIBLE);
-                    if (!feeds.get(0).feedData.get(0).feedPost.equals("")) {
-                        Picasso.with(mContext).load(feeds.get(0).feedData.get(0).feedPost)
-                                .placeholder(R.color.gray2)
-                                .into(imageViewHeader);
-                    }
-
-                } else {
-                    main_layout_header.setVisibility(View.GONE);
-                }
-
 
                 if (array.length() != 0)
                     feedAdapter.notifyDataSetChanged();

@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.gmail.samehadar.iosdialog.CamomileSpinner;
+import com.gmail.samehadar.iosdialog.utils.DialogUtils;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.feeds.model.FeedLike;
@@ -60,8 +62,6 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final FeedLike feedLike = likedList.get(position);
-
-        holder.progressBar.setVisibility(View.GONE);
         if(TextUtils.isEmpty(feedLike.profileImage)){
             Picasso.with(mContext).load(R.drawable.default_placeholder).fit().into(holder.iv_profileImage);
         }else {
@@ -100,7 +100,6 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.ViewHo
         holder.btn_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.btn_follow.setEnabled(false);
                 followUnfollow(feedLike, position, holder);
             }
         });
@@ -129,27 +128,26 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.ViewHo
         return likedList.size();
     }
 
-    private void apiForFollowUnFollow(final FeedLike feedLike, final int position, final ViewHolder holder ) {
+    private void apiForFollowUnFollow(final FeedLike feedLike, final int position, final ViewHolder h ) {
+        h.spinner3.setVisibility(View.VISIBLE);
+        h.spinner3.start();
+        h.spinner3.recreateWithParams(
+                mContext,
+                DialogUtils.getColor(mContext, R.color.gray2),
+                50,
+                true
+        );
 
         Map<String, String> map = new HashMap<>();
         map.put("userId", ""+ Mualab.currentUser.id);
         map.put("followerId", ""+feedLike.likeById);
 
-        holder.btn_follow.setEnabled(false);
-        holder.btn_follow.setText("");
-        holder.progressBar.setVisibility(View.VISIBLE);
-
-        holder.progressBar.getIndeterminateDrawable()
-                .setColorFilter(feedLike.followerStatus==1?
-                                ContextCompat.getColor(mContext, R.color.colorAccent):
-                                ContextCompat.getColor(mContext, R.color.white)
-                        , PorterDuff.Mode.SRC_IN);
 
         new HttpTask(new HttpTask.Builder(mContext, "followFollowing", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
-                holder.progressBar.setVisibility(View.GONE);
-                holder.btn_follow.setEnabled(true);
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
                 try {
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
@@ -171,8 +169,8 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.ViewHo
 
             @Override
             public void ErrorListener(VolleyError error) {
-                holder.progressBar.setVisibility(View.GONE);
-                holder.btn_follow.setEnabled(true);
+                h.spinner3.stop();
+                h.spinner3.setVisibility(View.GONE);
                 notifyItemChanged(position);
             }
         }).setProgress(false)
@@ -185,16 +183,14 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.ViewHo
         ImageView iv_profileImage;
         Button btn_follow;
         TextView tv_user_name;
-        ProgressBar progressBar;
+        private CamomileSpinner spinner3;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tv_user_name =  itemView.findViewById(R.id.tv_user_name);
             iv_profileImage = itemView.findViewById(R.id.iv_profileImage);
             btn_follow =  itemView.findViewById(R.id.btn_follow);
-            progressBar =  itemView.findViewById(R.id.progress_bar);
-            progressBar.getIndeterminateDrawable()
-                    .setColorFilter(ContextCompat.getColor(mContext, R.color.white), PorterDuff.Mode.SRC_IN);
+            spinner3 =  itemView.findViewById(R.id.spinner3);
 
             btn_follow.setOnClickListener(new View.OnClickListener() {
                 @Override

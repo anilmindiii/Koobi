@@ -370,7 +370,6 @@ public final class CropImage {
 
     /**
      * Create {@link ActivityBuilder} instance to start {@link CropImageActivity} to crop the given image.<br>
-     * Result will be recieved in {@link Activity#onActivityResult(int, int, Intent)} and can be retrieved
      * using {@link #getActivityResult(Intent)}.
      *
      * @param uri the image Android uri source to crop or null to start a picker
@@ -383,7 +382,6 @@ public final class CropImage {
     /**
      * Get {@link CropImageActivity} result data object for crop image activity started using {@link #activity(Uri)}.
      *
-     * @param data result data intent as received in {@link Activity#onActivityResult(int, int, Intent)}.
      * @return Crop Image Activity Result object or null if none exists
      */
     public static ActivityResult getActivityResult(@Nullable Intent data) {
@@ -442,6 +440,8 @@ public final class CropImage {
             mOptions.validate();
             activity.startActivityForResult(getIntent(activity), CROP_IMAGE_ACTIVITY_REQUEST_CODE);
         }
+
+
 
         /**
          * Start {@link CropImageActivity}.
@@ -824,6 +824,8 @@ public final class CropImage {
             mOptions.rotationDegrees = rotationDegrees;
             return this;
         }
+
+
     }
     //endregion
 

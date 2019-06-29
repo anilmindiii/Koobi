@@ -808,11 +808,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private void sweetAlertConfirmation(String bookingId) {
         SweetAlertDialog dialog = new SweetAlertDialog(BookingConfirmActivity.this, SweetAlertDialog.SUCCESS_TYPE);
-        dialog.setTitleText("Congratulation!");
+        dialog.setTitleText("Congratulations!");
         if (bookingSetting == 1) {
-            dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. check my bookings to review status.");
+            dialog.setContentText("Your booking request has been successfully sent to " + bookingList.get(0).artistName + " for confirmation. Check my bookings to review booking status.");
         } else {
-            dialog.setContentText("Your booking has been made with " + bookingList.get(0).artistName + " check my bookings to review status.");
+            dialog.setContentText("Your booking has been made with " + bookingList.get(0).artistName + " Check my bookings to review booking status.");
         }
         dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
@@ -1089,6 +1089,34 @@ public class BookingConfirmActivity extends AppCompatActivity {
     // payment solutions
     // Remove card case
     private void confirmDialog() {
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(BookingConfirmActivity.this);
+        builder.setMessage("Please add your payment details.")
+                .setPositiveButton("Add Card", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with Apis
+                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentCheckOutActivity.class);
+                        intent.putExtra("from", "BookingConfirmActivity");
+                        startActivityForResult(intent, Constant.REQUEST_Select_Service);
+
+                        dialog.dismiss();
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog a= builder.create();
+        a.show();
+        Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        BN.setTextColor(ContextCompat.getColor(this,R.color.red));
+
+    }
+
+    /*private void confirmDialog() {
         final Dialog dialog = new Dialog(BookingConfirmActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -1127,7 +1155,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         });
 
         dialog.show();
-    }
+    }*/
 
     private void apiForPayment(String bookingId) {
         String cardId = session.getUser().cardId;
