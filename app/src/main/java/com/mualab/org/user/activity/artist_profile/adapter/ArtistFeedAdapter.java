@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
+
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
@@ -41,6 +45,7 @@ import com.hendraanggrian.socialview.SocialView;
 import com.hendraanggrian.widget.SocialTextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
+import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.explore.SearchFeedActivity;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
@@ -94,6 +99,12 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Listener listener;
     private boolean loading;
     public boolean isGrideView;
+    public getGrideClick getGrideClick;
+
+    public void setGrideClick(getGrideClick grideClick){
+        this.getGrideClick = grideClick;
+
+    }
 
     public void showHideLoading(boolean b) {
         loading = b;
@@ -304,10 +315,12 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 imageHolder.imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        getGrideClick.gridClick(feedItems,position);
+                        /*
                         Intent intent1 = new Intent(mContext, FeedSingleActivity.class);
                         intent1.putExtra("feedId", feeds._id + "");
                         intent1.putExtra("userType", feedItems.get(position).userInfo.get(0).userType);
-                        mContext.startActivity(intent1);
+                        mContext.startActivity(intent1);*/
                     }
                 });
 
@@ -392,10 +405,11 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 videoHolder.imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent1 = new Intent(mContext, FeedSingleActivity.class);
+                        getGrideClick.gridClick(feedItems,position);
+                        /*Intent intent1 = new Intent(mContext, FeedSingleActivity.class);
                         intent1.putExtra("feedId", feeds._id+"");
                         intent1.putExtra("userType",feedItems.get(position).userInfo.get(0).userType);
-                        mContext.startActivity(intent1);
+                        mContext.startActivity(intent1);*/
                     }
                 });
 
@@ -1474,7 +1488,10 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         a.show();
         Button BN = a.getButton(DialogInterface.BUTTON_NEGATIVE);
         BN.setTextColor(ContextCompat.getColor(mContext,R.color.red));
-
-
     }
+
+    public interface getGrideClick{
+        void gridClick(List<Feeds> feedItems, int position);
+    }
+
 }

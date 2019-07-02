@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,7 +90,7 @@ public class TopDetailsActivity extends BaseActivity {
                 new ExploreGridViewAdapter.Listener() {
             @Override
             public void onFeedClick(List<Feeds> feed, int index) {
-                addFragment(GrideToListFragment.newInstance(feed, index), true);
+                addFragment(GrideToListFragment.newInstance(feed, index, false), true);
             }
         },
                 feedsListner, true);

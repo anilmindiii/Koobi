@@ -578,9 +578,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                 setTodaysDay(dayId);
 
-                viewCalendar.setFirstDayOfWeek(dayId);
-                //viewCalendar.setFirstDayOfWeek(WorkingHourActivity.getDayById(dayId));
-
                 if (viewCalendar.isSelectedDay(day)) {
                     Calendar todayCal = Calendar.getInstance();
                     int cYear = todayCal.get(Calendar.YEAR);
@@ -613,8 +610,12 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onItemClick(View v) {
                 viewCalendar.isFirstimeLoad = false;
-
                 Day day = viewCalendar.getSelectedDay();
+
+                viewCalendar.setFirstDayOfWeek(day.getDay());
+                viewCalendar.setAdapter(adapter);
+
+
                 Log.i(getClass().getName(), "The Day of Clicked View: "
                         + day.getYear() + "/" + (day.getMonth() + 1) + "/" + day.getDay());
 

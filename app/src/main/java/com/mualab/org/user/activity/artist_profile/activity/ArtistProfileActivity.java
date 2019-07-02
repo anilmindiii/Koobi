@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -65,11 +67,13 @@ import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
+import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
 import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.activity.review_rating.ReviewRatingActivity;
 import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
@@ -108,7 +112,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ArtistProfileActivity extends BaseActivity implements View.OnClickListener, ArtistFeedAdapter.Listener {
+public class ArtistProfileActivity extends BaseActivity implements View.OnClickListener, ArtistFeedAdapter.Listener ,ArtistFeedAdapter.getGrideClick{
     public String artistId;
     private String TAG = this.getClass().getName();
     private User user;
@@ -148,6 +152,8 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
     private String blockedId = "";
     private Toolbar toolbar;
     private  ViewPager profileItemPager;
+    private CardView headerActionBar;
+    private AppBarLayout appbar;
     //block view show some views
 
 
@@ -209,6 +215,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
         feeds = new ArrayList<>();
         item = new ArtistsSearchBoard();
 
+        appbar = findViewById(R.id.appbar);
         tvImages = findViewById(R.id.tv_image);
         tvVideos = findViewById(R.id.tv_videos);
         tvFeeds = findViewById(R.id.tv_feed);
@@ -216,6 +223,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
         iv_search_icon = findViewById(R.id.iv_search_icon);
         ly_main = findViewById(R.id.ly_main);
         ly_main_layout = findViewById(R.id.ly_main_layout);
+        headerActionBar = findViewById(R.id.header);
         llDots = findViewById(R.id.llDots);
         llDots.setVisibility(View.VISIBLE);
 
@@ -258,6 +266,7 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
         rvFeed.setHasFixedSize(true);
 
         feedAdapter = new ArtistFeedAdapter(ArtistProfileActivity.this, feeds, this);
+        feedAdapter.setGrideClick(this::gridClick);
 
         endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
@@ -290,6 +299,21 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 Log.e(TAG, "onLoadMore: ");
             }
         });
+
+        headerActionBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyClickOnPostMenu.getMentIntance().setMenuClick();
+            }
+        });
+
+        appbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyClickOnPostMenu.getMentIntance().setMenuClick();
+            }
+        });
+
 
         rvFeed.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
@@ -463,6 +487,29 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
                 break;
         }
     }
+
+    @Override
+    public void gridClick(List<Feeds> feedItems, int position) {
+        addFragmentProfile(GrideToListFragment.newInstance(feedItems,position, false), true);
+
+    }
+
+    public void addFragmentProfile(Fragment fragment, boolean addToBackStack) {
+        String backStackName = fragment.getClass().getName();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
+        if (!fragmentPopped) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_in,0,0);
+           /* transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right,
+                    R.anim.slide_in_from_right, R.anim.slide_out_to_left);*/
+            transaction.add(R.id.container, fragment, backStackName);
+            if (addToBackStack)
+                transaction.addToBackStack(backStackName);
+            transaction.commit();
+        }
+    }
+
 
     class ViewPagerAdapterSwip extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

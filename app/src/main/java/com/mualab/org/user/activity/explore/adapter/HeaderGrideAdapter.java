@@ -90,8 +90,7 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             .into(h.imageView);
                 }
 
-                ChildServiceAdapter serviceAdapter = new ChildServiceAdapter(feeds.serviceTagList);
-                h.rcv_service.setAdapter(serviceAdapter);
+
 
             } else if (feeds.feedType.equals("video")) {
                 h.videoIcon.setVisibility(View.VISIBLE);
@@ -103,7 +102,12 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             .into(h.imageView);
                 }
 
+
+
             }
+
+            ChildServiceAdapter serviceAdapter = new ChildServiceAdapter(feeds.serviceTagList);
+            h.rcv_service.setAdapter(serviceAdapter);
 
            /* h.tv_category.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -275,7 +279,7 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-            viewHolder.tv_category.setText(serviceTagList.get(i).getTagDetails().title);
+            viewHolder.tv_category.setText(serviceTagList.get(i).getTagDetails().title.trim());
         }
 
         @Override

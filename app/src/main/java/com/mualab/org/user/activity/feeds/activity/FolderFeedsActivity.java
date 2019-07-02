@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -33,6 +34,7 @@ import com.mualab.org.user.activity.feeds.adapter.FeedAdapter;
 import com.mualab.org.user.activity.feeds.fragment.FeedsFragment;
 import com.mualab.org.user.activity.feeds.fragment.LikeFragment;
 import com.mualab.org.user.activity.feeds.fragment.SingleFeedLikeFragment;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
 import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
@@ -70,6 +72,8 @@ public class FolderFeedsActivity extends AppCompatActivity implements View.OnCli
     private LinearLayout ll_filter;
     private String feedType = "";
     private ArrayList<String> arrayList = new ArrayList<>();
+    private CardView header;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,7 @@ public class FolderFeedsActivity extends AppCompatActivity implements View.OnCli
         tv_no_data_msg = findViewById(R.id.tv_msg);
         ll_filter = findViewById(R.id.ll_filter);
         tvFilter = findViewById(R.id.tvFilter);
+        header = findViewById(R.id.header);
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         tvHeaderTitle.setText(folderName);
 
@@ -93,6 +98,10 @@ public class FolderFeedsActivity extends AppCompatActivity implements View.OnCli
             public void onClick(View view) {
                 onBackPressed();
             }
+        });
+
+        header.setOnClickListener(v->{
+            MyClickOnPostMenu.getMentIntance().setMenuClick();
         });
 
 

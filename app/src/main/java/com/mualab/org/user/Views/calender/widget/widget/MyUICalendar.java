@@ -322,7 +322,7 @@ public abstract class MyUICalendar extends LinearLayout {
     }
 
     public int getTextPrimaryColor() {
-        return getResources().getColor(R.color.colorPrimary);
+        return getResources().getColor(R.color.black);
     }
 
     public void setTextColor(int textColor) {

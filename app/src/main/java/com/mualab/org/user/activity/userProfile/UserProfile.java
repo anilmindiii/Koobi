@@ -65,6 +65,7 @@ import com.mualab.org.user.activity.artist_profile.activity.FollowersActivity;
 import com.mualab.org.user.activity.artist_profile.adapter.ArtistFeedAdapter;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
+import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
 import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
@@ -115,7 +116,7 @@ import static com.mualab.org.user.activity.main.MainActivity.businessBadge;
 
 
 public class UserProfile extends Fragment implements View.OnClickListener,
-        ArtistFeedAdapter.Listener, NavigationMenuAdapter.Listener{
+        ArtistFeedAdapter.Listener, NavigationMenuAdapter.Listener,ArtistFeedAdapter.getGrideClick{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -354,7 +355,7 @@ public class UserProfile extends Fragment implements View.OnClickListener,
         rvFeed.setHasFixedSize(true);
 
         feedAdapter = new ArtistFeedAdapter(mContext, feeds, this);
-
+        feedAdapter.setGrideClick(this::gridClick);
 
         endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
@@ -1682,4 +1683,24 @@ endlesScrollListener.resetState();
 
     }
 
+    @Override
+    public void gridClick(List<Feeds> feedItems, int position) {
+        addFragmentProfile(GrideToListFragment.newInstance(feedItems,position,true), true);
+    }
+
+    public void addFragmentProfile(Fragment fragment, boolean addToBackStack) {
+        String backStackName = fragment.getClass().getName();
+        FragmentManager fragmentManager = getFragmentManager();
+        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
+        if (!fragmentPopped) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_in,0,0);
+           /* transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right,
+                    R.anim.slide_in_from_right, R.anim.slide_out_to_left);*/
+            transaction.add(R.id.drawer_layout, fragment, backStackName);
+            if (addToBackStack)
+                transaction.addToBackStack(backStackName);
+            transaction.commit();
+        }
+    }
 }

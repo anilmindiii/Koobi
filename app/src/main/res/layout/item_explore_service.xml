@@ -7,8 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="5dp"
     android:background="@drawable/rounded_border_dark_unselected"
-    android:layout_marginTop="3dp"
-    android:layout_marginBottom="3dp"
     android:layout_marginRight="6dp">
 
     <TextView

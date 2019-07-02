@@ -574,7 +574,7 @@ public class ExploreFragment extends BaseFragment implements View.OnClickListene
         intent.putExtra("BUNDLE",args);
         mContext.startActivity(intent);*/
 
-        addFragment(GrideToListFragment.newInstance(feed,index), true);
+        addFragment(GrideToListFragment.newInstance(feed,index, false), true);
     }
 
 

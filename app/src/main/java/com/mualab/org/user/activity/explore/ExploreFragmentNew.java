@@ -8,22 +8,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,7 +52,6 @@ import com.mualab.org.user.activity.feeds.adapter.LiveUserAdapter;
 import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
 import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
-import com.mualab.org.user.chat.model.Chat;
 import com.mualab.org.user.data.feeds.Feeds;
 import com.mualab.org.user.data.feeds.LiveUserInfo;
 import com.mualab.org.user.data.remote.HttpResponceListner;
@@ -66,12 +60,8 @@ import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.listener.FeedsListner;
 import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
-import com.mualab.org.user.utils.CommonUtils;
 import com.mualab.org.user.utils.ConnectionDetector;
-import com.mualab.org.user.utils.ScreenUtils;
-import com.mualab.org.user.utils.WrapContentGridLayoutManager;
 import com.mualab.org.user.utils.constants.Constant;
-import com.squareup.picasso.Picasso;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
@@ -914,7 +904,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         intent.putExtra("BUNDLE",args);
         mContext.startActivity(intent);*/
 
-        addFragment(GrideToListFragment.newInstance(feed, index), true);
+        addFragment(GrideToListFragment.newInstance(feed, index, true), true);
     }
 
 

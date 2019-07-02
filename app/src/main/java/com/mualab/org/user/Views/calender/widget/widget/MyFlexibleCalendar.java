@@ -1,5 +1,6 @@
 package com.mualab.org.user.Views.calender.widget.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -536,6 +537,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
     }
 
     public void nextMonth() {
+
         Calendar cal = mAdapter.getCalendar();
         if (cal.get(Calendar.MONTH) == cal.getActualMaximum(Calendar.MONTH)) {
             cal.set((cal.get(Calendar.YEAR) + 1), cal.getActualMinimum(Calendar.MONTH), 1);
@@ -678,24 +680,26 @@ public class MyFlexibleCalendar extends MyUICalendar {
                 index = mTableBody.getChildCount() - 1;
             }
             mCurrentWeekIndex = index;
-
-            final int targetHeight = mTableBody.getChildAt(index).getMeasuredHeight();
-            int tempHeight = 0;
-            for (int i = 0; i < index; i++) {
-                tempHeight += mTableBody.getChildAt(i).getMeasuredHeight();
-            }
-            final int topHeight = tempHeight;
-
-            mScrollViewBody.getLayoutParams().height = targetHeight;
-            mScrollViewBody.requestLayout();
-
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mScrollViewBody.smoothScrollTo(0, topHeight);
+            try {
+                final int targetHeight = mTableBody.getChildAt(index).getMeasuredHeight();
+                int tempHeight = 0;
+                for (int i = 0; i < index; i++) {
+                    tempHeight += mTableBody.getChildAt(i).getMeasuredHeight();
                 }
-            });
+                final int topHeight = tempHeight;
 
+                mScrollViewBody.getLayoutParams().height = targetHeight;
+                mScrollViewBody.requestLayout();
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScrollViewBody.smoothScrollTo(0, topHeight);
+                    }
+                });
+            }catch (Exception e){
+
+            }
 
             if (mListener != null) {
                 mListener.onWeekChange(mCurrentWeekIndex);

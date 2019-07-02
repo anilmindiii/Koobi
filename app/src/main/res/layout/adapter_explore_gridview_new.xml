@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="225dp"
+    android:layout_height="240dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginRight="2dp"
-    android:layout_marginTop="5dp"
     android:background="@color/white"
     android:id="@+id/main_layout">
 
@@ -16,7 +15,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="209dp"
             android:background="@color/white">
 
             <ImageView

@@ -12,14 +12,12 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +25,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,7 +33,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -68,18 +64,15 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.Views.refreshviews.CircleHeaderView;
 import com.mualab.org.user.Views.refreshviews.OnRefreshListener;
 import com.mualab.org.user.Views.refreshviews.RjRefreshLayout;
-import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivity;
 import com.mualab.org.user.activity.artist_profile.activity.FollowersActivity;
 import com.mualab.org.user.activity.artist_profile.adapter.ArtistFeedAdapter;
 import com.mualab.org.user.activity.artist_profile.model.UserProfileData;
 import com.mualab.org.user.activity.base.BaseActivity;
 import com.mualab.org.user.activity.dialogs.NameDisplayDialog;
+import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.feeds.activity.CommentsActivity;
-import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.feeds.activity.LikeFeedActivity;
-import com.mualab.org.user.activity.feeds.activity.PreviewImageActivity;
 import com.mualab.org.user.activity.feeds.adapter.ViewPagerAdapter;
-import com.mualab.org.user.activity.main.MainActivity;
 import com.mualab.org.user.activity.main.listner.CountClick;
 import com.mualab.org.user.activity.myprofile.activity.adapter.NavigationMenuAdapter;
 import com.mualab.org.user.activity.myprofile.activity.model.NavigationItem;
@@ -101,7 +94,6 @@ import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.image.cropper.CropImage;
 import com.mualab.org.user.image.cropper.CropImageView;
 import com.mualab.org.user.image.picker.ImagePicker;
-import com.mualab.org.user.listener.RecyclerViewScrollListener;
 import com.mualab.org.user.listener.RecyclerViewScrollListenerProfile;
 import com.mualab.org.user.menu.MenuAdapter;
 import com.mualab.org.user.utils.ConnectionDetector;
@@ -111,15 +103,12 @@ import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +118,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.mualab.org.user.activity.main.MainActivity.businessBadge;
 
 public class UserProfileActivity extends BaseActivity implements View.OnClickListener,
-        ArtistFeedAdapter.Listener, NavigationMenuAdapter.Listener {
+        ArtistFeedAdapter.Listener, NavigationMenuAdapter.Listener,ArtistFeedAdapter.getGrideClick {
     private DrawerLayout drawer;
     private String TAG = this.getClass().getName();
     private User user;
@@ -183,6 +172,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             }else nodeForBlockUser = myId + "_" + userId;
         }
         init();
+
 
         if (userId != null)
             if (userId.equals(String.valueOf(user.id)))
@@ -332,6 +322,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         feedAdapter = new ArtistFeedAdapter(UserProfileActivity.this, feeds, this);
 
+        feedAdapter.setGrideClick(this::gridClick);
 
         endlesScrollListener = new RecyclerViewScrollListenerProfile() {
             @Override
@@ -2213,5 +2204,26 @@ mRefreshLayout.stopRefresh(false, 500);
 
     }
 
+
+    @Override
+    public void gridClick(List<Feeds> feedItems, int position) {
+        addFragmentProfile(GrideToListFragment.newInstance(feedItems,position, false), true);
+    }
+
+    public void addFragmentProfile(Fragment fragment, boolean addToBackStack) {
+        String backStackName = fragment.getClass().getName();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
+        if (!fragmentPopped) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_in,0,0);
+           /* transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right,
+                    R.anim.slide_in_from_right, R.anim.slide_out_to_left);*/
+            transaction.add(R.id.container, fragment, backStackName);
+            if (addToBackStack)
+                transaction.addToBackStack(backStackName);
+            transaction.commit();
+        }
+    }
 
 }

@@ -2,9 +2,7 @@ package com.mualab.org.user.activity.explore.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,7 +30,6 @@ import com.mualab.org.user.Views.refreshviews.RjRefreshLayout;
 import com.mualab.org.user.activity.explore.GrideToListFragment;
 import com.mualab.org.user.activity.explore.adapter.ExploreGridViewAdapter;
 import com.mualab.org.user.activity.explore.model.ExSearchTag;
-import com.mualab.org.user.activity.feeds.activity.FeedSingleActivity;
 import com.mualab.org.user.activity.tag_module.instatag.TagDetail;
 import com.mualab.org.user.activity.tag_module.instatag.TagToBeTagged;
 import com.mualab.org.user.application.Mualab;
@@ -50,7 +47,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -455,7 +451,7 @@ public class SearchFeedFragment extends Fragment implements ExploreGridViewAdapt
         intent1.putExtra("userType", feed.get(index).userInfo.get(0).userType);
         mContext.startActivity(intent1);*/
 
-        addFragment(GrideToListFragment.newInstance(feed,index), true);    }
+        addFragment(GrideToListFragment.newInstance(feed,index, false), true);    }
 
     public void addFragment(Fragment fragment, boolean addToBackStack) {
         String backStackName = fragment.getClass().getName();
