@@ -163,6 +163,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
             @Override
             public void onClick(View v) {
                 prevMonth();
+
             }
         });
 

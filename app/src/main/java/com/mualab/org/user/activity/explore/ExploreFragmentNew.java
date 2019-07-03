@@ -16,6 +16,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -780,6 +781,10 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                         if (jsonObject.has("serviceTag")) {
                             JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
                             if (serviceTagArray.length() != 0) {
+
+                                if(feeds.size() == 6){
+                                    Log.d("sdsd","sdsds");
+                                }
 
                                 for (int j = 0; j < serviceTagArray.length(); j++) {
 

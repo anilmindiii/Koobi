@@ -1,10 +1,13 @@
 package com.mualab.org.user.activity.booking;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -116,6 +120,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private String bookingDate;
     private BottomSheetDialog mBizTypeDialog;
     private BottomSheetDialog mCatTypeDialog;
+    private long mLastClickTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -436,6 +442,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.btnToday:
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
+
                 viewCalendar.setToday(true);
                 String currentData = CalendarHelper.getTimestamp(Constant.TIMESTAMP_FORMAT_DAY);
                 viewCalendar.setFirstDayOfWeek(currentData);
@@ -587,6 +598,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     int year = day.getYear();
                     int dayOfMonth = day.getDay();
 
+                   // viewCalendar.setFirstDayOfWeek(day.getDay());
+                   // viewCalendar.setAdapter(adapter);
+
                     if (year >= cYear && month >= cMonth) {
                         if (year == cYear && month == cMonth && dayOfMonth < cDay) {
                             Log.i("Date Test", "You can't select previous date.");
@@ -602,6 +616,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     } else {
                         Log.i("Date Test", "You can't select previous date.");
+                        MyToast.getInstance(BookingActivity.this).showDasuAlert("You can't select previous date.");
+
                     }
 
                 }
@@ -612,8 +628,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 viewCalendar.isFirstimeLoad = false;
                 Day day = viewCalendar.getSelectedDay();
 
-                viewCalendar.setFirstDayOfWeek(day.getDay());
-                viewCalendar.setAdapter(adapter);
+
 
 
                 Log.i(getClass().getName(), "The Day of Clicked View: "
