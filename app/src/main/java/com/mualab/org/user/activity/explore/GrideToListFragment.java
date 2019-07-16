@@ -194,14 +194,16 @@ public class GrideToListFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onDetach() {
-        if (rlHeader1 != null) {
-            rlHeader1.setVisibility(View.GONE);
-        } else {
-            TextView tvHeaderTitle = getActivity().findViewById(R.id.tvHeaderTitle);
-            tvHeaderTitle.setText(feedItems.get(index).userName);
+        try {
+            if (rlHeader1 != null) {
+                rlHeader1.setVisibility(View.GONE);
+            } else {
+                TextView tvHeaderTitle = getActivity().findViewById(R.id.tvHeaderTitle);
+                tvHeaderTitle.setText(feedItems.get(index).userName);
+            }
+        }catch (Exception e){
 
         }
-
         super.onDetach();
     }
 

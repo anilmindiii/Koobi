@@ -1025,13 +1025,13 @@ public class ArtistProfileActivity extends BaseActivity implements View.OnClickL
             iv_Profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                 /*   ArrayList<String> tempList = new ArrayList<>();
+                    ArrayList<String> tempList = new ArrayList<>();
                     tempList.add(profileData.profileImage);
 
                     Intent intent = new Intent(ArtistProfileActivity.this, PreviewImageActivity.class);
                     intent.putExtra("imageArray", tempList);
                     intent.putExtra("startIndex", 0);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
             });
 

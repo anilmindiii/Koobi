@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -170,6 +171,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
         mBtnNextMonth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 nextMonth();
             }
         });
@@ -177,7 +179,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
         mBtnPrevWeek.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                prevMonth();
+                prevWeek();
             }
         });
 
@@ -273,7 +275,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
                         txtDay.setBackground(getSelectedItemBackgroundOrangeUnService());
                     } else{
                         txtDay.setBackgroundColor(getResources().getColor(R.color.white));
-                        txtDay.setTextColor(getResources().getColor(R.color.colorOrange));
+                        txtDay.setTextColor(getResources().getColor(R.color.google_green));
                     }
 
                 } else {
@@ -459,8 +461,6 @@ public class MyFlexibleCalendar extends MyUICalendar {
                 return 0;
             }
         }
-
-
     }
 
     public int isServiceSelected(int childId) {
@@ -511,20 +511,18 @@ public class MyFlexibleCalendar extends MyUICalendar {
     public void setAdapter(CalendarAdapter adapter) {
         mAdapter = adapter;
         adapter.setFirstDayOfWeek(getFirstDayOfWeek());
-
         reload();
-
         // init week
         mCurrentWeekIndex = getSuitableRowIndex();
     }
 
     public void addEventTag(int numYear, int numMonth, int numDay) {
         mAdapter.addEvent(new Event(numYear, numMonth, numDay));
-
         reload();
     }
 
     public void prevMonth() {
+        mScrollViewBody.startAnimation(AnimationUtils.loadAnimation(mContext,R.anim.slide_in_from_left));
         Calendar cal = mAdapter.getCalendar();
         if (cal.get(Calendar.MONTH) == cal.getActualMinimum(Calendar.MONTH)) {
             cal.set((cal.get(Calendar.YEAR) - 1), cal.getActualMaximum(Calendar.MONTH), 1);
@@ -538,7 +536,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
     }
 
     public void nextMonth() {
-
+        mScrollViewBody.startAnimation(AnimationUtils.loadAnimation(mContext,R.anim.slide_in_from_right));
         Calendar cal = mAdapter.getCalendar();
         if (cal.get(Calendar.MONTH) == cal.getActualMaximum(Calendar.MONTH)) {
             cal.set((cal.get(Calendar.YEAR) + 1), cal.getActualMinimum(Calendar.MONTH), 1);
@@ -551,7 +549,10 @@ public class MyFlexibleCalendar extends MyUICalendar {
         }
     }
 
+
+
     public void prevWeek() {
+        mScrollViewBody.startAnimation(AnimationUtils.loadAnimation(mContext,R.anim.slide_in_from_left));
         if (mCurrentWeekIndex - 1 < 0) {
             mCurrentWeekIndex = -1;
             prevMonth();
@@ -562,6 +563,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
     }
 
     public void nextWeek() {
+        mScrollViewBody.startAnimation(AnimationUtils.loadAnimation(mContext,R.anim.slide_in_from_right));
         if (mCurrentWeekIndex + 1 >= mTableBody.getChildCount()) {
             mCurrentWeekIndex = 0;
             nextMonth();

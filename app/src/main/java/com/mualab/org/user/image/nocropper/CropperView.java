@@ -121,13 +121,6 @@ public class CropperView extends FrameLayout {
         task.execute(mImageView);
     }
 
-    public boolean isPreScaling() {
-        return mImageView.isDoPreScaling();
-    }
-
-    public void setPreScaling(boolean doPreScaling) {
-        mImageView.setDoPreScaling(doPreScaling);
-    }
 
     public float getMaxZoom() {
         return mImageView.getMaxZoom();

@@ -1854,6 +1854,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                         writeNewUser(newuser);
                         Mualab.currentUser = newuser;
 
+                        feeds.clear();
+                        feedAdapter.notifyDataSetChanged();
+                        apiForGetAllFeeds(0, 20, true, "");
                         MyToast.getInstance(UserProfileActivity.this).showDasuAlert("Profile picture updated successfully");
                     } else {
                     }

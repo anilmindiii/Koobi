@@ -782,10 +782,6 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                             JSONArray serviceTagArray = jsonObject.getJSONArray("serviceTag");
                             if (serviceTagArray.length() != 0) {
 
-                                if(feeds.size() == 6){
-                                    Log.d("sdsd","sdsds");
-                                }
-
                                 for (int j = 0; j < serviceTagArray.length(); j++) {
 
                                     feed.serviceTagList = new ArrayList<>();

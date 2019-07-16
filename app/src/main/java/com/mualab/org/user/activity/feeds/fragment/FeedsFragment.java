@@ -143,7 +143,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     private AppBarLayout appbar;
     private CoordinatorLayout coordinatorLayout;
     private CollapsingToolbarLayout collapsing_toolbar;
-    private TextView tv_msg,tv_no_data_msg;
+    private TextView tv_msg, tv_no_data_msg;
     private LinearLayout ll_header;
     private RjRefreshLayout mRefreshLayout;
     public boolean isPulltoRefrash = false;
@@ -176,7 +176,6 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     private int dotscount;
     private ViewPagerFeedAdapter viewPagerAdapter1;
     private ImageView[] dots;
-
 
 
     public FeedsFragment() {
@@ -297,13 +296,13 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         rvFeed.setLayoutManager(lm);
         rvFeed.setHasFixedSize(true);
 
-        feedAdapter = new FeedAdapter(tv_no_data_msg,mContext,"", feeds, this);
+        feedAdapter = new FeedAdapter(tv_no_data_msg, mContext, "", feeds, this);
         endlesScrollListener = new RecyclerViewScrollListener(lm) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (feedAdapter != null) {
                     feedAdapter.showHideLoading(true);
-                    apiForGetAllFeeds(page, 10, false,"");
+                    apiForGetAllFeeds(page, 10, false, "");
                 }
             }
 
@@ -332,7 +331,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
             public void onRefresh() {
                 endlesScrollListener.resetState();
                 isPulltoRefrash = true;
-                apiForGetAllFeeds(0, 10, false,"");
+                apiForGetAllFeeds(0, 10, false, "");
             }
 
             @Override
@@ -459,10 +458,10 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                 Intent intent = null;
                 ActivityOptionsCompat options = null;
                 EditText edCaption = new EditText(mContext);
-                    intent = new Intent(mContext, FeedPostActivity.class);
-                    intent.putExtra("caption", "");
-                    intent.putExtra("feedType", Constant.TEXT_STATE);
-                    intent.putExtra("requestCode", Constant.POST_FEED_DATA);
+                intent = new Intent(mContext, FeedPostActivity.class);
+                intent.putExtra("caption", "");
+                intent.putExtra("feedType", Constant.TEXT_STATE);
+                intent.putExtra("requestCode", Constant.POST_FEED_DATA);
                 if (intent != null) {
                     startActivityForResult(intent, Constant.POST_FEED_DATA);
                 }
@@ -471,7 +470,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
             @Override
             public void OnTextChange(String text) {
                 feeds.clear();
-                apiForGetAllFeeds(0, 10, false,text.trim());
+                apiForGetAllFeeds(0, 10, false, text.trim());
             }
         });
         viewPager.setAdapter(viewPagerAdapter1);
@@ -503,7 +502,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
             feedType = "";
             CURRENT_FEED_STATE = Constant.FEED_STATE;
             feedAdapter.notifyItemRangeRemoved(0, prevSize);
-            apiForGetAllFeeds(0, 10, true,"");
+            apiForGetAllFeeds(0, 10, true, "");
         }
 
         switch (id) {
@@ -550,14 +549,14 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     }
 
     public void apiForGetAllFeeds(final int page, final int feedLimit, final boolean isEnableProgress,
-                                   final String searchText) {
+                                  final String searchText) {
         if (!ConnectionDetector.isConnected()) {
             new NoConnectionDialog(mContext, new NoConnectionDialog.Listner() {
                 @Override
                 public void onNetworkChange(Dialog dialog, boolean isConnected) {
                     if (isConnected) {
                         dialog.dismiss();
-                        apiForGetAllFeeds(page, feedLimit, isEnableProgress,searchText);
+                        apiForGetAllFeeds(page, feedLimit, isEnableProgress, searchText);
                     }
 
                 }
@@ -570,7 +569,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         params.put("limit", String.valueOf(feedLimit));
         params.put("type", "newsFeed");
         params.put("userId", "" + Mualab.currentUser.id);
-        params.put("search",searchText);
+        params.put("search", searchText);
         // params.put("appType", "user");
         Mualab.getInstance().cancelPendingRequests(this.getClass().getName());
         new HttpTask(new HttpTask.Builder(mContext, "getAllFeeds", new HttpResponceListner.Listener() {
@@ -776,7 +775,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                         isPulltoRefrash = false;
                         mRefreshLayout.stopRefresh(false, 500);
                     }
-                }else  {
+                } else {
                     tv_no_data_msg.setText(R.string.no_res_found);
                     tv_no_data_msg.setVisibility(View.GONE);
                 }
@@ -796,7 +795,6 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
             }
 
 
-
         } catch (JSONException e) {
             e.printStackTrace();
             feedAdapter.notifyDataSetChanged();
@@ -804,7 +802,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         }
     }
 
-    private String getEmojis(String commets){
+    private String getEmojis(String commets) {
         String myString = "";
         try {
             myString = URLDecoder.decode(commets, "UTF-8");
@@ -879,7 +877,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
     private void getStoryList() {
         Map<String, String> params = new HashMap<>();
-         params.put("userId", Mualab.currentUser.id+"");
+        params.put("userId", Mualab.currentUser.id + "");
 
         new HttpTask(new HttpTask.Builder(mContext, "getMyStoryUser", new HttpResponceListner.Listener() {
             @Override
@@ -904,8 +902,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                                 me.storyCount = live.storyCount;
                                 me.userName = "You";
 
-                            }
-                            else liveUserList.add(live);
+                            } else liveUserList.add(live);
                         }
 
                         liveUserAdapter.notifyDataSetChanged();
@@ -1096,7 +1093,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
                     feeds.clear();
                     //first clear the recycler view so items are not populated twice
                     feedAdapter.clear();
-                    apiForGetAllFeeds(0, 10, true,"");
+                    apiForGetAllFeeds(0, 10, true, "");
                     break;
 
                 case Constant.REQUEST_VIDEO_CAPTURE:
@@ -1208,7 +1205,6 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
     }
 
 
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
 
@@ -1275,7 +1271,7 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
 
         ArrayList<TagToBeTagged> tags = feeds.taggedImgMap.get(index);
         if (tags != null && tags.size() != 0) {
-            postImage.addTagViewFromTagsToBeTagged("people",tags, false);
+            postImage.addTagViewFromTagsToBeTagged("people", tags, false);
             postImage.hideTags("people");
         }
 

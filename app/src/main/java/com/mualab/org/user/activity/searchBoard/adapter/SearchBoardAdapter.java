@@ -204,26 +204,29 @@ public class SearchBoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return;
             }
             mLastClickTime = SystemClock.elapsedRealtime();
+            if(getAdapterPosition() != -1){
+                ArtistsSearchBoard item = artistsList.get(getAdapterPosition());
+                switch (v.getId()){
+                    case R.id.btnBook:
+                        getClickListner.bookData(item);
+                        break;
 
-            ArtistsSearchBoard item = artistsList.get(getAdapterPosition());
-            switch (v.getId()){
-                case R.id.btnBook:
-                    getClickListner.bookData(item);
-                    break;
-
-                case R.id.ivProfile:
-                    Intent intent2 = new Intent(context, ArtistProfileActivity.class);
-                    intent2.putExtra("item",item);
-                    intent2.putExtra("artistId",item._id);
-                    context.startActivity(intent2);
-                    break;
-                case R.id.lyContainer:
+                    case R.id.ivProfile:
+                        Intent intent2 = new Intent(context, ArtistProfileActivity.class);
+                        intent2.putExtra("item",item);
+                        intent2.putExtra("artistId",item._id);
+                        context.startActivity(intent2);
+                        break;
+                    case R.id.lyContainer:
                    /* Intent intent3 = new Intent(context, ArtistProfileActivity.class);
                     intent3.putExtra("item",item);
                     intent3.putExtra("artistId",item._id);
                     context.startActivity(intent3);*/
-                    break;
+                        break;
+                }
             }
+
+
         }
     }
 

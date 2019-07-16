@@ -64,7 +64,7 @@ public class CertificateActivity extends AppCompatActivity implements OnCertific
 
     private void setViewId(){
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
-        tvHeaderTitle.setText(getString(R.string.text_certificate));
+        tvHeaderTitle.setText("Qualification");
         tvNoData = findViewById(R.id.tvNoData);
         rycvCertificates = findViewById(R.id.rycvCertificates);
 

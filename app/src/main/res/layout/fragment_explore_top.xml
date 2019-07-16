@@ -2,14 +2,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.mualab.org.user.activity.explore.fragment.ExploreTopFragment">
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvTopSearch"
+    <com.mualab.org.user.Views.refreshviews.RjRefreshLayout
+        android:id="@+id/mSwipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/adapter_explore_top"/>
+        android:layout_below="@+id/rlFilter"
+        android:layout_marginLeft="6dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvTopSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/adapter_explore_top"/>
+
+
+    </com.mualab.org.user.Views.refreshviews.RjRefreshLayout>
+
+
 
     <include layout="@layout/layout_inner_loader"
         android:layout_width="wrap_content"

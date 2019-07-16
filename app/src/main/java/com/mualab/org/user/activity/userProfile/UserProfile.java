@@ -1335,6 +1335,10 @@ public class UserProfile extends Fragment implements View.OnClickListener,
                         writeNewUser(newuser);
                         Mualab.currentUser = newuser;
 
+                        feeds.clear();
+                        feedAdapter.notifyDataSetChanged();
+                        apiForGetAllFeeds(0, 20, true, "");
+
                         MyToast.getInstance(mContext).showDasuAlert("Profile picture updated successfully");
                     } else {
                     }

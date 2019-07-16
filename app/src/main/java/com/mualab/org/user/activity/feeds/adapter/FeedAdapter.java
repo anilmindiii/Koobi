@@ -1300,14 +1300,31 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     String status = js.getString("status");
                     //String message = js.getString("message");
 
+
+
                     if (status.equalsIgnoreCase("success")) {
                         if (feeds.followingStatus == 0) {
-                            feeds.followingStatus = 1;
+                            for(Feeds feedslist:feedItems){
+                                if(feedslist.userId == feeds.userId){
+                                    feeds.followingStatus = 1;
+                                    feedslist.followingStatus = 1;
+                                }
+                            }
+
                         } else if (feeds.followingStatus == 1) {
-                            feeds.followingStatus = 0;
+                            for(Feeds feedslist:feedItems){
+                                if(feedslist.userId == feeds.userId){
+                                    feeds.followingStatus = 0;
+                                    feedslist.followingStatus = 0;
+                                }
+                            }
+
                         }
+
+
                     }
-                    notifyItemChanged(position);
+                    notifyDataSetChanged();
+                    //notifyItemChanged(position);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     notifyItemChanged(position);

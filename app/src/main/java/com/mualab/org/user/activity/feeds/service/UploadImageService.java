@@ -165,9 +165,8 @@ public class UploadImageService extends IntentService {
     }
 
 
-    private void prepareDataToUpload(HashMap<String, String> header, HashMap<String, String> params, ArrayList<Uri> mSelectedImages) {
-
-
+    private void prepareDataToUpload(HashMap<String, String> header, HashMap<String, String> params,
+                                     ArrayList<Uri> mSelectedImages) {
         List<File> images = new ArrayList<>();
         HashMap<String, List<File>> files = new HashMap<>();
         for (int index = 0, size = mSelectedImages.size(); index < size; index++) {

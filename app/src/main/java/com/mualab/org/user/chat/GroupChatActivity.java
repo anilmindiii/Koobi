@@ -287,6 +287,16 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 if (dataSnapshot.getValue() != null) {
 
                     try {
+                        /*Map<String, Groups> objectMap = (HashMap<String, Groups>) dataSnapshot.getValue();
+                        Groups groups = new Groups();
+
+                        groups.groupDescription = String.valueOf(objectMap.get("groupDescription"));
+                        groups.adminId = Integer.parseInt(String.valueOf(objectMap.get("adminId")));
+                        groups.groupId = String.valueOf(objectMap.get("groupId"));
+                        groups.groupImg = String.valueOf(objectMap.get("groupImg"));
+                        groups.groupName = String.valueOf(objectMap.get("groupName"));
+                        groups.isPending = Boolean.parseBoolean(String.valueOf(objectMap.get("isPending")));*/
+
                         groups = dataSnapshot.getValue(Groups.class);
                         if (groups != null) {
                             CircleImageView ivUserProfile = findViewById(R.id.ivUserProfile);
@@ -1311,7 +1321,10 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 fileType = ".jpg";
             }
 
-            StorageReference ref = storageReference.child("images/" + ServerValue.TIMESTAMP + fileType);
+            Long tsLong = System.currentTimeMillis()/1000;
+            String ts = tsLong.toString();
+
+            StorageReference ref = storageReference.child("images/" + ts + fileType);
             ref.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

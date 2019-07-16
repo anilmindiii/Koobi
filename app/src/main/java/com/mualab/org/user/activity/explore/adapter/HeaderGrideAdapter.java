@@ -89,9 +89,6 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             .centerCrop().placeholder(R.drawable.gallery_placeholder)
                             .into(h.imageView);
                 }
-
-
-
             } else if (feeds.feedType.equals("video")) {
                 h.videoIcon.setVisibility(View.VISIBLE);
 

@@ -69,14 +69,16 @@ public class ExploreServiceAdapter extends RecyclerView.Adapter<ExploreServiceAd
 
         @Override
         public void onClick(View v) {
-            if(dataBeans.get(getAdapterPosition()).isCheckedCategory){
-                dataBeans.get(getAdapterPosition()).isCheckedCategory = false;
-            }else {
-                dataBeans.get(getAdapterPosition()).isCheckedCategory = true;
-            }
+            if(getAdapterPosition() != -1){
+                if(dataBeans.get(getAdapterPosition()).isCheckedCategory){
+                    dataBeans.get(getAdapterPosition()).isCheckedCategory = false;
+                }else {
+                    dataBeans.get(getAdapterPosition()).isCheckedCategory = true;
+                }
 
-            notifyDataSetChanged();
-            valueListner.getValue();
+                notifyDataSetChanged();
+                valueListner.getValue();
+            }
         }
     }
 

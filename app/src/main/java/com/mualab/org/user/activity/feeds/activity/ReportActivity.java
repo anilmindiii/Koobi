@@ -69,7 +69,7 @@ public class ReportActivity extends AppCompatActivity {
     private RelativeLayout ly_reason;
     ArrayList<ReportInfo.DataBean> dataBeans;
     private CardView cv_reason;
-    private ImageView iv_back, iv_down_arrow;
+    private ImageView iv_back, iv_down_arrow,header_image;
     ReportInfo.DataBean dataBean;
     int feedOwenerId = 0;
     int feedId = 0;
@@ -105,6 +105,7 @@ public class ReportActivity extends AppCompatActivity {
         tv_date = findViewById(R.id.tv_date);
         tv_header_title = findViewById(R.id.tv_header_title);
         btn_reSubmit  =findViewById(R.id.btn_reSubmit);
+        header_image  =findViewById(R.id.header_image);
         final LinearLayout ly_note = findViewById(R.id.ly_note);
         TextView tv_note = findViewById(R.id.tv_note);
         TextView tv_report_status = findViewById(R.id.tv_report_status);
@@ -115,6 +116,7 @@ public class ReportActivity extends AppCompatActivity {
             tv_link.setText(API.BASE_URL + "feedDetails/" + feedId + "");
             shouldApiRun = true;
             isforbooking = false;
+            header_image.setImageResource(R.drawable.ico_report);
         }else {
             if (getIntent().getStringExtra("writeReport") != null)
                 isforbooking = true;{

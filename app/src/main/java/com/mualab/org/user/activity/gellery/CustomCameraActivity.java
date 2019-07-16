@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -577,8 +578,19 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
     private void showTakenPicture(Bitmap bitmap) {
         vUpperPanel.showNext();
         vLowerPanel.showNext();
+        if(cameraView.getFacing()== Facing.FRONT){
+            bitmap =  flip(bitmap);
+        }
         ivTakenPhoto.setImage(ImageSource.bitmap(bitmap));
         updateState(STATE_SETUP_PHOTO);
+    }
+
+    public Bitmap flip(Bitmap src) {
+        // create new matrix for transformation
+        Matrix matrix = new Matrix();
+        matrix.preScale(-1.0f, 1.0f);
+        // return transformed image
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
     private void updateState(int state) {

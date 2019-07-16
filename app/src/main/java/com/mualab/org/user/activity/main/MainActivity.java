@@ -690,7 +690,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(intent_notify);
                 break;
 
-
+            case R.id.ivAppIcon:
             case R.id.topLayout1:
                 MyClickOnPostMenu.getMentIntance().setMenuClick();
                 break;
@@ -698,9 +698,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.ivChat:
                 Intent intent_chat = new Intent(MainActivity.this, ChatHistoryActivity.class);
                 startActivity(intent_chat);
-                break;
-
-            case R.id.ivAppIcon:
                 break;
 
             case R.id.ivUserProfile:

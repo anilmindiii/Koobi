@@ -614,7 +614,7 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
 
                 if (mUploadUri == null) {
                     mDeleteCompressedMedia = true;
-//saveTempAndCompress(uri);
+                //saveTempAndCompress(uri);
                     doPostVideoFeed(videoThumb);
                 } else {
                     doPostVideoFeed(videoThumb);

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -647,8 +648,19 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private void showTakenPicture(Bitmap bitmap) {
         vUpperPanel.showNext();
         vLowerPanel.showNext();
+        if(cameraView.getFacing()== Facing.FRONT){
+            bitmap =  flip(bitmap);
+        }
         ivTakenPhoto.setImage(ImageSource.bitmap(bitmap));
         updateState(STATE_SETUP_PHOTO);
+    }
+
+    public Bitmap flip(Bitmap src) {
+        // create new matrix for transformation
+        Matrix matrix = new Matrix();
+        matrix.preScale(-1.0f, 1.0f);
+        // return transformed image
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
 

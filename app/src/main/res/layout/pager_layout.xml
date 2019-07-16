@@ -31,8 +31,6 @@
         app:showAllCarrots="false"
         app:instaTextColor="@android:color/white" />
 
-
-
     <RelativeLayout
         android:id="@+id/lyShowTag"
         android:layout_width="27dp"
@@ -55,10 +53,5 @@
             android:layout_centerInParent="true" />
 
     </RelativeLayout>
-
-
-
-
-
 
 </RelativeLayout>

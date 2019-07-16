@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -124,6 +125,8 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
     private RefineSearchBoard locationData = null;
     private boolean isFilterNChngLocaApply = false;
     private int pagenum = 0;
+    private long mLastClickTime = 0;
+
 
     public static SearchBoardFragment newInstance(RefineSearchBoard item, RefineSearchBoard locationData) {
         SearchBoardFragment fragment = new SearchBoardFragment();
@@ -572,6 +575,11 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case R.id.ivFav:
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 1300){
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
+
                 pagenum = 0;
                 artistsList.clear();
                 mapArtistList.clear();
@@ -997,7 +1005,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                             Collection<ArtistsSearchBoard> values = mapArtistList.values();
                             artistsList.addAll(values);
                         }else {
-                            artistsList.clear();
+                            //artistsList.clear();
                         }
                     } else if (status.equals("fail")) {
                         progress_bar.setVisibility(View.GONE);

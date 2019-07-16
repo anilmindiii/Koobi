@@ -765,8 +765,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         if (chat != null) {
 
             if(chat.message.equals(matchImageUrl)){
-                chat.message = ImageQuickUri.toString();
-                matchImageUrl = "";
+                if(ImageQuickUri != null){
+                    chat.message = ImageQuickUri.toString();
+                    matchImageUrl = "";
+                }
+
             }
 
             chat.ref_key = key;
@@ -1087,7 +1090,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             chatHistory2.timestamp = ServerValue.TIMESTAMP;
                             chatHistory2.unreadMessage = unreadMsgCount;
 
-                            writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,"",false);
+                            writeToDBProfiles(null,chatModel1, chatModel2, chatHistory, chatHistory2,"",false);
                         }
                         //  tv_no_chat.setVisibility(View.GONE);
 
@@ -1099,7 +1102,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void writeToDBProfiles(final Chat chatModel1, final Chat chatModel2,
+    private void writeToDBProfiles(Uri imageQuickUri,final Chat chatModel1, final Chat chatModel2,
                                    final ChatHistory chatHistory1,
                                    final ChatHistory chatHistory2,final String fileName,boolean forIMage) {
 
@@ -1127,11 +1130,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         //  FirebaseDatabase.getInstance().getReference().child("history").child(uID).child(session.getUser().id).setValue(chatModel2);
                         et_for_sendTxt.setText("");
 
-                        if (ImageQuickUri != null){
+                        if (imageQuickUri != null){
                             if(isGIF){
                                 ImageQuickUri = null;
                                 isGIF = false;
-                            }else uploadImage(ImageQuickUri,fileName);
+                            }else uploadImage(imageQuickUri,fileName);
                         }
 
 
@@ -1165,9 +1168,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             et_for_sendTxt.setText("");
 
-            if (ImageQuickUri != null){
+            if (imageQuickUri != null){
 
-                uploadImage(ImageQuickUri,fileName);
+                uploadImage(imageQuickUri,fileName);
                 ImageQuickUri = null;
             }
 
@@ -1550,7 +1553,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 fileType = ".jpg";
             }
 
-            StorageReference ref = storageReference.child("images/" + ServerValue.TIMESTAMP + fileType);
+            Long tsLong = System.currentTimeMillis()/1000;
+            String ts = tsLong.toString();
+
+            StorageReference ref = storageReference.child("images/" + ts + fileType);
             ref.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -1563,12 +1569,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                                     if(!deletedKeyMap.containsKey(holdKeyForImage)){
                                         otherChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
+
                                         myChatRef.child(holdKeyForImage).child("message").setValue(uri.toString());
+
                                         mFirebaseDatabaseReference.child("chat_history").child(myUid).
                                                 child(otherUserId).child("message").setValue(uri.toString());
+
                                         otherChatHistoryRef.child("message").setValue(uri.toString());
                                     }
                                     ImageQuickUri = null;
+                                    holdKeyForImage = null;
                                 }
                             });
 
@@ -1645,7 +1655,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         chatHistory2.unreadMessage = unreadMsgCount;
 
         holdKeyForImage = otherChatRef.push().getKey();
-        writeToDBProfiles(chatModel1, chatModel2, chatHistory, chatHistory2,fileName,true);
+        writeToDBProfiles(uri,chatModel1, chatModel2, chatHistory, chatHistory2,fileName,true);
 
     }
 
@@ -1863,6 +1873,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             dialog.cancel();
             deletedKeyMap.put(refKey,refKey);
             myChatRef.child(refKey).removeValue();
+            otherChatRef.child(refKey).removeValue();
 
             if(chatList.size() == 1){
                 myChatHistoryRef.removeValue();

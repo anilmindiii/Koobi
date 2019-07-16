@@ -82,7 +82,7 @@
                         android:layout_marginRight="2dp"
                         android:fontFamily="@font/nunito_regular"
                         android:text="@string/text_follow"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
 
                 </RelativeLayout>
 

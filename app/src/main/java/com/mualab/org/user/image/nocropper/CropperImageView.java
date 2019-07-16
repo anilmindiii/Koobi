@@ -40,6 +40,7 @@ public class CropperImageView extends ImageView {
     private float mMinZoom = 0;
     private float mMaxZoom = 0;
     private float mBaseZoom = 0;
+    private float mBaseZoomBigger = 0;
 
     private float mFocusX;
     private float mFocusY;
@@ -49,8 +50,6 @@ public class CropperImageView extends ImageView {
     private boolean mFirstRender = true;
 
     private Bitmap mBitmap;
-    private boolean doPreScaling = false;
-    private float mPreScale;
 
     private boolean mAddPaddingToMakeSquare = true;
 
@@ -159,14 +158,20 @@ public class CropperImageView extends ImageView {
                 if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     mBaseZoom = (float) (right - left) / Math.max(drawable.getIntrinsicHeight(),
                             drawable.getIntrinsicWidth());
+                    mBaseZoomBigger = (float) (right - left) / Math.min(drawable.getIntrinsicHeight(),
+                            drawable.getIntrinsicWidth());
                 } else {
                     mBaseZoom = (float) (bottom - top) / Math.max(drawable.getIntrinsicHeight(),
+                            drawable.getIntrinsicWidth());
+
+                    mBaseZoomBigger = (float) (bottom - top) / Math.min(drawable.getIntrinsicHeight(),
                             drawable.getIntrinsicWidth());
                 }
 
                 if (isMaxZoomSet && mBaseZoom > mMaxZoom) {
                     // base zoom should not be greater than max zoom.
                     mBaseZoom = mMaxZoom;
+                    mBaseZoomBigger = mMaxZoom;
                     if (mMinZoom > mMaxZoom) {
                         Log.e(TAG, "min zoom is greater than max zoom. Changing min zoom = max zoom");
                         _setMinZoom(mMaxZoom);
@@ -205,7 +210,6 @@ public class CropperImageView extends ImageView {
         final int action = event.getActionMasked();
 
         if (action == MotionEvent.ACTION_DOWN) {
-            stopInterceptEvent(); // rj
             if (mGestureCallback != null) {
                 mGestureCallback.onGestureStarted();
             }
@@ -219,7 +223,7 @@ public class CropperImageView extends ImageView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                startInterceptEvent(); // rj
+
                 if(mGestureCallback != null) {
                     mGestureCallback.onGestureCompleted();
                 }
@@ -229,14 +233,6 @@ public class CropperImageView extends ImageView {
         }
 
         return true;
-    }
-
-    private void stopInterceptEvent() {
-        getParent().requestDisallowInterceptTouchEvent(true);
-    }
-
-    private void startInterceptEvent() {
-        getParent().requestDisallowInterceptTouchEvent(false);
     }
 
     @Override
@@ -254,23 +250,12 @@ public class CropperImageView extends ImageView {
             return;
         }
 
-        if (bm.getHeight() > 1280 || bm.getWidth() > 1280) {
+        if (bm.getHeight() > 1280 || bm.getWidth() > 1280 && DEBUG) {
             Log.w(TAG, "Bitmap size greater than 1280. This might cause memory issues");
         }
 
         mBitmap = bm;
-
-        if (doPreScaling) {
-            int max_param = Math.max(bm.getWidth(), bm.getHeight());
-            mPreScale = (float) max_param / (float) getWidth();
-
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm, (int) (bm.getWidth() / mPreScale),
-                    (int) (bm.getHeight() / mPreScale), false);
-            super.setImageBitmap(scaledBitmap);
-        } else {
-            mPreScale = 1f;
-            super.setImageBitmap(bm);
-        }
+        super.setImageBitmap(bm);
         requestLayout();
     }
 
@@ -401,7 +386,7 @@ public class CropperImageView extends ImageView {
             Log.i(TAG, "h diff: " + (scaleY * drawable.getIntrinsicHeight() + ty - getHeight()));
         }
 
-        if (scaleX < mMinZoom || (scaleX <= mMinZoom && mMinZoom >= mBaseZoom)) {
+        if (scaleX < mMinZoom && mMinZoom >= mBaseZoom) {
             if (DEBUG) {
                 Log.i(TAG, "set scale to min zoom: " + mMinZoom);
             }
@@ -450,7 +435,7 @@ public class CropperImageView extends ImageView {
                 }
             }
             return true;
-        } else if (scaleX <= mBaseZoom) {
+        } else if (scaleX <= mBaseZoom || scaleX <= mBaseZoomBigger) {
 
             // align to center for the smaller dimension
             int h = drawable.getIntrinsicHeight();
@@ -600,14 +585,6 @@ public class CropperImageView extends ImageView {
         return getMatrixValue(matrix, Matrix.MSCALE_X);
     }
 
-    public boolean isDoPreScaling() {
-        return doPreScaling;
-    }
-
-    public void setDoPreScaling(boolean doPreScaling) {
-        this.doPreScaling = doPreScaling;
-    }
-
     public float getMaxZoom() {
         return mMaxZoom;
     }
@@ -689,21 +666,17 @@ public class CropperImageView extends ImageView {
 
         isCropping = true;
         try {
-            Bitmap tmp = getCroppedBitmap();
-            assert tmp != null;
-            int width = tmp.getWidth();
-            int height = ScreenUtils.getRatioHeight(width);
-            Bitmap finalBitmap = Bitmap.createScaledBitmap(tmp, width, height, false);
-
+            Bitmap bitmap = getCroppedBitmap();
             isCropping = false;
-            return finalBitmap;
+            return bitmap;
         } catch (OutOfMemoryError e) {
             isCropping = false;
             throw e;
         }
+
     }
 
-    private Bitmap getCroppedBitmap() throws OutOfMemoryError {
+    public CropInfo getCropInfo() {
         if (mBitmap == null) {
             Log.e(TAG, "original image is not available");
             return null;
@@ -711,191 +684,113 @@ public class CropperImageView extends ImageView {
 
         Matrix matrix = getImageMatrix();
 
-        if (doPreScaling) {
-            matrix.postScale(1/mPreScale, 1/mPreScale);
-        }
-
         float xTrans = getMatrixValue(matrix, Matrix.MTRANS_X);
         float yTrans = getMatrixValue(matrix, Matrix.MTRANS_Y);
         float scale = getMatrixValue(matrix, Matrix.MSCALE_X);
 
         if (DEBUG) {
             Log.i(TAG, "xTrans: " + xTrans + ", yTrans: " + yTrans + " , scale: " + scale);
-        }
-
-        // Load bitmap which is mutable
-        Bitmap bitmap = null;
-
-        if (DEBUG) {
             Log.i(TAG, "old bitmap: " + mBitmap.getWidth() + " " + mBitmap.getHeight());
         }
 
+        // No scale/crop required.
         if (xTrans > 0 && yTrans > 0 && scale <= mMinZoom) {
-            // No scale/crop required.
             // Add padding if not square
-            if (mAddPaddingToMakeSquare) {
+            int verticalPadding = mBitmap.getHeight() > mBitmap.getWidth() ? 0 : (mBitmap.getWidth() - mBitmap.getHeight()) / 2;
+            int horizontalPadding = mBitmap.getWidth() > mBitmap.getHeight() ? 0 : (mBitmap.getHeight() - mBitmap.getWidth()) / 2;
+            return CropInfo.cropCompleteBitmap(mBitmap, mAddPaddingToMakeSquare, horizontalPadding, verticalPadding, mPaintColor);
+        }
 
-                try {
-                    return BitmapUtils.addPadding(mBitmap, mPaintColor);
-                } catch (OutOfMemoryError e) {
-                    Log.d(TAG, "OOM while adding padding");
-                    throw e;
-                }
+        float cropY = - yTrans / scale;
+        float Y = getHeight() / scale;
+        float cropX = -xTrans / scale;
+        float X = getWidth() / scale;
 
-            } else {
-                return mBitmap;
-            }
+        if (DEBUG) {
+            Log.i(TAG, "cropY: " + cropY);
+            Log.i(TAG, "Y: " + Y);
+            Log.i(TAG, "cropX: " + cropX);
+            Log.i(TAG, "X: " + X);
+        }
 
-        } else {
-
-            float cropY = - yTrans / scale;
-            float Y = getHeight() / scale;
-            float cropX = -xTrans / scale;
-            float X = getWidth() / scale;
-
+        if (cropY + Y > mBitmap.getHeight()) {
+            cropY = mBitmap.getHeight() - Y;
             if (DEBUG) {
-                Log.i(TAG, "cropY: " + cropY);
-                Log.i(TAG, "Y: " + Y);
-                Log.i(TAG, "cropX: " + cropX);
-                Log.i(TAG, "X: " + X);
+                Log.i(TAG, "readjust cropY to: " + cropY);
             }
-
-            if (cropY + Y > mBitmap.getHeight()) {
-                cropY = mBitmap.getHeight() - Y;
-                if (DEBUG) {
-                    Log.i(TAG, "readjust cropY to: " + cropY);
-                }
-            }  else if (cropY < 0) {
-                cropY = 0;
-                if (DEBUG) {
-                    Log.i(TAG, "readjust cropY to: " + cropY);
-                }
-            }
-
-            if (cropX + X > mBitmap.getWidth()) {
-                cropX = mBitmap.getWidth() - X;
-                if (DEBUG) {
-                    Log.i(TAG, "readjust cropX to: " + cropX);
-                }
-            } else if (cropX < 0) {
-                cropX = 0;
-                if (DEBUG) {
-                    Log.i(TAG, "readjust cropX to: " + cropX);
-                }
-            }
-
-            if (mBitmap.getHeight() > mBitmap.getWidth()) {
-                // Height is greater than width.
-                if (xTrans >= 0) {
-                    // Image is zoomed. Crop from height
-
-                    Rect src = new Rect(0, (int)cropY, mBitmap.getWidth(), (int)(Y + cropY));
-
-                    if (mAddPaddingToMakeSquare) {
-                        // Crop and add padding to the same bitmap
-                        try {
-                            int size = (int) Y;
-                            bitmap = Bitmap.createBitmap(size, size, mBitmap.getConfig());
-                            Canvas canvas = new Canvas(bitmap);
-                            canvas.drawColor(mPaintColor);
-
-                            // Put cropped bitmap into the canvas
-                            int left = (size - mBitmap.getWidth()) / 2;
-                            Rect dest = new Rect(left, 0, left + mBitmap.getWidth(), size);
-
-                            canvas.drawBitmap(mBitmap, src, dest, null);
-                        } catch (OutOfMemoryError e) {
-                            if (bitmap != null && !bitmap.isRecycled()) {
-                                bitmap.recycle();
-                                bitmap = null;
-                                throw e;
-                            }
-                        }
-
-                    } else {
-
-                        try {
-                            bitmap = Bitmap.createBitmap(mBitmap, 0, (int) cropY, mBitmap.getWidth(), (int) Y,
-                                    null, true);
-                        } catch (OutOfMemoryError e) {
-                            bitmap = null;
-                            throw e;
-                        }
-                    }
-
-                } else {
-                    // Crop from width and height both
-                    try {
-                        bitmap = Bitmap.createBitmap(mBitmap, (int) cropX, (int) cropY, (int) X, (int) Y,
-                                null, true);
-
-                    } catch (OutOfMemoryError e) {
-                        bitmap = null;
-                        throw e;
-                    }
-                }
-            } else {
-                if (yTrans >= 0) {
-                    // Image is zoomed. Crop from width and add padding to make square
-
-                    Rect src = new Rect((int)cropX, 0, (int)(cropX + X), mBitmap.getHeight());
-
-                    if (mAddPaddingToMakeSquare) {
-                        try {
-                            // Crop and add padding to the same bitmap
-                            int size = (int) X;
-                            bitmap = Bitmap.createBitmap(size, size, mBitmap.getConfig());
-                            Canvas canvas = new Canvas(bitmap);
-                            canvas.drawColor(mPaintColor);
-
-                            // Put cropped bitmap into the canvas
-                            int top = (size - mBitmap.getHeight()) / 2;
-                            Rect dest = new Rect(0, top, size, top + mBitmap.getHeight());
-
-                            canvas.drawBitmap(mBitmap, src, dest, null);
-                        } catch (OutOfMemoryError e) {
-                            if (bitmap != null && !bitmap.isRecycled()) {
-                                bitmap.recycle();
-                                bitmap = null;
-                                throw e;
-                            }
-                        }
-                    } else {
-
-                        try {
-                            bitmap = Bitmap.createBitmap(mBitmap, (int) cropX, 0, (int) X, mBitmap.getHeight(),
-                                    null, true);
-                        } catch (OutOfMemoryError e) {
-                            bitmap = null;
-                            throw e;
-                        }
-                    }
-
-                } else {
-                    // Crop from width and height both.
-
-                    try {
-                        bitmap = Bitmap.createBitmap(mBitmap, (int) cropX, (int) cropY, (int) X, (int) Y,
-                                null, true);
-                    } catch (OutOfMemoryError e) {
-                        bitmap = null;
-                        throw e;
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-
-                if (DEBUG) {
-                    Log.i(TAG, "width should be: " + mBitmap.getWidth());
-                    if (bitmap != null) {
-                        Log.i(TAG, "crop bitmap: " + bitmap.getWidth() + " " + bitmap.getHeight());
-                    }
-                }
+        }  else if (cropY < 0) {
+            cropY = 0;
+            if (DEBUG) {
+                Log.i(TAG, "readjust cropY to: " + cropY);
             }
         }
 
-        return bitmap;
+        if (cropX + X > mBitmap.getWidth()) {
+            cropX = mBitmap.getWidth() - X;
+            if (DEBUG) {
+                Log.i(TAG, "readjust cropX to: " + cropX);
+            }
+        } else if (cropX < 0) {
+            cropX = 0;
+            if (DEBUG) {
+                Log.i(TAG, "readjust cropX to: " + cropX);
+            }
+        }
+
+        Rect rect;
+        int horizontalPadding = 0;
+        int verticalPadding = 0;
+
+        boolean isPaddingRequired = true;
+
+        if (mBitmap.getHeight() > mBitmap.getWidth()) {
+            // Height is greater than width.
+            if (xTrans >= 0) {
+                // Image is zoomed. Crop from height
+                rect = new Rect(0, (int)cropY, mBitmap.getWidth(), (int)(Y + cropY));
+                horizontalPadding = (int) ((Y - mBitmap.getWidth()) / 2);
+            } else {
+                // Crop from width and height both
+                rect = new Rect((int)cropX, (int)cropY, (int)(cropX + X), (int)(cropY + Y));
+                isPaddingRequired = false;
+            }
+        } else {
+            if (yTrans >= 0) {
+                // Image is zoomed. Crop from width and add padding to make square
+                rect = new Rect((int)cropX, 0, (int)(cropX + X), mBitmap.getHeight());
+                verticalPadding = (int) ((X - mBitmap.getHeight()) / 2);
+            } else {
+                // Crop from width and height both.
+                rect = new Rect((int)cropX, (int)cropY, (int)(cropX + X), (int)(cropY + Y));
+                isPaddingRequired = false;
+            }
+        }
+
+        isPaddingRequired = isPaddingRequired && (horizontalPadding != 0 || verticalPadding != 0);
+
+        return CropInfo.cropFromRect(rect, mAddPaddingToMakeSquare && isPaddingRequired, horizontalPadding, verticalPadding, mPaintColor);
+    }
+
+    public Bitmap getCroppedBitmap(CropInfo cropInfo) throws OutOfMemoryError, IllegalArgumentException {
+        if (mBitmap == null) {
+            Log.e(TAG, "original image is not available");
+            return null;
+        }
+
+        return BitmapUtils.getCroppedBitmap(mBitmap, cropInfo);
+    }
+
+    private Bitmap getCroppedBitmap() throws OutOfMemoryError {
+        CropInfo cropInfo = getCropInfo();
+        if (cropInfo != null) {
+            return getCroppedBitmap(cropInfo);
+        }
+
+        return null;
+    }
+
+    public Bitmap getLoadedBitmap() {
+        return mBitmap;
     }
 
     public boolean showAnimation() {
@@ -978,7 +873,6 @@ public class CropperImageView extends ImageView {
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        protected boolean mScaled = false;
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {

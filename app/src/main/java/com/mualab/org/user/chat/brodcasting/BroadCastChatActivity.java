@@ -1111,8 +1111,11 @@ public class BroadCastChatActivity extends AppCompatActivity implements
         }
     }
 
+    Long tsLong = System.currentTimeMillis()/1000;
+    String ts = tsLong.toString();
+
     private void getImageUrl(Uri imageUri, String fileName, StorageReference storageReference) {
-        StorageReference ref = storageReference.child("images/" + ServerValue.TIMESTAMP + fileName);
+        StorageReference ref = storageReference.child("images/" + ts + fileName);
         ref.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

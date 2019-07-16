@@ -276,7 +276,7 @@ public class ImageVideoUtil {
         OutputStream os;
         try {
             os = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, os);
             os.flush();
             os.close();
 

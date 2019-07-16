@@ -9,6 +9,7 @@ import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mualab.org.user.R;
+import com.mualab.org.user.Views.refreshviews.CircleHeaderView;
+import com.mualab.org.user.Views.refreshviews.OnRefreshListener;
+import com.mualab.org.user.Views.refreshviews.RjRefreshLayout;
 import com.mualab.org.user.activity.base.BaseFragment;
 import com.mualab.org.user.activity.explore.ExplorSearchActivity;
 import com.mualab.org.user.activity.explore.SearchFeedActivity;
@@ -71,6 +75,9 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
     int myId = Mualab.currentUser.id;
     String blockedByUser = "";
     private  RecyclerView rvTopSearch;
+    private RjRefreshLayout mRefreshLayout;
+    private boolean isPulltoRefrash;
+
 
     public ExploreTopFragment() {
         // Required empty public constructor
@@ -106,6 +113,9 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
         progress_bar = view.findViewById(R.id.progress_bar);
         tv_msg = view.findViewById(R.id.tv_msg);
 
+        mRefreshLayout = view.findViewById(R.id.mSwipeRefreshLayout);
+
+
         LinearLayoutManager lm = new LinearLayoutManager(mContext, RecyclerView.VERTICAL, false);
         rvTopSearch = view.findViewById(R.id.rvTopSearch);
         rvTopSearch.setLayoutManager(lm);
@@ -122,6 +132,22 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
 
         });
 
+
+        final CircleHeaderView header = new CircleHeaderView(getContext());
+        mRefreshLayout.addHeader(header);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                endlesScrollListener.resetState();
+                isPulltoRefrash = true;
+                callSearchAPI(searchKeyWord, 0);
+            }
+
+            @Override
+            public void onLoadMore() {
+               // Log.e(TAG, "onLoadMore: ");
+            }
+        });
         endlesScrollListener = new RecyclerViewScrollListener(lm) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -220,8 +246,9 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                 public void onTextChange(String text) {
                     list.clear();
                     searchKeyWord = TextUtils.isEmpty(text)?"":text.trim();
-                    endlesScrollListener.resetState();
                     showLoading();
+                    adapter.notifyDataSetChanged();
+                    endlesScrollListener.resetState();
                     callSearchAPI(searchKeyWord, 0);
                 }
             };
@@ -281,6 +308,13 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                     String status = js.getString("status");
                     //String message = js.getString("message");
                     if (status.equalsIgnoreCase("success")) {
+
+                        if (isPulltoRefrash) {
+                            isPulltoRefrash = false;
+                            mRefreshLayout.stopRefresh(true, 500);
+                            list.clear();
+                           adapter.notifyDataSetChanged();
+                        }
 
                         Gson gson = new Gson();
                         JSONArray array=null;
@@ -356,7 +390,7 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                         }
                         adapter.notifyDataSetChanged();
                     }
-
+                    mRefreshLayout.stopRefresh(true, 500);
                     if(list.size()==0){
                         tv_msg.setVisibility(View.VISIBLE);
                         tv_msg.setText(getString(R.string.no_res_found));
@@ -367,6 +401,7 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
                     //  showToast(message);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    mRefreshLayout.stopRefresh(true, 500);
                     progress_bar.setVisibility(View.GONE);
                 }
             }
@@ -374,6 +409,7 @@ ExploreTopFragment extends BaseFragment implements SearchAdapter.Listener,
             @Override
             public void ErrorListener(VolleyError error) {
                 progress_bar.setVisibility(View.GONE);
+                mRefreshLayout.stopRefresh(true, 500);
                 adapter.showHideLoading(false);
             }})
                 .setParam(params)

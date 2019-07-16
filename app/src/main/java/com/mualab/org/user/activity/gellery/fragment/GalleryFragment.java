@@ -209,6 +209,8 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
                 refreshUi(lastSelectedUri);
 
                 galleryAdapter.notifyItemChanged(index);
+                snap_button.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_rounded_background));
+
 
                 if (mSelected.size() <= 2)
                     // recyclerView.smoothScrollToPosition(index);
@@ -285,6 +287,9 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.ivMultiSelection:
+                if(albumList.size() == 0)
+                    return;
+
                 //getView().findViewById(R.id.ivMultiSelection).setBackground(R.);
                 isSupportMultipal = !isSupportMultipal;
 

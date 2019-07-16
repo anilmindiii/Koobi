@@ -454,6 +454,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 viewCalendar.collapse(500);
                 selectedDate = getCurrentDate();
                 viewCalendar.isFirstimeLoad = true;
+               // viewCalendar.
                 if (selectedDate.contains("-")) {
                     isTodayClicked = true;
                     int year;
@@ -493,7 +494,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     apiForContinueBooking(bookingId);
                 } else if (isAlreadybooked) {
                     Intent intent = new Intent(BookingActivity.this, BookingConfirmActivity.class);
-                    intent.putExtra("artistId", artistId);
+                    intent.putExtra("a" +
+                            "rtistId", artistId);
                     intent.putExtra("isBankAdded", isBankAdded);
                     intent.putExtra("payOption", payOption);
                     intent.putExtra("bookingSetting", bookingSetting);
@@ -1129,6 +1131,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                                             if (isOutCallSelected) {
                                                 if (outCallList.size() == 0) {
+                                                    main_scroll_view.setVisibility(View.GONE);
+                                                    tv_msg.setVisibility(View.VISIBLE);
+                                                }
+                                            }else {//case of incall
+                                                if (inCallList.size() == 0) {
                                                     main_scroll_view.setVisibility(View.GONE);
                                                     tv_msg.setVisibility(View.VISIBLE);
                                                 }

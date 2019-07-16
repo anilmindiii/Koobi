@@ -8,12 +8,236 @@
     android:background="@color/white"
     tools:context="com.mualab.org.user.activity.booking.BookingHisoryActivity">
 
-    <include
+    <RelativeLayout
         android:id="@+id/header"
-        layout="@layout/new_header_layout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true" />
+        android:layout_height="?actionBarSize"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="3dp"
+                android:src="@drawable/white_back_ico"
+                android:tint="@color/gray"/>
+
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-5dp">
+
+                <ImageView
+                    android:id="@+id/ivnotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/inactive_notifications_ico"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:id="@+id/tv_badge_count"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:backgroundTint="@color/red"
+                    android:text="0"
+                    android:gravity="center"
+                    android:textSize="8dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/circle_selected_bg"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivUserProfile"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/gradient_circle_img"
+                    android:src="@drawable/celbackgroung"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    app:civ_border_color="@color/transparent"
+                    app:civ_border_width="1.5dp" />
+
+
+
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="60dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_bold"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/profile"
+
+            android:textColor="@color/text_color"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/btnNevMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="13dp"
+            android:src="@drawable/list_ico"
+            android:tint="@color/gray"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivAppIcon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/logo_new"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="6dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:fontFamily="@font/nunito_semibold"
+            android:padding="2dp"
+            android:src="@drawable/send_chat_ico"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivChatReq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@+id/ic_add_chat"
+            android:background="@drawable/ic_ico_chat_request"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ic_add_chat"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/actionBarItemBackground"
+            android:padding="4dp"
+            android:tint="@color/gray"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_ico_add_new_chat"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivChat2"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="12dp"
+            android:src="@drawable/send_chat_ico"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_batch_count"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:backgroundTint="@color/red"
+            android:text="0"
+            android:gravity="center"
+            android:textSize="8dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/circle_selected_bg"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/llDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            tools:ignore="RtlHardcoded"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:background="@drawable/chat_options_circle" />
+
+            <TextView
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/chat_options_circle" />
+
+            <TextView
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/chat_options_circle" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDone"
+            style="@style/TextView.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:background="?selectableItemBackground"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/nunito_regular"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:text="@string/done"
+            android:textColor="@color/gray"
+            android:textSize="18sp"
+            android:visibility="gone"/>
+
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ly_filter"

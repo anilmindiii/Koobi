@@ -92,7 +92,7 @@ reqHeight
         return scaledBitmap;
     }
 
-    public static Bitmap cropCenter(Bitmap bmp, int reqWidth, int reqHeight) {
+    private static Bitmap cropCenter(Bitmap bmp, int reqWidth, int reqHeight) {
 // int dimension = Math.min(bmp.getWidth(), bmp.getHeight());
         return ThumbnailUtils.extractThumbnail(bmp, reqWidth, reqHeight);
     }

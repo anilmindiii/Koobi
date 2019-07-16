@@ -485,8 +485,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.settings.ChangePasswordActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/StatusBarBlack" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.notification.NotificationActivity"
             android:screenOrientation="portrait"

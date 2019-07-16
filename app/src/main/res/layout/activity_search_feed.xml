@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +8,14 @@
     android:fitsSystemWindows="true"
     tools:context="com.mualab.org.user.activity.explore.SearchFeedActivity">
 
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_below="@+id/topLayout"
+        android:layout_marginTop="-5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <include
         android:id="@+id/topLayout"
         layout="@layout/new_header_layout"
@@ -15,6 +23,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:layout_alignParentTop="true" />
+
 
     <!--
             <RelativeLayout
@@ -61,9 +70,6 @@
     -->
 
 
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
-</LinearLayout>
+
+</RelativeLayout>
