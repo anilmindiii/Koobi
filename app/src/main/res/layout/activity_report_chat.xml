@@ -71,46 +71,6 @@
                 android:fontFamily="@font/nunito_regular"
                 android:textSize="@dimen/mcam_content_inset"/>
 
-            <LinearLayout
-                android:id="@+id/ly_posted_link"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="left"
-                    android:padding="3dp"
-                    android:textColor="@color/dark_gray"
-                    android:text="Reason for report"
-                    android:fontFamily="@font/nunito_regular"
-                    android:textSize="@dimen/mcam_content_inset"/>
-
-                <EditText
-                    android:id="@+id/ed_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:padding="3dp"
-                    android:background="@null"
-                    android:textColorHint="@color/gray"
-                    android:textColor="@color/dark_gray"
-                    android:hint="Enter Reason"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:fontFamily="@font/nunito_regular"
-                    android:textSize="@dimen/evp_text_size_medium"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.7dp"
-                    android:background="@color/gray"
-                    android:layout_alignParentBottom="true"/>
-
-            </LinearLayout>
 
 
             <RelativeLayout
@@ -131,6 +91,118 @@
                         android:gravity="left"
                         android:padding="3dp"
                         android:textColor="@color/dark_gray"
+                        android:text="Reason for report"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textSize="@dimen/mcam_content_inset"/>
+
+                    <RelativeLayout
+                        android:id="@+id/ly_reason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="5dp"
+                        android:paddingLeft="5dp">
+
+                        <TextView
+                            android:id="@+id/tv_reason"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:textColor="@color/dark_gray"
+                            android:hint="@string/select_reason"
+                            android:layout_marginRight="30dp"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="@dimen/evp_text_size_medium"/>
+
+                        <ImageView
+                            android:id="@+id/iv_down_arrow"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:tint="@color/dark_gray"
+                            android:src="@drawable/down_arrow_ico"
+                            android:layout_alignParentRight="true"/>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.7dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/gray" />
+
+                    <LinearLayout
+                        android:id="@+id/ly_report_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:padding="3dp"
+                            android:textColor="@color/dark_gray"
+                            android:text="Report initiated"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="@dimen/mcam_content_inset"/>
+
+
+                        <TextView
+                            android:id="@+id/tv_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:padding="3dp"
+                            android:textColor="@color/dark_gray"
+                            android:hint="21/02/2019"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="@dimen/evp_text_size_medium"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/gray"
+                            android:layout_alignParentBottom="true"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:padding="3dp"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/dark_gray"
+                            android:text="Report status"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="@dimen/mcam_content_inset"/>
+
+
+                        <TextView
+                            android:id="@+id/tv_report_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:padding="3dp"
+                            android:textColor="@color/main_orange_color"
+                            android:text="@string/pending"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="@dimen/evp_text_size_medium"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/gray"
+                            android:layout_alignParentBottom="true"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="left"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_gray"
                         android:text="@string/description"
                         android:fontFamily="@font/nunito_regular"
                         android:textSize="@dimen/mcam_content_inset"/>
@@ -142,12 +214,10 @@
                         android:minHeight="100dp"
                         android:gravity="left"
                         android:padding="3dp"
-                        android:textColorHint="@color/gray"
-                        android:textColor="@color/dark_gray"
-                        android:hint="Enter Reason"
+                        android:hint="@string/enter_description"
                         android:imeOptions="actionDone"
-                        android:maxLength="200"
                         android:background="@drawable/rectangular_border"
+                        android:textColor="@color/dark_gray"
                         android:fontFamily="@font/nunito_regular"
                         android:textSize="@dimen/evp_text_size_medium"/>
 
@@ -212,7 +282,13 @@
 
                 </android.support.v7.widget.CardView>
 
+
+
             </RelativeLayout>
+
+
+
+
 
 
             <TextView

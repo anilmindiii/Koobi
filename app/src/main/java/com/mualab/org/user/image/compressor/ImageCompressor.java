@@ -20,7 +20,7 @@ public class ImageCompressor {
     private int maxWidth = 612;
     private int maxHeight = 816;
     private Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
-    private int quality = 30;
+    private int quality = 80;
     private String destinationDirectoryPath;
     Context context;
 

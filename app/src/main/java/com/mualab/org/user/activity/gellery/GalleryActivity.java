@@ -12,11 +12,18 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.gellery.fragment.GalleryFragment;
 import com.mualab.org.user.activity.gellery.fragment.VideoGalleryFragment;
+import com.mualab.org.user.activity.gellery.model.Media;
 import com.mualab.org.user.activity.main.MainActivity;
 
-public class GalleryActivity extends AppCompatActivity implements View.OnClickListener{
+import java.util.ArrayList;
+
+public class GalleryActivity extends AppCompatActivity implements View.OnClickListener
+        {
     private TextView tvImage,tvVideo,tvCamera;
     private int clickedView = 1;
+
+    private ArrayList<Media> albumImageList;
+    private ArrayList<Media> albumVideoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,11 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         tvImage.setOnClickListener(this);
         tvVideo.setOnClickListener(this);
         tvCamera.setOnClickListener(this);
+
+
+        albumImageList = new ArrayList<>();
+        albumVideoList = new ArrayList<>();
+
     }
 
     @Override
@@ -125,4 +137,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         Intent in = new Intent(GalleryActivity.this, MainActivity.class);
         setIntent(in);
     }
+
+
+
 }

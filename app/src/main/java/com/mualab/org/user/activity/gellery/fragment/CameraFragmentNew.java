@@ -28,6 +28,7 @@ import com.mualab.org.user.data.model.MediaUri;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.image.picker.ImagePicker;
 import com.mualab.org.user.image.picker.ImageRotator;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.media.ImageVideoUtil;
 
@@ -186,7 +187,7 @@ public class CameraFragmentNew extends Fragment implements View.OnClickListener 
                                 Intent intent = new Intent(mContext, FeedPostActivity.class);
                                 intent.putExtra("caption", "");
                                 intent.putExtra("mediaUri", mediaUri);
-                                intent.putExtra("thumbImage", ThumbImage);
+                                intent.putExtra("thumbImage", Util.getByteArray(ThumbImage));
                                 intent.putExtra("feedType", Constant.IMAGE_STATE);
                                 intent.putExtra("requestCode", Constant.POST_FEED_DATA);
 

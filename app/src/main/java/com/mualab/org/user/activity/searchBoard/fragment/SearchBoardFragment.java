@@ -575,7 +575,7 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case R.id.ivFav:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 1300){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 2000){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
@@ -1250,7 +1250,11 @@ public class SearchBoardFragment extends BaseFragment implements View.OnClickLis
                 lng = String.valueOf(latLng.longitude);
                 isFilterNChngLocaApply = true;
                 pagenum = 0;
-                apiForGetArtist(0, false);
+                mapArtistList.clear();
+                if (isFavClick)
+                    apiForGetFavArtist(0, false);
+                else
+                    apiForGetArtist(0, false);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);
                 // TODO: Handle the error.

@@ -176,6 +176,7 @@ public class UploadImageService extends IntentService {
                 String str = uri.toString().replace("/storage/emulated/0/Android/data/com.mualab.org.user/cache/", "");
                 //images.add(new File(mContext.getExternalCacheDir(), str));
                 try {
+
                     images.add(new ImageCompressor(getApplicationContext()).compressToFile(new File(getApplicationContext().getExternalCacheDir(), str)));
                 } catch (Exception e) {
                     e.printStackTrace();

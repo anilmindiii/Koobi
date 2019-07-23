@@ -407,6 +407,9 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 case R.id.rlChatHistory:
                     ChatHistory chatHistory = chatHistories.get(getAdapterPosition());
                     Intent chat_intent = new Intent(context, BroadCastChatActivity.class);
+                    if(!chatHistory.reciverId.contains("broadcast_")){
+                        chatHistory.reciverId = "broadcast_"+chatHistory.reciverId;
+                    }
                     chat_intent.putExtra("broadcastId",chatHistory.reciverId);
                     context.startActivity(chat_intent);
 

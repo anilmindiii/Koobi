@@ -100,6 +100,7 @@ import com.mualab.org.user.utils.CommonUtils;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.SoftKeyboard;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
 
@@ -1126,7 +1127,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         // mFirebaseDatabaseReference.child("chat_history").child(otherUserId).child(myUid).setValue(chatHistory2);
 
                         otherChatHistoryRef.setValue(chatHistory2);
-                        //    FirebaseDatabase.getInstance().getReference().child("history").child(session.getUser().id).child(uID).setValue(chatModel);
+                        //  FirebaseDatabase.getInstance().getReference().child("history").child(session.getUser().id).child(uID).setValue(chatModel);
                         //  FirebaseDatabase.getInstance().getReference().child("history").child(uID).child(session.getUser().id).setValue(chatModel2);
                         et_for_sendTxt.setText("");
 
@@ -1541,6 +1542,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private void uploadImage(Uri imageUri, String fileType) {
         Progress.show(ChatActivity.this);
         FirebaseStorage storage = FirebaseStorage.getInstance();
+
 
         if (imageUri != null) {
 

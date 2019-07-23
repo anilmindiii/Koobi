@@ -97,7 +97,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tv_sender_msg,tv_send_time,tv_transparent;
         ImageView iv_for_sender,iv_msg_status;
-        ProgressBar progress_bar;
+       // ProgressBar progress_bar;
         FrameLayout my_view_main;
 
         MyViewHolder(View itemView) {
@@ -106,7 +106,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iv_msg_status = itemView.findViewById(R.id.iv_msg_status);
             iv_for_sender = itemView.findViewById(R.id.iv_for_sender);
             tv_send_time = itemView.findViewById(R.id.tv_send_time);
-            progress_bar = itemView.findViewById(R.id.progress_bar);
+         //   progress_bar = itemView.findViewById(R.id.progress_bar);
             tv_transparent = itemView.findViewById(R.id.tv_transparent);
             my_view_main = itemView.findViewById(R.id.my_view_main);
 
@@ -121,7 +121,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(chat.messageType == 1){
                 iv_for_sender.setVisibility(View.VISIBLE);
                 tv_sender_msg.setVisibility(View.GONE);
-                progress_bar.setVisibility(View.VISIBLE);
+               /// progress_bar.setVisibility(View.VISIBLE);
                 if(chat.message.contains(".gif")){
                     GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_for_sender);
                     Glide.with(context)
@@ -134,7 +134,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    progress_bar.setVisibility(View.GONE);
+                                   // progress_bar.setVisibility(View.GONE);
                                     return false;
                                 }
                             })
@@ -144,7 +144,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_for_sender, new Callback() {
                         @Override
                         public void onSuccess() {
-                            progress_bar.setVisibility(View.GONE);
+                          //  progress_bar.setVisibility(View.GONE);
 
                         }
                         @Override
@@ -152,7 +152,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             Picasso.with(context).load(chat.message)
                                     .placeholder(R.drawable.gallery_placeholder)
                                     .error(R.drawable.gallery_placeholder).into(iv_for_sender);
-                            progress_bar.setVisibility(View.GONE);
+                           // progress_bar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -162,7 +162,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 iv_for_sender.setVisibility(View.GONE);
                 tv_sender_msg.setVisibility(View.VISIBLE);
                 tv_sender_msg.setText(chat.message);
-                progress_bar.setVisibility(View.GONE);
+              //  progress_bar.setVisibility(View.GONE);
             }
 
             if(chat.isLongSelected){

@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -422,7 +423,32 @@ public class BroadcastDetails extends AppCompatActivity implements View.OnClickL
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
                     try {
-                        groups = dataSnapshot.getValue(Groups.class);
+                        Map<String, Groups> objectMap = (HashMap<String, Groups>) dataSnapshot.getValue();
+                         groups = new Groups();
+                        groups.groupDescription = String.valueOf(objectMap.get("groupDescription"));
+                        groups.adminId = Integer.parseInt(String.valueOf(objectMap.get("adminId")));
+                        groups.groupId = String.valueOf(objectMap.get("groupId"));
+                        groups.groupImg = String.valueOf(objectMap.get("groupImg"));
+                        groups.groupName = String.valueOf(objectMap.get("groupName"));
+                        groups.isPending = Boolean.parseBoolean(String.valueOf(objectMap.get("isPending")));
+
+                        if (objectMap.get("member") instanceof List) {
+                            List<Object> members = (List<Object>) objectMap.get("member");
+                            for(Object x: members) {
+                                if( x instanceof Object) {
+                                    Map<String,Object> params = new HashMap<>();
+                                    params = (Map<String, Object>) x;
+                                    String mystring = String.valueOf(params.get("memberId"));
+                                    //long id = Long.parseLong(params.get("memberId"));
+                                    groups.member.put(String.valueOf(mystring),x);
+                                }
+                            }
+                        } else {
+                            Map<String,Object> members =  (Map<String,Object>) objectMap.get("member");
+                            groups.member = (HashMap<String, Object>) members;
+                        }
+
+                        //groups = dataSnapshot.getValue(Groups.class);
                         if (groups != null) {
                             tvGroupName.setText((groups.member.size()-1)+" Recipients");
                             tvGroupMembers.setText((groups.member.size()-1) + " Recipients");

@@ -1150,6 +1150,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @Override
         public void onClickEvent(MotionEvent e) {
             int adapterPosition = getPosition();
+            if(adapterPosition == -1 )
+                return;
+
+            MyClickOnPostMenu.getMentIntance().setMenuClick();
+
             Feeds feed = feedItems.get(adapterPosition);
             if (feed.feedType.equalsIgnoreCase("image")) {
                 /*Intent intent = new Intent(mContext, FeedSingleActivity.class);

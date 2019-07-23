@@ -136,7 +136,7 @@ public class FcmNotificationBuilder {
 
     private JSONObject getValidJsonBody() throws JSONException {
         JSONObject data = new JSONObject();
-        Map<String,Object> params = new HashMap<>();;
+        Map<String,Object> params = new HashMap<>();
 
         if(isGroupChat){
             data.put(KEY_TITLE, mUsername);

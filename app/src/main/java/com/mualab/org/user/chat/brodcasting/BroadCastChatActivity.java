@@ -262,10 +262,41 @@ public class BroadCastChatActivity extends AppCompatActivity implements
                 try {
                     Map<String, Groups> objectMap = (HashMap<String, Groups>)
                             dataSnapshot.getValue();
-                    String groupName = String.valueOf(objectMap.get("groupName"));
-                    String groupImg = String.valueOf(objectMap.get("groupImg"));
 
-                    groups = dataSnapshot.getValue(Groups.class);
+                     groups = new Groups();
+
+                    groups.groupDescription = String.valueOf(objectMap.get("groupDescription"));
+                    groups.adminId = Integer.parseInt(String.valueOf(objectMap.get("adminId")));
+                    groups.groupId = String.valueOf(objectMap.get("groupId"));
+                    groups.groupImg = String.valueOf(objectMap.get("groupImg"));
+                    groups.groupName = String.valueOf(objectMap.get("groupName"));
+                    groups.isPending = Boolean.parseBoolean(String.valueOf(objectMap.get("isPending")));
+
+                    if (objectMap.get("member") instanceof List) {
+                        List<Object> members = (List<Object>) objectMap.get("member");
+                        Log.d("Hello World", "onDataChange: "+members);
+
+                        for(Object x: members) {
+                            if( x instanceof Object) {
+
+//                                    String str = x.toString();
+                                Map<String,Object> params = new HashMap<>();
+                                params = (Map<String, Object>) x;
+                                String mystring = String.valueOf(params.get("memberId"));
+                                //long id = Long.parseLong(params.get("memberId"));
+                                groups.member.put(String.valueOf(mystring),x);
+                            }
+                        }
+
+
+                    } else {
+                        Map<String,Object> members =  (Map<String,Object>) objectMap.get("member");
+                        Log.d("Hello World", "onDataChange: "+members);
+                        groups.member = (HashMap<String, Object>) members;
+                    }
+
+
+                   // groups = dataSnapshot.getValue(Groups.class);
                     if (map != null) {
                         CircleImageView ivUserProfile = findViewById(R.id.ivUserProfile);
                         tvUserName.setText((groups.member.size() - 1) + " Recipients");
@@ -1011,10 +1042,10 @@ public class BroadCastChatActivity extends AppCompatActivity implements
 
 
         et_for_sendTxt.setText("");
-       /* if (broadcastHistory.messageType == 0)
+        if (broadcastHistory.messageType == 0)
             sendPushNotificationToReceiver(broadcastHistory.message);
         else
-            sendPushNotificationToReceiver("Image");*/
+            sendPushNotificationToReceiver("Image");
     }
 
     private void sendPushNotificationToReceiver(String message) {
@@ -1038,14 +1069,14 @@ public class BroadCastChatActivity extends AppCompatActivity implements
     }
 
     private void sendNotifications(String fbToken, String count, String message) {
-        FcmNotificationBuilder.initialize()
+       /* FcmNotificationBuilder.initialize()
                 .title(Mualab.currentUser.userName)
                 .batchCount(count)
                 .message(message).uid(myUid)
                 .username(Mualab.currentUser.userName).adminId(String.valueOf(groups.adminId))
                 .type("groupChat").clickAction("GroupChatActivity")
                 .firebaseToken(FirebaseInstanceId.getInstance().getToken())
-                .receiverFirebaseToken(fbToken).send();
+                .receiverFirebaseToken(fbToken).send();*/
     }
 
 

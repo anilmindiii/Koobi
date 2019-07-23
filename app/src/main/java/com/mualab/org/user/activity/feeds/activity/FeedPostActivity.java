@@ -83,6 +83,7 @@ import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.LocationDetector;
 import com.mualab.org.user.utils.LocationUtil;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.media.ImageVideoUtil;
 import com.mualab.org.user.videocompressor.video.MediaController;
@@ -159,8 +160,10 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
         rl_placeholder = findViewById(R.id.rl_placeholder);
         Intent intent = getIntent();
         if (intent != null) {
+            byte[] byteArray = getIntent().getByteArrayExtra("thumbImage");
             caption = intent.getStringExtra("caption");
-            thumbImage = intent.getParcelableExtra("thumbImage");
+            if(byteArray != null)
+            thumbImage = Util.getBitmapFromByteArray(byteArray);
             mediaUri = (MediaUri) intent.getSerializableExtra("mediaUri");
             feedType = intent.getIntExtra("feedType", Constant.IMAGE_STATE);
 

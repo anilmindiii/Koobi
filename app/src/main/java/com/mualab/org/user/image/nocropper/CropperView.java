@@ -4,14 +4,19 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.transition.Transition;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 
 /**
@@ -67,7 +72,6 @@ public class CropperView extends FrameLayout {
             setMeasuredDimension(width, height);
 
         }
-
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -75,7 +79,7 @@ public class CropperView extends FrameLayout {
         mGridView = new CropperGridView(context, attrs);
 
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                0);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             params.width = 0;
@@ -84,6 +88,8 @@ public class CropperView extends FrameLayout {
 
         addView(mImageView, 0, params);
         addView(mGridView, 1, params);
+        /*addView(mImageView, 0);
+        addView(mGridView, 1);*/
 
         mImageView.setGestureCallback(new TouchGestureCallback());
     }
@@ -96,16 +102,27 @@ public class CropperView extends FrameLayout {
         mImageView.setImageBitmap(bm);
     }
 
-    public void setImageUri(Uri uri){
-        Glide.with(getContext()).load(uri)
+    public void setImageUri(Uri uri) {
+
+        Glide.with(getContext())
+                .load(uri)
+                .asBitmap()  // переводим его в нужный формат
+                .fitCenter()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        setImageBitmap(resource);
+                    }
+                });
+
+
+
+
+       /* Glide.with(getContext()).load(uri)
                 .placeholder(0).fallback(0).centerCrop()
                 .skipMemoryCache(false)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mImageView);
-    }
-
-    public void setMaxZoom(float zoom) {
-        mImageView.setMaxZoom(zoom);
+                .into(mImageView);*/
     }
 
     public Bitmap getCroppedBitmap() throws OutOfMemoryError {
@@ -121,9 +138,22 @@ public class CropperView extends FrameLayout {
         task.execute(mImageView);
     }
 
+/*
+    public boolean isPreScaling() {
+        return mImageView.isDoPreScaling();
+    }
+
+    public void setPreScaling(boolean doPreScaling) {
+        mImageView.setDoPreScaling(doPreScaling);
+    }
+*/
 
     public float getMaxZoom() {
         return mImageView.getMaxZoom();
+    }
+
+    public void setMaxZoom(float zoom) {
+        mImageView.setMaxZoom(zoom);
     }
 
     public float getMinZoom() {

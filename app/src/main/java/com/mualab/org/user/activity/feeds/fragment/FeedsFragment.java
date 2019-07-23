@@ -271,6 +271,8 @@ public class FeedsFragment extends FeedBaseFragment implements View.OnClickListe
         collapsing_toolbar = view.findViewById(R.id.collapsing_toolbar);
         coordinatorLayout = view.findViewById(R.id.parentView);
         appbar = view.findViewById(R.id.appbar);
+        ImageView ivnotification = getActivity().findViewById(R.id.ivnotification);
+        ivnotification.setVisibility(View.GONE);
         ImageView ivUserProfile = getActivity().findViewById(R.id.ivUserProfile);
         ivUserProfile.setVisibility(View.GONE);
 

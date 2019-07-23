@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_splash">
@@ -20,7 +21,7 @@
         <ImageView
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:src="@drawable/ic_build_white" />
+            app:srcCompat="@drawable/ic_setting_ico" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,8 +42,8 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnRetry"
             style="@style/My_Button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
+            android:layout_width="220dp"
+            android:layout_height="40dp"
             android:layout_marginTop="30dp"
             android:text="@string/retry" />
 
@@ -52,6 +53,7 @@
             style="@style/TextView.Bold"
             android:layout_marginTop="26dp"
             android:textSize="16sp"
+            android:visibility="gone"
             android:text="@string/what_happened"/>
 
         <TextView
@@ -60,6 +62,7 @@
             android:layout_marginTop="10dp"
             style="@style/TextView"
             android:gravity="center"
+            android:visibility="gone"
             android:text="@string/txt_description_maintenance"/>
 
     </LinearLayout>

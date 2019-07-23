@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -319,7 +321,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         }
         viewCalendar.collapse(500);
 
-
         apiForGetAllServices();
     }
 
@@ -442,16 +443,18 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.btnToday:
+
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
+                viewCalendar.collapse(500);
 
                 viewCalendar.setToday(true);
                 String currentData = CalendarHelper.getTimestamp(Constant.TIMESTAMP_FORMAT_DAY);
                 viewCalendar.setFirstDayOfWeek(currentData);
 
-                viewCalendar.collapse(500);
+
                 selectedDate = getCurrentDate();
                 viewCalendar.isFirstimeLoad = true;
                // viewCalendar.
@@ -630,21 +633,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 viewCalendar.isFirstimeLoad = false;
                 Day day = viewCalendar.getSelectedDay();
 
-
-
-
                 Log.i(getClass().getName(), "The Day of Clicked View: "
                         + day.getYear() + "/" + (day.getMonth() + 1) + "/" + day.getDay());
-
-
-
 
             }
 
             @Override
-            public void onDataUpdate() {
-
-            }
+            public void onDataUpdate() { }
 
             @Override
             public void onMonthChange() {
@@ -850,8 +845,10 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         HttpTask task = new HttpTask(new HttpTask.Builder(BookingActivity.this, "artistService", new HttpResponceListner.Listener() {
             @Override
             public void onResponse(String response, String apiName) {
+
                 Progress.hide(BookingActivity.this);
                 try {
+
                     JSONObject js = new JSONObject(response);
                     String status = js.getString("status");
                     String message = js.getString("message");
@@ -1213,6 +1210,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                     }
 
+//                 set dynamic height
+                    int h = ly_time_slot_main.getHeight();
+                    if(h > 135){
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT,h+10);
+                        rcv_timeSlot.setLayoutParams(layoutParams);
+                    }
+
                 } catch (Exception e) {
                     Progress.hide(BookingActivity.this);
                     e.printStackTrace();
@@ -1501,6 +1505,12 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         bookingId = String.valueOf(js.getInt("bookingId"));
                     }
 
+                    //                 set dynamic height
+                    int h = ly_time_slot_main.getHeight();
+                    if(h > 135){
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT,h+10);
+                        rcv_timeSlot.setLayoutParams(layoutParams);
+                    }
 
                 } catch (Exception e) {
                     Progress.hide(BookingActivity.this);

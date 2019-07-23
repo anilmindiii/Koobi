@@ -44,6 +44,7 @@ import com.mualab.org.user.activity.video_trim.VideoTrimmerActivity;
 import com.mualab.org.user.data.model.MediaUri;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.Progress;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.media.ImageVideoUtil;
 import com.otaliastudios.cameraview.AspectRatio;
@@ -184,7 +185,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
                             VideoTrimmerActivity.class);
                     intent.putExtra("caption", "");
                     intent.putExtra("mediaUri", mediaUri);
-                    intent.putExtra("thumbImage", thumbImage);
+                    intent.putExtra("thumbImage", Util.getByteArray(thumbImage));
                     intent.putExtra("feedType",mediaUri.mediaType);
                     startActivity(intent);
                     finish();
@@ -337,7 +338,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
 
                         intent.putExtra("caption", "");
                         intent.putExtra("mediaUri", mediaUri);
-                        intent.putExtra("thumbImage", thumbImage);
+                        intent.putExtra("thumbImage", Util.getByteArray(thumbImage));
                         intent.putExtra("feedType",mediaUri.mediaType);
                         startActivity(intent);
                         finish();
@@ -363,7 +364,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
 
                         intent.putExtra("caption", "");
                         intent.putExtra("mediaUri", mediaUri);
-                        intent.putExtra("thumbImage", thumbImage);
+                        intent.putExtra("thumbImage", Util.getByteArray(thumbImage));
                         intent.putExtra("feedType",mediaUri.mediaType);
                         startActivity(intent);
                         finish();

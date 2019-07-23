@@ -82,6 +82,9 @@ import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.KeyboardUtil;
 import com.mualab.org.user.utils.constants.Constant;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -287,17 +290,39 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 if (dataSnapshot.getValue() != null) {
 
                     try {
-                        /*Map<String, Groups> objectMap = (HashMap<String, Groups>) dataSnapshot.getValue();
-                        Groups groups = new Groups();
+                        Map<String, Groups> objectMap = (HashMap<String, Groups>) dataSnapshot.getValue();
+                         groups = new Groups();
 
                         groups.groupDescription = String.valueOf(objectMap.get("groupDescription"));
                         groups.adminId = Integer.parseInt(String.valueOf(objectMap.get("adminId")));
                         groups.groupId = String.valueOf(objectMap.get("groupId"));
                         groups.groupImg = String.valueOf(objectMap.get("groupImg"));
                         groups.groupName = String.valueOf(objectMap.get("groupName"));
-                        groups.isPending = Boolean.parseBoolean(String.valueOf(objectMap.get("isPending")));*/
+                        groups.isPending = Boolean.parseBoolean(String.valueOf(objectMap.get("isPending")));
 
-                        groups = dataSnapshot.getValue(Groups.class);
+                        if (objectMap.get("member") instanceof List) {
+                            List<Object> members = (List<Object>) objectMap.get("member");
+
+                            for(Object x: members) {
+                                if( x instanceof Object) {
+
+                                    Map<String,Object> params = new HashMap<>();
+                                    params = (Map<String, Object>) x;
+                                    String mystring = String.valueOf(params.get("memberId"));
+                                    groups.member.put(String.valueOf(mystring),x);
+                                }
+                            }
+
+
+                        } else {
+                            Map<String,Object> members =  (Map<String,Object>) objectMap.get("member");
+                            Log.d("Hello World", "onDataChange: "+members);
+                            groups.member = (HashMap<String, Object>) members;
+                        }
+
+
+
+                        //groups = dataSnapshot.getValue(Groups.class);
                         if (groups != null) {
                             CircleImageView ivUserProfile = findViewById(R.id.ivUserProfile);
                             tvUserName.setText(groups.groupName);
@@ -847,10 +872,10 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             }
 
             et_for_sendTxt.setText("");
-           /* if (chatModel1.messageType == 0)
+            if (chatModel1.messageType == 0)
                 sendPushNotificationToReceiver(chatModel1.message);
             else
-                sendPushNotificationToReceiver("Image");*/
+                sendPushNotificationToReceiver("Image");
         }
 
     }
@@ -1206,14 +1231,14 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void sendNotifications(String fbToken, String count,String message) {
-        FcmNotificationBuilder.initialize()
+       /* FcmNotificationBuilder.initialize()
                 .title(Mualab.currentUser.userName+" @ "+groups.groupName)
                 .batchCount(count)
                 .message(message).uid(groupId)
                 .username(Mualab.currentUser.userName+" @ "+groups.groupName).adminId(String.valueOf(groups.adminId))
                 .type("groupChat").clickAction("GroupChatActivity")
                 .firebaseToken(FirebaseInstanceId.getInstance().getToken())
-                .receiverFirebaseToken(fbToken).send();
+                .receiverFirebaseToken(fbToken).send();*/
     }
 
     private void showAlertDeleteChat(){

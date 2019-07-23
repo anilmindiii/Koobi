@@ -27,6 +27,7 @@ import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.databinding.ActivityVideoTrimmerBinding;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.utils.ConnectionDetector;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 
 import org.json.JSONObject;
@@ -119,7 +120,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements OnTrimVid
 
             intent.putExtra("caption", "");
             intent.putExtra("mediaUri", mediaUri);
-            intent.putExtra("thumbImage", thumbImage);
+            intent.putExtra("thumbImage", Util.getByteArray(thumbImage));
             intent.putExtra("feedType", mediaUri.mediaType);
             intent.putExtra("requestCode", Constant.POST_FEED_DATA);
 

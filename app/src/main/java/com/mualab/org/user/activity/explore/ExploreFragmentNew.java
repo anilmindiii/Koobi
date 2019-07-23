@@ -829,6 +829,8 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
                                         }*/
 
                                         //feeds.add(feed);
+
+
                                     }
                                     feed.serviceTaggedImgMap.put(j, feed.serviceTagList);
                                 }

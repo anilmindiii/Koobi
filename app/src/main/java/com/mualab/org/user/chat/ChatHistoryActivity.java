@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -295,7 +296,7 @@ public class ChatHistoryActivity extends AppCompatActivity implements View.OnCli
                                             if (size != 0)
                                                 messageOutput.userName = ((size - 1) + " Recipients");
                                         } catch (Exception e) {
-
+                                            Log.d("s",e+"");
                                         }
                                     }
 

@@ -28,6 +28,7 @@ import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivit
 import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.businessInvitaion.activity.ServiceDetailActivity;
 import com.mualab.org.user.activity.businessInvitaion.model.Services;
+import com.mualab.org.user.activity.feeds.listener.MyClickOnPostMenu;
 import com.mualab.org.user.activity.feeds.listener.OnImageSwipeListener;
 import com.mualab.org.user.activity.myprofile.activity.activity.UserProfileActivity;
 import com.mualab.org.user.activity.tag_module.instatag.InstaTag;
@@ -176,6 +177,7 @@ listner.onSingleTap();*/
                 .tapListener(new TapListener() {
                     @Override
                     public void onTap(View v) {
+                        MyClickOnPostMenu.getMentIntance().setMenuClick();
                         ViewPager viewPager = (ViewPager) container;
                         View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
 

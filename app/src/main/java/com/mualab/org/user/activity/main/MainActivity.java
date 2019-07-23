@@ -117,7 +117,7 @@ import static com.mualab.org.user.data.local.prefs.Session.isLogout;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat,btnNevMenu,ivnotification;
+    public ImageView ivHeaderBack, ivHeaderUser, ivAppIcon, ibtnChat, btnNevMenu, ivnotification;
     public TextView tvHeaderTitle, tv_business_count, tv_badge_count;
     public RelativeLayout rootLayout;
     public CardView rlHeader1;
@@ -737,8 +737,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     clickedId = 2;
                     tvHeaderTitle.setText(getString(R.string.app_name));
                     ibtnFeed.setImageResource(R.drawable.active_feeds_ico);
-                    ivnotification.setVisibility(View.VISIBLE);
-                    //tv_badge_count.setVisibility(View.GONE);
+                    ivnotification.setVisibility(View.GONE);
+                    tv_badge_count.setVisibility(View.GONE);
                     getbatchCount();
                     SearchBoardFragment.isFavClick = false;
                     ibtnChat.setVisibility(View.VISIBLE);
@@ -816,7 +816,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ibtnNotification.setImageResource(R.drawable.active_profile_ico);
                     tvHeaderTitle.setText(R.string.profile);
                     ivnotification.setVisibility(View.VISIBLE);
-                   // tv_badge_count.setVisibility(View.VISIBLE);
+                    // tv_badge_count.setVisibility(View.VISIBLE);
                     getbatchCount();
                     tvHeaderTitle.setVisibility(View.VISIBLE);
                     btnNevMenu.setVisibility(View.VISIBLE);
@@ -831,7 +831,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     replaceFragment(UserProfile.newInstance(isInvitaion, ""), false);
                     rlHeader1.setVisibility(View.VISIBLE);
                     getHistoryList();
-
 
 
                 }
@@ -1300,9 +1299,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (unReadCount == 0) {
                     tv_batch_count.setVisibility(View.GONE);
                 } else {
-                    if(clickedId == 5){
+                    if (clickedId == 5) {
                         tv_batch_count.setVisibility(View.GONE);
-                    }else tv_batch_count.setVisibility(View.VISIBLE);}
+                    } else tv_batch_count.setVisibility(View.VISIBLE);
+                }
 
             }
         } else tv_batch_count.setVisibility(View.GONE);
@@ -1373,7 +1373,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             tv_badge_count.setVisibility(View.GONE);
                         } else {
                             tv_badge_count.setText(sum + "");
-                            tv_badge_count.setVisibility(View.VISIBLE);
+                            if (clickedId != 2)
+                                tv_badge_count.setVisibility(View.VISIBLE);
                         }
 
 
@@ -1571,8 +1572,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
-    public interface getIsInvitaion{
+    public interface getIsInvitaion {
         void getInvitationAvail(boolean isInvitation);
     }
 

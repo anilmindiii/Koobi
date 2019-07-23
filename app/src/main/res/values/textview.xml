@@ -169,6 +169,15 @@
         <item name="android:background">@drawable/button_effect_invert</item>
     </style>
 
+
+    <style name="My_Button_green.Invert" parent="My_Button_small">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_effect_invert_green</item>
+    </style>
+
+
+
+
     <style name="My_Button.Invert" parent="My_Button">
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/button_effect_invert</item>

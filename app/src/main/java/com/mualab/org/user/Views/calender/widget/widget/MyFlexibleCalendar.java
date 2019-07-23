@@ -678,7 +678,7 @@ public class MyFlexibleCalendar extends MyUICalendar {
     }
 
     private void collapseTo(int index) {
-        if (getState() == STATE_COLLAPSED) {
+        if (getState() == STATE_COLLAPSED || getState() == 1) {
             if (index == -1) {
                 index = mTableBody.getChildCount() - 1;
             }

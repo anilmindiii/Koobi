@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,6 +27,7 @@ import com.mualab.org.user.chat.model.FirebaseUser;
 import com.mualab.org.user.data.local.prefs.Session;
 import com.mualab.org.user.data.model.User;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,6 +52,18 @@ public class Util {
 
     public int getTimeInMin(int hours,int min){
         return hours*60 + min;
+    }
+
+
+    public static byte[] getByteArray(Bitmap bitmap) {
+        //Convert to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public static Bitmap getBitmapFromByteArray(byte[] data) {
+        return BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 
 

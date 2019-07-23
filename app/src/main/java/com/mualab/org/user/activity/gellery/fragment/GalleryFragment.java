@@ -45,6 +45,7 @@ import com.mualab.org.user.image.nocropper.BitmapUtils;
 import com.mualab.org.user.image.nocropper.CropperCallback;
 import com.mualab.org.user.image.nocropper.CropperView;
 import com.mualab.org.user.listener.GalleryOnClickListener;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 import com.mualab.org.user.utils.media.ImageVideoUtil;
 import com.zhihu.matisse.internal.loader.AlbumLoader;
@@ -148,14 +149,14 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
             lastSelectedUri = media.uri;
             mSelected.put(media.uri.toString(), media.uri);
             refreshUi(lastSelectedUri);
-            //showImage.setUri(media.uri);
-            try {
 
-                showImage.setImageBitmap(ImageVideoUtil.getBitmapFromUri(context,media.uri));
+            try {
 
                 //showImage.setImageBitmap(ImageVideoUtil.getBitmapFromUri(context,media.uri));
 
+                //showImage.setImageBitmap(ImageVideoUtil.getBitmapFromUri(context,media.uri));
 
+                showImage.setImageUri(media.uri);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -258,7 +259,8 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
             showImage.setVisibility(View.VISIBLE);
             ivImage.setVisibility(View.GONE);
             try{
-                showImage.setImageBitmap(ImageVideoUtil.getBitmapFromUri(context,uri));
+               // showImage.setImageBitmap(ImageVideoUtil.getBitmapFromUri(context,uri));
+                showImage.setImageUri(uri);
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -349,7 +351,7 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
 
                             intent.putExtra("caption", "");
                             intent.putExtra("mediaUri", mediaUri);
-                            intent.putExtra("thumbImage", thumbImage);
+                            intent.putExtra("thumbImage", Util.getByteArray(thumbImage));
                             intent.putExtra("feedType", Constant.IMAGE_STATE);
                             intent.putExtra("requestCode", Constant.POST_FEED_DATA);
                         } else {
@@ -415,7 +417,7 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
 
                         intent.putExtra("caption", "");
                         intent.putExtra("mediaUri", mediaUri);
-                        intent.putExtra("thumbImage", thumbImage);
+                        intent.putExtra("thumbImage",  Util.getByteArray(thumbImage));
                         intent.putExtra("feedType", Constant.IMAGE_STATE);
                         intent.putExtra("requestCode", Constant.POST_FEED_DATA);
                     } else {
@@ -489,7 +491,7 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
                             intent = new Intent(context, FeedPostActivity.class);
                             intent.putExtra("caption", "");
                             intent.putExtra("mediaUri", mediaUri);
-                            intent.putExtra("thumbImage", thumbImage);
+                            intent.putExtra("thumbImage",  Util.getByteArray(thumbImage));
                             intent.putExtra("feedType", Constant.IMAGE_STATE);
                             intent.putExtra("requestCode", Constant.POST_FEED_DATA);
 
@@ -520,15 +522,20 @@ public class GalleryFragment extends Fragment implements View.OnClickListener {
             showImage.cropToCenter();
             isSnappedToCenter = false;
             snap_button.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_rounded_background));
-
+            updateSnapUI();
         } else {
             isFullImage  =true;
             showImage.fitToCenter();
             isSnappedToCenter = true;
             snap_button.setBackground(ContextCompat.getDrawable(context, R.drawable.circle_selected_bg));
-
+            updateSnapUI();
         }
 
+    }
+
+    public void updateSnapUI() {
+        mSelected.clear();
+        mSelected.put(lastSelectedUri.toString(), lastSelectedUri);
     }
 
     public ArrayList<Media> getAlbums() {

@@ -22,7 +22,9 @@ import com.mualab.org.user.listener.FeedsListner;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -39,6 +41,8 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     ExSearchTag exSearchTag;
     private FeedsListner feedsListner;
     boolean hideFirstIndex, isTaskDone;
+    ArrayList<TagToBeTagged> serviceTagList;
+    Map<String,TagToBeTagged> mapServiceTagList;
 
 
     public HeaderGrideAdapter(Context mContext, ExSearchTag exSearchTag, List<Feeds> feedItems,
@@ -49,14 +53,11 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.exSearchTag = exSearchTag;
         this.feedsListner = feedsListner;
         this.hideFirstIndex = hideFirstIndex;
-
-
     }
 
     public boolean isHeader(int position) {
         return position == 0;
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -75,11 +76,10 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             return;
         }*/
+
         try{
             final Feeds feeds = feedItems.get(position);
             final Holder h = ((Holder) holder);
-
-
 
             if (feeds.feedType.equals("image")) {
                 h.videoIcon.setVisibility(View.GONE);
@@ -98,12 +98,24 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             .placeholder(R.color.gray2)
                             .into(h.imageView);
                 }
-
-
-
             }
 
-            ChildServiceAdapter serviceAdapter = new ChildServiceAdapter(feeds.serviceTagList);
+            List<ArrayList<TagToBeTagged>> values = new ArrayList<>(feeds.serviceTaggedImgMap.values());
+
+            mapServiceTagList = new HashMap<>();
+            serviceTagList = new ArrayList<>();
+            for(int i=0;i<values.size();i++){
+                if(values.get(i).size() != 0){
+                    for(int j=0;j<values.get(i).size();j++){
+                        mapServiceTagList.put(values.get(i).get(j).getUnique_tag_id(),values.get(i).get(j));
+                    }
+                }
+            }
+
+            List<TagToBeTagged> serviceList = new ArrayList<>(mapServiceTagList.values());
+
+            serviceTagList.addAll(serviceList);
+            ChildServiceAdapter serviceAdapter = new ChildServiceAdapter(serviceTagList);
             h.rcv_service.setAdapter(serviceAdapter);
 
            /* h.tv_category.setOnClickListener(new View.OnClickListener() {
@@ -261,9 +273,12 @@ public class HeaderGrideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 /*..................................................... child adapter  .......................................*/
 
     class ChildServiceAdapter extends RecyclerView.Adapter<ChildServiceAdapter.ViewHolder>{
-        ArrayList<TagToBeTagged> serviceTagList;
+
+
+        private final ArrayList<TagToBeTagged> serviceTagList;
 
         public ChildServiceAdapter(ArrayList<TagToBeTagged> serviceTagList) {
+
             this.serviceTagList = serviceTagList;
         }
 

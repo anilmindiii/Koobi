@@ -47,8 +47,8 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnRetry"
             style="@style/My_Button"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_width="220dp"
+            android:layout_height="40dp"
             android:layout_marginTop="60dp"
             android:text="Try again" />
 

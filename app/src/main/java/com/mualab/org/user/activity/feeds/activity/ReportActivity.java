@@ -195,7 +195,7 @@ public class ReportActivity extends AppCompatActivity {
         if (shouldApiRun){
             if(isforbooking){
                 reportReason("reportReason?type=booking");
-            }else  reportReason("reportReason");
+            }else  reportReason("reportReason?type=feed");
 
         }
 

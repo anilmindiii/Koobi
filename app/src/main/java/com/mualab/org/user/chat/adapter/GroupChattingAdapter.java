@@ -95,7 +95,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tv_sender_msg,tv_send_time,tv_my_date_label,tv_transparent;
         ImageView iv_for_sender,iv_msg_status;
-        ProgressBar progress_bar;
+       // ProgressBar progress_bar;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -104,7 +104,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
             iv_for_sender = itemView.findViewById(R.id.iv_for_sender);
             iv_for_sender.setEnabled(false);
             tv_send_time = itemView.findViewById(R.id.tv_send_time);
-            progress_bar = itemView.findViewById(R.id.progress_bar);
+           // progress_bar = itemView.findViewById(R.id.progress_bar);
             tv_my_date_label = itemView.findViewById(R.id.tv_my_date_label);
             tv_transparent = itemView.findViewById(R.id.tv_transparent);
 
@@ -117,7 +117,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
             if(chat.messageType == 1){
                 iv_for_sender.setVisibility(View.VISIBLE);
                 tv_sender_msg.setVisibility(View.GONE);
-                progress_bar.setVisibility(View.VISIBLE);
+                //progress_bar.setVisibility(View.VISIBLE);
 
                 if(chat.message.contains(".gif")){
                     GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_for_sender);
@@ -131,7 +131,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    progress_bar.setVisibility(View.GONE);
+                                   // progress_bar.setVisibility(View.GONE);
                                     return false;
                                 }
                             })
@@ -141,7 +141,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                         .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_for_sender, new Callback() {
                     @Override
                     public void onSuccess() {
-                        progress_bar.setVisibility(View.GONE);
+                        //progress_bar.setVisibility(View.GONE);
                         iv_for_sender.setEnabled(true);
                     }
                     @Override
@@ -149,7 +149,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                         Picasso.with(context).load(chat.message)
                                 .placeholder(R.drawable.gallery_placeholder)
                                 .error(R.drawable.gallery_placeholder).into(iv_for_sender);
-                        progress_bar.setVisibility(View.GONE);
+                       // progress_bar.setVisibility(View.GONE);
                         iv_for_sender.setEnabled(false);
                     }
                 });
@@ -159,7 +159,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                 iv_for_sender.setVisibility(View.GONE);
                 tv_sender_msg.setVisibility(View.VISIBLE);
                 tv_sender_msg.setText(chat.message);
-                progress_bar.setVisibility(View.GONE);
+                //progress_bar.setVisibility(View.GONE);
             }
 
             if(chat.isLongSelected){
@@ -231,7 +231,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
     public class OtherViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tv_other_msg,tvSenderName,tv_other_msg_time;
         ImageView iv_other_img,iv_othr_msg_status;
-        ProgressBar progress_bar;
+       // ProgressBar progress_bar;
 
         OtherViewHolder(View itemView) {
             super(itemView);
@@ -241,7 +241,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
             iv_other_img = itemView.findViewById(R.id.iv_other_img);
             iv_other_img.setEnabled(false);
             iv_othr_msg_status = itemView.findViewById(R.id.iv_othr_msg_status);
-            progress_bar = itemView.findViewById(R.id.progress_bar);
+           // progress_bar = itemView.findViewById(R.id.progress_bar);
 
             iv_other_img.setOnClickListener(this);
         }
@@ -251,10 +251,10 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
             tvSenderName.setText(chat.userName);
 
             if(chat.messageType == 1){
-                progress_bar.setVisibility(View.VISIBLE);
+                //progress_bar.setVisibility(View.VISIBLE);
                 iv_other_img.setVisibility(View.VISIBLE);
                 tv_other_msg.setVisibility(View.GONE);
-                progress_bar.setVisibility(View.VISIBLE);
+               // progress_bar.setVisibility(View.VISIBLE);
 
                 if(chat.message.contains(".gif")){
                     GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_other_img);
@@ -268,7 +268,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    progress_bar.setVisibility(View.GONE);
+                                  //  progress_bar.setVisibility(View.GONE);
                                     return false;
                                 }
                             })
@@ -279,7 +279,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                         @Override
                         public void onSuccess() {
                             iv_other_img.setEnabled(true);
-                            progress_bar.setVisibility(View.GONE);
+                            //progress_bar.setVisibility(View.GONE);
                         }
                         @Override
                         public void onError() {
@@ -287,7 +287,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                             Picasso.with(context).load(chat.message)
                                     .placeholder(R.drawable.gallery_placeholder)
                                     .error(R.drawable.gallery_placeholder).into(iv_other_img);
-                            progress_bar.setVisibility(View.GONE);
+                            //progress_bar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -300,7 +300,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                 tv_other_msg.setVisibility(View.VISIBLE);
                 iv_other_img.setVisibility(View.GONE);
                 tv_other_msg.setText(chat.message);
-                progress_bar.setVisibility(View.GONE);
+               // progress_bar.setVisibility(View.GONE);
             }
 
             SimpleDateFormat sd = new SimpleDateFormat("hh:mm a", Locale.getDefault());
