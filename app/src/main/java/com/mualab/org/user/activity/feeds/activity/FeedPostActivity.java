@@ -162,8 +162,8 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
         if (intent != null) {
             byte[] byteArray = getIntent().getByteArrayExtra("thumbImage");
             caption = intent.getStringExtra("caption");
-            if(byteArray != null)
-            thumbImage = Util.getBitmapFromByteArray(byteArray);
+            if (byteArray != null)
+                thumbImage = Util.getBitmapFromByteArray(byteArray);
             mediaUri = (MediaUri) intent.getSerializableExtra("mediaUri");
             feedType = intent.getIntExtra("feedType", Constant.IMAGE_STATE);
 
@@ -180,8 +180,8 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
 
         listOfValues = new ArrayList<>();
 
-        if(feedType == Constant.IMAGE_STATE) rl_placeholder.setVisibility(View.GONE);
-        else if(feedType == Constant.VIDEO_STATE) rl_placeholder.setVisibility(View.VISIBLE);
+        if (feedType == Constant.IMAGE_STATE) rl_placeholder.setVisibility(View.GONE);
+        else if (feedType == Constant.VIDEO_STATE) rl_placeholder.setVisibility(View.VISIBLE);
 
         viewDidLoad();
 
@@ -579,9 +579,9 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
     private void feedPostPrerareData() {
 
         findViewById(R.id.tv_post).setEnabled(false);
-        try{
+        try {
             KeyboardUtil.hideKeyboard(Objects.requireNonNull(getCurrentFocus()), this);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -617,7 +617,7 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
 
                 if (mUploadUri == null) {
                     mDeleteCompressedMedia = true;
-                //saveTempAndCompress(uri);
+                    //saveTempAndCompress(uri);
                     doPostVideoFeed(videoThumb);
                 } else {
                     doPostVideoFeed(videoThumb);
@@ -976,6 +976,7 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
             }
         });
     }
+
     private void getCurrentLocation() {
         LocationDetector locationDetector = new LocationDetector();
         FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(FeedPostActivity.this);
@@ -1219,7 +1220,6 @@ public class FeedPostActivity extends BaseActivity implements View.OnClickListen
             btn_post.setEnabled(true);
 
         }
-
 
 
         HashMap<String, String> header = new HashMap<>();

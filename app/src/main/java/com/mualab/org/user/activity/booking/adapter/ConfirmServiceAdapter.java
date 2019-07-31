@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.booking.model.BookingConfirmInfo;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class ConfirmServiceAdapter extends RecyclerView.Adapter<ConfirmServiceAd
         holder.tv_date_time.setText(bean.bookingDate + ", " + bean.startTime);
         holder.tv_service_name.setText(bean.artistServiceName);
         holder.tv_name.setText(bean.staffName);
-        holder.tv_price.setText("£"+bean.bookingPrice);
+        holder.tv_price.setText("£"+ Util.getTwoDigitDecimal(bean.bookingPrice));
 
         holder.tv_edit.setOnClickListener(new View.OnClickListener() {
             @Override

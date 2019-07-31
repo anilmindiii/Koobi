@@ -67,6 +67,7 @@ import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +93,7 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
     private TextView tv_msg;
     private LinearLayout ll_progress;
     private ProgressBar progress_bar;
-    private IndicatorSeekBar seekBarLocation;
+    private DiscreteSeekBar seekBarLocation;
     HeaderGrideAdapter feedAdapter;
     private RecyclerView rvFeed;
     private List<Feeds> feeds;
@@ -276,25 +277,27 @@ public class ExploreFragmentNew extends BaseFragment implements View.OnClickList
         lat = String.valueOf(Mualab.currentLocation.lat);
         lng = String.valueOf(Mualab.currentLocation.lng);
 
-        seekBarLocation.with(mContext)
-                .max(20)
-                .min(1)
-                .build();
 
-        seekBarLocation.setOnSeekChangeListener(new OnSeekChangeListener() {
+        seekBarLocation.setMin(1);
+        seekBarLocation.setMax(20);
+
+        seekBarLocation.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
-            public void onSeeking(SeekParams seekParams) {
-                seekBarrange = seekParams.progress;
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                seekBarrange = seekBar.getProgress();
             }
 
             @Override
-            public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
             }
 
             @Override
-            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
             }
         });
+
 
         seekBarHandler = new Handler();
         seekBarHandler.post(() -> {

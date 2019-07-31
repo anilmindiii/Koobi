@@ -113,6 +113,9 @@ dependencies {
     implementation 'com.daasuu:animateHorizontalProgressBar:0.2.4'
     implementation 'com.gmail.samehadar:iosdialog:1.0'
 
+    //Seekbar
+    implementation 'org.adw.library:discrete-seekbar:1.0.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

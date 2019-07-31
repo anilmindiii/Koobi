@@ -32,6 +32,7 @@ import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -107,7 +108,7 @@ public class InvitationDetailActivity extends AppCompatActivity implements View.
 
             tvBusinessName.setText(companyDetail.userName);
             tvAddress.setText(companyDetail.address);
-            tv_salary.setText("£"+companyDetail.salaries);
+            tv_salary.setText("£"+ Util.getTwoDigitDecimal(companyDetail.salaries));
 
             String textToHighlight = "<b>" + ""+companyDetail.businessName + "</b> ";
 

@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
@@ -305,6 +307,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 if (feeds.feedType.equalsIgnoreCase("image")) {
                                     listener.onFeedClick(feeds, pos, imageHolder.rl_imageView);
                                 }
+
+                                imageHolder.ly_report.setVisibility(View.GONE);
                             }
 
                             @Override
@@ -919,6 +923,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View v) {
                 try {
+
+                    if(cellFeedViewHolder.ly_report.getVisibility() == View.VISIBLE){
+                        cellFeedViewHolder.ly_report.setVisibility(View.GONE);
+                    }else cellFeedViewHolder.ly_report.setVisibility(View.VISIBLE);
+
                     if (feedItems.get(cellFeedViewHolder.getAdapterPosition()).ispopupOpen) {
                         for (Feeds feed : feedItems) {
                             feed.ispopupOpen = false;
@@ -929,7 +938,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
                         feedItems.get(cellFeedViewHolder.getAdapterPosition()).ispopupOpen = true;
                     }
-                    notifyDataSetChanged();
+                    //notifyDataSetChanged();
                 } catch (Exception e) {
 
                 }

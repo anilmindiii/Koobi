@@ -32,6 +32,7 @@ import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 import android.widget.ViewSwitcher;
@@ -95,6 +96,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
     private Uri captureMediaUri;
     private boolean isVideoUri;
     private MediaUri mediaUri;
+    private RelativeLayout ly_CameraMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,6 +246,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         vUpperPanel = findViewById(R.id.vUpperPanel);
         vLowerPanel = findViewById(R.id.vLowerPanel);
+        ly_CameraMode = findViewById(R.id.ly_CameraMode);
         //rvFilters = findViewById(R.id.rvFilters);
         btnTakePhoto = findViewById(R.id.btnTakePhoto);
         btnCameraMode = findViewById(R.id.btnCameraMode);
@@ -308,10 +311,10 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
                 }else if(currentState == STATE_TAKE_VIDEO){
 
                     if(isStartRecord){
-                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video);
+                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active_story);
                         if(countDownTimer!=null) countDownTimer.onFinish();
                     }else {
-                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active);
+                        btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_active_story);
                         btnTakePhoto.setEnabled(false);
                         cameraView.setSessionType(SessionType.VIDEO);
                         startTimear();
@@ -378,6 +381,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.retry:
             case R.id.btnBack:
+                ly_CameraMode.setVisibility(View.VISIBLE);
                 onBackPressed();
                 break;
 
@@ -474,8 +478,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
             currentState = STATE_TAKE_VIDEO;
             cameraView.setSessionType(SessionType.VIDEO);
             btnTakePhoto.setText(R.string.rec);
-            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video);
-
+            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_rec);
             btnCameraMode.setImageResource(R.drawable.ic_photo_camera_white);
             updateState(STATE_TAKE_VIDEO);
             //btnTakePhoto.setOnTouchListener(onTouchListener);
@@ -485,7 +488,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
             currentState = STATE_TAKE_PHOTO;
             btnTakePhoto.setText("");
             updateState(currentState);
-            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture);
+            btnTakePhoto.setBackgroundResource(R.drawable.btn_capture_video_rec);
             //btnTakePhoto.setOnTouchListener(null);
             btnTakePhoto.setOnClickListener(this);
             cameraView.setSessionType(SessionType.PICTURE);
@@ -531,6 +534,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
                 // File file = new File(getExternalCacheDir(), UUID.randomUUID() + ".mp4");
                 if (file != null) {
                     isStartRecord = true;
+                    ly_CameraMode.setVisibility(View.GONE);
                     switchCamera.setVisibility(View.GONE);
                     btnCameraMode.setVisibility(View.GONE);
                     //mChronometer.setBase(SystemClock.elapsedRealtime());
@@ -556,6 +560,7 @@ public class CustomCameraActivity extends AppCompatActivity implements View.OnCl
             vUpperPanel.showNext();
             vLowerPanel.showNext();
             updateState(STATE_TAKE_PHOTO);
+            ly_CameraMode.setVisibility(View.VISIBLE);
             cameraView.start();
         } else if (currentState == STATE_SETUP_VIDEO) {
             vUpperPanel.showNext();

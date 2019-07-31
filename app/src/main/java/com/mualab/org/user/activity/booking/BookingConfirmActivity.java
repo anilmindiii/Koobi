@@ -57,6 +57,7 @@ import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.utils.ConnectionDetector;
 import com.mualab.org.user.utils.Helper;
 import com.mualab.org.user.utils.KeyboardUtil;
+import com.mualab.org.user.utils.Util;
 import com.mualab.org.user.utils.constants.Constant;
 
 import org.json.JSONObject;
@@ -286,7 +287,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                 voucher = null;
 
-                tv_new_amount.setText("£" + total_price);
+                tv_new_amount.setText("£" + Util.getTwoDigitDecimal(total_price));
 
                 tv_new_amount.setVisibility(View.VISIBLE);
                 tv_amount.setVisibility(View.GONE);
@@ -457,7 +458,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         for (BookingConfirmInfo.DataBean bean : bookingList) {
                             total_price = Double.parseDouble(bean.bookingPrice) + total_price;
                         }
-                        tv_new_amount.setText("£" + total_price + "");
+                        tv_new_amount.setText("£" + Util.getTwoDigitDecimal(total_price) + "");
 
                     } else {
 
@@ -537,7 +538,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                         ly_amount.setVisibility(View.VISIBLE);
                         tv_amount.setVisibility(View.VISIBLE);
-                        tv_amount.setText("£" + total_price + "");
+                        tv_amount.setText("£" + Util.getTwoDigitDecimal(total_price) + "");
                         tv_amount.setTextColor(ContextCompat.getColor(BookingConfirmActivity.this, R.color.red));
 
                         if (voucherItem.discountType.equals("1")) {// for fix amount
@@ -551,7 +552,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 discountPrice = String.valueOf(newDiscountedPrice);
                             }
                             String roundValue = String.format("%.2f", Double.parseDouble(discountPrice));
-                            tv_new_amount.setText("£" + roundValue + "");
+                            tv_new_amount.setText("£" + Util.getTwoDigitDecimal(roundValue )+ "");
 
                         } else if (voucherItem.discountType.equals("2")) {// for % percentage
                             Double newDiscountedPrice = ((total_price * (Double.parseDouble(voucherItem.amount))) / 100);
@@ -565,7 +566,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 discountPrice = String.valueOf(newDiscountedPrice);
                             }
                             String roundValue = String.format("%.2f", Double.parseDouble(discountPrice));
-                            tv_new_amount.setText("£" + roundValue + "");
+                            tv_new_amount.setText("£" + Util.getTwoDigitDecimal(roundValue) + "");
                         }
 
                         iv_voucher_arrow.setVisibility(View.INVISIBLE);

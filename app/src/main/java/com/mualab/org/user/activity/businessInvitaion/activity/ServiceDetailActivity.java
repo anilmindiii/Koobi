@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.businessInvitaion.model.Services;
+import com.mualab.org.user.utils.Util;
 
 
 public class ServiceDetailActivity extends AppCompatActivity {
@@ -57,8 +58,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         if (services!=null){
             tvServiceName.setText(services.serviceName);
-            tvOutCallPrice.setText("£"+services.outCallPrice);
-            tvInCallPrice.setText("£"+services.inCallPrice);
+            tvOutCallPrice.setText("£"+ Util.getTwoDigitDecimal(services.outCallPrice));
+            tvInCallPrice.setText("£"+ Util.getTwoDigitDecimal(services.inCallPrice));
             tvServiceDesc.setText(services.description);
             tvCompileTime.setText(services.completionTime);
             tvBusinessTypeName.setText(services.bizTypeName);

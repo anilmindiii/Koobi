@@ -1264,7 +1264,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                 startActivityForResult(intent1,10);*/
                 Bundle bundle1 = new Bundle();
                 bundle1.putBoolean("isFollowers", false);
-                bundle1.putString("artistId", String.valueOf(user.id));
+                bundle1.putString("artistId", userId);
                 Intent intent1 = new Intent(UserProfileActivity.this, FollowersActivity.class);
                 intent1.putExtras(bundle1);
                 startActivityForResult(intent1, 10);
@@ -1273,7 +1273,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             case R.id.llFollowers:
                 Bundle bundle2 = new Bundle();
                 bundle2.putBoolean("isFollowers", true);
-                bundle2.putString("artistId", String.valueOf(user.id));
+                bundle2.putString("artistId", userId);
                 Intent intent2 = new Intent(UserProfileActivity.this, FollowersActivity.class);
                 intent2.putExtras(bundle2);
                 startActivityForResult(intent2, 10);

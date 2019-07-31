@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentTransaction;
@@ -333,6 +334,8 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     listener.onFeedClick(feeds, pos, imageHolder.rl_imageView);
 
                                 }
+
+                                imageHolder.ly_share.setVisibility(View.GONE);
                             }
 
                             @Override
@@ -958,6 +961,10 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             @Override
             public void onClick(View v) {
                 try {
+                    if(cellFeedViewHolder.ly_share.getVisibility() == View.VISIBLE){
+                        cellFeedViewHolder.ly_share.setVisibility(View.GONE);
+                    }else cellFeedViewHolder.ly_share.setVisibility(View.VISIBLE);
+
                     if(feedItems.get(cellFeedViewHolder.getAdapterPosition()).ispopupOpen){
                         for(Feeds feed:feedItems){
                             feed.ispopupOpen = false;
@@ -970,7 +977,7 @@ public class ArtistFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         feedItems.get(cellFeedViewHolder.getAdapterPosition()).ispopupOpen = true;
                     }
 
-                    notifyDataSetChanged();
+                   // notifyDataSetChanged();
                 }catch (Exception e){
 
                 }

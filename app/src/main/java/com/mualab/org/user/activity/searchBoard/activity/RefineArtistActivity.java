@@ -71,6 +71,7 @@ import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -102,7 +103,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
     private CheckBox chbOutcall;
     private Session session;
     private TextView tvShowDistance, tv_price;
-    private IndicatorSeekBar seekBarLocation;
+    private DiscreteSeekBar seekBarLocation;
     private RelativeLayout rlSelectLocation;
     private RelativeLayout rlSelectradiusSeekbar;
     private RelativeLayout rlQualification;
@@ -249,27 +250,29 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
-        seekBarLocation.with(this)
+        seekBarLocation.setMin(1);
+        seekBarLocation.setMin(20);
+        /*seekBarLocation.with(this)
                 .max(20)
                 .min(1)
-                .build();
-
-        seekBarLocation.setOnSeekChangeListener(new OnSeekChangeListener() {
+                .build();*/
+        seekBarLocation.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
-            public void onSeeking(SeekParams seekParams) {
-                seekBarrange = seekParams.progress;
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                seekBarrange = seekBar.getProgress();
             }
 
             @Override
-            public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
 
             }
 
             @Override
-            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
 
             }
         });
+
 
 
         seekBarHandler = new Handler();
@@ -362,7 +365,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                 public void run() {
 
                     if (refineSearchBoard.LocationFilter != null) {
-                        seekBarLocation.setProgress(Float.parseFloat(refineSearchBoard.LocationFilter));
+                        seekBarLocation.setProgress(Integer.parseInt(refineSearchBoard.LocationFilter));
                     }
                 }
             });
@@ -577,7 +580,7 @@ public class RefineArtistActivity extends AppCompatActivity implements View.OnCl
                     public void run() {
 
                         if (refineSearchBoard != null) {
-                            seekBarLocation.setProgress(Float.parseFloat(refineSearchBoard.LocationFilter));
+                            seekBarLocation.setProgress(Integer.parseInt(refineSearchBoard.LocationFilter));
                         }
                     }
                 });

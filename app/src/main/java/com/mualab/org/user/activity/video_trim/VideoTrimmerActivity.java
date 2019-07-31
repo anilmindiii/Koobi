@@ -57,7 +57,11 @@ public class VideoTrimmerActivity extends AppCompatActivity implements OnTrimVid
         Intent intent = getIntent();
         if (intent != null) {
             caption = intent.getStringExtra("caption");
-            thumbImage = intent.getParcelableExtra("thumbImage");
+            byte[] byteArray = getIntent().getByteArrayExtra("thumbImage");
+            caption = intent.getStringExtra("caption");
+            if (byteArray != null)
+                thumbImage = Util.getBitmapFromByteArray(byteArray);
+           // thumbImage = intent.getParcelableExtra("thumbImage");
             mediaUri = (MediaUri) intent.getSerializableExtra("mediaUri");
             feedType = intent.getIntExtra("feedType", Constant.IMAGE_STATE);
 

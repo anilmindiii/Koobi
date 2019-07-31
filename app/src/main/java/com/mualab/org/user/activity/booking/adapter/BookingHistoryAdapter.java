@@ -27,6 +27,7 @@ import com.mualab.org.user.application.Mualab;
 import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -109,7 +110,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             holder.tv_view_more.setVisibility(View.VISIBLE);
         }*/
 
-        holder.tv_price.setText("£" + bean.totalPrice + "");
+        holder.tv_price.setText("£" + Util.getTwoDigitDecimal(bean.totalPrice )+ "");
         holder.tvDateTime.setText(bean.bookingDate + ", " + bean.bookingTime);
 
      /*   if(bean.artistRating != 0){

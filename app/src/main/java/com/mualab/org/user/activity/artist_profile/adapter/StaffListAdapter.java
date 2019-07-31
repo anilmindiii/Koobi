@@ -23,6 +23,7 @@ import com.mualab.org.user.data.remote.HttpResponceListner;
 import com.mualab.org.user.data.remote.HttpTask;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -69,8 +70,8 @@ public class StaffListAdapter extends RecyclerView.Adapter<StaffListAdapter.View
         }else holder.tvtime.setText(hour +" hr "+min+" min");
 
         if(typeCall.equals("In Call")){
-            holder.tvprice.setText("£" + bean.inCallPrice+"");
-        }else holder.tvprice.setText("£" + bean.outCallPrice+"");
+            holder.tvprice.setText("£" + Util.getTwoDigitDecimal(bean.inCallPrice)+"");
+        }else holder.tvprice.setText("£" + Util.getTwoDigitDecimal(bean.outCallPrice)+"");
 
 
 

@@ -46,7 +46,6 @@
         android:divider="@null"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
-        app:reverseLayout="true"
         tools:listitem="@layout/child_service_item"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 

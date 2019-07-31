@@ -31,6 +31,7 @@ import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.dialogs.NoConnectionDialog;
 import com.mualab.org.user.dialogs.Progress;
 import com.mualab.org.user.utils.ConnectionDetector;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -109,7 +110,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.View
             holder.tv_view_more.setVisibility(View.VISIBLE);
         }*/
 
-        holder.tv_price.setText("£"+bean.totalPrice+"");
+        holder.tv_price.setText("£"+ Util.getTwoDigitDecimal(bean.totalPrice)+"");
 
         holder.tvDateTime.setText(bean.bookingDate+", "+bean.bookingTime);
 

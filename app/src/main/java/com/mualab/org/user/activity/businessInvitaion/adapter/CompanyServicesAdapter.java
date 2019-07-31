@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.mualab.org.user.R;
 import com.mualab.org.user.activity.businessInvitaion.model.Services;
+import com.mualab.org.user.utils.Util;
 
 import java.util.List;
 
@@ -83,9 +84,9 @@ public class CompanyServicesAdapter extends RecyclerView.Adapter<CompanyServices
         holder.tvServiceTitle.setText(item.serviceName);
 
         if (item.bookingType.equals("Outcall"))
-            holder.tvPrice.setText("£"+item.outCallPrice);
+            holder.tvPrice.setText("£"+ Util.getTwoDigitDecimal(item.outCallPrice));
         else
-            holder.tvPrice.setText("£"+item.inCallPrice);
+            holder.tvPrice.setText("£"+Util.getTwoDigitDecimal(item.inCallPrice));
 
         if (listPosition==0){
             holder.tvCategoryTitle.setText(item.subserviceName);

@@ -14,6 +14,8 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.artist_profile.model.Services;
 import com.mualab.org.user.dialogs.MyToast;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
+
 import java.util.ArrayList;
 
 /**
@@ -96,8 +98,8 @@ public class IncallOutCallAdapter extends RecyclerView.Adapter<IncallOutCallAdap
         holder.service_name.setText(inCallList.get(position).title + "");
 
         if (callType.equals("In Call")) {
-            holder.service_price.setText("£" + inCallList.get(position).inCallPrice + "");
-        } else holder.service_price.setText("£" + inCallList.get(position).outCallPrice + "");
+            holder.service_price.setText("£" + Util.getTwoDigitDecimal(inCallList.get(position).inCallPrice )+ "");
+        } else holder.service_price.setText("£" + Util.getTwoDigitDecimal(inCallList.get(position).outCallPrice) + "");
 
 
         String hour = Helper.formateDateFromstring("HH:mm", "HH", inCallList.get(position).completionTime);

@@ -14,6 +14,7 @@ import com.mualab.org.user.R;
 import com.mualab.org.user.activity.booking.BookingActivity;
 import com.mualab.org.user.activity.booking.model.ServiceInfoBooking;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -66,9 +67,9 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder>{
         }else holder.tv_time_duration.setText(hour +" hr "+min+" min");
 
         if(staffInfoBeanList.get(position).bookingType.equals("Incall")){
-            holder.tv_price.setText("£" + bean.outCallPrice+"");
+            holder.tv_price.setText("£" + Util.getTwoDigitDecimal(bean.outCallPrice)+"");
         }else {
-            holder.tv_price.setText("£" + bean.inCallPrice+"");
+            holder.tv_price.setText("£" + Util.getTwoDigitDecimal(bean.inCallPrice)+"");
         }
 
         holder.tv_user_name.setText(bean.staffName);

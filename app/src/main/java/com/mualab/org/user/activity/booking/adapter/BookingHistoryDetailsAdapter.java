@@ -17,6 +17,7 @@ import com.mualab.org.user.activity.artist_profile.activity.ArtistProfileActivit
 import com.mualab.org.user.activity.booking.model.BookingListInfo;
 import com.mualab.org.user.activity.feeds.activity.ReportActivity;
 import com.mualab.org.user.utils.Helper;
+import com.mualab.org.user.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -84,7 +85,7 @@ public class BookingHistoryDetailsAdapter extends RecyclerView.Adapter<BookingHi
         holder.tv_date_time.setText(bean.bookingDate + ", " + bean.startTime +" - "+bean.endTime);
         holder.tv_service_name.setText(bean.artistServiceName);
         holder.tv_name.setText(bean.staffName);
-        holder.tv_price.setText("£"+bean.bookingPrice);
+        holder.tv_price.setText("£"+ Util.getTwoDigitDecimal(bean.bookingPrice));
 
         if(bookingListInfo.data.bookStatus.equals("0") || isTimeNotPass){
             holder.iv_report_service.setVisibility(View.GONE);

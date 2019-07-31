@@ -21,7 +21,6 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="15dp"
             android:fontFamily="@font/nunito_regular"
-            android:text="On the way"
             android:textColor="@color/main_orange_color"
             android:textSize="16sp" />
 

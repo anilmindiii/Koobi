@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -62,6 +63,7 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
     private ViewGroup container;
     private boolean isShow, isFromFeed;
     InstaTag mInstaTag = null;
+    RelativeLayout rlShowTag;
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
 
 
@@ -108,14 +110,17 @@ listner.onSingleTap();*/
     private void showHideTag(InstaTag mInstaTag, int pos) {
 //people tag
         if (taggedImgMap.containsKey(pos)) {
+
             ArrayList<TagToBeTagged> tags = taggedImgMap.get(pos);
             if (!mInstaTag.isTagsShow("people")) {
                 mInstaTag.addTagViewFromTagsToBeTagged("people", tags, false);
                 mInstaTag.showTags("people");
                 isShow = true;
+
             } else {
                 mInstaTag.hideTags("people");
                 isShow = false;
+
             }
         }
 
@@ -160,7 +165,7 @@ listner.onSingleTap();*/
     public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_layout, container, false);
         final InstaTag postImages = itemView.findViewById(R.id.post_image);
-        RelativeLayout rlShowTag = itemView.findViewById(R.id.lyShowTag);
+        rlShowTag = itemView.findViewById(R.id.lyShowTag);
 
         postImages.setImageToBeTaggedEvent(taggedImageEvent);
         this.container = container;
@@ -177,19 +182,29 @@ listner.onSingleTap();*/
                 .tapListener(new TapListener() {
                     @Override
                     public void onTap(View v) {
-                        MyClickOnPostMenu.getMentIntance().setMenuClick();
+                        //
                         ViewPager viewPager = (ViewPager) container;
                         View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
 
                         if (view != null) {
                             mInstaTag = view.findViewById(R.id.post_image);
                         }
+
+
                         if (mInstaTag != null) {
                             showHideTag(mInstaTag, viewPager.getCurrentItem());
                         }
 
                         if (listner != null)
                             listner.onSingleTap();
+
+
+                       if(!isShow){
+                          // MyClickOnPostMenu.getMentIntance().setMenuClick();
+                       }
+
+
+                       //
                     }
                 })
                 .longPressListener(new LongPressListener() {

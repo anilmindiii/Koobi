@@ -56,14 +56,43 @@ public class Util {
 
 
     public static byte[] getByteArray(Bitmap bitmap) {
-        //Convert to byte array
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+        if(bitmap != null){
+            //Convert to byte array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        }else return  null;
+
     }
 
     public static Bitmap getBitmapFromByteArray(byte[] data) {
         return BitmapFactory.decodeByteArray(data, 0, data.length);
+    }
+
+    public static String getTwoDigitDecimal(Double value){
+        double d = 0.0;
+        String decimalValue = "";
+        try {
+            d = value;
+            decimalValue = String.format("%.2f", d);
+        }catch (Exception e){
+
+        }
+
+        return decimalValue;
+    }
+
+    public static String getTwoDigitDecimal(String value){
+        double d = 0.0;
+        String decimalValue = "";
+        try {
+            d = Double.parseDouble(value);
+            decimalValue = String.format("%.2f", d);
+        }catch (Exception e){
+
+        }
+
+        return decimalValue;
     }
 
 
