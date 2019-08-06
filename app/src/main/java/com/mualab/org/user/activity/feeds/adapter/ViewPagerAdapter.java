@@ -67,7 +67,6 @@ public class ViewPagerAdapter extends PagerAdapter implements OnImageSwipeListen
     private InstaTag.TaggedImageEvent taggedImageEvent = new InstaTag.TaggedImageEvent() {
 
 
-
         @Override
         public void singleTapConfirmedAndRootIsInTouch(float x, float y) {
 /* if (listner != null)
@@ -158,7 +157,8 @@ listner.onSingleTap();*/
         this.serviceTaggedImgMap = feeds.serviceTaggedImgMap;
         this.listner = listner;
         this.isShow = false;
-        this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); }
+        this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
     @NonNull
     @Override
@@ -177,7 +177,7 @@ listner.onSingleTap();*/
                 placeholder(R.drawable.gallery_placeholder).into(postImages.getTagImageView());
 
 
-        Zoomy.Builder zoomingBuilder = new Zoomy.Builder((Activity)context)
+        Zoomy.Builder zoomingBuilder = new Zoomy.Builder((Activity) context)
                 .target(postImages.getTagImageView())
                 .tapListener(new TapListener() {
                     @Override
@@ -199,12 +199,12 @@ listner.onSingleTap();*/
                             listner.onSingleTap();
 
 
-                       if(!isShow){
-                          // MyClickOnPostMenu.getMentIntance().setMenuClick();
-                       }
+                        if (!isShow) {
+                            // MyClickOnPostMenu.getMentIntance().setMenuClick();
+                        }
 
 
-                       //
+                        //
                     }
                 })
                 .longPressListener(new LongPressListener() {
@@ -226,7 +226,7 @@ listner.onSingleTap();*/
         ArrayList<TagToBeTagged> tempPeople = taggedImgMap.get(position);
         ArrayList<TagToBeTagged> tempService = serviceTaggedImgMap.get(position);
 
-        if ((tempPeople != null && tempPeople.size() != 0) || (tempService != null && tempService.size() != 0 &&serviceTaggedImgMap.size() != 0)) {
+        if ((tempPeople != null && tempPeople.size() != 0) || (tempService != null && tempService.size() != 0 && serviceTaggedImgMap.size() != 0)) {
             rlShowTag.setVisibility(View.VISIBLE);
         } else
             rlShowTag.setVisibility(View.GONE);
@@ -305,25 +305,22 @@ isShow = true;
                         boolean isInCallSelected = false;
 
                         if (Double.parseDouble(tagDetail.incallPrice) != 0.0 &&
-                                Double.parseDouble(tagDetail.outcallPrice) != 0){
+                                Double.parseDouble(tagDetail.outcallPrice) != 0) {
                             //services.bookingType = "Incall";
                             intent.putExtra("callType", "In Call");
                             isInCallSelected = true;
-                    } else if (Double.parseDouble(tagDetail.incallPrice) != 0.0){
+                        } else if (Double.parseDouble(tagDetail.incallPrice) != 0.0) {
                             //services.bookingType = "Incall";
                             isInCallSelected = true;
                             intent.putExtra("callType", "In Call");
-                        }
-
-                        else if (Double.parseDouble(tagDetail.outcallPrice) != 0.0){
+                        } else if (Double.parseDouble(tagDetail.outcallPrice) != 0.0) {
                             isOutCallSelected = true;
                             //services.bookingType = "Outcall";
                             intent.putExtra("callType", "Out Call");
                         }
 
 
-
-                        if(tagDetail.staffId == null){
+                        if (tagDetail.staffId == null) {
                             tagDetail.staffId = "0";
                         }
                         intent.putExtra("staffId", Integer.parseInt(tagDetail.staffId));
@@ -334,7 +331,8 @@ isShow = true;
                         context.startActivity(intent);
 
 
-                    }}
+                    }
+                }
 
 //}
             }

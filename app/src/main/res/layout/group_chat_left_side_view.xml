@@ -80,7 +80,7 @@
                         android:background="@drawable/bg_reciver">
 
                         <TextView
-                            android:id="@+id/tvSenderName"
+                            android:id="@+id/tvSenderName1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunito_regular"
@@ -117,16 +117,33 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="1.5dp"
+                    android:orientation="vertical"
                     android:background="@drawable/bg_reciver">
+
+                    <TextView
+                        android:id="@+id/tvSenderName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/black"
+                        android:maxLines="1"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginLeft="5dp"
+                        android:visibility="visible"
+                        android:textSize="17sp" />
 
                     <com.github.siyamed.shapeimageview.RoundedImageView
                         android:id="@+id/iv_other_img"
                         android:layout_width="180dp"
                         android:layout_height="180dp"
                         android:scaleType="center"
-                        android:layout_margin="3dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_marginTop="5dp"
                         android:visibility="gone"
                         app:siRadius="5dp"
+
                         app:siBorderColor="@color/gray4"
                         app:siBorderWidth="0.5dp"
                         android:layout_below="@+id/tvSenderName"

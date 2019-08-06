@@ -79,7 +79,6 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-
         if (TextUtils.equals(chatList.get(position).senderId,myUid )) {
             return VIEW_TYPE_ME;
         } else {
