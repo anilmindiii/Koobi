@@ -256,6 +256,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 if(chat.message.contains(".gif")){
                     GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(iv_other_img);
+
                     Glide.with(context)
                             .load(chat.message)
                             .listener(new RequestListener<String, GlideDrawable>() {
@@ -272,7 +273,27 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             })
                             .into(imageViewTarget);
                 }else{
-                Picasso.with(context)
+                    Glide.with(context)
+                            .load(chat.message).placeholder(R.drawable.gallery_placeholder)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    progress_bar.setVisibility(View.GONE);
+                                    Picasso.with(context).load(chat.message)
+                                            .placeholder(R.drawable.gallery_placeholder)
+                                            .error(R.drawable.gallery_placeholder).into(iv_other_img);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    progress_bar.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(iv_other_img);
+
+               /* Picasso.with(context)
                         .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_other_img, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -285,7 +306,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .error(R.drawable.gallery_placeholder).into(iv_other_img);
                         progress_bar.setVisibility(View.GONE);
                     }
-                });
+                });*/
                 }
 
             }else {

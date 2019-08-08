@@ -89,7 +89,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private double total_price = 0.0;
     private FrameLayout ly_amount;
     private JSONObject voucher;
-    private String bookingType = "1", paymentType = "2", discountPrice = "", bookingDate = "", bookingTime = "";
+    private String bookingType = "1",  paymentType = "2",
+            discountPrice = "", bookingDate = "", bookingTime = "";
     private AppCompatButton btn_confirm_booking, brn_add_more;
     private ImageView iv_location_arrow, iv_voucher_cancel;
     private TextView tv_call_type;

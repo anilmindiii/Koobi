@@ -273,7 +273,27 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                             })
                             .into(imageViewTarget);
                 }else{
-                    Picasso.with(context)
+                    Glide.with(context)
+                            .load(chat.message).placeholder(R.drawable.gallery_placeholder)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    iv_other_img.setEnabled(false);
+                                    Picasso.with(context).load(chat.message)
+                                            .placeholder(R.drawable.gallery_placeholder)
+                                            .error(R.drawable.gallery_placeholder).into(iv_other_img);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    iv_other_img.setEnabled(true);
+                                    return false;
+                                }
+                            })
+                            .into(iv_other_img);
+
+                   /* Picasso.with(context)
                             .load(chat.message).placeholder(R.drawable.gallery_placeholder).into(iv_other_img, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -288,7 +308,7 @@ public class GroupChattingAdapter extends RecyclerView.Adapter<RecyclerView.View
                                     .error(R.drawable.gallery_placeholder).into(iv_other_img);
                             //progress_bar.setVisibility(View.GONE);
                         }
-                    });
+                    });*/
                 }
 
 
