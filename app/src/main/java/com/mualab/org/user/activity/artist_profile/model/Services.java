@@ -37,6 +37,7 @@ public class Services {
         public String businessType;
         public int bankStatus;
         public int payOption;
+        public int walkingBlock;
         public int bookingSetting;
         public List<BusineshoursBean> busineshours;
         public boolean isAlreadybooked;

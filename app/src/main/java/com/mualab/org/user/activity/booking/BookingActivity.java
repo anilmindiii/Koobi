@@ -110,7 +110,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private int dayId, staff = 0, serviceId, subServiceId;
     private SimpleDateFormat dateSdf, timeSdf;
     private RatingBar rating;
-    private LinearLayout ly_staff_main, ly_time_slot_main;
+    private LinearLayout ly_staff_main, ly_time_slot_main,block_artist_layout;
     private boolean outcallStaff, incallStaff, isBankAdded, isAlreadybooked;
     private int totalTime, endTime,payOption = 0,bookingSetting = 0;
     private Double price;
@@ -123,6 +123,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private BottomSheetDialog mBizTypeDialog;
     private BottomSheetDialog mCatTypeDialog;
     private long mLastClickTime = 0;
+    private AppCompatButton btn_finish;
+
 
 
     @Override
@@ -168,9 +170,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         });
 
         btnCOnfirmBooking = findViewById(R.id.btnCOnfirmBooking);
+        btn_finish = findViewById(R.id.btn_finish);
         tvNoSlot = findViewById(R.id.tvNoSlot);
         ly_staff_main = findViewById(R.id.ly_staff_main);
         ly_time_slot_main = findViewById(R.id.ly_time_slot_main);
+        block_artist_layout = findViewById(R.id.block_artist_layout);
         ly_time_slot_main.setVisibility(View.GONE);
         tvbizDate = findViewById(R.id.tvbizDate);
         rating = findViewById(R.id.rating);
@@ -245,6 +249,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         };
 
 
+        btn_finish.setOnClickListener(this);
         ly_biz_type.setOnClickListener(this);
         ly_category.setOnClickListener(this);
         main_scroll_view.setOnClickListener(this);
@@ -375,6 +380,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_finish:
+                finish();
+                break;
             case R.id.ly_biz_type:
                 if (services != null)
                     if (services.artistServices.size() == 1) {
@@ -857,6 +865,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     if (status.equals("success")) {
                         Gson gson = new Gson();
                         services = gson.fromJson(response, Services.class);
+                        checkArtistIsblock(services.artistDetail.walkingBlock);
                         busineshoursList.addAll(services.artistDetail.busineshours);
                         viewCalendar.setDayToGray(busineshoursList);
 
@@ -1243,6 +1252,16 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 .setBody(params, HttpTask.ContentType.APPLICATION_JSON));
         task.execute(this.getClass().getName());
     }
+
+    private void checkArtistIsblock(int walkingBlock) {
+        if(walkingBlock == 1){ // block case
+            block_artist_layout.setVisibility(View.VISIBLE);
+        }else { // unblock case
+            block_artist_layout.setVisibility(View.GONE);
+        }
+    }
+
+
 
     private void setTodaysDay(int dayId) {
         String from = "";

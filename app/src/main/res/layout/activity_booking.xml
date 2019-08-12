@@ -17,6 +17,8 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true" />
 
+
+
     <RelativeLayout
         android:id="@+id/lyContainer"
         android:layout_width="match_parent"
@@ -571,6 +573,13 @@
         android:textSize="14sp" />
 
 
+    <include
+        android:id="@+id/block_artist_layout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        layout="@layout/dialog_block_artist"
+        android:visibility="gone"
+        />
 
 
 </RelativeLayout>

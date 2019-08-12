@@ -185,11 +185,9 @@ listner.onSingleTap();*/
                         //
                         ViewPager viewPager = (ViewPager) container;
                         View view = viewPager.findViewWithTag("myview" + viewPager.getCurrentItem());
-
                         if (view != null) {
                             mInstaTag = view.findViewById(R.id.post_image);
                         }
-
 
                         if (mInstaTag != null) {
                             showHideTag(mInstaTag, viewPager.getCurrentItem());
@@ -198,14 +196,9 @@ listner.onSingleTap();*/
                         if (listner != null)
                             listner.onSingleTap();
 
-
                         if (!isShow) {
                             // MyClickOnPostMenu.getMentIntance().setMenuClick();
-                        }
-
-
-                        //
-                    }
+                        }                    }
                 })
                 .longPressListener(new LongPressListener() {
                     @Override
